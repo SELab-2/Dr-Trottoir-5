@@ -32,9 +32,9 @@ Once `pip` has finished downloading the dependencies:
 Download and install postgresql from [here](https://www.postgresql.org/download/).
 Make an empty database and a user for this project.
 
-Copy the env file and fill in you own values:
+Copy the env file and fill in you own values. The location of .env should be in the same location of settings.py:
 ```sh
-(env)$ cp .env.example .env
+(env)$ cp .env.example backend/.env
 ```
 
 ### Run the backend
