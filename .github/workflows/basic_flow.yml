@@ -1,8 +1,0 @@
-name: basic-flow
-run-name: basic-flow
-on: [push]
-jobs:
-  Test-job:
-    runs-on: self-hosted
-    steps:
-      - run: echo "::notice This is a test run"
