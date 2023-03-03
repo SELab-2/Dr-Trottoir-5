@@ -120,6 +120,10 @@ USE_I18N = True # TODO CHANGE TO FALSE?
 
 USE_TZ = True
 
+# Media files for storing manuals
+
+MEDIA_URL = 'data/'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
