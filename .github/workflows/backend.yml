@@ -1,5 +1,5 @@
-name: basic-flow
-run-name: basic-flow
+name: backend-tests
+run-name: backend-tests
 on: [push]
 jobs:
   Backend-linter-and-tests:
@@ -11,6 +11,8 @@ jobs:
         
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
