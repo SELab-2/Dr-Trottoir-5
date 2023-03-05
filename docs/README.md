@@ -1,59 +1,24 @@
-# Docsy Example
+# Documentation project
 
 [Docsy][] is a [Hugo theme module][] for technical documentation sites, providing easy
-site navigation, structure, and more. This **Docsy Example Project** uses the Docsy
-theme component as a hugo module and provides a skeleton documentation structure for you to use.
-You can clone/copy this project and edit it with your own content, or use it as an example.
+site navigation, structure, and more.
 
-In this project, the Docsy theme component is pulled in as a Hugo module, together with other module dependencies:
-
-```bash
-$ hugo mod graph
-hugo: collected modules in 566 ms
-hugo: collected modules in 578 ms
-github.com/google/docsy-example github.com/google/docsy@v0.5.1-0.20221017155306-99eacb09ffb0
-github.com/google/docsy-example github.com/google/docsy/dependencies@v0.5.1-0.20221014161617-be5da07ecff1
-github.com/google/docsy/dependencies@v0.5.1-0.20221014161617-be5da07ecff1 github.com/twbs/bootstrap@v4.6.2+incompatible
-github.com/google/docsy/dependencies@v0.5.1-0.20221014161617-be5da07ecff1 github.com/FortAwesome/Font-Awesome@v0.0.0-20220831210243-d3a7818c253f
-```
+To use this you need to install 2 things
+1. Hugo (Extended version)
+   * see https://gohugo.io/installation/
+2. Go
+   * see https://go.dev/doc/install
 
 You can find detailed theme instructions in the [Docsy user guide][].
 
-This Docsy Example Project is hosted on [Netlify][] at [example.docsy.dev][].
-You can view deploy logs from the [deploy section of the project's Netlify
-dashboard][deploys], or this [alternate dashboard][].
-
-This is not an officially supported Google product. This project is currently maintained.
-
-## Using the Docsy Example Project as a template
-
-A simple way to get started is to use this project as a template, which gives you a site project that is set up and ready to use. To do this: 
-
-1. Click **Use this template**.
-
-2. Select a name for your new project and click **Create repository from template**.
-
-3. Make your own local working copy of your new repo using git clone, replacing https://github.com/me/example.git with your repo’s web URL:
-
-```bash
-git clone --depth 1 https://github.com/me/example.git
-```
-
-You can now edit your own versions of the site’s source files.
-
-If you want to do SCSS edits and want to publish these, you need to install `PostCSS`
-
+## Initial installation: 
 ```bash
 npm install
 ```
 
 ## Running the website locally
 
-Building and running the site locally requires a recent `extended` version of [Hugo](https://gohugo.io).
-You can find out more about how to install Hugo for your environment in our
-[Getting started](https://www.docsy.dev/docs/getting-started/#prerequisites-and-installation) guide.
-
-Once you've made your working copy of the site repo, from the repo root folder, run:
+run this command from the docs folder
 
 ```
 hugo server
@@ -61,8 +26,8 @@ hugo server
 
 ## Running a container locally
 
-You can run docsy-example inside a [Docker](https://docs.docker.com/)
-container, the container runs with a volume bound to the `docsy-example`
+You can run the site inside a [Docker](https://docs.docker.com/)
+container, the container runs with a volume bound to the `docs`
 folder. This approach doesn't require you to install any dependencies other
 than [Docker Desktop](https://www.docker.com/products/docker-desktop) on
 Windows and Mac, and [Docker Compose](https://docs.docker.com/compose/install/)
@@ -85,8 +50,8 @@ on Linux.
 1. Verify that the service is working. 
 
    Open your web browser and type `http://localhost:1313` in your navigation bar,
-   This opens a local instance of the docsy-example homepage. You can now make
-   changes to the docsy example and those changes will immediately show up in your
+   This opens a local instance of the docs homepage. You can now make
+   changes to the docs and those changes will immediately show up in your
    browser after you save.
 
 ### Cleanup
