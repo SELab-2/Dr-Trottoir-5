@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from .models import TrashContainer
+from .serializers import TrashContainerSerializer
+
+
+class TrashContainerDetailAPIView(generics.RetrieveAPIView):
+    queryset = TrashContainer.objects.all()
+    serializer_class = TrashContainerSerializer
+
+class TrashContainerCreateAPIView(generics.CreateAPIView):
+    queryset = TrashContainer.objects.all()
+    serializer_class = TrashContainerSerializer
+
