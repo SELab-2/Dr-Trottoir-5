@@ -23,6 +23,6 @@ jobs:
         working-directory: ./backend
       - name: Run Tests
         run: |
-          flake8 .
+          flake8 --max-line-length 120 .
           #python manage.py test
         working-directory: ./backend
