@@ -36,9 +36,9 @@ class CustomUserManager(BaseUserManager):
         """
             Error handling when creating a super user
         """
-        if extra_fields.get("is_staff") is not True:
+        if other_fields.get("is_staff") is not True:
             raise ValueError(_("Bij superuser moet de variable is_staff gelijk zijn aan True."))
-        if extra_fields.get("is_superuser") is not True:
+        if other_fields.get("is_superuser") is not True:
             raise ValueError(_("Bij superuser moet de variable is_superuser gelijk zijn aan True."))
 
-        return self.create_user(email, password, name, phone_nr, location, 3, **extra_fields)
+        return self.create_user(email, password, name, phone_nr, location, 3, **other_fields)
