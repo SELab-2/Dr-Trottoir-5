@@ -1,7 +1,6 @@
 import uuid
 
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
 
 
@@ -26,7 +25,9 @@ class BuildingPicture(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     image = models.ImageField
+
     time = models.DateTimeField
+
     remark = models.CharField(
         default="",
         max_length=500
@@ -42,16 +43,16 @@ class InfoPerBuilding(models.Model):
     id : UUIDField
         the Identifier of this field
 
-    arrival : ArrayField(BuildingPicture)
+    arrival : models.ForeignKey
         The images taken when the student arrives on location
 
-    storage : ArrayField(BuildingPicture)
+    storage : models.ForeignKey
         The images taken when the student is in the storage location
 
-    departure : ArrayField(BuildingPicture)
+    departure : models.ForeignKey
         The images taken when the student departs
 
-    extra : ArrayField(BuildingPicture)
+    extra : models.ForeignKey
         Extra images the student has taken
 
     remark : models.CharField
@@ -59,13 +60,13 @@ class InfoPerBuilding(models.Model):
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    arrival = ArrayField(BuildingPicture)
+    arrival = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
-    storage = ArrayField(BuildingPicture)
+    storage = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
-    departure = ArrayField(BuildingPicture)
+    departure = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
-    extra = ArrayField(BuildingPicture)
+    extra = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
     remark = models.CharField(
         default="",
@@ -82,28 +83,28 @@ class DagPlanning(models.Model):
     id : UUIDField
         the Identifier of this field
 
-    student : AbstractUser
+    student : models.OneToOneField
         The student that will be doing this round
 
     date : models.DateField
         The date on which this student will do this round
 
-    ronde : # TODO
+    ronde : models.ForeignKey
         The round that the student will do this day
 
-    info : ArrayField(InfoPerBuilding)
+    info : models.ForeignKey
         All the info from the student about all the buildings
 
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    student = AbstractUser
+    student = models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
 
     date = models.DateField  # TODO moet dit DateTimeField worden?
 
     ronde = None  # TODO
 
-    info = ArrayField(InfoPerBuilding)
+    info = models.ForeignKey(InfoPerBuilding, on_delete=models.CASCADE)
 
 
 class WeekPlanning(models.Model):
@@ -121,7 +122,7 @@ class WeekPlanning(models.Model):
     year : models.IntegerField
         The year of this planning
 
-    dagPlanningen : ArrayField(DagPlanning)
+    dagPlanningen : models.ForeignKey
         All the DayPlannings for this week
 
     """
@@ -131,4 +132,4 @@ class WeekPlanning(models.Model):
 
     year = models.IntegerField
 
-    dagPlanningen = ArrayField(DagPlanning)
+    dagPlanningen = models.ForeignKey(DagPlanning, on_delete=models.DO_NOTHING)
