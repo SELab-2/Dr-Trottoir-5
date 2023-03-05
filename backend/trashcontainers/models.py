@@ -1,5 +1,26 @@
 from django.db import models
 
+class Weekday(models.Model):
+    """
+        Model for the days of the week so it can be used in a ManyToManyField.
+    """
+    class WeekDayEnum(models.TextChoices):
+        """
+              Enum for the days of the week.
+        """
+        MONDAY = "MO", "Monday"
+        TUESDAY = "TU", "Tuesday"
+        WEDNESDAY = "WE", "Wednesday"
+        THURSDAY = "TH", "Thursday"
+        FRIDAY = "FR", "Friday"
+        SATURDAY = "SA", "Saturday"
+        SUNDAY = "SU", "Sunday"
+
+    weekday = models.CharField(
+        max_length=2,
+        choices=WeekDayEnum.choices
+    )
+
 class TrashContainer(models.Model):
     """
         Trash Container database model.
@@ -32,30 +53,13 @@ class TrashContainer(models.Model):
         GLAS = "GL", "GLAS"
         GFT = "GF", "GFT"
 
-    class WeekDay(models.TextChoices):
-        """
-              Enum for the days of the week.
-        """
-        MONDAY = "MO", "Monday"
-        TUESDAY = "TU", "Tuesday"
-        WEDNESDAY = "WE", "Wednesday"
-        THURSDAY = "TH", "Thursday"
-        FRIDAY = "FR", "Friday"
-        SATURDAY = "SA", "Saturday"
-        SUNDAY = "SU", "Sunday"
-
 
     type = models.CharField(
         max_length=2,
         choices=TrashType.choices
     )
 
-    collection_days = models.ManyToManyField(
-        models.CharField(
-            max_length=2,
-            choices=WeekDay.choices
-        )
-    )
+    collection_days = models.ManyToManyField(Weekday)
 
     special_actions = models.TextField(
         default=""
