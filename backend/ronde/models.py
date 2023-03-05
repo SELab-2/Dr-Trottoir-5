@@ -11,7 +11,7 @@ class User(models.Model):
 
 class LocatieEnum(models.Model):
     """
-            LocatieEnuù database model.
+            LocatieEnum database model.
             Attributes
             ----------
             name : models.TextField
