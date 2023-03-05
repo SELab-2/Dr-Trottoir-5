@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
@@ -9,6 +11,9 @@ class BuildingPicture(models.Model):
 
     Attributes
     ----------
+    id : UUIDField
+        the Identifier of this field
+
     image : models.ImageField
         the image that is being stored
 
@@ -18,6 +23,8 @@ class BuildingPicture(models.Model):
     remark : models.CharField
         The remarks about the picture
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     image = models.ImageField
     time = models.DateTimeField
     remark = models.CharField(
@@ -32,6 +39,9 @@ class InfoPerBuilding(models.Model):
 
     Attributes
     ----------
+    id : UUIDField
+        the Identifier of this field
+
     arrival : ArrayField(BuildingPicture)
         The images taken when the student arrives on location
 
@@ -47,10 +57,16 @@ class InfoPerBuilding(models.Model):
     remark : models.CharField
         The remarks about the building
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     arrival = ArrayField(BuildingPicture)
+
     storage = ArrayField(BuildingPicture)
+
     departure = ArrayField(BuildingPicture)
+
     extra = ArrayField(BuildingPicture)
+
     remark = models.CharField(
         default="",
         max_length=500
@@ -63,6 +79,9 @@ class DagPlanning(models.Model):
 
     Attributes
     ----------
+    id : UUIDField
+        the Identifier of this field
+
     student : AbstractUser
         The student that will be doing this round
 
@@ -76,6 +95,8 @@ class DagPlanning(models.Model):
         All the info from the student about all the buildings
 
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     student = AbstractUser
 
     date = models.DateField  # TODO moet dit DateTimeField worden?
@@ -91,6 +112,9 @@ class WeekPlanning(models.Model):
 
     Attributes
     ----------
+    id : UUIDField
+        the Identifier of this field
+
     week : models.IntegerField
         The week of the year for this planning
 
@@ -101,6 +125,8 @@ class WeekPlanning(models.Model):
         All the DayPlannings for this week
 
     """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     week = models.IntegerField
 
     year = models.IntegerField
