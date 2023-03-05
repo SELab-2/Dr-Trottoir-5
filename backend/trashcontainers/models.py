@@ -1,8 +1,31 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 
 class TrashContainer(models.Model):
+    """
+        Trash Container database model.
+
+        Attributes
+        ----------
+
+        type : models.CharField
+            The type of trash that is in the container
+
+        collection_days : models.ManyToManyField
+            The days that the container needs to be collected
+
+        special_actions : models.TextField
+            The possible special actions that need to be taken
+
+        start_hour : models.TimeField
+            The time when they start collecting the trash container
+
+        end_hour: models.TimeField
+            The time when they stop collecting the trash container
+       """
     class TrashType(models.TextChoices):
+        """
+            Enum for the types of trash.
+        """
         PMD = "PM", "PMD"
         REST = "RE", "REST"
         PK = "PK", "PK"
@@ -10,6 +33,9 @@ class TrashContainer(models.Model):
         GFT = "GF", "GFT"
 
     class WeekDay(models.TextChoices):
+        """
+              Enum for the days of the week.
+        """
         MONDAY = "MO", "Monday"
         TUESDAY = "TU", "Tuesday"
         WEDNESDAY = "WE", "Wednesday"
@@ -24,15 +50,15 @@ class TrashContainer(models.Model):
         choices=TrashType.choices
     )
 
-    collection_days = ArrayField(
+    collection_days = models.ManyToManyField(
         models.CharField(
             max_length=2,
             choices=WeekDay.choices
         )
     )
-    special_actions = models.CharField(
-        default="",
-        max_length=500
+
+    special_actions = models.TextField(
+        default=""
     )
 
     start_hour = models.TimeField()
