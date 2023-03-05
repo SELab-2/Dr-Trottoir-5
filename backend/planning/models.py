@@ -10,28 +10,20 @@ class BuildingPicture(models.Model):
 
     Attributes
     ----------
-    id : UUIDField
-        the Identifier of this field
-
     image : models.ImageField
         the image that is being stored
 
     time : models.DateTimeField
         The date and time at which the picture was taken
 
-    remark : models.CharField
+    remark : models.TextField
         The remarks about the picture
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     image = models.ImageField
 
     time = models.DateTimeField
 
-    remark = models.CharField(
-        default="",
-        max_length=500
-    )
+    remark = models.TextField(default="")
 
 
 class InfoPerBuilding(models.Model):
@@ -40,9 +32,6 @@ class InfoPerBuilding(models.Model):
 
     Attributes
     ----------
-    id : UUIDField
-        the Identifier of this field
-
     arrival : models.ForeignKey
         The images taken when the student arrives on location
 
@@ -55,11 +44,9 @@ class InfoPerBuilding(models.Model):
     extra : models.ForeignKey
         Extra images the student has taken
 
-    remark : models.CharField
+    remark : models.TextField
         The remarks about the building
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     arrival = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
     storage = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
@@ -68,10 +55,7 @@ class InfoPerBuilding(models.Model):
 
     extra = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
-    remark = models.CharField(
-        default="",
-        max_length=500
-    )
+    remark = models.TextField(default="")
 
 
 class DagPlanning(models.Model):
@@ -80,9 +64,6 @@ class DagPlanning(models.Model):
 
     Attributes
     ----------
-    id : UUIDField
-        the Identifier of this field
-
     student : models.OneToOneField
         The student that will be doing this round
 
@@ -96,11 +77,9 @@ class DagPlanning(models.Model):
         All the info from the student about all the buildings
 
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     student = models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
 
-    date = models.DateField  # TODO moet dit DateTimeField worden?
+    date = models.DateField
 
     ronde = None  # TODO
 
@@ -113,9 +92,6 @@ class WeekPlanning(models.Model):
 
     Attributes
     ----------
-    id : UUIDField
-        the Identifier of this field
-
     week : models.IntegerField
         The week of the year for this planning
 
@@ -126,8 +102,6 @@ class WeekPlanning(models.Model):
         All the DayPlannings for this week
 
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     week = models.IntegerField
 
     year = models.IntegerField
