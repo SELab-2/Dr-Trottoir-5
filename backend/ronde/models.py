@@ -1,4 +1,5 @@
 from django.db import models
+from trashcontainers.models import TrashContainer
 
 
 class User(models.Model):
@@ -6,7 +7,7 @@ class User(models.Model):
         TODO
         Temporal model of user
     """
-    naam = models.TextField()
+    name = models.TextField()
 
 
 class LocatieEnum(models.Model):
@@ -80,8 +81,11 @@ class Building(models.Model):
         Manual,
         on_delete=models.CASCADE
     )
-    containers = None  # TODO Add TrashContainer model
-    locatie = models.ForeignKey(
+    containers = models.ForeignKey(
+        TrashContainer,
+        on_delete=models.DO_NOTHING
+    )
+    location = models.ForeignKey(
         LocatieEnum,
         on_delete=models.DO_NOTHING
     )
