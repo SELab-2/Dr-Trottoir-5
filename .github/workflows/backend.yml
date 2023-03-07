@@ -25,8 +25,12 @@ jobs:
       - name: Create env file
         run: |
           echo "${{ secrets.ENV_FILE }}" > ./backend/.env
+        working-directory: ./backend
       - name: Run Tests
         run: |
-          flake8 --max-line-length 120 .
           python manage.py test
+        working-directory: ./backend
+      - name: Run Linter
+        run: |
+          flake8 --max-line-length 120 .
         working-directory: ./backend
