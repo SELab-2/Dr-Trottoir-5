@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+
 
 class Weekday(models.Model):
     """
@@ -20,6 +22,7 @@ class Weekday(models.Model):
         max_length=2,
         choices=WeekDayEnum.choices
     )
+
 
 class TrashContainer(models.Model):
     """
@@ -53,7 +56,6 @@ class TrashContainer(models.Model):
         GLAS = "GL", "GLAS"
         GFT = "GF", "GFT"
 
-
     type = models.CharField(
         max_length=2,
         choices=TrashType.choices
@@ -62,8 +64,17 @@ class TrashContainer(models.Model):
     collection_days = models.ManyToManyField(Weekday)
 
     special_actions = models.TextField(
-        default=""
+        default="",
+        blank=True
     )
 
     start_hour = models.TimeField()
     end_hour = models.TimeField()
+
+    def clean(self):
+        if self.start_hour > self.end_hour:
+            raise ValidationError('Start hour is after end hour')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
