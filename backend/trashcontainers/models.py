@@ -1,5 +1,4 @@
 from django.db import models
-
 from pickupdays.models import PickUpDay
 
 
@@ -44,5 +43,6 @@ class TrashContainer(models.Model):
     collection_days = models.ManyToManyField(PickUpDay)
 
     special_actions = models.TextField(
-        default=""
+        default="",
+        blank=True
     )
