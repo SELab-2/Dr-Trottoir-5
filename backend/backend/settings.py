@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'ronde',
     'trashcontainers'
 ]
 
@@ -120,6 +121,10 @@ TIME_ZONE = 'Europe/Brussels'
 USE_I18N = True # TODO CHANGE TO FALSE?
 
 USE_TZ = True
+
+# Media files for storing manuals
+
+MEDIA_URL = 'data/'
 
 
 # Static files (CSS, JavaScript, Images)
