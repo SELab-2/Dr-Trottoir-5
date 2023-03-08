@@ -1,7 +1,7 @@
 from django.test import TestCase
-from django.core.exceptions import ValidationError
-from trashcontainers.models import TrashContainer
-import datetime
+from rest_framework import serializers
+from .serializers import TrashContainerSerializer
+from .models import Weekday
 
 
 class TrashContainerTestCase(TestCase):
@@ -10,14 +10,31 @@ class TrashContainerTestCase(TestCase):
     """
 
     def setUp(self):
-        pass
+        monday = Weekday.objects.create(weekday='MO').pk
+        self.serializer_data_empty_collection_days = {
+            "type": "PM",
+            "collection_days": [],
+            "start_hour": "11:00",
+            "end_hour": "12:00"
+        }
+        self.serializer_data = {
+            "type": "PM",
+            "collection_days": [monday],
+            "start_hour": "13:00",
+            "end_hour": "12:00"
+        }
+
+    def test_empty_collection_days(self):
+        """
+            Serializer should not be valid if collection_days is empty
+        """
+        with self.assertRaisesMessage(serializers.ValidationError, "This list may not be empty."):
+            TrashContainerSerializer(data=self.serializer_data_empty_collection_days).is_valid(raise_exception=True)
 
     def test_start_hour(self):
         """
             Make sure we can't create a trashcontainer object where the starting hour
             is greater than the ending hour
         """
-        with self.assertRaises(ValidationError):
-            TrashContainer.objects.create(type="PM",
-                                          start_hour=datetime.time(12, 00),
-                                          end_hour=datetime.time(11, 00))
+        with self.assertRaisesMessage(serializers.ValidationError, "Start hour should not be later than end hour"):
+            TrashContainerSerializer(data=self.serializer_data).is_valid(raise_exception=True)

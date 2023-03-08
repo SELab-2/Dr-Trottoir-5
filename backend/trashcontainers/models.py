@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 
 
 class Weekday(models.Model):
@@ -70,11 +69,3 @@ class TrashContainer(models.Model):
 
     start_hour = models.TimeField()
     end_hour = models.TimeField()
-
-    def clean(self):
-        if self.start_hour > self.end_hour:
-            raise ValidationError('Start hour is after end hour')
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
