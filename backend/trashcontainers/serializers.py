@@ -29,3 +29,8 @@ class TrashContainerSerializer(serializers.ModelSerializer):
                     return option
 
         return super().create(validated_data)
+
+    def validate(self, data):
+        if data['start_hour'] > data['end_hour']:
+            raise serializers.ValidationError({'start_hour': 'Eindtijd mag niet eerder dan starttijd zijn'})
+        return data
