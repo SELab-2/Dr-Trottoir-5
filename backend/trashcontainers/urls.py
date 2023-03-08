@@ -3,6 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("<int:pk>", views.TrashContainerDetailAPIView.as_view()),
-    path("", views.TrashContainerCreateAPIView.as_view())
+    path('', views.TrashContainerListCreateView.as_view()),
+    path('<int:pk>/', views.TrashContainerRetrieveUpdateDestroyView.as_view())
 ]

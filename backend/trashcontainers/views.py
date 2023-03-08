@@ -4,11 +4,11 @@ from .models import TrashContainer
 from .serializers import TrashContainerSerializer
 
 
-class TrashContainerDetailAPIView(generics.RetrieveAPIView):
+class TrashContainerListCreateView(generics.ListCreateAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
 
-class TrashContainerCreateAPIView(generics.CreateAPIView):
+class TrashContainerRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
 

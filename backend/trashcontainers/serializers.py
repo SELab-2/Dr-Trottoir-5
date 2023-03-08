@@ -5,10 +5,4 @@ from .models import TrashContainer
 class TrashContainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrashContainer
-        fields = [
-            "type",
-            "collection_days",
-            "special_actions",
-            "start_hour",
-            "end_hour"
-        ]
+        fields = '__all__'
