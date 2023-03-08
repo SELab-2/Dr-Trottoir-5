@@ -1,8 +1,8 @@
 from django.db import models
 
-class Weekday(models.Model):
+class PickUpDay(models.Model):
     """
-        Model for the days of the week so it can be used in a ManyToManyField.
+        The pickup day and hours for a TrashContainer.
     """
     class WeekDayEnum(models.TextChoices):
         """
@@ -16,8 +16,10 @@ class Weekday(models.Model):
         SATURDAY = "SA", "Saturday"
         SUNDAY = "SU", "Sunday"
 
-    weekday = models.CharField(
+    day = models.CharField(
         max_length=2,
         choices=WeekDayEnum.choices
     )
 
+    start_hour = models.TimeField()
+    end_hour = models.TimeField()

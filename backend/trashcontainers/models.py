@@ -1,6 +1,6 @@
 from django.db import models
 
-from weekday.models import Weekday
+from pickupdays.models import PickUpDay
 
 class TrashContainer(models.Model):
     """
@@ -40,11 +40,8 @@ class TrashContainer(models.Model):
         choices=TrashType.choices
     )
 
-    collection_days = models.ManyToManyField(Weekday)
+    collection_days = models.ManyToManyField(PickUpDay)
 
     special_actions = models.TextField(
         default=""
     )
-
-    start_hour = models.TimeField()
-    end_hour = models.TimeField()
