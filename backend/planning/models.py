@@ -17,9 +17,9 @@ class BuildingPicture(models.Model):
     remark : models.TextField
         The remarks about the picture
     """
-    image = models.ImageField
+    image = models.ImageField()
 
-    time = models.DateTimeField
+    time = models.DateTimeField()
 
     remark = models.TextField(default="")
 
@@ -45,13 +45,13 @@ class InfoPerBuilding(models.Model):
     remark : models.TextField
         The remarks about the building
     """
-    arrival = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
+    arrival = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE, related_name="arrival")
 
-    storage = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
+    storage = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE, related_name="storage")
 
-    departure = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
+    departure = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE, related_name="departure")
 
-    extra = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
+    extra = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE, related_name="extra")
 
     remark = models.TextField(default="")
 
@@ -75,9 +75,9 @@ class DagPlanning(models.Model):
         All the info from the student about all the buildings
 
     """
-    student = models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
+    student = None # models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
 
-    date = models.DateField
+    date = models.DateField()
 
     ronde = None  # TODO
 
@@ -100,8 +100,8 @@ class WeekPlanning(models.Model):
         All the DayPlannings for this week
 
     """
-    week = models.IntegerField
+    week = models.IntegerField()
 
-    year = models.IntegerField
+    year = models.IntegerField()
 
     dagPlanningen = models.ForeignKey(DagPlanning, on_delete=models.DO_NOTHING)
