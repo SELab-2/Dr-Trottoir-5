@@ -1,11 +1,11 @@
 
 ---
-title: "Examples"
-linkTitle: "Examples"
+title: "API"
+linkTitle: "API"
 weight: 3
-date: 2017-01-05
+date: 2023-03-11
 description: >
-  See your project in action!
+  Hoe de API gebruikt kan worden voor het updaten en ophalen van alle data
 ---
 
 {{% pageinfo %}}

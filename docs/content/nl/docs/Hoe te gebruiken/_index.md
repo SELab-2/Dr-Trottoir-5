@@ -1,11 +1,11 @@
 ---
 categories: ["Examples", "Placeholders"]
 tags: ["test","docs"] 
-title: "Getting Started"
-linkTitle: "Getting Started"
+title: "Hoe te gebruiken"
+linkTitle: "Hoe te gebruiken"
 weight: 2
 description: >
-  What does your user need to know to try your project?
+  Uitleg over hoe de applicatie gebruikt moet worden vanuit het standpunt van elke user.
 ---
 
 {{% pageinfo %}}
