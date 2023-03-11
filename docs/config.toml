@@ -1,4 +1,4 @@
-baseURL = "/docs"
+baseURL = ""
 title = "Documentatie van Dr Trottoir project"
 
 # Language settings
@@ -59,13 +59,6 @@ anchor = "smart"
 # Language configuration
 
 [languages]
-[languages.en]
-title = "Dr Trottoir group 5"
-description = "A Docsy example site"
-languageName ="English"
-contentDir = "content/en"
-# Weight used for sorting.
-weight = 1
 
 [languages.nl]
 title = "Dr Trottoir groep 5"
