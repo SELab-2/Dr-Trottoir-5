@@ -12,16 +12,16 @@ class CreateTest(APITestCase):
         """
             Check if we can't create a location without name attribute
         """
-        url = reverse('location')
+        url = '/api/ronde/locatie'
         data = {}
-        response = self.client.put(url, data, format='json')
+        response = self.client.post(url, data, format='json', follow=True)
         self.assertEqual(response.status_code, status.HTTP_402_PAYMENT_REQUIRED)
 
     def test_with_empty_name(self):
         """
             Check if we can't create a location without name attribute
         """
-        url = reverse('location')
+        url = '/api/ronde/locatie'
         data = {'name': ''}
-        response = self.client.put(url, data, format='json')
+        response = self.client.post(url, data, format='json', follow=True)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 
 from .models import LocatieEnum, Manual, Building, Ronde
 
@@ -9,11 +9,12 @@ class LocatieEnumSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
-        if 'name' not in data:
-            return serializers.ValidationError({"error": "Er is geen field 'name' meegeven", 'status': 402})
+        if "name" not in data:
+            raise serializers.ValidationError({"error": "Er is geen field 'name' meegeven"},
+                                              code=status.HTTP_402_PAYMENT_REQUIRED)
         elif data['name'] == '':
-            return serializers.ValidationError({"error": "Field 'name' is leeg", 'status' : 400})
-        return super().validate(data)
+            raise serializers.ValidationError({"error": "Field 'name' is leeg"}, code=status.HTTP_400_BAD_REQUEST)
+        return data
 
     def create(self, validated_date):
         try:
@@ -23,7 +24,7 @@ class LocatieEnumSerializer(serializers.ModelSerializer):
             location.save()
             return location
         except IntegrityError as e:
-            return serializers.ValidationError({"errors": str(e)})
+            raise serializers.ValidationError({"errors": str(e)})
 
 
 class ManaulSerializer(serializers.ModelSerializer):

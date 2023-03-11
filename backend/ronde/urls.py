@@ -3,5 +3,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.LocatieEnumListCreateView.as_view(), name="location")
+    path('locatie/', views.LocatieEnumListCreateView.as_view(), name="location")
 ]
