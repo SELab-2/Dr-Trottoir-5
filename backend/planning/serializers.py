@@ -12,6 +12,13 @@ class DagPlanningSerializer(serializers.ModelSerializer):
             "info"
         ]
 
+    def create(self, validated_data):
+        date = validated_data['date']
+        info = validated_data['info']
+        dagplanning = DagPlanning(date=date, info=info)
+        dagplanning.save()
+        return dagplanning
+
 
 class BuildingPictureSerializer(serializers.ModelSerializer):
     class Meta:
