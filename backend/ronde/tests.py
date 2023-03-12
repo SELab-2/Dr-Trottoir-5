@@ -1,27 +1,31 @@
 from django.test import TestCase
-
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIRequestFactory
+from .views import LocatieEnumListCreateView, LocatieEnumRetrieveDestroyView
 from .models import LocatieEnum
 
 
-class CreateTest(APITestCase):
+class TestApi(TestCase):
 
-    def test_with_no_name_attr(self):
-        """
-            Check if we can't create a location without name attribute
-        """
-        url = '/api/ronde/locatie'
-        data = {}
-        response = self.client.post(url, data, format='json', follow=True)
-        self.assertEqual(response.status_code, status.HTTP_402_PAYMENT_REQUIRED)
+    def setUp(self):
+        LocatieEnum.objects.create(name="Gent")
 
-    def test_with_empty_name(self):
+    def test_add_locatie(self):
         """
-            Check if we can't create a location without name attribute
+            Test for adding a location
         """
-        url = '/api/ronde/locatie'
-        data = {'name': ''}
-        response = self.client.post(url, data, format='json', follow=True)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        factory = APIRequestFactory()
+        request = factory.post('/api/ronde/locatie/', {'name': 'Oostende'})
+        response = LocatieEnumListCreateView.as_view()(request).data
+        self.assertEqual(response["succes"]["id"], 2)
+        self.assertEqual(response["succes"]["name"], "Oostende")
+
+    def test_get_locaties(self):
+        """
+            Test to get location back
+        """
+        factory = APIRequestFactory()
+        request = factory.get('/api/ronde/locatie/')
+        response = LocatieEnumListCreateView.as_view()(request).data
+        self.assertNotEquals(len(response), 0)

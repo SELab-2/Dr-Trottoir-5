@@ -8,20 +8,14 @@ class LocatieEnumSerializer(serializers.ModelSerializer):
         model = LocatieEnum
         fields = '__all__'
 
-    def validate(self, data):
-        if "name" not in data:
-            raise serializers.ValidationError({"error": "Er is geen field 'name' meegeven"},
-                                              code=status.HTTP_402_PAYMENT_REQUIRED)
-        elif data['name'] == '':
-            raise serializers.ValidationError({"error": "Field 'name' is leeg"}, code=status.HTTP_400_BAD_REQUEST)
-        return data
-
-    def create(self, validated_date):
+    def create(self, validated_data):
+        """
+            Created a location record in the database or gives an already existing one
+        """
         try:
-            location = LocatieEnum.objects.create(
-                name=validated_date["name"]
+            location, _ = LocatieEnum.objects.get_or_create(
+                name=validated_data["name"]
             )
-            location.save()
             return location
         except IntegrityError as e:
             raise serializers.ValidationError({"errors": str(e)})
