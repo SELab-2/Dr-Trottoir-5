@@ -1,9 +1,11 @@
 from django.db import models
 
+
 class Weekday(models.Model):
     """
         Model for the days of the week so it can be used in a ManyToManyField.
     """
+
     class WeekDayEnum(models.TextChoices):
         """
               Enum for the days of the week.
@@ -20,6 +22,7 @@ class Weekday(models.Model):
         max_length=2,
         choices=WeekDayEnum.choices
     )
+
 
 class TrashContainer(models.Model):
     """
@@ -43,6 +46,7 @@ class TrashContainer(models.Model):
         end_hour: models.TimeField
             The time when they stop collecting the trash container
        """
+
     class TrashType(models.TextChoices):
         """
             Enum for the types of trash.
@@ -52,7 +56,6 @@ class TrashContainer(models.Model):
         PK = "PK", "PK"
         GLAS = "GL", "GLAS"
         GFT = "GF", "GFT"
-
 
     type = models.CharField(
         max_length=2,

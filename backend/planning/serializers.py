@@ -9,13 +9,15 @@ class DagPlanningSerializer(serializers.ModelSerializer):
             "student",
             "date",
             "ronde",
-            "info"
+            "weekPlanning"
         ]
 
     def create(self, validated_data):
         date = validated_data['date']
-        info = validated_data['info']
-        dagplanning = DagPlanning(date=date, info=info)
+        student = validated_data['student']
+        ronde = validated_data['ronde']
+        weekplanning = validated_data["weekplanning"]
+        dagplanning = DagPlanning(student=student, date=date, ronde=ronde, weekPlanning=weekplanning)
         dagplanning.save()
         return dagplanning
 
@@ -24,16 +26,22 @@ class BuildingPictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingPicture
         fields = [
+            "pictureType",
             "image",
             "time",
-            "remark"
+            "remark",
+            "infoPerBuiding",
+            "pk"
         ]
 
     def create(self, validated_data):
+        pictureType = validated_data["pictureType"]
         image = validated_data["image"]
-        info = validated_data['info']
+        time = validated_data['time']
         remark = validated_data['remark']
-        buildingPicture = BuildingPicture(image=image, info=info, remark=remark)
+        infoPerBuilding = validated_data["infoPerBuilding"]
+        buildingPicture = BuildingPicture(pictureType=pictureType, image=image, time=time, remark=remark,
+                                          infoPerBuilding=infoPerBuilding)
         buildingPicture.save()
         return buildingPicture
 
@@ -42,21 +50,14 @@ class InfoPerBuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoPerBuilding
         fields = [
-            "arrival",
-            "storage",
-            "departure",
-            "extra",
-            "remark"
+            "remark",
+            "dagPlanning"
         ]
 
     def create(self, validated_data):
-        arrival = validated_data['arrival']
-        storage = validated_data['storage']
-        departure = validated_data['departure']
-        extra = validated_data['extra']
-        remark = validated_data[remark]
-        infoPerBuilding = InfoPerBuilding(arrival=arrival, storage=storage, departure=departure, extra=extra,
-                                          remark=remark)
+        dagPlanning = validated_data["dagPlanning"]
+        remark = validated_data["remark"]
+        infoPerBuilding = InfoPerBuilding(dagPlanning=dagPlanning, remark=remark)
         infoPerBuilding.save()
         return infoPerBuilding
 
@@ -67,13 +68,11 @@ class WeekPlanningSerializer(serializers.ModelSerializer):
         fields = [
             "week",
             "year",
-            "dagplanningen"
         ]
 
     def create(self, validated_data):
         week = validated_data['week']
         year = validated_data['year']
-        dagplanning = validated_data['dagplanningen']
-        weekPlanning = WeekPlanning(week=week, year=year, dagplanning=dagplanning)
+        weekPlanning = WeekPlanning(week=week, year=year)
         weekPlanning.save()
         return weekPlanning

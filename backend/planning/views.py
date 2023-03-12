@@ -40,19 +40,6 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
 
-    def post(self, request, *args, **kwargs):
-        errorList = []
-        for i in ["arrival", "storage", "departure", "extra"]:
-            try:
-                BuildingPicture.objects.get(pk=request.data[i])
-            except BuildingPicture.DoesNotExist:
-                errorList.append({
-                    "message": "key not in database", "field": i
-                })
-        if len(errorList) > 0:
-            raise serializers.ValidationError({"errors": errorList})
-        return super().post(request, args, kwargs)
-
 
 class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BuildingPicture.objects.all()
@@ -62,6 +49,20 @@ class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
 class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     queryset = InfoPerBuilding.objects.all()
     serializer_class = InfoPerBuildingSerializer
+
+    def post(self, request, *args, **kwargs):
+        errorList = []
+        for i in ["arrival", "storage", "departure", "extra"]:
+            print(request.data[i])
+            try:
+                BuildingPicture.objects.get(pk=request.data[i])
+            except BuildingPicture.DoesNotExist:
+                errorList.append({
+                    "message": "key not in database", "field": i
+                })
+        if len(errorList) > 0:
+            raise serializers.ValidationError({"errors": errorList})
+        return super().post(request, args, kwargs)
 
 
 class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -77,3 +78,19 @@ class WeekPlanningCLAPIView(generics.ListCreateAPIView):
 class WeekPlanningRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = WeekPlanning.objects.all()
     serializer_class = WeekPlanningSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        try:
+            DagPlanning.objects.get(pk=request.data["dagPlanningen"])
+        except DagPlanning.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "you shall not pass", "field": "dagPlanningen"
+                        }
+                    ]
+                }
+                , code='invalid')
+        return super().post(request=request, args=args, kwargs=kwargs)

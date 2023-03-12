@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'trashcontainers',
     'ronde',
-    'dagplanning'
+    'planning'
 ]
 
 MIDDLEWARE = [
