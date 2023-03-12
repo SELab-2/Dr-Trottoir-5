@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics
 
-from .models import DagPlanning, InfoPerBuilding
-from .serializers import DagPlanningSerializer
+from .models import *
+from .serializers import *
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 
 
 # Create your views here.
@@ -34,3 +34,33 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
+
+
+class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
+    queryset = BuildingPicture.objects.all()
+    serializer_class = BuildingPictureSerializer
+
+
+class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BuildingPicture.objects.all()
+    serializer_class = BuildingPictureSerializer
+
+
+class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
+    queryset = InfoPerBuilding.objects.all()
+    serializer_class = InfoPerBuildingSerializer
+
+
+class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InfoPerBuilding.objects.all()
+    serializer_class = InfoPerBuildingSerializer
+
+
+class WeekPlanningCLAPIView(generics.ListCreateAPIView):
+    queryset = WeekPlanning.objects.all()
+    serializer_class = WeekPlanningSerializer
+
+
+class WeekPlanningRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = WeekPlanning.objects.all()
+    serializer_class = WeekPlanningSerializer
