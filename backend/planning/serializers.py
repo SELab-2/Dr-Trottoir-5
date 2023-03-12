@@ -18,7 +18,12 @@ class DagPlanningSerializer(serializers.ModelSerializer):
         # student = validated_data['student']
         # ronde = validated_data['ronde']
         weekplanning = validated_data["weekPlanning"]
-        dagplanning = DagPlanning(date=date, weekPlanning=weekplanning)
+        dagplanning = DagPlanning(
+            date=date,
+            weekPlanning=weekplanning,
+            # ronde=ronde,
+            # student=student
+        )
         dagplanning.save()
         return dagplanning
 
