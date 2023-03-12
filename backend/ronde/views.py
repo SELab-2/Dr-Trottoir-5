@@ -97,6 +97,22 @@ class BuildingListCreateView(generics.ListCreateAPIView):
     serializer_class = BuildingSerializer
 
 
+class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+    serializer_class = BuildingSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['pk']
+        return Building.objects.filter(id=id)
+
+
 class RondeListCreateView(generics.ListCreateAPIView):
     queryset = Ronde.objects.all()
     serializer_class = RondeSerializer
+
+
+class RondeRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+    serializer_class = RondeSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['pk']
+        return Ronde.objects.filter(id=id)
