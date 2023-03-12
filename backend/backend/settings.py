@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'trashcontainers',
     'pickupdays',
     'ronde',
-    'planning'
+    # 'planning' TODO Fix bug
 ]
 
 MIDDLEWARE = [
