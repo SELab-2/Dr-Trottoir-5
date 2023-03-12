@@ -4,6 +4,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from .permissions import AdminPermission, SuperstudentPermission
 
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer
 
@@ -29,7 +30,7 @@ def registration_view(request):
         return Response(data)
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([AdminPermission|SuperstudentPermission])
 def role_assignment_view(request):
     if request.method == "POST":
         serializer = RoleAssignmentSerializer(data=request.data)
@@ -39,10 +40,10 @@ def role_assignment_view(request):
             if not user:
                 return ValueError()
 
-            #group = Group.objects.get(name=request.data['group'])
-            #user.groups.add(group)
+            group, created = Group.objects.get_or_create(name=request.data['group'])
+            user.groups.add(group)
 
-            data = {'message': f'rol is succesvol toegevoegd aan {user.email}'}
+            data = {'message': f'{group.name} rol is succesvol toegevoegd aan {user.email}'}
         else:
             data = serializer.errors
         return Response(data)

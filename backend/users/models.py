@@ -19,14 +19,16 @@ class RoleAssignment(models.Model):
         """
               All the roles users can have.
         """
-        ADMIN = "AD", "Admin"
-        SUPERSTUDENT = "SU", "Superstudent"
-        SYNDICUS = "SY", "Syndicus"
-        BEWONER = "BE", "Bewoner"
+        ADMIN = "Admin", "Admin"
+        SUPERSTUDENT = "Superstudent", "Superstudent"
+        STUDENT = "Student", "Student"
+        SYNDICUS = "Syndicus", "Syndicus"
+        BEWONER = "Bewoner", "Bewoner"
+        AANVRAGER = "Aanvrager", "Aanvrager"
 
 
     group = models.CharField(
-        max_length=2,
+        max_length=15,
         choices=Roles.choices
     )
 
