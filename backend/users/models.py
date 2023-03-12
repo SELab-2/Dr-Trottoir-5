@@ -12,6 +12,23 @@ class Registration(models.Model):
     name = models.TextField()
     password = models.CharField(max_length=30, default=None)
 
+class RoleAssignment(models.Model):
+
+    email = models.EmailField(unique=True)
+    class Roles(models.TextChoices):
+        """
+              All the roles users can have.
+        """
+        ADMIN = "AD", "Admin"
+        SUPERSTUDENT = "SU", "Superstudent"
+        SYNDICUS = "SY", "Syndicus"
+        BEWONER = "BE", "Bewoner"
+
+
+    group = models.CharField(
+        max_length=2,
+        choices=Roles.choices
+    )
 
 
 class CustomUserManager(BaseUserManager):
@@ -30,6 +47,12 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     email = models.EmailField(verbose_name='email', unique=True)
     name = models.TextField()
+
+    def is_superstudent(self):
+        return self.groups.filter(name='Superstudent').exists()
+
+    def is_admin(self):
+        return self.groups.filter(name='Admin').exists()
 
     objects = CustomUserManager()
 
