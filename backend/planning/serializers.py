@@ -29,6 +29,14 @@ class BuildingPictureSerializer(serializers.ModelSerializer):
             "remark"
         ]
 
+    def create(self, validated_data):
+        image = validated_data["image"]
+        info = validated_data['info']
+        remark = validated_data['remark']
+        buildingPicture = BuildingPicture(image=image, info=info, remark=remark)
+        buildingPicture.save()
+        return buildingPicture
+
 
 class InfoPerBuildingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,6 +49,17 @@ class InfoPerBuildingSerializer(serializers.ModelSerializer):
             "remark"
         ]
 
+    def create(self, validated_data):
+        arrival = validated_data['arrival']
+        storage = validated_data['storage']
+        departure = validated_data['departure']
+        extra = validated_data['extra']
+        remark = validated_data[remark]
+        infoPerBuilding = InfoPerBuilding(arrival=arrival, storage=storage, departure=departure, extra=extra,
+                                          remark=remark)
+        infoPerBuilding.save()
+        return infoPerBuilding
+
 
 class WeekPlanningSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,3 +69,11 @@ class WeekPlanningSerializer(serializers.ModelSerializer):
             "year",
             "dagplanningen"
         ]
+
+    def create(self, validated_data):
+        week = validated_data['week']
+        year = validated_data['year']
+        dagplanning = validated_data['dagplanningen']
+        weekPlanning = WeekPlanning(week=week, year=year, dagplanning=dagplanning)
+        weekPlanning.save()
+        return weekPlanning
