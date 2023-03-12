@@ -58,7 +58,7 @@ class InfoPerBuilding(models.Model):
 
 class DagPlanning(models.Model):
     """
-    The planning for 1 student for 1 day
+    The dagplanning for 1 student for 1 day
 
     Attributes
     ----------
@@ -91,10 +91,10 @@ class WeekPlanning(models.Model):
     Attributes
     ----------
     week : models.IntegerField
-        The week of the year for this planning
+        The week of the year for this dagplanning
 
     year : models.IntegerField
-        The year of this planning
+        The year of this dagplanning
 
     dagPlanningen : models.ForeignKey
         All the DayPlannings for this week

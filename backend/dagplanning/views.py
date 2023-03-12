@@ -40,6 +40,19 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
 
+    def post(self, request, *args, **kwargs):
+        errorList = []
+        for i in ["arrival", "storage", "departure", "extra"]:
+            try:
+                BuildingPicture.objects.get(pk=request.data[i])
+            except BuildingPicture.DoesNotExist:
+                errorList.append({
+                    "message": "key not in database", "field": i
+                })
+        if len(errorList) > 0:
+            raise serializers.ValidationError({"errors": errorList})
+        return super().post(request, args, kwargs)
+
 
 class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BuildingPicture.objects.all()
