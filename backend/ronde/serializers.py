@@ -1,4 +1,5 @@
 from rest_framework import serializers, status
+from django.db import IntegrityError
 
 from .models import LocatieEnum, Manual, Building, Ronde
 
@@ -25,6 +26,17 @@ class ManaulSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = '__all__'
+
+    def create(self, validated_data):
+        try:
+            manual, _ = Manual.objects.get_or_create(
+                file=validated_data["file"],
+                fileType=validated_data['fileType'],
+                manualStatus=validated_data['manualStatus']
+            )
+            return manual
+        except IntegrityError as e:
+            raise serializers.ValidationError({"errors": str(e)})
 
 
 class BuildingSerializer(serializers.ModelSerializer):
