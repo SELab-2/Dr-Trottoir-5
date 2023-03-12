@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'trashcontainers',
     'pickupdays'
+    'ronde',
+    'planning'
 ]
 
 MIDDLEWARE = [
@@ -60,8 +62,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,6 +122,10 @@ TIME_ZONE = 'Europe/Brussels'
 USE_I18N = True  # TODO CHANGE TO FALSE?
 
 USE_TZ = True
+
+# Media files for storing manuals
+
+MEDIA_URL = 'data/'
 
 
 # Static files (CSS, JavaScript, Images)
