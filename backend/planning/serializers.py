@@ -9,7 +9,8 @@ class DagPlanningSerializer(serializers.ModelSerializer):
             "student",
             "date",
             "ronde",
-            "weekPlanning"
+            "weekPlanning",
+            "pk"
         ]
 
     def create(self, validated_data):
@@ -51,7 +52,8 @@ class InfoPerBuildingSerializer(serializers.ModelSerializer):
         model = InfoPerBuilding
         fields = [
             "remark",
-            "dagPlanning"
+            "dagPlanning",
+            "pk"
         ]
 
     def create(self, validated_data):
@@ -68,6 +70,7 @@ class WeekPlanningSerializer(serializers.ModelSerializer):
         fields = [
             "week",
             "year",
+            "pk"
         ]
 
     def create(self, validated_data):
