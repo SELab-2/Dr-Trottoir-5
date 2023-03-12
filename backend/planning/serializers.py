@@ -14,10 +14,10 @@ class DagPlanningSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         date = validated_data['date']
-        student = validated_data['student']
-        ronde = validated_data['ronde']
-        weekplanning = validated_data["weekplanning"]
-        dagplanning = DagPlanning(student=student, date=date, ronde=ronde, weekPlanning=weekplanning)
+        # student = validated_data['student']
+        # ronde = validated_data['ronde']
+        weekplanning = validated_data["weekPlanning"]
+        dagplanning = DagPlanning( date=date, weekPlanning=weekplanning)
         dagplanning.save()
         return dagplanning
 
@@ -30,7 +30,7 @@ class BuildingPictureSerializer(serializers.ModelSerializer):
             "image",
             "time",
             "remark",
-            "infoPerBuiding",
+            "infoPerBuilding",
             "pk"
         ]
 

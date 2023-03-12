@@ -16,18 +16,18 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
 
-        try:
-            InfoPerBuilding.objects.get(pk=request.data["info"])
-        except InfoPerBuilding.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "you shall not pass", "field": "info"
-                        }
-                    ]
-                }
-                , code='invalid')
+        # try:
+        #     InfoPerBuilding.objects.get(pk=request.data["info"])
+        # except InfoPerBuilding.DoesNotExist:
+        #     raise serializers.ValidationError(
+        #         {
+        #             "errors": [
+        #                 {
+        #                     "message": "you shall not pass", "field": "info"
+        #                 }
+        #             ]
+        #         }
+        #         , code='invalid')
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
@@ -51,17 +51,17 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     serializer_class = InfoPerBuildingSerializer
 
     def post(self, request, *args, **kwargs):
-        errorList = []
-        for i in ["arrival", "storage", "departure", "extra"]:
-            print(request.data[i])
-            try:
-                BuildingPicture.objects.get(pk=request.data[i])
-            except BuildingPicture.DoesNotExist:
-                errorList.append({
-                    "message": "key not in database", "field": i
-                })
-        if len(errorList) > 0:
-            raise serializers.ValidationError({"errors": errorList})
+        # errorList = []
+        # for i in ["arrival", "storage", "departure", "extra"]:
+        #     print(request.data[i])
+        #     try:
+        #         BuildingPicture.objects.get(pk=request.data[i])
+        #     except BuildingPicture.DoesNotExist:
+        #         errorList.append({
+        #             "message": "key not in database", "field": i
+        #         })
+        # if len(errorList) > 0:
+        #     raise serializers.ValidationError({"errors": errorList})
         return super().post(request, args, kwargs)
 
 
