@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'trashcontainers',
+    'pickupdays',
     'ronde',
-    #    'planning'
+    'planning'
 ]
 
 MIDDLEWARE = [
