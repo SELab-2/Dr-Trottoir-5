@@ -16,18 +16,18 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
 
-        # try:
-        #     InfoPerBuilding.objects.get(pk=request.data["info"])
-        # except InfoPerBuilding.DoesNotExist:
-        #     raise serializers.ValidationError(
-        #         {
-        #             "errors": [
-        #                 {
-        #                     "message": "you shall not pass", "field": "info"
-        #                 }
-        #             ]
-        #         }
-        #         , code='invalid')
+        try:
+            WeekPlanning.objects.get(pk=request.data["weekPlanning"])
+        except WeekPlanning.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced pk not in db", "field": "weekPlanning"
+                        }
+                    ]
+                }
+                , code='invalid')
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
@@ -40,6 +40,23 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
 
+    def post(self, request, *args, **kwargs):
+        try:
+            InfoPerBuilding.objects.get(pk=request.data["infoPerBuilding"])
+        except InfoPerBuilding.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced pk not in db", "field": "infoPerBuilding"
+                        }
+                    ]
+                }
+                , code='invalid')
+        return super().post(request=request, args=args, kwargs=kwargs)
+
+
+
 
 class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BuildingPicture.objects.all()
@@ -51,18 +68,19 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     serializer_class = InfoPerBuildingSerializer
 
     def post(self, request, *args, **kwargs):
-        # errorList = []
-        # for i in ["arrival", "storage", "departure", "extra"]:
-        #     print(request.data[i])
-        #     try:
-        #         BuildingPicture.objects.get(pk=request.data[i])
-        #     except BuildingPicture.DoesNotExist:
-        #         errorList.append({
-        #             "message": "key not in database", "field": i
-        #         })
-        # if len(errorList) > 0:
-        #     raise serializers.ValidationError({"errors": errorList})
-        return super().post(request, args, kwargs)
+        try:
+            DagPlanning.objects.get(pk=request.data["dagPlanning"])
+        except DagPlanning.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced pk not in db", "field": "dagPlanning"
+                        }
+                    ]
+                }
+                , code='invalid')
+        return super().post(request=request, args=args, kwargs=kwargs)
 
 
 class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -78,19 +96,3 @@ class WeekPlanningCLAPIView(generics.ListCreateAPIView):
 class WeekPlanningRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = WeekPlanning.objects.all()
     serializer_class = WeekPlanningSerializer
-
-    def post(self, request, *args, **kwargs):
-
-        try:
-            DagPlanning.objects.get(pk=request.data["dagPlanningen"])
-        except DagPlanning.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "you shall not pass", "field": "dagPlanningen"
-                        }
-                    ]
-                }
-                , code='invalid')
-        return super().post(request=request, args=args, kwargs=kwargs)
