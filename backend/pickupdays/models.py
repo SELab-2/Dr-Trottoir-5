@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class PickUpDay(models.Model):
     """
         The pickup day and hours for a TrashContainer.

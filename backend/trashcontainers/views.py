@@ -8,7 +8,7 @@ class TrashContainerListCreateView(generics.ListCreateAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
 
+
 class TrashContainerRetrieveView(generics.RetrieveAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
-

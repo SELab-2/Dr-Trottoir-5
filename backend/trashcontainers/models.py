@@ -2,6 +2,7 @@ from django.db import models
 
 from pickupdays.models import PickUpDay
 
+
 class TrashContainer(models.Model):
     """
         Trash Container database model.
@@ -33,7 +34,6 @@ class TrashContainer(models.Model):
         PK = "PK", "PK"
         GLAS = "GL", "GLAS"
         GFT = "GF", "GFT"
-
 
     type = models.CharField(
         max_length=2,

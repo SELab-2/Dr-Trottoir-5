@@ -3,8 +3,11 @@ from rest_framework import serializers
 from .models import TrashContainer
 from pickupdays.serializers import PickUpSerializer
 
+
 class TrashContainerSerializer(serializers.ModelSerializer):
+
     collection_days_detail = PickUpSerializer(source='collection_days', many=True, read_only=True)
+
     class Meta:
         model = TrashContainer
         fields = ['type', 'collection_days', 'collection_days_detail', 'special_actions']
@@ -26,5 +29,3 @@ class TrashContainerSerializer(serializers.ModelSerializer):
                     return option
 
         return super().create(validated_data)
-
-
