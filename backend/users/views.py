@@ -2,9 +2,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .permissions import AdminPermission, SuperstudentPermission
-
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer
 
 
@@ -17,12 +17,12 @@ def registration_view(request):
         if serializer.is_valid():
             user = get_user_model().objects.create_user(
                 request.data['email'],
-                request.data['name'],
+                request.data['first_name'],
+                request.data['last_name'],
                 request.data['password']
             )
-            data['user'] = user.id
             data['email'] = request.data['email']
-            data['name'] = request.data['name']
+            data['name'] = request.data['first_name'] + " " + request.data['last_name']
             data['token'] = Token.objects.get(user=user).key
         else:
             data = serializer.errors
@@ -32,16 +32,35 @@ def registration_view(request):
 @permission_classes([AdminPermission|SuperstudentPermission])
 def role_assignment_view(request):
     if request.method == "POST":
+
         serializer = RoleAssignmentSerializer(data=request.data)
         if serializer.is_valid():
+
+            if request.user.role == 'SU' and request.data['role'] == 'AD':
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "Superstudent can't make someone Admin", "field": "role"
+                            }
+                        ]
+                    }, code='not allowed')
+
             user = get_user_model().objects.get(email=request.data['email'])
 
             if not user:
-                return ValueError()
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "user does not exist", "field": "email"
+                            }
+                        ]
+                    }, code='invalid')
 
             user.role = request.data['role']
             user.save()
-            data = {'message': f'{user.email} is nu een {request.data.group}'}
+            data = {'message': f'{user.email} is nu een {user.get_role_display()}'}
         else:
             data = serializer.errors
         return Response(data)

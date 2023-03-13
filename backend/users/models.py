@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from rest_framework import serializers
 
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -9,7 +10,8 @@ from rest_framework.authtoken.models import Token
 
 class Registration(models.Model):
     email = models.EmailField(unique=True)
-    name = models.TextField()
+    first_name = models.TextField(default="")
+    last_name = models.TextField(default="")
     password = models.CharField(max_length=30, default=None)
 
 class Roles(models.TextChoices):
@@ -29,18 +31,27 @@ class RoleAssignment(models.Model):
 
     role = models.CharField(
         max_length=2,
-        choices=Roles.choices
+        choices=Roles.choices,
+        default="AA"
     )
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, name, password):
+    def create_user(self, email, first_name, last_name, password):
         if not email:
-            raise ValueError()
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "email is required", "field": "email"
+                        }
+                    ]
+                }, code='invalid')
 
         user = self.model(
             email=self.normalize_email(email),
-            username=name
+            first_name=first_name,
+            last_name=last_name
         )
         user.set_password(password)
         user.save()
@@ -48,7 +59,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(verbose_name='email', unique=True, primary_key=True)
-    name = models.TextField()
+    first_name = models.TextField()
+    last_name = models.TextField()
 
     role = models.CharField(
         max_length=2,
