@@ -7,7 +7,8 @@ from .serializers import TrashContainerSerializer
 class TrashContainerListCreateView(generics.ListCreateAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
-    permission_classes = [ReadOnly|AdminPermission|SuperstudentPermission]
+    permission_classes = [ReadOnly | AdminPermission | SuperstudentPermission]
+
 
 class TrashContainerRetrieveView(generics.RetrieveAPIView):
     queryset = TrashContainer.objects.all()

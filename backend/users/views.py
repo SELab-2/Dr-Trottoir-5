@@ -2,10 +2,17 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
-from rest_framework import serializers
+from rest_framework import serializers, generics
+
 from django.contrib.auth import get_user_model
 from .permissions import AdminPermission, SuperstudentPermission
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer
+from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
+
+
+class UserListAPIView(generics.ListAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AdminPermission | SuperstudentPermission]
 
 
 @api_view(['POST'])
@@ -28,8 +35,9 @@ def registration_view(request):
             data = serializer.errors
         return Response(data)
 
+
 @api_view(['POST'])
-@permission_classes([AdminPermission|SuperstudentPermission])
+@permission_classes([AdminPermission | SuperstudentPermission])
 def role_assignment_view(request):
     if request.method == "POST":
 
