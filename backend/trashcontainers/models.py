@@ -1,7 +1,7 @@
 from django.db import models
 
 from pickupdays.models import PickUpDay
-
+from ronde.models import Building
 
 class TrashContainer(models.Model):
     """
@@ -46,3 +46,5 @@ class TrashContainer(models.Model):
     special_actions = models.TextField(
         default=""
     )
+
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
