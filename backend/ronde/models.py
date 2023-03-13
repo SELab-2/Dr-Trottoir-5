@@ -1,6 +1,6 @@
 from django.db import models
 from trashcontainers.models import TrashContainer
-
+import uuid
 
 class User(models.Model):
     """
@@ -89,6 +89,7 @@ class Building(models.Model):
         LocatieEnum,
         on_delete=models.DO_NOTHING
     )
+    buildingID = models.UUIDField(default=uuid.uuid4, editable=False)
 
 
 class Ronde(models.Model):
