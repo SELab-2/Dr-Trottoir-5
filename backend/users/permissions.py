@@ -6,7 +6,7 @@ class AdminPermission(permissions.BasePermission):
         user = request.user
         if not user:
             return False
-        return user.groups.filter(name='Admin').exists()
+        return user.role == 'AD'
 
 
 class SuperstudentPermission(permissions.BasePermission):
@@ -15,7 +15,7 @@ class SuperstudentPermission(permissions.BasePermission):
         user = request.user
         if not user:
             return False
-        return user.groups.filter(name='Superstudent').exists()
+        return user.role == 'SU'
 
 
 class StudentPermission(permissions.BasePermission):
@@ -24,7 +24,7 @@ class StudentPermission(permissions.BasePermission):
         user = request.user
         if not user:
             return False
-        return user.groups.filter(name='Student').exists()
+        return user.role == 'ST'
 
 
 class SyndicusPermission(permissions.BasePermission):
@@ -33,7 +33,7 @@ class SyndicusPermission(permissions.BasePermission):
         user = request.user
         if not user:
             return False
-        return user.groups.filter(name='Syndicus').exists()
+        return user.role == 'SY'
 
 
 class BewonerPermission(permissions.BasePermission):
@@ -42,7 +42,7 @@ class BewonerPermission(permissions.BasePermission):
         user = request.user
         if not user:
             return False
-        return user.groups.filter(name='Bewoner').exists()
+        return user.role == 'BE'
 
 
 class AanvragerPermission(permissions.BasePermission):
@@ -51,5 +51,5 @@ class AanvragerPermission(permissions.BasePermission):
         user = request.user
         if not user:
             return False
-        return user.groups.filter(name='Aanvrager').exists()
+        return user.role == 'AA'
 

@@ -18,10 +18,10 @@ from rest_framework import routers, serializers, viewsets
 from django.contrib.auth import get_user_model
 
 # Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ['url', 'username', 'email', 'is_staff']
+        fields = '__all__'
 
 
 # ViewSets define the view behavior.
@@ -39,7 +39,7 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('auth/', include('users.urls')),
+    path('user/', include('users.urls')),
     path('api/containers/', include('trashcontainers.urls')),
     path('api/pickupdays/', include('pickupdays.urls'))
 ]

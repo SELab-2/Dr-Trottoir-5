@@ -12,23 +12,23 @@ class Registration(models.Model):
     name = models.TextField()
     password = models.CharField(max_length=30, default=None)
 
+class Roles(models.TextChoices):
+    """
+          All the roles users can have.
+    """
+    ADMIN = "AD", "Admin"
+    SUPERSTUDENT = "SU", "Superstudent"
+    STUDENT = "ST", "Student"
+    SYNDICUS = "SY", "Syndicus"
+    BEWONER = "BE", "Bewoner"
+    AANVRAGER = "AA", "Aanvrager"
+
 class RoleAssignment(models.Model):
 
     email = models.EmailField(unique=True)
-    class Roles(models.TextChoices):
-        """
-              All the roles users can have.
-        """
-        ADMIN = "Admin", "Admin"
-        SUPERSTUDENT = "Superstudent", "Superstudent"
-        STUDENT = "Student", "Student"
-        SYNDICUS = "Syndicus", "Syndicus"
-        BEWONER = "Bewoner", "Bewoner"
-        AANVRAGER = "Aanvrager", "Aanvrager"
 
-
-    group = models.CharField(
-        max_length=15,
+    role = models.CharField(
+        max_length=2,
         choices=Roles.choices
     )
 
@@ -47,15 +47,14 @@ class CustomUserManager(BaseUserManager):
         return user
 
 class User(AbstractUser):
-    email = models.EmailField(verbose_name='email', unique=True)
+    email = models.EmailField(verbose_name='email', unique=True, primary_key=True)
     name = models.TextField()
 
-    def is_superstudent(self):
-        return self.groups.filter(name='Superstudent').exists()
-
-    def is_admin(self):
-        return self.groups.filter(name='Admin').exists()
-
+    role = models.CharField(
+        max_length=2,
+        choices=Roles.choices,
+        default='AA'
+    )
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"

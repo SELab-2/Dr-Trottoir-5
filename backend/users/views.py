@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from .permissions import AdminPermission, SuperstudentPermission
 
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer
@@ -40,10 +39,9 @@ def role_assignment_view(request):
             if not user:
                 return ValueError()
 
-            group, created = Group.objects.get_or_create(name=request.data['group'])
-            user.groups.add(group)
-
-            data = {'message': f'{group.name} rol is succesvol toegevoegd aan {user.email}'}
+            user.role = request.data['role']
+            user.save()
+            data = {'message': f'{user.email} is nu een {request.data.group}'}
         else:
             data = serializer.errors
         return Response(data)
