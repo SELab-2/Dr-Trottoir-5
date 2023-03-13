@@ -41,7 +41,7 @@ class DagPlanning(models.Model):
         All the info from the student about all the buildings
 
     """
-    student = None  # models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
+    student = None  # TODO # models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
 
     date = models.DateField()
 
