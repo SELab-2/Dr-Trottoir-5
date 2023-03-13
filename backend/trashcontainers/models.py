@@ -25,6 +25,7 @@ class TrashContainer(models.Model):
         end_hour: models.TimeField
             The time when they stop collecting the trash container
        """
+
     class TrashType(models.TextChoices):
         """
             Enum for the types of trash.
