@@ -4,6 +4,7 @@ on: [push]
 jobs:
   Backend-linter-and-tests:
     runs-on: self-hosted
+    environment: django tests
     strategy:
       max-parallel: 4
       matrix:
@@ -21,8 +22,15 @@ jobs:
           pip install -r requirements.txt
           pip install flake8
         working-directory: ./backend
+      - name: Create env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > ./backend/.env
+        working-directory: ./backend
       - name: Run Tests
         run: |
+          python manage.py test
+        working-directory: ./backend
+      - name: Run Linter
+        run: |
           flake8 --max-line-length 120 .
-          #python manage.py test
         working-directory: ./backend

@@ -41,4 +41,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/planning/', include('planning.urls'))
+    path('api/containers/', include('trashcontainers.urls')),
+    path('api/pickupdays/', include('pickupdays.urls'))
 ]
