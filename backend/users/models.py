@@ -89,7 +89,7 @@ class User(AbstractUser):
         TODO building (ManyToMany)field for Bewoners/Syndicus to know which buildings they're related to
     """
 
-    email = models.EmailField(verbose_name='email', unique=True, primary_key=True)
+    email = models.EmailField(verbose_name='email', unique=True)
     first_name = models.TextField()
     last_name = models.TextField()
 
