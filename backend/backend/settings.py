@@ -31,7 +31,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['sel2-5.ugent.be', '157.193.244.115', 'localhost']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -79,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -93,7 +91,6 @@ DATABASES = {
         'PORT': env("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -113,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -125,10 +121,11 @@ USE_I18N = True  # TODO CHANGE TO FALSE?
 
 USE_TZ = True
 
-# Media files for storing manuals
+# Actual directory user files go to
+MEDIA_ROOT = '/var/www/html/media'
 
-MEDIA_URL = 'data/'
-
+# URL used to access the media
+MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
