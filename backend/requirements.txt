@@ -5,3 +5,4 @@ django-filter
 django-environ
 postgres
 psycopg2
+Pillow
