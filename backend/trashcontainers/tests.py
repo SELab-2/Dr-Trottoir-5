@@ -1,40 +1,30 @@
-from django.test import TestCase
-from rest_framework import serializers
-from .serializers import TrashContainerSerializer
-from .models import Weekday
+from rest_framework.test import APITestCase, APIRequestFactory
+from .views import TrashContainerListCreateView
+from pickupdays.views import PickUpListCreateView
 
 
-class TrashContainerTestCase(TestCase):
+class TrashContainerTestCase(APITestCase):
     """
         Test if the trashcontainer model behaves as intended
     """
 
     def setUp(self):
-        monday = Weekday.objects.create(weekday='MO').pk
-        self.serializer_data_empty_collection_days = {
-            "type": "PM",
-            "collection_days": [],
-            "start_hour": "11:00",
-            "end_hour": "12:00"
-        }
-        self.serializer_data = {
-            "type": "PM",
-            "collection_days": [monday],
-            "start_hour": "13:00",
-            "end_hour": "12:00"
-        }
+        self.pickupdayData = {"day": "MO", "start_hour": "12:00", "end_hour": "13:00"}
+        self.containerData = {"type": "PM", "collection_days": []}
 
-    def test_empty_collection_days(self):
+    def testAddContainer(self):
         """
-            Serializer should not be valid if collection_days is empty
+            Test if we can add a trash container
         """
-        with self.assertRaisesMessage(serializers.ValidationError, "This list may not be empty."):
-            TrashContainerSerializer(data=self.serializer_data_empty_collection_days).is_valid(raise_exception=True)
+        factory = APIRequestFactory()
+        pickup_request = factory.post("/api/pickupday/", self.pickupdayData)
+        pickup_response = PickUpListCreateView.as_view()(pickup_request).data
 
-    def test_start_hour(self):
-        """
-            Make sure we can't create a trashcontainer object where the starting hour
-            is greater than the ending hour
-        """
-        with self.assertRaisesMessage(serializers.ValidationError, "Start hour should not be later than end hour"):
-            TrashContainerSerializer(data=self.serializer_data).is_valid(raise_exception=True)
+        self.containerData["collection_days"].append(pickup_response["id"])
+        request = factory.post("/api/containers/", self.containerData)
+        response = TrashContainerListCreateView.as_view()(request).data
+        days = response["collection_days_detail"]
+        self.assertEqual(response["type"], "PM")
+        self.assertEqual(len(days), 1)
+        self.assertEqual(days[0]["start_hour"], "12:00:00")
+        self.assertEqual(days[0]["end_hour"], "13:00:00")

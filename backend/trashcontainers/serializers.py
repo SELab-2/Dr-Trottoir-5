@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .models import TrashContainer
 from pickupdays.serializers import PickUpSerializer
 
@@ -18,7 +17,7 @@ class TrashContainerSerializer(serializers.ModelSerializer):
         """
         options = TrashContainer.objects.filter(
             type=validated_data['type'],
-            special_actions=validated_data["special_actions"]
+            special_actions=validated_data.get("special_actions", "")
         )
 
         validated_data['collection_days'].sort()
@@ -29,8 +28,3 @@ class TrashContainerSerializer(serializers.ModelSerializer):
                     return option
 
         return super().create(validated_data)
-
-    def validate(self, data):
-        if data['start_hour'] > data['end_hour']:
-            raise serializers.ValidationError({'start_hour': 'Eindtijd mag niet eerder dan starttijd zijn'})
-        return data
