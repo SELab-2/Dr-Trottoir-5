@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,8 +29,7 @@ SECRET_KEY = 'django-insecure-mz0gymvj@n5wl2p0yau(vj0e3jdx_wok78+ead*=p4)$w)g5(z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['sel2-5.ugent.be', '157.193.244.115', 'localhost']
 
 # Application definition
 
@@ -79,7 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -93,7 +92,6 @@ DATABASES = {
         'PORT': env("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -113,7 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -125,10 +122,11 @@ USE_I18N = True  # TODO CHANGE TO FALSE?
 
 USE_TZ = True
 
-# Media files for storing manuals
+# Actual directory user files go to
+MEDIA_ROOT = '/var/www/html/media'
 
-MEDIA_URL = 'data/'
-
+# URL used to access the media
+MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -148,3 +146,5 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+STATIC_ROOT = '/var/www/html/static'

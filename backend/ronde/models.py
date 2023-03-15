@@ -44,7 +44,11 @@ class Manual(models.Model):
                 The status of the manual for a building.
     """
 
-    file = models.FileField(upload_to='manuals/')
+    #    Method for creating upload path
+    def upload_to(self, filename):
+        return f'manuals/{filename}'
+
+    file = models.FileField(upload_to=upload_to)
     fileType = models.TextField()
     manualStatus = models.TextField(choices=ManualStatusField.choices)
 
