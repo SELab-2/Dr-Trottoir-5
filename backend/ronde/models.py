@@ -1,6 +1,5 @@
 from django.db import models
-from trashcontainers.models import TrashContainer
-
+import uuid
 
 class User(models.Model):
     """
@@ -73,6 +72,8 @@ class Building(models.Model):
                 The trash containers a building has.
             locatie : LocatieEnum
                 The location of a building.
+            buildingID: UUID
+                unique identifier of a building to add people
     """
     adres = models.TextField()
     syndicus = models.ForeignKey(
@@ -85,14 +86,13 @@ class Building(models.Model):
         Manual,
         on_delete=models.CASCADE
     )
-    containers = models.ForeignKey(
-        TrashContainer,
-        on_delete=models.DO_NOTHING
-    )
     location = models.ForeignKey(
         LocatieEnum,
         on_delete=models.DO_NOTHING
     )
+
+    # default uuid.uuid4 is callable en genereerd uuid
+    buildingID = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
 
 class Ronde(models.Model):

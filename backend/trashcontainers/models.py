@@ -1,7 +1,7 @@
 from django.db import models
 
 from pickupdays.models import PickUpDay
-
+from ronde.models import Building
 
 class TrashContainer(models.Model):
     """
@@ -19,11 +19,8 @@ class TrashContainer(models.Model):
         special_actions : models.TextField
             The possible special actions that need to be taken
 
-        start_hour : models.TimeField
-            The time when they start collecting the trash container
-
-        end_hour: models.TimeField
-            The time when they stop collecting the trash container
+        building: building
+            building of which it is a trashcontainer
        """
 
     class TrashType(models.TextChoices):
@@ -46,3 +43,5 @@ class TrashContainer(models.Model):
     special_actions = models.TextField(
         default=""
     )
+
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
