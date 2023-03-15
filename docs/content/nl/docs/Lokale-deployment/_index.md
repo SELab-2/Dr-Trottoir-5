@@ -11,6 +11,5 @@ description: >
 Dit is de documentatie over hoe je de lokale deployment doet. Voor de server deployment zie [Server deployment]({{< relref "/docs/server-deployment" >}})
 {{% /pageinfo %}}
 
-Do you have any example **applications** or **code** for your users in your repo or elsewhere? Link to your examples here.
-
+Deze documentatie toont hoe dit project op een lokale machine gedraaid kan worden.
 
