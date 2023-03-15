@@ -177,7 +177,7 @@ func main() {
 ```
 
 ```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
+Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this. It was not long enough so I am adding some extra text to really demonstrate this feature.
 ```
 
 Inline code inside table cells should still be distinguishable.

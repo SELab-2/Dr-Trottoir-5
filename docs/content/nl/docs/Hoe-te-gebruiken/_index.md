@@ -1,6 +1,6 @@
 ---
-categories: ["Examples", "Placeholders"]
-tags: ["test","docs"] 
+categories: ["App", "How to"]
+tags: ["UI", "UX", "docs"] 
 title: "Hoe te gebruiken"
 linkTitle: "Hoe te gebruiken"
 weight: 2
@@ -9,5 +9,5 @@ description: >
 ---
 
 {{% pageinfo %}}
-This is a placeholder page that shows you how to use this template site.
+Aangezien er momenteel nog geen frontend UI/UX is is deze documentatie nog leeg.
 {{% /pageinfo %}}
