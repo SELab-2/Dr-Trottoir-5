@@ -8,9 +8,9 @@ description: >
 ---
 
 {{% pageinfo %}}
-Dit is de documentatie over hoe je de server deployment doet. Voor de lokale deployment zie [Server deployment]({{< relref "/docs/server-deployment" >}})
+Dit is de documentatie over hoe je de server deployment doet. Voor de lokale deployment zie [Lokale deployment]({{< relref "/docs/lokale-deployment" >}})
 {{% /pageinfo %}}
 
-Do you have any example **applications** or **code** for your users in your repo or elsewhere? Link to your examples here.
+Deze documentatie toont hoe dit project op een ubuntu server gedeployed kan worden.
 
 
