@@ -26,7 +26,7 @@ class CreateTest(APITestCase):
         response = WeekPlanningCLAPIView.as_view()(request).data
         self.assertEqual(response["week"], 12)
         self.assertEqual(response["year"], 2023)
-        self.assertIsNotNone(response.get("pk"))
+        self.assertIsNotNone(response.get("id"))
 
     def testAddDagPlanning(self):
         factory = APIRequestFactory()
@@ -34,7 +34,8 @@ class CreateTest(APITestCase):
         response = DagPlanningCreateAndListAPIView.as_view()(request).data
         self.assertEqual(response["date"], "2023-03-31")
         self.assertEqual(response["weekPlanning"], self.wp.pk)
-        self.assertIsNotNone(response.get("pk"))
+        print(response)
+        self.assertIsNotNone(response.get("id"))
 
     def testAddInfoPerBuilding(self):
         factory = APIRequestFactory()
@@ -45,7 +46,7 @@ class CreateTest(APITestCase):
         response = InfoPerBuildingCLAPIView.as_view()(request).data
         self.assertEqual(response["remark"], "This is a test remark")
         self.assertEqual(response["dagPlanning"], self.dp.pk)
-        self.assertIsNotNone(response.get("pk"))
+        self.assertIsNotNone(response.get("id"))
 
     def testAddBuildingPicture(self):
         file = BytesIO()
@@ -68,3 +69,4 @@ class CreateTest(APITestCase):
         self.assertEqual(response["time"], "2002-03-27T22:33:00+01:00")
         self.assertEqual(response["remark"], "testRemark"),
         self.assertEqual(response["infoPerBuilding"], self.ipb.pk)
+        self.assertIsNotNone(response["id"])
