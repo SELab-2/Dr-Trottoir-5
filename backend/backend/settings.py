@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'trashcontainers',
     'pickupdays',
     'ronde',
-    'planning'
+    'planning',
+    'mailtemplates'
 ]
 
 MIDDLEWARE = [
