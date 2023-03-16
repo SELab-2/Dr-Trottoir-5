@@ -1,14 +1,14 @@
 from django.test import TestCase
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APIRequestFactory
-from .views import LocatieEnumListCreateView, LocatieEnumRetrieveDestroyView, RondeListCreateView
+from rest_framework.test import APIRequestFactory, force_authenticate
+from .views import LocatieEnumListCreateView, RondeListCreateView
 from .models import LocatieEnum, Ronde
+from users.models import User
 
 
 class TestApi(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create(role="SU")
         LocatieEnum.objects.create(name="Gent")
         Ronde.objects.create(name="TestRonde", location=LocatieEnum.objects.get(name="Gent"))
 
@@ -18,6 +18,7 @@ class TestApi(TestCase):
         """
         factory = APIRequestFactory()
         request = factory.post('/api/ronde/locatie/', {'name': 'Oostende'})
+        force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
         self.assertEqual(response["succes"]["id"], 2)
         self.assertEqual(response["succes"]["name"], "Oostende")

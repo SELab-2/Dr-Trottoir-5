@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 
+
 class User(models.Model):
     """
         TODO

@@ -2,6 +2,7 @@ from django.db import models
 from pickupdays.models import PickUpDay
 from ronde.models import Building
 
+
 class TrashContainer(models.Model):
     """
         Trash Container database model.
