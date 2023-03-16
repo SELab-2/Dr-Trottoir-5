@@ -15,10 +15,15 @@ Including another URLconf
 """
 from django.urls import path, include
 
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('api/', include('users.urls')),
+    path('api/planning/', include('planning.urls')),
     path('api/containers/', include('trashcontainers.urls')),
-    path('api/pickupdays/', include('pickupdays.urls'))
-]
+    path('api/pickupdays/', include('pickupdays.urls')),
+    path('api/mailtemplates', include('mailtemplates.urls')),
+    path('api/ronde/', include('ronde.urls'))
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
