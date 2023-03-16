@@ -6,7 +6,8 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
-
+import random
+import string
 
 class Registration(models.Model):
     """
@@ -84,6 +85,9 @@ class User(AbstractUser):
         role: models.CharField
             The role of the user e.g. Admin, Student,...
 
+        otp: models.CharFIeld
+            A one time password that is used when a user forgets his password.
+
         TODO location (ManyToMany)field for Students to know at which location they work
 
         TODO building (ManyToMany)field for Bewoners/Syndicus to know which buildings they're related to
@@ -98,10 +102,23 @@ class User(AbstractUser):
         choices=Roles.choices,
         default='AA'
     )
+
+    otp = models.CharField(
+        max_length=25,
+        default = ""
+    )
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+    def save(self, *args, **kwargs):
+        """
+            Create new otp when user is saved
+        """
+        self.otp = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(25))
+        super().save(*args, **kwargs)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
