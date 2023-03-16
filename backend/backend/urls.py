@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path, include
 from django.conf import settings
-from django.conf.urls.static import static
+from .views import MediaView
 
 
 # Wire up our API using automatic URL routing.
@@ -26,5 +26,6 @@ urlpatterns = [
     path('api/containers/', include('trashcontainers.urls')),
     path('api/pickupdays/', include('pickupdays.urls')),
     path('api/mailtemplates/', include('mailtemplates.urls')),
-    path('api/ronde/', include('ronde.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/ronde/', include('ronde.urls')),
+    path(f'{settings.MEDIA_URL[1:]}<path:path>/', MediaView.as_view())
+]
