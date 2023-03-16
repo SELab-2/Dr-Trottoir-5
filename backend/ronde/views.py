@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 from .models import LocatieEnum, Manual, Building, Ronde
 from .serializers import LocatieEnumSerializer, ManaulSerializer, BuildingSerializer, RondeSerializer
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
+from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):

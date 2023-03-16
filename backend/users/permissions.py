@@ -47,7 +47,7 @@ class StudentPicturePermission(permissions.BasePermission):
             return False
         try:
             info = InfoPerBuilding.objects.get(pk=request.data["infoPerBuilding"])
-            dag = DagPlanning.objects.get(pk=info.dagPlanning)
+            DagPlanning.objects.get(pk=info.dagPlanning)
             return False
         except InfoPerBuilding.DoesNotExist or DagPlanning.DoesNotExist:
             return False

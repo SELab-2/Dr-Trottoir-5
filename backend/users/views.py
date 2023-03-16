@@ -5,11 +5,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework import serializers, generics
 from django.core.mail import send_mail
 from django.conf import settings
-
 from django.contrib.auth import get_user_model
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
-
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -38,11 +36,13 @@ def registration_view(request):
             data = serializer.errors
         return Response(data)
 
+
 @api_view(["GET"])
 @permission_classes([ReadOnly])
 def logout_view(request):
     request.user.auth_token.delete()
     return Response('User Logged out successfully')
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -65,6 +65,7 @@ def forgot_password(request):
     else:
         return Response({'message': 'Dit email adres bestaat niet.'})
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def reset_password(request):
@@ -74,7 +75,7 @@ def reset_password(request):
     data = request.data
     try:
         user = get_user_model().objects.get(email=data['email'])
-    except:
+    except Exception:
         raise serializers.ValidationError(
             {"errors": [
                 {
@@ -86,23 +87,17 @@ def reset_password(request):
         if data['otp'] == user.otp:
             if data['new_password'] != '':
                 user.set_password(data['new_password'])
-                user.save() # Will automatically create new otp
+                user.save()  # Will automatically create new otp
                 return Response({'message': 'New password is created'})
             else:
                 raise serializers.ValidationError(
-                    {"errors": [
-                            {
-                                "message": "Password can't be empty", "field": "new_password"
-                            }
-                        ]
+                    {
+                        "errors": [{"message": "Password can't be empty", "field": "new_password"}]
                     }, code='invalid')
         else:
             raise serializers.ValidationError(
-                {"errors": [
-                        {
-                            "message": "OTP didn't match", "field": "otp"
-                        }
-                    ]
+                {
+                    "errors": [{"message": "OTP didn't match", "field": "otp"}]
                 }, code='invalid')
 
 
@@ -116,22 +111,16 @@ def role_assignment_view(request):
 
             if request.user.role == 'SU' and request.data['role'] == 'AD':
                 raise serializers.ValidationError(
-                    {"errors": [
-                            {
-                                "message": "Superstudent can't make someone Admin", "field": "role"
-                            }
-                        ]
+                    {
+                        "errors": [{"message": "Superstudent can't make someone Admin", "field": "role"}]
                     }, code='not allowed')
 
             user = get_user_model().objects.get(email=request.data['email'])
 
             if not user:
                 raise serializers.ValidationError(
-                    {"errors": [
-                            {
-                                "message": "user does not exist", "field": "email"
-                            }
-                        ]
+                    {
+                        "errors": [{"message": "user does not exist", "field": "email"}]
                     }, code='invalid')
 
             user.role = request.data['role']
