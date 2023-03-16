@@ -6,3 +6,4 @@ django-environ
 postgres
 psycopg2
 Pillow
+model_bakery

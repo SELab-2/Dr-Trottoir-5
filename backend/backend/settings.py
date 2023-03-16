@@ -131,7 +131,7 @@ USE_TZ = True
 MEDIA_ROOT = '/var/www/html/media'
 
 # URL used to access the media
-MEDIA_URL = '/media/'
+MEDIA_URL = '/api/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

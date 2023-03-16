@@ -3,14 +3,15 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 import os
 from django.conf import settings
-
 from .models import LocatieEnum, Manual, Building, Ronde
 from .serializers import LocatieEnumSerializer, ManaulSerializer, BuildingSerializer, RondeSerializer
+from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
     queryset = LocatieEnum.objects.all()
     serializer_class = LocatieEnumSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def create(self, request, *args, **kwargs):
         """
@@ -31,6 +32,7 @@ class LocatieEnumListCreateView(generics.ListCreateAPIView):
 
 class LocatieEnumRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = LocatieEnumSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
     """
         View that deletes and gets a specific Location
     """
@@ -44,6 +46,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
     queryset = Manual.objects.all()
     serializer_class = ManaulSerializer
     parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def create(self, request, *args, **kwargs):
         """
@@ -73,6 +76,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 class ManualRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = ManaulSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
     """
         View that deletes and gets a specific Location
     """
@@ -95,10 +99,12 @@ class ManualRetrieveDestroyView(generics.RetrieveDestroyAPIView):
 class BuildingListCreateView(generics.ListCreateAPIView):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
 
 class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = BuildingSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def get_queryset(self):
         id = self.kwargs['pk']
@@ -108,10 +114,12 @@ class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
 class RondeListCreateView(generics.ListCreateAPIView):
     queryset = Ronde.objects.all()
     serializer_class = RondeSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
 
 class RondeRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = RondeSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def get_queryset(self):
         id = self.kwargs['pk']
