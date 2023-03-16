@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 from django.contrib.auth import get_user_model
-from .permissions import AdminPermission, SuperstudentPermission
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
 
 
@@ -38,6 +38,11 @@ def registration_view(request):
             data = serializer.errors
         return Response(data)
 
+@api_view(["GET"])
+@permission_classes([ReadOnly])
+def logout_view(request):
+    request.user.auth_token.delete()
+    return Response('User Logged out successfully')
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
