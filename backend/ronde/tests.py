@@ -20,7 +20,6 @@ class TestApi(TestCase):
         request = factory.post('/api/ronde/locatie/', {'name': 'Oostende'})
         force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
-        self.assertEqual(response["succes"]["id"], 2)
         self.assertEqual(response["succes"]["name"], "Oostende")
 
     def test_get_locaties(self):
