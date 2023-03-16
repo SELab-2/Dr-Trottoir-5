@@ -27,7 +27,10 @@ DB_USER=your_db_user
 DB_PASSWORD=your_password
 DB_HOST=localhost
 DB_PORT=5432
+EMAIL=email@gmail.com
+EMAIL_PASSWORD=my_app_password
 ```
+Hierin moeten dus ook het Gmail adres en het  [app-wachtwoord](https://support.google.com/mail/answer/185833?hl=nl) daarvan ingevuld worden.
 Open hierna het bestand **backend/settings.py** en wijzig hierin ALLOWED_HOSTS op de volgende manier: ['localhost', 'server_domein', 'server_ip'].
 
 Laat django tot slot de benodigde databanktabellen aanmaken:

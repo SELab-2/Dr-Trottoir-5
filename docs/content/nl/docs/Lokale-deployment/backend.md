@@ -22,8 +22,12 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
-#### Database instellen
-Vul het bestand **backend/.env.example** aan met jouw database gegevens en sla dit vervolgens op als env bestand:
+#### Database en Gmail instellen
+Vul het bestand **backend/.env.example** aan met jouw database en Gmail gegevens.
+Naast het Gmail adres moet er ook een [app-wachtwoord](https://support.google.com/mail/answer/185833?hl=nl)  aangemaakt worden. 
+
+Nu moeten deze gegevens alleen nog maar opgeslagen worden als een env bestand:
+
 ```bash
 cp backend/.env.example backend/.env
 ```
