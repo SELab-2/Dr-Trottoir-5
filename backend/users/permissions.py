@@ -3,7 +3,15 @@ from rest_framework import permissions
 
 class ReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.method in permissions.SAFE_METHODS and not request.user.is_anonymous
+        return request.method in permissions.SAFE_METHODS and request.user and not request.user.is_anonymous
+
+
+class StudentReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or user.is_anonymous:
+            return False
+        return request.method in permissions.SAFE_METHODS and user.role == 'ST'
 
 
 class AdminPermission(permissions.BasePermission):

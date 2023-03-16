@@ -25,7 +25,6 @@ urlpatterns = [
     path('api/planning/', include('planning.urls')),
     path('api/containers/', include('trashcontainers.urls')),
     path('api/pickupdays/', include('pickupdays.urls')),
-    path('api/mailtemplates', include('mailtemplates.urls')),
+    path('api/mailtemplates/', include('mailtemplates.urls')),
     path('api/ronde/', include('ronde.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
