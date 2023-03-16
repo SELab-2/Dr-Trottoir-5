@@ -20,8 +20,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                             "message": "referenced pk not in db", "field": "weekPlanning"
                         }
                     ]
-                }
-                , code='invalid')
+                }, code='invalid')
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
@@ -48,8 +47,7 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
                             "message": "referenced pk not in db", "field": "infoPerBuilding"
                         }
                     ]
-                }
-                , code='invalid')
+                }, code='invalid')
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
@@ -77,8 +75,7 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
                             "message": "referenced pk not in db", "field": "dagPlanning"
                         }
                     ]
-                }
-                , code='invalid')
+                }, code='invalid')
         return super().post(request=request, args=args, kwargs=kwargs)
 
 

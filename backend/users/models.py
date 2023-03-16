@@ -9,6 +9,7 @@ from rest_framework.authtoken.models import Token
 import random
 import string
 
+
 class Registration(models.Model):
     """
         Model that is used to serialize a registration.
@@ -106,7 +107,7 @@ class User(AbstractUser):
 
     otp = models.CharField(
         max_length=25,
-        default = ""
+        default=""
     )
 
     objects = CustomUserManager()
