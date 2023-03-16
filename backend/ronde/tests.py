@@ -29,6 +29,7 @@ class TestApi(TestCase):
         """
         factory = APIRequestFactory()
         request = factory.get('/api/ronde/locatie/')
+        force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
         self.assertNotEquals(len(response), 0)
 
@@ -38,5 +39,6 @@ class TestApi(TestCase):
         """
         factory = APIRequestFactory()
         request = factory.get('/api/ronde/')
+        force_authenticate(request, user=self.user)
         response = RondeListCreateView.as_view()(request).data
         self.assertNotEquals(len(response), 0)
