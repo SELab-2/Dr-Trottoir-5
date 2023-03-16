@@ -1,13 +1,6 @@
 from django.db import models
+from django.conf import settings
 import uuid
-
-
-class User(models.Model):
-    """
-        TODO
-        Temporal model of user
-    """
-    name = models.TextField()
 
 
 class LocatieEnum(models.Model):
@@ -78,10 +71,10 @@ class Building(models.Model):
     """
     adres = models.TextField()
     syndicus = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.DO_NOTHING
     ),
-    owners = models.ManyToManyField(User),
+    owners = models.ManyToManyField(settings.AUTH_USER_MODEL),
     ivago_klantnr = models.IntegerField()
     manual = models.ForeignKey(
         Manual,
