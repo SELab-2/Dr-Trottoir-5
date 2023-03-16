@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+from ronde.models import Ronde
 
 
 class WeekPlanning(models.Model):
@@ -41,11 +43,14 @@ class DagPlanning(models.Model):
         All the info from the student about all the buildings
 
     """
-    student = None  # TODO # models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
+    student = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
     date = models.DateField()
 
-    ronde = None  # TODO
+    ronde = models.ForeignKey(
+        Ronde,
+        on_delete=models.DO_NOTHING
+    )
 
     weekPlanning = models.ForeignKey(WeekPlanning, on_delete=models.DO_NOTHING)
 
