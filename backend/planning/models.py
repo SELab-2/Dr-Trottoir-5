@@ -1,27 +1,53 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
-class BuildingPicture(models.Model):
+class WeekPlanning(models.Model):
     """
-    Building Picture database model.
+    All the day plans for a certain week
 
     Attributes
     ----------
-    image : models.ImageField
-        the image that is being stored
+    week : models.IntegerField
+        The week of the year for this planning
 
-    time : models.DateTimeField
-        The date and time at which the picture was taken
+    year : models.IntegerField
+        The year of this planning
 
-    remark : models.TextField
-        The remarks about the picture
+    dagPlanningen : models.ForeignKey
+        All the DayPlannings for this week
+
     """
-    image = models.ImageField
+    week = models.IntegerField()
 
-    time = models.DateTimeField
+    year = models.IntegerField()
 
-    remark = models.TextField(default="")
+
+class DagPlanning(models.Model):
+    """
+    The planning for 1 student for 1 day
+
+    Attributes
+    ----------
+    student : models.OneToOneField
+        The student that will be doing this round
+
+    date : models.DateField
+        The date on which this student will do this round
+
+    ronde : models.ForeignKey
+        The round that the student will do this day
+
+    info : models.ForeignKey
+        All the info from the student about all the buildings
+
+    """
+    student = None  # TODO # models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
+
+    date = models.DateField()
+
+    ronde = None  # TODO
+
+    weekPlanning = models.ForeignKey(WeekPlanning, on_delete=models.DO_NOTHING)
 
 
 class InfoPerBuilding(models.Model):
@@ -45,63 +71,46 @@ class InfoPerBuilding(models.Model):
     remark : models.TextField
         The remarks about the building
     """
-    arrival = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
-
-    storage = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
-
-    departure = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
-
-    extra = models.ForeignKey(BuildingPicture, on_delete=models.CASCADE)
 
     remark = models.TextField(default="")
 
+    dagPlanning = models.ForeignKey(DagPlanning, on_delete=models.CASCADE)
 
-class DagPlanning(models.Model):
+
+class BuildingPicture(models.Model):
     """
-    The planning for 1 student for 1 day
+    Building Picture database model.
 
     Attributes
     ----------
-    student : models.OneToOneField
-        The student that will be doing this round
+    image : models.ImageField
+        the image that is being stored
 
-    date : models.DateField
-        The date on which this student will do this round
+    time : models.DateTimeField
+        The date and time at which the picture was taken
 
-    ronde : models.ForeignKey
-        The round that the student will do this day
-
-    info : models.ForeignKey
-        All the info from the student about all the buildings
-
+    remark : models.TextField
+        The remarks about the picture
     """
-    student = models.OneToOneField(AbstractUser, on_delete=models.DO_NOTHING)
 
-    date = models.DateField
+    class PictureEnum(models.TextChoices):
+        """
+        enum for type of picture
+        """
+        ARRIVAL = "AR", "Arrival"
+        STORAGE = "ST", "Storage"
+        DEPARTURE = "DE", "Departure"
+        EXTRA = "EX", "Extra"
 
-    ronde = None  # TODO
+    pictureType = models.CharField(
+        max_length=2,
+        choices=PictureEnum.choices
+    )
 
-    info = models.ForeignKey(InfoPerBuilding, on_delete=models.CASCADE)
+    image = models.ImageField()
 
+    time = models.DateTimeField()
 
-class WeekPlanning(models.Model):
-    """
-    All the day plans for a certain week
+    remark = models.TextField(default="")
 
-    Attributes
-    ----------
-    week : models.IntegerField
-        The week of the year for this planning
-
-    year : models.IntegerField
-        The year of this planning
-
-    dagPlanningen : models.ForeignKey
-        All the DayPlannings for this week
-
-    """
-    week = models.IntegerField
-
-    year = models.IntegerField
-
-    dagPlanningen = models.ForeignKey(DagPlanning, on_delete=models.DO_NOTHING)
+    infoPerBuilding = models.ForeignKey(InfoPerBuilding, on_delete=models.CASCADE)

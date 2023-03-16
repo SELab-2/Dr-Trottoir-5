@@ -10,7 +10,7 @@ class TrashContainerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrashContainer
-        fields = ['type', 'collection_days', 'collection_days_detail', 'special_actions']
+        fields = "__all__"
 
     def create(self, validated_data):
         """
