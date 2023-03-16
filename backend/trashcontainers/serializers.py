@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .models import TrashContainer
 from pickupdays.serializers import PickUpSerializer
 
@@ -18,7 +17,7 @@ class TrashContainerSerializer(serializers.ModelSerializer):
         """
         options = TrashContainer.objects.filter(
             type=validated_data['type'],
-            special_actions=validated_data["special_actions"]
+            special_actions=validated_data.get("special_actions", "")
         )
 
         validated_data['collection_days'].sort()

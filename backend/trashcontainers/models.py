@@ -1,5 +1,4 @@
 from django.db import models
-
 from pickupdays.models import PickUpDay
 from ronde.models import Building
 
@@ -41,7 +40,8 @@ class TrashContainer(models.Model):
     collection_days = models.ManyToManyField(PickUpDay)
 
     special_actions = models.TextField(
-        default=""
+        default="",
+        blank=True
     )
 
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
