@@ -1,0 +1,9 @@
+Django~=4.1.7
+djangorestframework
+markdown
+django-filter
+django-environ
+postgres
+psycopg2
+Pillow
+model_bakery

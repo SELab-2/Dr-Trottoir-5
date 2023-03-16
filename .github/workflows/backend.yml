@@ -1,0 +1,38 @@
+name: backend-tests
+run-name: backend-tests
+on: [push]
+jobs:
+  Backend-linter-and-tests:
+    runs-on: self-hosted
+    environment: django tests
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11]
+        
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+        working-directory: ./backend
+      - name: Create env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > ./backend/.env
+        working-directory: ./backend
+      - name: Run Tests
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py test
+        working-directory: ./backend
+      - name: Run Linter
+        run: |
+          flake8 --ignore=F405,F403,E501 .
+        working-directory: ./backend
