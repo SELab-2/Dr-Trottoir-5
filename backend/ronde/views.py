@@ -19,7 +19,7 @@ class LocatieEnumListCreateView(generics.ListCreateAPIView):
            Returns error when there isn't a name field or the field is empty
         """
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({"succes": serializer.data}, status=status.HTTP_201_CREATED)
         elif "name" not in request.data:
@@ -53,7 +53,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
             Post method that creates a Manual record. The manaul is saved in media root
         """
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({"succes": serializer.data}, status=status.HTTP_201_CREATED)
         elif "file" not in request.data or "fileType" not in request.data or "manualStatus" not in request.data:

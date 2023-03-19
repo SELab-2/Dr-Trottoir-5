@@ -22,7 +22,16 @@ def registration_view(request):
     if request.method == "POST":
         serializer = RegistrationSerializer(data=request.data)
         data = {}
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
+            if get_user_model().objects.filter(email=request.data[
+                "email"]).exists():
+                raise serializers.ValidationError({
+                    "errors": [
+                        {
+                            "message": "email address already in use"
+                        }
+                    ]
+                })
             user = get_user_model().objects.create_user(
                 request.data['email'],
                 request.data['first_name'],
@@ -107,7 +116,7 @@ def role_assignment_view(request):
     if request.method == "POST":
 
         serializer = RoleAssignmentSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
 
             if request.user.role == 'SU' and request.data['role'] == 'AD':
                 raise serializers.ValidationError(
