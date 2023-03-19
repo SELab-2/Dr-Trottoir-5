@@ -47,16 +47,6 @@ class RoleAssignment(models.Model):
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password):
-        if not email:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "email is required", "field": "email"
-                        }
-                    ]
-                }, code='invalid')
-
         user = self.model(
             email=self.normalize_email(email),
             username=email,
