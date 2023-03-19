@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from rest_framework import serializers
-
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -47,16 +45,6 @@ class RoleAssignment(models.Model):
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password):
-        if not email:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "email is required", "field": "email"
-                        }
-                    ]
-                }, code='invalid')
-
         user = self.model(
             email=self.normalize_email(email),
             username=email,
