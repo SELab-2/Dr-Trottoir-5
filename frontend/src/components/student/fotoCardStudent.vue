@@ -7,7 +7,7 @@
             <p>{{ description }}</p>
           </v-col>
           <v-col align="right">
-            <v-img src="https://experiencelife.lifetime.life/wp-content/uploads/2021/02/Talking-Trash.jpg" :max-width="mobile ? '100%' : '250'" :max-height="250"></v-img>
+            <v-img :src="imageURL" :max-width="mobile ? '100%' : '250'" :max-height="250"></v-img>
           </v-col>
         </v-row>
         <v-row>
@@ -30,7 +30,7 @@ export default {
   props: {
     timeStamp: Date,
     description: { type: String, default: 'Geen description meegegeven' },
-    picture: Image
+    imageURL: String
   },
   methods: {
     goToEditPage: function () {
