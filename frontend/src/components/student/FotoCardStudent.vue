@@ -22,7 +22,7 @@
                        style="font-size: 45%;">
                   Pas aan
                 </v-btn>
-                <v-btn v-on:click="deletePost" color="primary" text style="font-size: 45%;">
+                <v-btn v-on:click="deletePost" color="error" text style="font-size: 45%;">
                   Verwijder
                 </v-btn>
             </v-row>
@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  name: 'fotoCardStudent',
+  name: 'FotoCardStudent',
   props: {
     timeStamp: Date,
     description: { type: String, default: 'Geen description meegegeven' },
