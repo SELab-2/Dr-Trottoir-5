@@ -14,7 +14,8 @@
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to the Vuetify 3 Beta
         </h1>
-
+        <NormalButton text="This is a button" v-bind:parent-function="inc"/>
+        <p>{{ count }}</p>
         <p class="subheading font-weight-regular">
           For help and collaboration with other Vuetify developers,
           <br>please join our online
@@ -93,9 +94,16 @@
 
 <script>
 
+import NormalButton from '@/components/NormalButton.vue'
+
 export default {
   name: 'HelloWorld',
-
+  components: { NormalButton },
+  methods: {
+    inc () {
+      this.$data.count++
+    }
+  },
   data: () => ({
     ecosystem: [
       {
@@ -142,7 +150,8 @@ export default {
         text: 'Frequently Asked Questions',
         href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions'
       }
-    ]
+    ],
+    count: 0
   })
 }
 </script>
