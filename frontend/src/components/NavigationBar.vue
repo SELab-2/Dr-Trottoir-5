@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="drawer" temporary location="right" :class="smallScreen ? 'w-50' : 'w-25'">
+  <v-navigation-drawer v-model="drawer" temporary location="right" class="w-xs-50">
     <v-spacer></v-spacer>
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="home"></v-list-item>
@@ -16,12 +16,14 @@
     <v-divider></v-divider>
   </v-navigation-drawer>
   <v-app-bar color="black">
-    <v-img :src="require('../assets/logo.png')"/>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <template v-slot:prepend>
+      <v-app-bar-title>
+        <v-img src="../assets/logo.png" height="75px" width="150px"/>
+      </v-app-bar-title>
+    </template>
+    <template v-slot:append>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    </template>
   </v-app-bar>
 </template>
 
