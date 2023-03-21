@@ -45,7 +45,6 @@ export default {
 .container-border{
   border: 1px solid #E3e3e3;
   border-radius: 25px;
-  margin-top: 50px;
 }
 .button-margin {
   margin-right: 6px;
