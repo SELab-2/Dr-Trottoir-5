@@ -38,6 +38,7 @@ def registration_view(request):
             data = serializer.errors
         return Response(data)
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def forgot_password(request):
