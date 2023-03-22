@@ -1,14 +1,14 @@
 <template>
   <v-container fluid>
-    <v-card max-width="500px" min-width="345">
+    <v-card max-width="800px" min-width="345" class="container-border">
       <v-card-text>
         <v-row align-end>
           <v-col>
-            <p>{{ description }}</p>
+            <p style="font-size: 8px">{{ description }}</p>
           </v-col>
           <v-col class="d-flex align-center">
-            <v-row justify="center">
-              <v-img :src="imageURL" :max-width="mobile ? '100%' : '250'" :max-height="150"></v-img>
+            <v-row justify="end" class="image-margin">
+              <v-img :src="imageURL" :max-width="'150'" :max-height="150"></v-img>
             </v-row>
           </v-col>
         </v-row>
@@ -17,14 +17,15 @@
             <p style="font-size: 8px">{{ timeStamp }}</p>
           </v-col>
           <v-col>
-            <v-row justify="center">
-                <v-btn v-on:click="goToEditPage" class="button-margin mr-2" color="primary" text
-                       style="font-size: 45%;">
-                  Pas aan
-                </v-btn>
-                <v-btn v-on:click="deletePost" color="error" text style="font-size: 45%;">
-                  Verwijder
-                </v-btn>
+            <v-row justify="end" class="row-margin">
+              <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;"
+                     v-on:click="goToEditPage">
+                <img :src="require('@/assets/edit.png')" alt="Button Image" style="max-height: 35px; max-width: 35px;"/>
+              </v-btn>
+              <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
+                <img :src="require('@/assets/delete.png')" alt="Button Image"
+                     style="max-height: 35px; max-width: 35px"/>
+              </v-btn>
             </v-row>
           </v-col>
         </v-row>
@@ -37,9 +38,9 @@
 export default {
   name: 'FotoCardStudent',
   props: {
-    timeStamp: Date,
+    timeStamp: { type: String, default: 'Empty time' },
     description: { type: String, default: 'Geen description meegegeven' },
-    imageURL: String
+    imageURL: { type: String, default: require('@/assets/emptyImage.png') }
   },
   methods: {
     goToEditPage: function () {
@@ -54,6 +55,21 @@ export default {
 
 <style scoped>
 .button-margin {
-  margin-right: 6px;
+  margin-right: 12px;
+}
+.row-margin {
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-top: 5px;
+}
+
+.image-margin {
+  margin-right: 0;
+  margin-top: 0;
+}
+
+.container-border{
+  border: 1px solid #E3e3e3;
+  border-radius: 25px;
 }
 </style>
