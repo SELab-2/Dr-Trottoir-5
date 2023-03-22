@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-class CustomSerializer(serializers.ModelSerializer):
 
+class CustomSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         errors = []
         for field in self.required_fields:
@@ -12,6 +12,6 @@ class CustomSerializer(serializers.ModelSerializer):
                 })
         if len(errors) > 0:
             raise serializers.ValidationError({
-                "errors" : errors
+                "errors": errors
             })
         return attrs
