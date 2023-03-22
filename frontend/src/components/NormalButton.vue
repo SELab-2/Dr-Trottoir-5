@@ -1,0 +1,37 @@
+<!--
+Need to use the component as following.
+Define a function in the methods of the parent component
+and call it in the v-bind:parent-function argument.
+The button also takes a text with the text that you want to show.
+You also can use parentFunction instead of parent-function.
+
+In following example inc is a function defined in methods.
+<NormalButton text="This is a button" v-bind:parent-function="inc"/>
+
+!!! Don't put end brackets because then it will work with the return value. So not inc() !!!!
+-->
+
+<template>
+  <v-btn
+    @click='parentFunction()'
+    rounded="pill"
+    color="black">
+    <div class="text-center text-yellow">
+      <p>{{ text }}</p>
+    </div>
+  </v-btn>
+</template>
+
+<script>
+export default {
+  name: 'NormalButton',
+  props: {
+    text: { type: String },
+    parentFunction: { type: Function }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

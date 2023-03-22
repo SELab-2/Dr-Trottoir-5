@@ -14,7 +14,6 @@
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to the Vuetify 3 Beta
         </h1>
-
         <p class="subheading font-weight-regular">
           For help and collaboration with other Vuetify developers,
           <br>please join our online
@@ -95,7 +94,6 @@
 
 export default {
   name: 'HelloWorld',
-
   data: () => ({
     ecosystem: [
       {
