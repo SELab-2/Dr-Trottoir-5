@@ -17,7 +17,8 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                 {
                     "errors": [
                         {
-                            "message": "referenced pk not in db", "field": "weekPlanning"
+                            "message": "referenced pk not in db",
+                            "field": "weekPlanning"
                         }
                     ]
                 }, code='invalid')

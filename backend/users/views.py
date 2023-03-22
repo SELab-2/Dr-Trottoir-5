@@ -97,7 +97,8 @@ def reset_password(request):
         raise serializers.ValidationError(
             {"errors": [
                 {
-                    "message": "There is no user with this email", "field": "email"
+                    "message": "There is no user with this email",
+                    "field": "email"
                 }
             ]
             }, code='invalid')
@@ -130,7 +131,12 @@ def role_assignment_view(request):
             if request.user.role == 'SU' and request.data['role'] == 'AD':
                 raise serializers.ValidationError(
                     {
-                        "errors": [{"message": "Superstudent can't make someone Admin", "field": "role"}]
+                        "errors": [
+                            {
+                                "message": "Superstudent can't make someone Admin",
+                                "field": "role"
+                            }
+                        ]
                     }, code='not allowed')
 
             user = get_user_model().objects.get(email=request.data['email'])
@@ -138,7 +144,9 @@ def role_assignment_view(request):
             if not user:
                 raise serializers.ValidationError(
                     {
-                        "errors": [{"message": "user does not exist", "field": "email"}]
+                        "errors": [
+                            {"message": "user does not exist", "field": "email"}
+                        ]
                     }, code='invalid')
 
             user.role = request.data['role']
