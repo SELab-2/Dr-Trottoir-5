@@ -3,30 +3,19 @@ from django.contrib.auth import get_user_model
 
 from .models import Registration, RoleAssignment
 
-from customserializer.CustomSerializer import CustomSerializer
 
 
-class RegistrationSerializer(CustomSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = '__all__'
 
-    required_fields = [
-        "email",
-        "first_name",
-        "last_name",
-        "password"
-    ]
 
-
-class RoleAssignmentSerializer(CustomSerializer):
+class RoleAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoleAssignment
         fields = '__all__'
 
-    required_fields = [
-        "email"
-    ]
 
 # geen custom serializer nodig
 class UserSerializer(serializers.ModelSerializer):

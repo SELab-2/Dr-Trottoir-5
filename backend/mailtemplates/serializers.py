@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from .models import MailTemplate
 
-from customserializer.CustomSerializer import CustomSerializer
 
 
-class MailTemplateSerializer(CustomSerializer):
+class MailTemplateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         model = MailTemplate
 
-    required_fields = ["name", "content"]
