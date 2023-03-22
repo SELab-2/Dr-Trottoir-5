@@ -14,10 +14,6 @@ class WeekPlanning(models.Model):
 
     year : models.IntegerField
         The year of this planning
-
-    dagPlanningen : models.ForeignKey
-        All the DayPlannings for this week
-
     """
     week = models.IntegerField()
 
@@ -39,9 +35,8 @@ class DagPlanning(models.Model):
     ronde : models.ForeignKey
         The round that the student will do this day
 
-    info : models.ForeignKey
-        All the info from the student about all the buildings
-
+    weekPlanning : models.ForeignKey
+        WeekPlanning object of which it's a member
     """
     student = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
@@ -61,20 +56,10 @@ class InfoPerBuilding(models.Model):
 
     Attributes
     ----------
-    arrival : models.ForeignKey
-        The images taken when the student arrives on location
-
-    storage : models.ForeignKey
-        The images taken when the student is in the storage location
-
-    departure : models.ForeignKey
-        The images taken when the student departs
-
-    extra : models.ForeignKey
-        Extra images the student has taken
-
     remark : models.TextField
         The remarks about the building
+    dagPlanning: models.ForeignKey
+        DagPlanning of which it is an InfoPerBuilding object
     """
 
     remark = models.TextField(default="")
@@ -96,6 +81,10 @@ class BuildingPicture(models.Model):
 
     remark : models.TextField
         The remarks about the picture
+    pictureType: models.CharField
+        type of picture. Choices from PictureEnum
+    infoPerBuilding: models.ForeignKey
+        Reference to the InfoPerBuilding object of which it is an image
     """
 
     class PictureEnum(models.TextChoices):
