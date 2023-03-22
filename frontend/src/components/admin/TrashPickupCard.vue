@@ -26,9 +26,9 @@
 export default {
   name: 'TrashPickupCard',
   props: {
-    formattedTime: { type: String, default: '18:00' },
-    name: { type: String, default: 'PMD' },
-    day: { type: String, default: 'Maandag' }
+    formattedTime: { type: String, default: 'Empty' },
+    name: { type: String, default: 'Empty' },
+    day: { type: String, default: 'Empty' }
   },
   methods: {
     goToEditPage: function () {
@@ -47,6 +47,6 @@ export default {
   border-radius: 25px;
 }
 .button-margin {
-  margin-right: 6px;
+  margin-right: 12px;
 }
 </style>
