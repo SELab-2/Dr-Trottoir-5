@@ -59,6 +59,15 @@ def forgot_password(request):
     """
         Send an email with an otp when forgot password is used.
     """
+    if request.data.get("email") is None:
+        raise serializers.ValidationError({
+            "errors": [
+                {
+                    "message": "email address already in use",
+                    "field": "email"
+                }
+            ]
+        })
     email = request.data['email']
     user = get_user_model().objects.get(email=email)
     if get_user_model().objects.filter(email=email).exists():
