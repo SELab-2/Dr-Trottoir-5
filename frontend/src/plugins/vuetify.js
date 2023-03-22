@@ -13,6 +13,7 @@ const myCustomLightTheme = {
     primary: '#000000',
     secondary: '#FFFF00',
     yellow: '#FFFF00',
+    borderColor: '#E3e3e3',
     error: '#B00020',
     edit: '#FFE600',
     info: '#9DCF62',
