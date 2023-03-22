@@ -1,21 +1,20 @@
 <template>
-  <v-navigation-drawer v-model="drawer" temporary location="right" class="w-xs-50">
+  <v-navigation-drawer v-model="drawer" temporary :location="smallScreen ? 'bottom' : 'right'" :class="smallScreen ? 'h-75' : 'py-10'">
     <v-spacer></v-spacer>
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="home"></v-list-item>
+      <v-list-item prepend-icon="mdi-view-dashboard" to="/" title="Dashboard" value="home"></v-list-item>
       <v-list-item prepend-icon="mdi-calendar-blank" title="Nieuwe planning" value="nieuwe planning"></v-list-item>
       <v-list-item prepend-icon="mdi-bike" title="Rondes" value="rondes"></v-list-item>
       <v-list-item prepend-icon="mdi-office-building" title="Gebouwen" value="gebouwen"></v-list-item>
       <v-list-item prepend-icon="mdi-account" title="Studenten" value="studenten"></v-list-item>
       <v-list-item prepend-icon="mdi-account-key" title="Syndicussen" value="syndicussen"></v-list-item>
       <v-list-item prepend-icon="mdi-email-outline" title="Templates" value="templates"></v-list-item>
-      <v-list-item prepend-icon="mdi-account-circle" title="Account" value="account"></v-list-item>
+      <v-list-item prepend-icon="mdi-account-circle" to="/account/" title="Account" value="account"></v-list-item>
       <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout"></v-list-item>
-
     </v-list>
     <v-divider></v-divider>
   </v-navigation-drawer>
-  <v-app-bar color="black">
+  <v-app-bar color="primary">
     <template v-slot:prepend>
       <v-app-bar-title>
         <v-img src="../assets/logo.png" height="75px" width="150px"/>
@@ -48,7 +47,7 @@ export default {
   },
   methods: {
     onResize () {
-      this.smallScreen = window.innerWidth < 850
+      this.smallScreen = window.innerWidth < 700
     }
   }
 }
