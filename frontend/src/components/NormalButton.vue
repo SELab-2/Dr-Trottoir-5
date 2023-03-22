@@ -15,8 +15,8 @@ In following example inc is a function defined in methods.
   <v-btn
     @click='parentFunction()'
     rounded="pill"
-    color="black">
-    <div class="text-center text-yellow">
+    color="primary">
+    <div class="text-center text-secondary">
       <p>{{ text }}</p>
     </div>
   </v-btn>
