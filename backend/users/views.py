@@ -99,9 +99,7 @@ def reset_password(request):
 @api_view(['POST', 'GET'])
 @permission_classes([AdminPermission | SuperstudentPermission | ReadOnly])
 def role_assignment_view(request):
-    print(request.method)
     if request.method == "GET":  # return role of user
-        print("get is returned")
         return Response({'role': request.user.role})
 
     if request.method == "POST":  # change the role of a user
