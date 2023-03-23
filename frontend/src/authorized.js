@@ -1,5 +1,6 @@
 /* eslint-disable */
 import router from "@/router"
+import {ref} from "vue";
 
 function request_with_body(url, method, body, headers={}) {
   headers['Accept'] = 'application/json'
@@ -28,7 +29,7 @@ export async function request(url, method, headers={}, body={}) {
     return await router.push({name: 'login'})
   }
 
-  headers['Authorization'] = 'Bearer ' + access_token
+  headers['Authorization'] = `Bearer ${access_token}`
   let result
   if(method === 'GET') {
     result = await get_request(url, headers)
@@ -50,7 +51,7 @@ export async function request(url, method, headers={}, body={}) {
     $cookies.set("refresh_token", result.refresh)
 
     // redo the request with valid access token
-    headers['Authorization'] = 'Bearer ' + result.access
+    headers['Authorization'] = `Bearer ${result.access}`
     if(method === 'GET') {
       result = await get_request(url, headers)
     } else {
@@ -61,7 +62,8 @@ export async function request(url, method, headers={}, body={}) {
 }
 
 
-export async function loginUser(email, password) {
+export async function loginUser(email, password, from_route) {
+  const return_name = from_route !== null ? from_route.name : 'home'
   const data = {
       'email': email,
       'password': password
@@ -69,5 +71,5 @@ export async function loginUser(email, password) {
   const tokens = await request_with_body('/api/login/', 'POST', data)
   $cookies.set('access_token', tokens.access)
   $cookies.set('refresh_token', tokens.refresh)
-  await router.push({name: 'home'})
+  return await router.push({name: return_name})
 }
