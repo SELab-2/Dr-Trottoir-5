@@ -1,12 +1,12 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import serializers, generics
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from .permissions import AdminPermission, SuperstudentPermission
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
 
 
@@ -96,11 +96,15 @@ def reset_password(request):
                 }, code='invalid')
 
 
-@api_view(['POST'])
-@permission_classes([AdminPermission | SuperstudentPermission])
+@api_view(['POST', 'GET'])
+@permission_classes([AdminPermission | SuperstudentPermission | ReadOnly])
 def role_assignment_view(request):
-    if request.method == "POST":
+    print(request.method)
+    if request.method == "GET":  # return role of user
+        print("get is returned")
+        return Response({'role': request.user.role})
 
+    if request.method == "POST":  # change the role of a user
         serializer = RoleAssignmentSerializer(data=request.data)
         if serializer.is_valid():
 
