@@ -1,18 +1,23 @@
 <template>
-  <UsersList />
+  <h3>{{JSON.stringify(users)}}</h3>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
+import { request } from '@/authorized'
 
-// Components
-import UsersList from '../components/UsersList.vue'
+/*
+ view is just for testing purposes, will be removed
+*/
 
 export default defineComponent({
   name: 'UsersView',
-
-  components: {
-    UsersList
+  setup () {
+    const users = ref([])
+    onMounted(async () => {
+      users.value = await request('/api/users', 'GET')
+    })
+    return { users }
   }
 })
 </script>

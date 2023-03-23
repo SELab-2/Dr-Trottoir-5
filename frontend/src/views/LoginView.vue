@@ -4,7 +4,7 @@
       <v-sheet class="mx-auto rounded-xl w-75" color="black">
         <v-img src="../assets/logo.png" class="mx-auto w-75"/>
       </v-sheet>
-      <v-form @submit.prevent class="mx-auto w-50 my-8">
+      <v-form @submit.prevent class="mx-auto w-50 my-5">
         <v-text-field
           v-model="email"
           label="e-mail"
@@ -39,6 +39,7 @@ export default defineComponent({
     prevRoute: '/'
   }),
   beforeRouteEnter (to, from, next) {
+    // save the previous path so we can return after the login is done
     next(vm => {
       if (from !== undefined) {
         vm.prevRoute = from.path

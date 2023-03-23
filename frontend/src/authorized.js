@@ -1,9 +1,8 @@
+import router from '@/router'
 /* eslint-disable */
-import router from "@/router"
-import {ref} from "vue";
 
-function request_with_body(url, method, body, headers={}) {
-  headers['Accept'] = 'application/json'
+function requestWithBody (url, method, body, headers = {}) {
+  headers.Accept = 'application/json'
   headers['Content-Type'] = 'application/json'
   return fetch(url, {
     method: method,
@@ -13,15 +12,21 @@ function request_with_body(url, method, body, headers={}) {
     .then(data => { return data })
 }
 
-function get_request(url, headers) {
+function getRequest (url, headers) {
   return fetch(url, {
     method: 'POST',
-    headers: headers,
+    headers: headers
   }).then(r => r.json())
     .then(data => { return data })
 }
 
-export async function request(url, method, headers={}, body={}) {
+export async function request(url, method, headers = {}, body = {}) {
+  /*
+    Executes the requested http method on the given url with optional headers and body.
+    It adds the access token to the request if an access token is available, otherwise it gets
+    a new one with the refresh token or redirects to the login page.
+  */
+
   let access_token = $cookies.get('access_token')
   let refresh_token = $cookies.get('refresh_token')
 
@@ -29,21 +34,22 @@ export async function request(url, method, headers={}, body={}) {
     return await router.push({name: 'login'})
   }
 
+  // do the request
   headers['Authorization'] = `Bearer ${access_token}`
   let result
   if(method === 'GET') {
-    result = await get_request(url, headers)
+    result = await getRequest(url, headers)
   } else {
-    result = await request_with_body(url, method, body, headers)
+    result = await requestWithBody(url, method, body, headers)
   }
 
-  if (result.code === 'token_not_valid') {  // access token is invalid or expired
+  if (result.code === 'token_not_valid') {  // access token is expired or invalid
 
-    // see if you can refresh access token
-    result = await request_with_body('/api/refresh/', 'POST', {'refresh': refresh_token})
+    // see if you can refresh with the refresh token
+    result = await requestWithBody('/api/refresh/', 'POST', {'refresh': refresh_token})
 
     if(result.code === 'token_not_valid') {  // refresh token is expired or invalid
-      return await router.push({path: '/login'})
+      return await router.push({path: '/login'})  // need to login again
     }
 
     // set new tokens in cookies
@@ -53,9 +59,9 @@ export async function request(url, method, headers={}, body={}) {
     // redo the request with valid access token
     headers['Authorization'] = `Bearer ${result.access}`
     if(method === 'GET') {
-      result = await get_request(url, headers)
+      result = await getRequest(url, headers)
     } else {
-      result = await request_with_body(url, 'POST', body, headers)
+      result = await requestWithBody(url, 'POST', body, headers)
     }
   }
   return result
@@ -63,16 +69,19 @@ export async function request(url, method, headers={}, body={}) {
 
 
 export async function loginUser(email, password, return_path) {
+  /*
+    Logs the user in and redirects back to the original url or to the home page.
+  */
   const data = {
       'email': email,
       'password': password
   }
-  const tokens = await request_with_body('/api/login/', 'POST', data)
+  const tokens = await requestWithBody('/api/login/', 'POST', data)
 
-  if ('access' in tokens) {
+  if ('access' in tokens) { // login succeeded
     $cookies.set('access_token', tokens.access)
     $cookies.set('refresh_token', tokens.refresh)
-    return await router.push({path: return_path})
+    return await router.push({ path: return_path })
   }
-  return {message: 'Email of wachtwoord is incorrect.'}
+  return { message: 'Email of wachtwoord is incorrect.' }
 }
