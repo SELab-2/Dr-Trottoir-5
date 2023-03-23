@@ -34,7 +34,7 @@ export async function request(url, method, headers={}, body={}) {
   if(method === 'GET') {
     result = await get_request(url, headers)
   } else {
-    result = await request_with_body(url, headers, body)
+    result = await request_with_body(url, method, body, headers)
   }
 
   if (result.code === 'token_not_valid') {  // access token is invalid or expired
@@ -55,21 +55,24 @@ export async function request(url, method, headers={}, body={}) {
     if(method === 'GET') {
       result = await get_request(url, headers)
     } else {
-      result = await request_with_body(url, 'POST', body)
+      result = await request_with_body(url, 'POST', body, headers)
     }
   }
   return result
 }
 
 
-export async function loginUser(email, password, from_route) {
-  const return_name = from_route !== null ? from_route.name : 'home'
+export async function loginUser(email, password, return_path) {
   const data = {
       'email': email,
       'password': password
   }
   const tokens = await request_with_body('/api/login/', 'POST', data)
-  $cookies.set('access_token', tokens.access)
-  $cookies.set('refresh_token', tokens.refresh)
-  return await router.push({name: return_name})
+
+  if ('access' in tokens) {
+    $cookies.set('access_token', tokens.access)
+    $cookies.set('refresh_token', tokens.refresh)
+    return await router.push({path: return_path})
+  }
+  return {message: 'Email of wachtwoord is incorrect.'}
 }
