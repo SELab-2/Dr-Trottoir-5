@@ -63,7 +63,7 @@
       </v-col>
       <v-col v-else class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
         <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
-        <normal-button text='Cancel' :parent-function="cancel_save" class="ml-2"/>
+        <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
       </v-col>
     </v-row>
   </v-card>
