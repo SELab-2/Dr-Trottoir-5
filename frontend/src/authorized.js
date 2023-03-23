@@ -30,8 +30,8 @@ export async function request(url, method, headers = {}, body = {}) {
   let access_token = $cookies.get('access_token')
   let refresh_token = $cookies.get('refresh_token')
 
-  if(refresh_token === 'undefined' || access_token === 'undefined') { // user is not logged in
-    return await router.push({name: 'login'})
+  if(typeof refresh_token !== 'string' || typeof access_token !== 'string') { // user is not logged in
+    return await router.push({path: '/login'})
   }
 
   // do the request

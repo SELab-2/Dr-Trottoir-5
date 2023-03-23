@@ -1,10 +1,10 @@
 <template>
-  <v-container>
+  <v-card :flat="smallScreen" color="white" :class="`mx-auto my-16 h-75 ${smallScreen ? 'w-100' : 'w-75'}`">
     <v-col class="align-center py-8">
-      <v-sheet class="mx-auto rounded-xl w-75" color="black">
-        <v-img src="../assets/logo.png" class="mx-auto w-75"/>
+      <v-sheet :class="`mx-auto rounded-xl ${smallScreen ? ' w-100' : 'w-75'}`" color="black">
+        <v-img src="../assets/logo.png" :class="`mx-auto ${smallScreen ? ' w-100' : 'w-75'}`"/>
       </v-sheet>
-      <v-form @submit.prevent class="mx-auto w-50 my-5">
+      <v-form @submit.prevent :class="`${smallScreen ? ' w-100' : 'w-50'} mx-auto my-5`">
         <v-text-field
           v-model="email"
           label="e-mail"
@@ -23,7 +23,7 @@
         <router-link to="/register">Maak nieuw account</router-link>
       </v-row>
     </v-col>
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -36,7 +36,8 @@ export default defineComponent({
     email: '',
     password: '',
     error: '',
-    prevRoute: '/'
+    prevRoute: '/',
+    smallScreen: false
   }),
   beforeRouteEnter (to, from, next) {
     // save the previous path so we can return after the login is done
@@ -46,9 +47,21 @@ export default defineComponent({
       }
     })
   },
+  beforeUnmount () {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize, { passive: true })
+    }
+  },
+  mounted () {
+    this.onResize()
+    window.addEventListener('resize', this.onResize, { passive: true })
+  },
   methods: {
     async login () {
       this.error = await loginUser(this.email, this.password, this.prevRoute)
+    },
+    onResize () {
+      this.smallScreen = window.innerWidth < 500
     }
   }
 })
