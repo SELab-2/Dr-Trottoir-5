@@ -17,6 +17,7 @@
   </v-navigation-drawer>
   <v-app-bar color="primary">
     <template v-slot:prepend>
+      <v-app-bar-nav-icon v-if="smallScreen" @click="this.goBack()" icon="mdi-arrow-left" ></v-app-bar-nav-icon>
       <v-app-bar-title>
         <v-img src="../assets/logo.png" height="75px" width="150px"/>
       </v-app-bar-title>
@@ -31,6 +32,7 @@
 
 import { onMounted, onBeforeUnmount, ref } from 'vue'
 import { request } from '@/authorized'
+import router from '@/router'
 
 export default {
   name: 'NavigationBar',
@@ -42,7 +44,9 @@ export default {
     const isAdminOrSu = () => {
       return role.value === 'AD' || role.value === 'SU'
     }
-
+    const goBack = () => {
+      return router.go(-1)
+    }
     const onResize = () => {
       smallScreen.value = window.innerWidth < 700
     }
@@ -62,7 +66,8 @@ export default {
       drawer,
       smallScreen,
       role,
-      isAdminOrSu
+      isAdminOrSu,
+      goBack
     }
   }
 }
