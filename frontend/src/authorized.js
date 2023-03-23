@@ -72,6 +72,8 @@ export async function loginUser(email, password, return_path) {
   /*
     Logs the user in and redirects back to the original url or to the home page.
   */
+  if(email === '') return { message: 'Email is verplicht.' }
+  if(password === '') return { message: 'Wachtwoord is verplicht.' }
   const data = {
       'email': email,
       'password': password

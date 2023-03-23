@@ -14,7 +14,7 @@
           type="password"
           label="Wachtwoord"
         ></v-text-field>
-        <div class="error" v-if="error !== ''">{{error.message}}</div>
+        <div class="text-red" v-if="error !== ''">{{error.message}}</div>
         <router-link to="/forgot">Wachtwoord vergeten?</router-link>
         <v-btn @click="login" block class="mt-2">Login</v-btn>
       </v-form>
