@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from rest_framework import serializers, generics
 from django.core.mail import send_mail
@@ -17,7 +17,6 @@ class UserListAPIView(generics.ListAPIView):
     permission_classes = [AdminPermission | SuperstudentPermission]
 
 
-# TODO Fix so you get the data by token not id
 class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
