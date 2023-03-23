@@ -83,25 +83,44 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-center align-center" col="12">
-        <v-btn>Pas aan</v-btn>
+        <normal-button v-if="!edit" text='Pas aan' :parent-function='edit_click'/>
+        <normal-button v-else text='Aanpassingen opslaan' :parent-function="save"/>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import NormalButton from '@/components/NormalButton'
+
 export default {
+  components: {NormalButton},
   data: () => {
     return {
-      voornaam: 'Kai',
-      achternaam: 'Hozée',
-      email: 'kaihozee@test.com',
-      password: 'test',
-      gsm: '+324',
+      voornaam: '',
+      achternaam: '',
+      email: '',
+      password: '',
+      gsm: '',
       show: false,
       roles: [],
       rondes: [],
       edit: false
+    }
+  },
+  methods: {
+    async get_data(id, token) {
+      // TODO Add API url
+      const response = await fetch(`http://localhost/api/users/${id}`, {
+        headers: {"Authorization" : `Bearer ${token}`}
+      })
+    },
+    edit_click() {
+      this.edit = !this.edit
+    },
+    save() {
+      this.edit = !this.edit
+      console.log('Saved!')
     }
   }
 }

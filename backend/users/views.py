@@ -1,12 +1,13 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.permissions import AllowAny
 from rest_framework import serializers, generics
 from django.core.mail import send_mail
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from .permissions import AdminPermission, SuperstudentPermission
+from .permissions import AdminPermission, SuperstudentPermission, StudentPermission
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
 
 
@@ -14,6 +15,28 @@ class UserListAPIView(generics.ListAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = [AdminPermission | SuperstudentPermission]
+
+
+# TODO Fix so you get the data by token not id
+class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        id = kwargs['pk']
+        try:
+            access_token = AccessToken(request.auth)
+            print(access_token)
+            return Response(UserSerializer(user).data)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced pk not in db", "field": "id"
+                        }
+                    ]
+                }, code='invalid')
 
 
 @api_view(['POST'])
