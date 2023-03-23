@@ -12,16 +12,12 @@
         <h1>Achternaam</h1>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
-        <v-text-field :readonly="!edit" variant="outlined"
-                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px">
-          {{ first_name }}
-        </v-text-field>
+        <v-text-field v-model:model-value="first_name" :readonly="!edit" variant="outlined"
+                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
-        <v-text-field :readonly="!edit" variant="outlined"
-                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px">
-          {{ last_name }}
-        </v-text-field>
+        <v-text-field v-model:model-value="last_name" :readonly="!edit" variant="outlined"
+                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center pt-10">
         <h1>E-mail</h1>
@@ -30,15 +26,13 @@
         <h1>GSM</h1>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
-        <v-text-field :readonly="!edit" variant="outlined"
+        <v-text-field v-model:model-value="email" :readonly="!edit" variant="outlined"
                       style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px">
-          {{ email }}
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
-        <v-text-field :readonly="!edit" variant="outlined"
+        <v-text-field v-model:model-value="phone_nr" :readonly="!edit" variant="outlined"
                       style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px">
-          {{ phone_nr }}
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pt-10">
@@ -119,7 +113,7 @@ export default {
     save () {
       // TODO save request
       this.edit = !this.edit
-      console.log('Saved!')
+      console.log(this.first_name)
     },
     onResize () {
       this.smallScreen = window.innerWidth < 500
