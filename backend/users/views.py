@@ -23,17 +23,15 @@ class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
-        id = kwargs['pk']
         try:
-            access_token = AccessToken(request.auth)
-            print(access_token)
+            user = get_user_model().objects.get(email=request.user)
             return Response(UserSerializer(user).data)
         except ObjectDoesNotExist:
             raise serializers.ValidationError(
                 {
                     "errors": [
                         {
-                            "message": "referenced pk not in db", "field": "id"
+                            "message": "referenced user not in db", "field": "token"
                         }
                     ]
                 }, code='invalid')
@@ -50,6 +48,7 @@ def registration_view(request):
                 request.data['email'],
                 request.data['first_name'],
                 request.data['last_name'],
+                request.data['phone_nr'],
                 request.data['password']
             )
             data['email'] = request.data['email']
