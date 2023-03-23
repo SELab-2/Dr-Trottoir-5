@@ -15,9 +15,13 @@ In following example inc is a function defined in methods.
   <v-btn
     @click='parentFunction()'
     rounded="pill"
-    color="primary">
-    <div class="text-center text-secondary">
-      <p>{{ text }}</p>
+    color="primary"
+  >
+    <div
+      class="text-center text-secondary"
+      :class="[{'text-h6': /[a-z0-9]/i.test(text)}, 'text-h5']"
+    >
+      <p >{{ text }}</p>
     </div>
   </v-btn>
 </template>

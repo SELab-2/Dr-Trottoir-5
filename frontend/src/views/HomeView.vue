@@ -1,18 +1,20 @@
 <template>
-  <HelloWorld />
+  <ListPage title="Gebouwen" />
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
 // Components
-import HelloWorld from '../components/HelloWorld.vue'
+// import HelloWorld from '../components/HelloWorld.vue'
+import ListPage from '@/components/ListPage'
 
 export default defineComponent({
   name: 'HomeView',
 
   components: {
-    HelloWorld
+    ListPage
+    // HelloWorld
   }
 })
 </script>
