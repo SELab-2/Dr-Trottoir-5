@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card class='px-4'>
-      <v-card-title align="center" class="bg-primary mt-2">
+      <v-card-title align="center" class="bg-primary mt-2 rounded-xl">
         <v-img src="../assets/logo.png" height="75px" width="150px"></v-img>
       </v-card-title>
       <v-spacer></v-spacer>
@@ -21,6 +21,9 @@
               <v-text-field v-model="password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules='[rules.required]' :type="showPassword ? 'text' : 'password'" label="Wachtwoord" counter @click:append="showPassword = !showPassword"></v-text-field>
             </v-col>
             <v-col cols="12">
+              <v-text-field v-model="password2" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules='[rules.required, passwordsMatch]' :type="showPassword ? 'text' : 'password'" label="Bevestig wachtwoord" counter @click:append="showPassword = !showPassword"></v-text-field>
+            </v-col>
+            <v-col cols="12">
               <v-autocomplete
                 label="Locatie" :items="['Gent']" :rules="[rules.required]"
               ></v-autocomplete>
@@ -34,6 +37,10 @@
             </v-col>
           </v-row>
         </v-form>
+        <v-row class="mx-auto justify-center mt-3 mb-1">
+          <div class="mx-1">Reeds een account?</div>
+          <router-link to="/login">Inloggen</router-link>
+        </v-row>
       </v-card-text>
     </v-card>
   </v-container>
@@ -56,12 +63,14 @@ export default defineComponent({
     lastname: '',
     email: '',
     password: '',
+    password2: '',
     gsm: '',
     rules: {
       required: value => !!value || 'Dit veld is verplicht.'
     }
   }),
   methods: {
+    passwordsMatch () { return this.password === this.password2 || 'Wachtwoorden komen niet overeen.' },
     async apiRegister () {
       const response = await requestWithBody('/api/register/', 'post', {
         email: this.email,
@@ -69,6 +78,7 @@ export default defineComponent({
         last_name: this.lastname,
         password: this.password
       })
+      console.log(response)
     },
     async validate () {
       const { valid } = await this.$refs.form.validate()
