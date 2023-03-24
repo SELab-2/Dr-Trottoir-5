@@ -1,24 +1,55 @@
 <template>
   <v-container class="container-border test-style">
-    <v-row align="center" justify="center" >
+    <v-row align="center" justify="center">
       <v-col cols="2">
-        <p>{{ name }}</p>
+        <p>{{ this.args.name }}</p>
       </v-col>
-      <v-col cols="2">
-        <p>{{ adres }}</p>
+      <v-col cols="3">
+        <p>{{ this.args.adres }}</p>
       </v-col>
-      <v-col cols="2">
-        <v-select
-          :items="documentActions"
-          v-model="selectedActions"
-        ></v-select>
+      <v-col cols="1">
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+            >
+              <v-icon icon="mdi-file"></v-icon>
+              <v-icon right>mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item value="download" @click="downloadDocument">
+              <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
+              PFD
+            </v-list-item>
+            <v-list-item value="upload" @click="uploadDocument">
+              <v-icon color="#FFE600" icon="mdi-file-upload-outline"></v-icon>
+              Upload
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
       <v-col cols="1"/>
       <v-col cols="2">
-        <v-select
-          :items="documentStatus"
-          v-model="selectedStatus"
-        ></v-select>
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn
+              color="primary"
+              v-bind="props"
+            >
+              {{ args.status }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in documentStatus"
+              :key="index"
+              :value="index"
+            >
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
       <v-col cols="1"/>
       <v-col cols="2" class="text-right">
@@ -36,17 +67,27 @@
 export default {
   name: 'RoundBuildingCard',
   props: {
-    name: { type: String, default: 'Empty' },
-    adres: { type: String, default: 'Empty' }
+    args: {
+      type: Object,
+      default: () => ({ name: 'Empty', adres: 'Empty', status: '' })
+    }
   },
   data: () => ({
-    documentActions: ['Type 1', 'Type 2', 'Type 3'],
-    selectedActions: null,
-    documentStatus: ['Option 1', 'Option 2', 'Option 3'],
-    selectedStatus: null // TODO
+    documentStatus: [
+      { title: 'Klaar' },
+      { title: 'Update nodig' },
+      { title: 'Bezig' },
+      { title: 'Geüpdatet' }
+    ] // TODO + updaten in database
   }),
   methods: {
     deletePost: function () {
+      // TODO
+    },
+    uploadDocument: function () {
+      // TODO
+    },
+    downloadDocument: function () {
       // TODO
     }
   }
@@ -54,7 +95,7 @@ export default {
 </script>
 
 <style scoped>
-.test-style{
+.test-style {
   margin-top: 10px;
 }
 
