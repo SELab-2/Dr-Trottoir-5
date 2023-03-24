@@ -17,13 +17,13 @@
   </v-navigation-drawer>
   <v-app-bar color="primary">
     <template v-slot:prepend>
-      <v-app-bar-nav-icon v-if="smallScreen" @click="this.goBack()" icon="mdi-arrow-left" ></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="smallScreen" @click="this.goBack()" color="secondary" icon="mdi-arrow-left" ></v-app-bar-nav-icon>
       <v-app-bar-title>
         <v-img src="../assets/logo.png" height="75px" width="150px"/>
       </v-app-bar-title>
     </template>
     <template v-slot:append>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon color="secondary" @click="drawer = !drawer"></v-app-bar-nav-icon>
     </template>
   </v-app-bar>
 </template>
