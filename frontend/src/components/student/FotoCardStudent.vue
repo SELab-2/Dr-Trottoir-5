@@ -20,11 +20,10 @@
             <v-row justify="end" class="row-margin">
               <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;"
                      v-on:click="goToEditPage">
-                <img :src="require('@/assets/edit.png')" alt="Button Image" style="max-height: 35px; max-width: 35px;"/>
+                <EditIcon/>
               </v-btn>
               <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
-                <img :src="require('@/assets/delete.png')" alt="Button Image"
-                     style="max-height: 35px; max-width: 35px"/>
+                <DeleteIcon/>
               </v-btn>
             </v-row>
           </v-col>
@@ -35,6 +34,8 @@
 </template>
 
 <script>
+import EditIcon from '../EditIcon.vue'
+import DeleteIcon from '../DeleteIcon.vue'
 export default {
   name: 'FotoCardStudent',
   props: {
@@ -49,6 +50,10 @@ export default {
     deletePost: function () {
       // TODO
     }
+  },
+  components: {
+    EditIcon,
+    DeleteIcon
   }
 }
 </script>

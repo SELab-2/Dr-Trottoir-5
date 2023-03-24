@@ -10,10 +10,10 @@
       <v-col/>
       <v-col cols="3" class="d-flex align-center justify-end">
         <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
-          <img :src="require('@/assets/edit.png')" alt="Button Image" style="max-height: 35px; max-width: 35px;"/>
+          <EditIcon/>
         </v-btn>
-        <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
-          <img :src="require('@/assets/delete.png')" alt="Button Image" style="max-height: 35px; max-width: 35px"/>
+        <v-btn icon tile class="button-style" v-on:click="deletePost">
+          <DeleteIcon/>
         </v-btn>
       </v-col>
     </v-row>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import EditIcon from '../EditIcon.vue'
+import DeleteIcon from '../DeleteIcon.vue'
 export default {
   name: 'TemplateMailCard',
   props: {
@@ -34,6 +36,10 @@ export default {
     deletePost: function () {
       // TODO
     }
+  },
+  components: {
+    EditIcon,
+    DeleteIcon
   }
 }
 </script>

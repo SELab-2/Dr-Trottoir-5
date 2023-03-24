@@ -1,21 +1,20 @@
 <template>
-  <v-container class="container-border">
-    <v-row align="center">
-      <v-col cols="3">
+  <v-container class="container-border test-style">
+    <v-row align="center" justify="center" >
+      <v-col cols="2">
         <p>{{ name }}</p>
       </v-col>
       <v-col cols="2">
         <p>{{ adres }}</p>
       </v-col>
-      <v-col cols="1"/>
-      <v-col cols="1">
+      <v-col cols="2">
         <v-select
           :items="documentActions"
           v-model="selectedActions"
         ></v-select>
       </v-col>
       <v-col cols="1"/>
-      <v-col cols="1">
+      <v-col cols="2">
         <v-select
           :items="documentStatus"
           v-model="selectedStatus"
@@ -23,8 +22,10 @@
       </v-col>
       <v-col cols="1"/>
       <v-col cols="2" class="text-right">
-        <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
-          <img :src="require('@/assets/delete.png')" alt="Button Image" style="max-height: 35px; max-width: 35px"/>
+        <v-btn icon class="button-style" v-on:click="deletePost">
+          <v-avatar color="red" class="button-style">
+            <v-icon dark>mdi-delete</v-icon>
+          </v-avatar>
         </v-btn>
       </v-col>
     </v-row>
@@ -53,5 +54,8 @@ export default {
 </script>
 
 <style scoped>
+.test-style{
+  margin-top: 10px;
+}
 
 </style>
