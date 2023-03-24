@@ -54,9 +54,6 @@ export default {
 </script>
 
 <style scoped>
-.button-margin {
-  margin-right: 12px;
-}
 .row-margin {
   margin-bottom: 0;
   margin-right: 0;
@@ -66,10 +63,5 @@ export default {
 .image-margin {
   margin-right: 0;
   margin-top: 0;
-}
-
-.container-border{
-  border: 1px solid #E3e3e3;
-  border-radius: 25px;
 }
 </style>

@@ -1,18 +1,18 @@
 <template>
-  <HelloWorld />
+  <RoundBuildingCard />
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
 // Components
-import HelloWorld from '../components/HelloWorld.vue'
+import RoundBuildingCard from '../components/admin/RoundBuildingCard.vue'
 
 export default defineComponent({
   name: 'HomeView',
 
   components: {
-    HelloWorld
+    RoundBuildingCard
   }
 })
 </script>
