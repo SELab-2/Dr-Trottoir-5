@@ -41,6 +41,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { requestWithBody } from '@/authorized'
 import NormalButton from '@/components/NormalButton'
 
 export default defineComponent({
@@ -62,11 +63,12 @@ export default defineComponent({
   }),
   methods: {
     async apiRegister () {
-      const response = await fetch('https://sel2-5.ugent.be/api/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
-      }).catch(error => error)
+      const response = await requestWithBody('/api/register/', 'post', {
+        email: this.email,
+        first_name: this.firstname,
+        last_name: this.lastname,
+        password: this.password
+      })
       console.log(response)
     },
     async validate () {
