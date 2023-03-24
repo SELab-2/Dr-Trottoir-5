@@ -13,8 +13,8 @@
             <v-btn
               v-bind="props"
             >
-              <v-icon icon="mdi-file"></v-icon>
-              <v-icon right>mdi-menu-down</v-icon>
+              <v-icon color="#FFE600" icon="mdi-file"></v-icon>
+              <v-icon color="#FFE600" right>mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list>
@@ -34,10 +34,13 @@
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
-              color="primary"
               v-bind="props"
             >
-              {{ args.status }}
+              <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
+                  status
+                }}</span>
+
+              <v-icon right>mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list>
@@ -45,6 +48,7 @@
               v-for="(item, index) in documentStatus"
               :key="index"
               :value="index"
+              @click="updateStatus(item.title)"
             >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
@@ -73,6 +77,7 @@ export default {
     }
   },
   data: () => ({
+    status: '',
     documentStatus: [
       { title: 'Klaar' },
       { title: 'Update nodig' },
@@ -89,7 +94,14 @@ export default {
     },
     downloadDocument: function () {
       // TODO
+    },
+    updateStatus: function (newStatus) {
+      this.status = newStatus
+      // TODO opslaan in database
     }
+  },
+  async mounted () {
+    this.status = this.args.status
   }
 }
 </script>
