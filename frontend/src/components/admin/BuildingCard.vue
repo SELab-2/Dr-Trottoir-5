@@ -4,8 +4,16 @@
       <v-col cols="2">
         <p @click="goToBuildingPage" class="text-style-building">{{ this.args.gebouw }}</p>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="2">
         <p>{{ this.args.adres }}</p>
+      </v-col>
+      <v-col cols="1">
+        <p :style="{
+    color:
+      this.args.efficiency < 50 ? '#FF1F00' :
+      this.args.efficiency < 75 ? '#E88E4D' :
+      '#39AE68'
+  }">{{ this.args.efficiency }}%</p>
       </v-col>
       <v-col cols="1">
         <v-menu>
@@ -30,7 +38,7 @@
         </v-menu>
       </v-col>
       <v-col cols="1"/>
-      <v-col cols="2">
+      <v-col cols="3">
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
@@ -55,10 +63,9 @@
           </v-list>
         </v-menu>
       </v-col>
-      <v-col cols="1"/>
       <v-col cols="2" class="text-right">
-        <v-btn icon class="button-style" v-on:click="deletePost">
-          <DeleteIcon/>
+        <v-btn icon class="button-style" v-on:click="editPost">
+          <EditIcon/>
         </v-btn>
       </v-col>
     </v-row>
@@ -66,15 +73,15 @@
 </template>
 
 <script>
-import DeleteIcon from '@/components/DeleteIcon.vue';
+import EditIcon from '@/components/EditIcon.vue'
 
 export default {
-  name: 'RoundBuildingCard',
-  components: { DeleteIcon },
+  name: 'BuildingCard',
+  components: { EditIcon },
   props: {
     args: {
       type: Object,
-      default: () => ({ gebouw: 'Empty', adres: 'Empty', status: '' })
+      default: () => ({ gebouw: 'Empty', adres: 'Empty', status: '', efficiency: 0 })
     }
   },
   data: () => ({
@@ -87,7 +94,7 @@ export default {
     ] // TODO + updaten in database
   }),
   methods: {
-    deletePost: function () {
+    editPost: function () {
       // TODO
     },
     uploadDocument: function () {
@@ -111,7 +118,7 @@ export default {
 </script>
 
 <style scoped>
-.text-style-building{
+.text-style-building {
   text-decoration-line: underline;
   cursor: pointer;
 }
