@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "force": "npm install --force",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
@@ -13,6 +14,7 @@
     "core-js": "^3.8.3",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
+    "vue-cookies": "^1.8.3",
     "vue-router": "^4.0.3",
     "vuetify": "^3.0.0-beta.0",
     "vuex": "^4.0.0",
