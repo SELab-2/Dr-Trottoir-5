@@ -69,7 +69,6 @@ export default defineComponent({
         last_name: this.lastname,
         password: this.password
       })
-      console.log(response)
     },
     async validate () {
       const { valid } = await this.$refs.form.validate()
