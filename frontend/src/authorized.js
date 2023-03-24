@@ -1,7 +1,7 @@
 import router from '@/router'
 /* eslint-disable */
 
-function requestWithBody (url, method, body, headers = {}) {
+export function requestWithBody (url, method, body, headers = {}) {
   headers.Accept = 'application/json'
   headers['Content-Type'] = 'application/json'
   return fetch(url, {
