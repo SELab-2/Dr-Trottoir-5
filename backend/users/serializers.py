@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from .models import Registration, RoleAssignment
 
 
-
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration

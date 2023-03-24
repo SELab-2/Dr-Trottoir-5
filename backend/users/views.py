@@ -7,7 +7,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
+from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
+    UserSerializer
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -23,8 +24,7 @@ def registration_view(request):
         serializer = RegistrationSerializer(data=request.data)
         data = {}
         if serializer.is_valid(raise_exception=True):
-            if get_user_model().objects.filter(email=request.data[
-                "email"]).exists():
+            if get_user_model().objects.filter(email=request.data["email"]).exists():
                 raise serializers.ValidationError({
                     "errors": [
                         {
@@ -39,7 +39,8 @@ def registration_view(request):
                 request.data['password']
             )
             data['email'] = request.data['email']
-            data['name'] = request.data['first_name'] + " " + request.data['last_name']
+            data['name'] = request.data['first_name'] + " " + request.data[
+                'last_name']
             data['token'] = Token.objects.get(user=user).key
         else:
             data = serializer.errors
@@ -111,7 +112,8 @@ def reset_password(request):
             else:
                 raise serializers.ValidationError(
                     {
-                        "errors": [{"message": "Password can't be empty", "field": "new_password"}]
+                        "errors": [{"message": "Password can't be empty",
+                                    "field": "new_password"}]
                     }, code='invalid')
         else:
             raise serializers.ValidationError(
@@ -145,13 +147,15 @@ def role_assignment_view(request):
                 raise serializers.ValidationError(
                     {
                         "errors": [
-                            {"message": "user does not exist", "field": "email"}
+                            {"message": "user does not exist",
+                             "field": "email"}
                         ]
                     }, code='invalid')
 
             user.role = request.data['role']
             user.save()
-            data = {'message': f'{user.email} is nu een {user.get_role_display()}'}
+            data = {
+                'message': f'{user.email} is nu een {user.get_role_display()}'}
         else:
             data = serializer.errors
         return Response(data)
