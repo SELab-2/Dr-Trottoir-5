@@ -7,6 +7,7 @@
         @blur="exit()"
         @keyup="keyMonitor"
         v-model="searchFilter"
+        v-on:input="showOptions"
         :disabled="disabled"
         :placeholder="placeholder"
       />
@@ -84,13 +85,12 @@ export default {
   methods: {
     selectOption (option) {
       this.selected = option
-      // this.optionsShown = false
+      this.optionsShown = false
       this.searchFilter = this.selected
       this.$emit('selected', this.selected)
     },
     showOptions () {
       if (!this.disabled) {
-        this.searchFilter = this.selected
         this.optionsShown = true
       }
     },
@@ -102,10 +102,13 @@ export default {
         this.searchFilter = this.selected
       }
       this.optionsShown = false
+      this.$emit('selected', this.selected)
     },
     // Selecting when pressing Enter
     keyMonitor: function (event) {
-      if (event.key === 'Enter' && this.filteredOptions[0]) { this.selectOption(this.filteredOptions[0]) }
+      if (event.key === 'Enter') {
+        this.selectOption((this.filteredOptions[0] === this.searchFilter) ? this.filteredOptions[0] : '')
+      }
     }
   }
 }
@@ -120,6 +123,7 @@ export default {
   margin: 10px 1px;
   display: inline-block;
   vertical-align: middle;
+  overflow: visible !important;
 }
 .dropdown a:hover {
   text-decoration: none;
@@ -146,15 +150,15 @@ export default {
 }
 
 .dropdown-menu {
-  position: static;
+  position: absolute;
   top: 100%;
   left: 0;
   z-index: 1000;
   float: left;
   min-width: 160px;
   width: 100%;
-  padding: 10px 10px 10px 10px;
-  margin: 0 0 0;
+  padding: 10px 20px 10px 10px;
+  margin: 25px 0 0;
   list-style: none;
   font-size: 14px;
   text-align: left;

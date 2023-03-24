@@ -12,7 +12,21 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <SearchDropdown v-bind:options="elements" placeholder="Search ..."/>
+        <SearchDropdown v-bind:options="terms" placeholder="Search ..." v-on:selected="onSearch"/>
+      </v-col>
+      <v-col/>
+      <v-col cols="12">
+        <component :is="headComponent"/>
+      </v-col>
+      <v-col/>
+      <v-col cols="12">
+        <ul>
+          <li v-for="(el) in filteredOptions" :key="el">
+            <v-col cols="12">
+              <component :is="childComponent" v-bind:text="el"/>
+            </v-col>
+          </li>
+        </ul>
       </v-col>
     </v-row>
   </v-container>
@@ -26,15 +40,62 @@ export default {
   name: 'ListPage',
   components: { SearchDropdown, NormalButton },
   props: {
-    title: { type: String, default: '' },
-    addFunction: { type: Function, default: null }
+    title: {
+      type: String,
+      default: '',
+      required: true
+    },
+    addFunction: {
+      type: Function,
+      default: null,
+      required: true
+    },
+    headComponent: {
+      type: [String],
+      default: 'div',
+      required: true
+    },
+    childComponent: {
+      type: String,
+      default: 'div',
+      required: true
+    },
+    elements: {
+      type: Array,
+      default: () => [],
+      required: false
+    },
+    terms: {
+      type: Array,
+      default: () => [],
+      required: false
+    }
   },
-  data: () => ({
-    elements: ['Banana', 'Appel', 'Kiwi']
-  })
+  methods: {
+    onSearch (newValue) {
+      this.searched = newValue
+    }
+  },
+  computed: {
+    filteredOptions () {
+      const filtered = []
+      const regex = new RegExp(this.searched, 'ig')
+      for (const el of this.elements) {
+        if (this.searched.length < 1 || el.match(regex)) {
+          filtered.push(el)
+        }
+      }
+      return filtered
+    }
+  },
+  data () {
+    return {
+      searched: ''
+    }
+  }
 }
 </script>
 
 <style scoped>
-
+  ul { list-style-type: none; }
 </style>
