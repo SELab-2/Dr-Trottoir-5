@@ -31,3 +31,11 @@ additional information for the user that just registered.
     </v-col>
   </v-container>
 </template>
+
+<script>
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'RegisterDone'
+})
+</script>
