@@ -22,7 +22,7 @@ class LocatieEnumSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"errors": str(e)})
 
 
-class ManaulSerializer(serializers.ModelSerializer):
+class ManualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = '__all__'
