@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from .permissions import AdminPermission, SuperstudentPermission, StudentPermission
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, StudentPermission
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserSerializer
 
 
@@ -117,11 +117,13 @@ def reset_password(request):
                 }, code='invalid')
 
 
-@api_view(['POST'])
-@permission_classes([AdminPermission | SuperstudentPermission])
+@api_view(['POST', 'GET'])
+@permission_classes([AdminPermission | SuperstudentPermission | ReadOnly])
 def role_assignment_view(request):
-    if request.method == "POST":
+    if request.method == "GET":  # return role of user
+        return Response({'role': request.user.role})
 
+    if request.method == "POST":  # change the role of a user
         serializer = RoleAssignmentSerializer(data=request.data)
         if serializer.is_valid():
 

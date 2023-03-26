@@ -14,7 +14,6 @@ function requestWithBody (url, method, body, headers = {}) {
 
 function getRequest (url, headers) {
   return fetch(url, {
-    method: 'GET',
     headers: headers
   }).then(r => r.json())
     .then(data => { return data })
