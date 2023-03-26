@@ -1,38 +1,37 @@
 <template>
-  <v-card class='px-4'>
-    <h1>Should be the navbar</h1>
-    <v-spacer></v-spacer>
-  </v-card>
+  <v-row justify="center" align="center" class="pt-10">
+    <h1>Account</h1>
+  </v-row>
   <v-card color="white" :class="`mx-auto my-16 h-70 ${smallScreen ? 'w-100' : 'w-75'}`">
-    <v-row justify="center" align="center">
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center pt-10">
+    <v-row justify="center" align="center" class="xs-flex-column">
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h1>Voornaam</h1>
       </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center pt-10">
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
+        <v-text-field v-model:model-value="first_name" :readonly="!edit" variant="outlined"
+                      style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
+      </v-col>
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h1>Achternaam</h1>
       </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
-        <v-text-field v-model:model-value="first_name" :readonly="!edit" variant="outlined"
-                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px"></v-text-field>
-      </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-text-field v-model:model-value="last_name" :readonly="!edit" variant="outlined"
-                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px"></v-text-field>
+                      style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center pt-10">
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h1>E-mail</h1>
       </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center pt-10">
-        <h1>GSM</h1>
-      </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-text-field v-model:model-value="email" :readonly="!edit" variant="outlined"
-                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px">
+                      style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
-      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center align-center">
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
+        <h1>GSM</h1>
+      </v-col>
+      <v-col cols="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-text-field v-model:model-value="phone_nr" :readonly="!edit" variant="outlined"
-                      style="height: 40px; width: 450px; padding-left: 5px; padding-top: 5px">
+                      style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pt-10">
