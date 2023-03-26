@@ -1,5 +1,6 @@
 from rest_framework import generics, serializers
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
+from users.permissions import StudentReadOnly, AdminPermission, \
+    SuperstudentPermission
 from .models import PickUpDay
 from .serializers import PickUpSerializer
 
@@ -7,7 +8,8 @@ from .serializers import PickUpSerializer
 class PickUpListCreateView(generics.ListCreateAPIView):
     queryset = PickUpDay.objects.all()
     serializer_class = PickUpSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [
+        StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
         errors = []
@@ -34,11 +36,10 @@ class PickUpListCreateView(generics.ListCreateAPIView):
                 "message": "field is required",
                 "field": "end_hour"
             })
-
         if len(errors) > 0:
             raise serializers.ValidationError({
-            "errors":errors
-        })
+                "errors": errors
+            })
 
         return super().post(request, *args, **kwargs)
 
@@ -46,4 +47,5 @@ class PickUpListCreateView(generics.ListCreateAPIView):
 class PickUpDetailView(generics.RetrieveAPIView):
     queryset = PickUpDay.objects.all()
     serializer_class = PickUpSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [
+        StudentReadOnly | AdminPermission | SuperstudentPermission]
