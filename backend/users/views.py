@@ -17,7 +17,7 @@ class UserListAPIView(generics.ListAPIView):
     permission_classes = [AdminPermission | SuperstudentPermission]
 
 
-class UserRetrieveDestroyView(generics.RetrieveUpdateAPIView):
+class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
 
