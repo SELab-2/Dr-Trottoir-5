@@ -1,3 +1,14 @@
+<!--
+Template voor een oplijstingspagina
+Heeft als nodige argumenten nodig:
+  Title: Titel van de pagina
+  addFunction: Een functie voor het aanmaken van een nieuw item
+  headComponent: Een html component of html tekst die de header voorstelt voor de lijst
+  childComponent: Een html component die de elementen van de lijst weergeven
+  elements: Een lijst met objecten die de elementen voorstellen
+
+-->
+
 <template>
   <v-container>
     <v-row class="text-center">
@@ -60,7 +71,7 @@ export default {
     elements: {
       type: Array,
       default: () => [],
-      required: false
+      required: true
     }
   },
   methods: {

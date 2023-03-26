@@ -1,3 +1,10 @@
+<!--
+Template voor een zoekbalk met een een knop ernaast om te zoeken op een bepaald argument
+Indien er een zoekbalk alleen nodig is, kunnen we deze nog splitsen in twee aparte componenten
+Er moet een lijst van objecten worden meegegeven, het standaard zoek argument is de eerste parameter van het object.
+De parameter kan verandert worden door op de knop een andere parameter te kiezen.
+-->
+
 <template>
   <v-row align="center">
     <v-col cols="12">
@@ -10,7 +17,6 @@
               @keyup="keyMonitor"
               v-model="searchFilter"
               v-on:input="showOptions"
-              :disabled="disabled"
               :placeholder="placeholder"
             />
           </div>
@@ -59,22 +65,12 @@ export default {
     elements: {
       type: Array,
       default: () => [],
-      required: false
+      required: true
     },
     placeholder: {
       type: String,
       required: false,
       default: 'Please select an option'
-    },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    maxItem: {
-      type: Number,
-      required: false,
-      default: 10
     }
   },
   data () {
@@ -85,18 +81,13 @@ export default {
       key: Object.keys(this.elements[0])[0]
     }
   },
-  created () {
-    this.$emit('selected', this.selected)
-  },
   computed: {
     filteredOptions () {
       const filtered = []
       const regex = new RegExp(this.searchFilter, 'ig')
       for (const option of this.elements) {
         if (this.searchFilter.length < 1 || option[this.key].toString().match(regex)) {
-          if (filtered.length < this.maxItem) filtered.push(option[this.key].toString())
-        } else {
-          if (filtered.length > this.maxItem) filtered.push('option')
+          filtered.push(option[this.key].toString())
         }
       }
       return filtered
@@ -117,19 +108,12 @@ export default {
       this.$emit('selected', this.selected)
     },
     showOptions () {
-      if (!this.disabled) {
-        this.optionsShown = true
-      }
+      this.optionsShown = true
     },
+    // When clicking out of the searchmenu
     exit () {
-      if (this.selected !== this.searchFilter) {
-        this.selected = ''
-        this.searchFilter = ''
-      } else {
-        this.searchFilter = this.selected
-      }
       this.optionsShown = false
-      this.$emit('selected', this.selected)
+      this.$emit('selected', this.searchFilter)
     },
     // Selecting when pressing Enter
     keyMonitor: function (event) {
@@ -137,14 +121,8 @@ export default {
         if (this.filteredOptions[0] === this.searchFilter) {
           this.selectOption(this.filteredOptions[0])
         } else {
-          this.search()
+          this.exit()
         }
-      }
-    },
-    search () {
-      if (this.filteredOptions.length > 0) {
-        this.optionsShown = false
-        this.$emit('selected', this.searchFilter)
       }
     }
   }
