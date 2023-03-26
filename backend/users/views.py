@@ -17,7 +17,7 @@ class UserListAPIView(generics.ListAPIView):
     permission_classes = [AdminPermission | SuperstudentPermission]
 
 
-class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class UserRetrieveDestroyView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
 
@@ -25,6 +25,23 @@ class UserRetrieveDestroyView(generics.RetrieveDestroyAPIView):
         try:
             user = get_user_model().objects.get(email=request.user)
             return Response(UserSerializer(user).data)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced user not in db", "field": "token"
+                        }
+                    ]
+                }, code='invalid')
+
+    def partial_update(self, request, *args, **kwargs):
+        try:
+            user = get_user_model().objects.get(email=request.user)
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            return Response({"succes": ["Updated user"]})
         except ObjectDoesNotExist:
             raise serializers.ValidationError(
                 {
