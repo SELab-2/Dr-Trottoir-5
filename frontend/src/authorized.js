@@ -3,7 +3,7 @@ import router from '@/router'
 const login = new Event('login')
 const logout = new Event('logout')
 
-function requestWithBody (url, method, body, headers = {}) {
+export function requestWithBody (url, method, body, headers = {}) {
   headers.Accept = 'application/json'
   headers['Content-Type'] = 'application/json'
   return fetch(url, {
