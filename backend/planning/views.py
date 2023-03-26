@@ -129,10 +129,10 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
             })
         else:
             try:
-                datetime.datetime.strptime(data["time"], "%Y-%m-%dT%H:%M")
+                datetime.datetime.strptime(data["time"], "%Y-%m-%d %H:%M")
             except ValueError:
                 errors.append({
-                    "message": "time has wrong format, try YYYY-MM-DDThh:mm",
+                    "message": "time has wrong format, try YYYY-MM-DD hh:mm",
                     "field": "time"
                 })
         if "infoPerBuilding" not in data:
