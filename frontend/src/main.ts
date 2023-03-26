@@ -15,7 +15,5 @@ createApp(App)
   .use(router)
   .use(store)
   .use(vuetify)
-  .use(VueCookies, {
-    // options
-  })
+  .use(VueCookies)
   .mount('#app')

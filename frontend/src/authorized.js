@@ -74,14 +74,12 @@ export async function loginUser(email, password, return_path) {
   if(email === '') return { message: 'Email is verplicht.' }
   if(password === '') return { message: 'Wachtwoord is verplicht.' }
   const data = {
-      'email': email,
+      'username': email,
       'password': password
   }
-  const tokens = await requestWithBody('/api/login/', 'POST', data)
+  const response = await requestWithBody('/api/login/', 'POST', data)
 
-  if ('access' in tokens) { // login succeeded
-    $cookies.set('access_token', tokens.access)
-    $cookies.set('refresh_token', tokens.refresh)
+  if ('Success' in response) { // login succeeded
     return await router.push({ path: return_path })
   }
   return { message: 'Email of wachtwoord is incorrect.' }

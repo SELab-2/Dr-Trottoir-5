@@ -1,15 +1,12 @@
 import {
-    Body,
-    DELETE,
-    EchoPromise,
-    EchoService,
-    EchoServiceBuilder,
-    FormField,
-    FormMultipart,
-    GET,
-    PATCH,
-    Path,
-    POST,
+  Body,
+  DELETE,
+  EchoPromise,
+  EchoService,
+  EchoServiceBuilder,
+  GET,
+  PATCH,
+  POST
 } from "../EchoFetch/src/echofetch";
 import User from "../models/User";
 import config from "@/config";
@@ -24,6 +21,14 @@ class UserService extends EchoService {
     get(): EchoPromise<User> {
         return {} as EchoPromise<User>;
     }
+
+  /**
+   * Login a user based on
+   */
+  @POST("/user/login")
+  login(): EchoPromise<User> {
+    return {} as EchoPromise<User>;
+  }
 
     /**
      * Update the current user
