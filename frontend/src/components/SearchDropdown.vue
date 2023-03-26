@@ -7,52 +7,54 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 
 <template>
   <v-row align="center">
-    <v-col cols="12">
-        <div class="dropdown" v-if="filteredOptions">
-          <div class="dropdown-toggle">
-            <input
-              :name="name"
-              @focus="showOptions()"
-              @blur="exit()"
-              @keyup="keyMonitor"
-              v-model="searchFilter"
-              v-on:input="showOptions"
-              :placeholder="placeholder"
-            />
-          </div>
-          <transition name="fade">
-            <ul class="dropdown-menu" v-show="optionsShown">
-              <li
-                @mousedown="selectOption(option)"
-                v-for="(option) in filteredOptions"
-                :key="option"
-              >
-                <a href="javascript:void(0)">
-                  {{ option }}
-                </a>
-              </li>
-            </ul>
-          </transition>
+    <v-col cols="12" class="overflow-visible">
+      <v-icon class="icon">mdi-magnify</v-icon>
+      <div class="dropdown" v-if="filteredOptions">
+        <div class="dropdown-toggle">
+          <input
+            :name="name"
+            @focus="showOptions()"
+            @blur="exit()"
+            @keyup="keyMonitor"
+            v-model="searchFilter"
+            v-on:input="showOptions"
+            :placeholder="placeholder"
+          />
         </div>
-        <NormalButton :text="this.key" id="menu-activator" class="button"/>
-        <v-menu activator="#menu-activator" class="text-yellow">
-          <v-list>
-            <v-list-item
-              v-for="property in Object.keys(elements[0])"
-              :key="property"
-              :value="property"
-              @click="changeKey(property)"
+        <transition name="fade">
+          <ul class="dropdown-menu" v-show="optionsShown">
+            <li
+              @mousedown="selectOption(option)"
+              v-for="(option) in filteredOptions"
+              :key="option"
             >
-              <v-list-item-title>{{ property }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+              <a href="javascript:void(0)">
+                {{ option }}
+              </a>
+            </li>
+          </ul>
+        </transition>
+      </div>
+      <NormalButton :text="this.key" id="menu-activator" class="button"/>
+      <v-menu activator="#menu-activator" class="text-yellow">
+        <v-list>
+          <v-list-item
+            v-for="property in Object.keys(elements[0])"
+            :key="property"
+            :value="property"
+            @click="changeKey(property)"
+          >
+            <v-list-item-title>{{ property }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-col>
   </v-row>
 </template>
 
 <script>
 import NormalButton from '@/components/NormalButton'
+
 export default {
   name: 'SearchDropdown',
   components: { NormalButton },
@@ -131,6 +133,16 @@ export default {
 
 <style scoped>
 
+.icon {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  top: 22px;
+  left: 37px;
+  z-index: 200;
+
+}
+
 .button {
   position: relative;
   top: 22px;
@@ -164,7 +176,7 @@ export default {
   width: 350px;
   margin: 20px auto;
   padding: 10px 45px;
-  background: white url("../assets/search.svg") no-repeat 15px center;
+  background: white;
   background-size: 15px 15px;
   font-size: 16px;
   border: #e3e3e3;
