@@ -1,5 +1,7 @@
 import router from '@/router'
 /* eslint-disable */
+const login = new Event('login')
+const logout = new Event('logout')
 
 function requestWithBody (url, method, body, headers = {}) {
   headers.Accept = 'application/json'
@@ -82,7 +84,19 @@ export async function loginUser(email, password, return_path) {
   if ('access' in tokens) { // login succeeded
     $cookies.set('access_token', tokens.access)
     $cookies.set('refresh_token', tokens.refresh)
+    window.dispatchEvent(login)
     return await router.push({ path: return_path })
   }
   return { message: 'Email of wachtwoord is incorrect.' }
+}
+
+export async function logoutUser() {
+  requestWithBody('/api/logout/', 'POST', {
+    'refresh': $cookies.get('refresh_token')
+  })
+  $cookies.remove('access_token')
+  $cookies.remove('refresh_token')
+  window.dispatchEvent(logout)
+  await router.push({ path: '/' })
+  await router.push({ path: '/login' })
 }
