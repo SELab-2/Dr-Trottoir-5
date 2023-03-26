@@ -7,7 +7,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 
 <template>
   <v-row align="center">
-    <v-col cols="12" class="overflow-visible">
+    <v-col cols="12" class="d-flex justify-center">
       <v-icon class="icon">mdi-magnify</v-icon>
       <div class="dropdown" v-if="filteredOptions">
         <div class="dropdown-toggle">
@@ -137,7 +137,7 @@ export default {
   position: relative;
   overflow: hidden;
   display: inline-block;
-  top: 22px;
+  top: 38px;
   left: 37px;
   z-index: 200;
 
@@ -145,7 +145,7 @@ export default {
 
 .button {
   position: relative;
-  top: 22px;
+  top: 35px;
   left: 20px;
   display: inline-block;
   vertical-align: middle;
