@@ -1,46 +1,65 @@
 <template>
-  <div class="dropdown" v-if="options">
-    <div class="dropdown-toggle">
-      <input
-        :name="name"
-        @focus="showOptions()"
-        @blur="exit()"
-        @keyup="keyMonitor"
-        v-model="searchFilter"
-        v-on:input="showOptions"
-        :disabled="disabled"
-        :placeholder="placeholder"
-      />
-    </div>
-    <transition name="fade">
-      <ul class="dropdown-menu" v-show="optionsShown">
-        <li
-          @mousedown="selectOption(option)"
-          v-for="(option) in filteredOptions"
-          :key="option"
-        >
-          <a href="javascript:void(0)">
-            {{ option }}
-          </a>
-        </li>
-      </ul>
-    </transition>
-  </div>
+  <v-row align="center">
+    <v-col cols="12">
+        <div class="dropdown" v-if="filteredOptions">
+          <div class="dropdown-toggle">
+            <input
+              :name="name"
+              @focus="showOptions()"
+              @blur="exit()"
+              @keyup="keyMonitor"
+              v-model="searchFilter"
+              v-on:input="showOptions"
+              :disabled="disabled"
+              :placeholder="placeholder"
+            />
+          </div>
+          <transition name="fade">
+            <ul class="dropdown-menu" v-show="optionsShown">
+              <li
+                @mousedown="selectOption(option)"
+                v-for="(option) in filteredOptions"
+                :key="option"
+              >
+                <a href="javascript:void(0)">
+                  {{ option }}
+                </a>
+              </li>
+            </ul>
+          </transition>
+        </div>
+        <NormalButton :text="this.key" id="menu-activator" class="button"/>
+        <v-menu activator="#menu-activator" class="text-yellow">
+          <v-list>
+            <v-list-item
+              v-for="property in Object.keys(elements[0])"
+              :key="property"
+              :value="property"
+              @click="changeKey(property)"
+            >
+              <v-list-item-title>{{ property }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
+import NormalButton from '@/components/NormalButton'
 export default {
   name: 'SearchDropdown',
+  components: { NormalButton },
   props: {
     name: {
       type: String,
       required: false,
       default: 'input'
     },
-    options: {
+    elements: {
       type: Array,
-      required: true,
-      default: () => []
+      default: () => [],
+      required: false
     },
     placeholder: {
       type: String,
@@ -62,7 +81,8 @@ export default {
     return {
       selected: '',
       optionsShown: false,
-      searchFilter: ''
+      searchFilter: '',
+      key: Object.keys(this.elements[0])[0]
     }
   },
   created () {
@@ -72,9 +92,9 @@ export default {
     filteredOptions () {
       const filtered = []
       const regex = new RegExp(this.searchFilter, 'ig')
-      for (const option of this.options) {
-        if (this.searchFilter.length < 1 || option.match(regex)) {
-          if (filtered.length < this.maxItem) filtered.push(option)
+      for (const option of this.elements) {
+        if (this.searchFilter.length < 1 || option[this.key].toString().match(regex)) {
+          if (filtered.length < this.maxItem) filtered.push(option[this.key].toString())
         } else {
           if (filtered.length > this.maxItem) filtered.push('option')
         }
@@ -83,6 +103,13 @@ export default {
     }
   },
   methods: {
+    changeKey (key) {
+      this.key = key
+      this.selected = ''
+      this.searchFilter = ''
+      this.$emit('key', this.key)
+      this.$emit('selected', this.selected)
+    },
     selectOption (option) {
       this.selected = option
       this.optionsShown = false
@@ -107,7 +134,17 @@ export default {
     // Selecting when pressing Enter
     keyMonitor: function (event) {
       if (event.key === 'Enter') {
-        this.selectOption((this.filteredOptions[0] === this.searchFilter) ? this.filteredOptions[0] : '')
+        if (this.filteredOptions[0] === this.searchFilter) {
+          this.selectOption(this.filteredOptions[0])
+        } else {
+          this.search()
+        }
+      }
+    },
+    search () {
+      if (this.filteredOptions.length > 0) {
+        this.optionsShown = false
+        this.$emit('selected', this.searchFilter)
       }
     }
   }
@@ -115,6 +152,15 @@ export default {
 </script>
 
 <style scoped>
+
+.button {
+  position: relative;
+  top: 22px;
+  left: 20px;
+  display: inline-block;
+  vertical-align: middle;
+
+}
 
 .dropdown {
   min-width: 160px;
@@ -145,8 +191,8 @@ export default {
   font-size: 16px;
   border: #e3e3e3;
   border-radius: 5px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-    #e3e3e3 0px 1px 3px -1px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px,
+    #e3e3e3 0 1px 3px -1px;
 }
 
 .dropdown-menu {

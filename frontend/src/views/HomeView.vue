@@ -1,5 +1,5 @@
 <template>
-  <ListPage title="Gebouwen" :head-component="ChildComponent" :child-component="ChildComponent" v-bind:elements="list" v-bind:terms="list.map((el) => el.name)"/>
+  <ListPage title="Gebouwen" :head-component="Headcomponent" :child-component="ChildComponent" v-bind:elements="list"/>
 </template>
 
 <script>
@@ -9,6 +9,7 @@ import { defineComponent } from 'vue'
 // import HelloWorld from '../components/HelloWorld.vue'
 import NormalButton from '@/components/NormalButton'
 import ListPage from '@/components/ListPage'
+import TemplateMailCard from '@/components/admin/TemplateMailCard'
 
 export default defineComponent({
   name: 'HomeView',
@@ -19,12 +20,16 @@ export default defineComponent({
   },
   data () {
     return {
-      ChildComponent: <NormalButton text="This is a button"/>,
+      Headcomponent: <NormalButton text="This is a button"/>,
+      ChildComponent: <TemplateMailCard/>,
       list: [
-        { name: 'a' },
-        { name: 'aa' },
-        { name: 'aaa' },
-        { name: 'av' }]
+        { name: 'alpha', argsCount: 0 },
+        { name: 'beta', argsCount: 1 },
+        { name: 'gamma', argsCount: 2 },
+        { name: 'delta', argsCount: 3 },
+        { name: 'epsilon', argsCount: 4 },
+        { name: 'dzeta', argsCount: 5 }
+      ]
     }
   }
 })

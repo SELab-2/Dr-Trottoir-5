@@ -2,9 +2,6 @@
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
-        <NavigationBar/>
-      </v-col>
-      <v-col cols="12">
         <v-row class="pa-5">
             <h1>{{ title }}</h1>
           <v-row></v-row>
@@ -12,7 +9,7 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <SearchDropdown v-bind:options="terms" placeholder="Search ..." v-on:selected="onSearch"/>
+        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -23,7 +20,7 @@
         <ul>
           <li v-for="(el) in filteredOptions" :key="el">
             <v-col cols="12">
-              <component :is="childComponent" v-bind:text="el"/>
+              <component :is="childComponent" v-bind:data="el"/>
             </v-col>
           </li>
         </ul>
@@ -64,16 +61,14 @@ export default {
       type: Array,
       default: () => [],
       required: false
-    },
-    terms: {
-      type: Array,
-      default: () => [],
-      required: false
     }
   },
   methods: {
     onSearch (newValue) {
       this.searched = newValue
+    },
+    onKeyChange (newValue) {
+      this.key = newValue
     }
   },
   computed: {
@@ -81,7 +76,7 @@ export default {
       const filtered = []
       const regex = new RegExp(this.searched, 'ig')
       for (const el of this.elements) {
-        if (this.searched.length < 1 || el.match(regex)) {
+        if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
           filtered.push(el)
         }
       }
@@ -90,7 +85,8 @@ export default {
   },
   data () {
     return {
-      searched: ''
+      searched: '',
+      key: Object.keys(this.elements[0])[0]
     }
   }
 }
