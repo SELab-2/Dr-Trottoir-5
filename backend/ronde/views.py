@@ -199,7 +199,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
             })
         else:
             try:
-                x = int(data["ivago_klantnr"])
+                int(data["ivago_klantnr"])
             except Exception:
                 errors.append({
                     "message": "field must be integer",
