@@ -47,11 +47,11 @@
           label="Tweede keer nieuw wachtwoord"
         />
         <v-row class="justify-center my-2">
-          <normal-button text="Nieuw wachtwoord opslaan"></normal-button>
+          <normal-button :parent-function="resetPassword" text="Nieuw wachtwoord opslaan"></normal-button>
         </v-row>
         <v-row class="justify-center my-5">
           <v-btn @click="goBack()" variant="flat" rounded >Terug</v-btn>
-          <v-btn>Verzend email opnieuw</v-btn>
+          <v-btn @click="sendOtp()">Verzend email opnieuw</v-btn>
         </v-row>
       </v-form>
     </v-col>
@@ -62,6 +62,7 @@
 import { defineComponent } from 'vue'
 import router from '@/router'
 import NormalButton from '@/components/NormalButton.vue'
+import { requestWithBody } from '@/authorized'
 
 export default defineComponent({
   name: 'ForgotView',
@@ -106,7 +107,18 @@ export default defineComponent({
       }
     },
     sendOtp () {
+      const response = requestWithBody('/api/forgot/', 'POST', { email: this.email })
+      console.log(response)
       this.sendEmail = false
+    },
+    async resetPassword () {
+      const response = await requestWithBody('/api/reset/', 'POST', {
+        email: this.email,
+        otp: this.otp,
+        new_password: this.password
+      })
+      console.log(response)
+      return await router.push({ path: '/login' })
     }
   }
 })
