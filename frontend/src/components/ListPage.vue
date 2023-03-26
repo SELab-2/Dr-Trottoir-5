@@ -61,7 +61,7 @@ export default {
     headComponent: {
       type: [String],
       default: 'div',
-      required: true
+      required: false
     },
     childComponent: {
       type: String,
