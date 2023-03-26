@@ -5,15 +5,8 @@
         <v-img src="../assets/logo.png" :class="`mx-auto ${smallScreen ? ' w-100' : 'w-75'}`"/>
       </v-sheet>
       <v-form @submit.prevent :class="`${smallScreen ? ' w-100' : 'w-50'} mx-auto my-5`">
-        <v-text-field
-          v-model="email"
-          label="e-mail"
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          type="password"
-          label="Wachtwoord"
-        ></v-text-field>
+        <v-text-field v-model="email" label="e-mail" />
+        <v-text-field v-model="password" type="password" label="Wachtwoord" />
         <div class="text-red" v-if="error !== ''">{{error.message}}</div>
         <router-link to="/forgot">Wachtwoord vergeten?</router-link>
         <v-btn @click="login" block class="mt-2">Login</v-btn>

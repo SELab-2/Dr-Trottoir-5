@@ -11,7 +11,7 @@
       <v-list-item prepend-icon="mdi-account-key" v-if="this.isAdminOrSu()" title="Syndicussen" value="syndicussen"></v-list-item>
       <v-list-item prepend-icon="mdi-email-outline" v-if="this.isAdminOrSu()" title="Templates" value="templates"></v-list-item>
       <v-list-item prepend-icon="mdi-account-circle" to="/account/" title="Account" value="account"></v-list-item>
-      <v-list-item prepend-icon="mdi-logout" :active="false" @click="logoutUser(); show = false" title="Logout" value="logout"></v-list-item>
+      <v-list-item prepend-icon="mdi-logout" :active="false" @click="logoutUser()" title="Logout" value="logout"></v-list-item>
     </v-list>
     <v-divider></v-divider>
   </v-navigation-drawer>
@@ -23,7 +23,14 @@
       </v-app-bar-title>
     </template>
     <template v-slot:append>
-      <v-app-bar-nav-icon v-if="show" color="secondary" @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-btn
+        v-if="!loggedIn"
+        :key="isRegister"
+        :to="isRegister ? '/login' : '/register'"
+        @click="isRegister = !isRegister"
+        class="bg-secondary me-5">{{isRegister ? 'Login' : 'Aanmelden' }}
+      </v-btn>
+      <v-app-bar-nav-icon :key="loggedIn" v-if="loggedIn" color="secondary" @click="drawer = !drawer"></v-app-bar-nav-icon>
     </template>
   </v-app-bar>
 </template>
@@ -41,13 +48,14 @@ export default {
     const role = ref('')
     const drawer = ref(false)
     const smallScreen = ref(false)
-    const show = ref(window.location.pathname !== '/login' && window.location.pathname !== '/register')
+    const loggedIn = ref(!['/login', '/register', '/forgot'].includes(window.location.pathname))
+    const isRegister = ref(window.location.pathname === '/register')
 
     const isAdminOrSu = () => {
       return role.value === 'AD' || role.value === 'SU'
     }
     const goBack = () => {
-      return router.go(-1)
+      return router.back()
     }
     const onResize = () => {
       smallScreen.value = window.innerWidth < 700
@@ -59,12 +67,18 @@ export default {
     }
 
     onMounted(async () => {
-      await getRole()
+      if (!['/login', '/register', '/forgot'].includes(window.location.pathname)) await getRole()
 
       onResize()
       window.addEventListener('resize', onResize, { passive: true })
-      window.addEventListener('login', () => { show.value = true; getRole() })
-      window.addEventListener('logout', () => { show.value = false })
+      window.addEventListener('login', async () => {
+        loggedIn.value = true
+        isRegister.value = window.location.pathname === '/register'
+        await getRole()
+      })
+      window.addEventListener('logout', () => {
+        loggedIn.value = false
+      })
     })
     onBeforeUnmount(() => {
       if (typeof window !== 'undefined') {
@@ -75,7 +89,8 @@ export default {
       drawer,
       smallScreen,
       role,
-      show,
+      loggedIn,
+      isRegister,
       isAdminOrSu,
       goBack
     }

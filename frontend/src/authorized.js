@@ -85,6 +85,9 @@ export async function loginUser(email, password, return_path) {
     $cookies.set('access_token', tokens.access)
     $cookies.set('refresh_token', tokens.refresh)
     window.dispatchEvent(login)
+    if (['/register', '/login', '/forgot'].includes(return_path)) {
+      return_path = '/'
+    }
     return await router.push({ path: return_path })
   }
   return { message: 'Email of wachtwoord is incorrect.' }
