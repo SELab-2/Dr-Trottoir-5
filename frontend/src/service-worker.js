@@ -6,10 +6,12 @@ import {CacheableResponsePlugin} from 'workbox-cacheable-response';
 
 
 // todo check of alle pathnames wel kloppen
+
 /*
 * Start with the service workers for the static files
 * */
-// Handle images:
+
+// Handle static images:
 const imageRoute = new Route(({ request }) => {
   return request.destination === 'image'
 }, new CacheFirst({

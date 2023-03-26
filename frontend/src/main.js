@@ -7,7 +7,12 @@ import { loadFonts } from './plugins/webfontloader'
 import './registerServiceWorker'
 import VueCookies from 'vue-cookies'
 
-loadFonts()
+const Emitter = require('tiny-emitter')
+const emitter = new Emitter() //error bus
+
+loadFonts().then(r => {
+  //Noop
+})
 
 createApp(App)
   .use(router)

@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "axios-cache-adapter": "^2.7.3",
     "core-js": "^3.8.3",
     "register-service-worker": "^1.7.2",
     "roboto-fontface": "*",
+    "tiny-emitter": "^2.1.0",
     "vue": "^3.2.13",
     "vue-cookies": "^1.8.3",
     "vue-router": "^4.0.3",
@@ -42,7 +44,6 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-vue": "^8.0.3",
     "jest": "^27.0.5",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "webpack-plugin-vuetify": "^2.0.0-alpha.0"

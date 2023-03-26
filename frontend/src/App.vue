@@ -7,12 +7,34 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 
+import { EchoError } from './api/EchoFetch/src/types/EchoError'
+import { CustomErrorOptions } from './api/error/types/CustomErrorOptions'
+import { onMounted } from 'vue'
 import NavigationBar from '@/components/NavigationBar.vue'
+
+const emitter = require('tiny-emitter/instance')
+
+
 
 export default {
   name: 'App',
+  setup() {
+    onMounted(async () => {
+      emitter.$on(
+        "error",
+        (error: EchoError, options: CustomErrorOptions) => {
+          if (options.style === "SNACKBAR") {
+            this.$store.dispatch("snackbar/open", {
+              message: error.message,
+              color: "error"
+            });
+          }
+        }
+      )
+    })
+  },
   components: {
     NavigationBar
   },
