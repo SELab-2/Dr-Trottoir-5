@@ -14,15 +14,15 @@ import { CustomErrorOptions } from './api/error/types/CustomErrorOptions'
 import { onMounted } from 'vue'
 import NavigationBar from '@/components/NavigationBar.vue'
 
-const emitter = require('tiny-emitter/instance')
-
+const Emitter = require('tiny-emitter')
+const emitter = new Emitter() //error bus
 
 
 export default {
   name: 'App',
   setup() {
     onMounted(async () => {
-      emitter.$on(
+      emitter.on(
         "error",
         (error: EchoError, options: CustomErrorOptions) => {
           if (options.style === "SNACKBAR") {
