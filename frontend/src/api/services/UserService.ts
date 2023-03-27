@@ -4,6 +4,7 @@ import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import {InputFields} from "@/types/fields/InputFields";
 import {AuthLoginWrapper, AuthRegisterWrapper} from "@/api/wrappers/AuthWrappers";
+import {UserRole} from "@/api/models/UserRole";
 
 class UserService extends EchoService {
   /**
@@ -12,6 +13,14 @@ class UserService extends EchoService {
   @GET("/user/")
   get(): EchoPromise<User> {
     return {} as EchoPromise<User>;
+  }
+
+  /**
+   * Get the logged in user.
+   */
+  @GET("/users/")
+  getUsers(): EchoPromise<User[]> {
+    return {} as EchoPromise<User[]>;
   }
 
   /**
@@ -31,6 +40,13 @@ class UserService extends EchoService {
     return {} as EchoPromise<string>;
   }
 
+  /**
+   * Get the role of the logged in user.
+   */
+  @GET("/role/")
+  getRole(): EchoPromise<UserRole> {
+    return {} as EchoPromise<UserRole>;
+  }
 
   /**
    * Delete the logged in user.

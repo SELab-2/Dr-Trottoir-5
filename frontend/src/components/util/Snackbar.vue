@@ -14,18 +14,17 @@
 
     <v-spacer/>
 
-    <v-btn text @click="close">
-      close
-    </v-btn>
+    <NormalButton :text="'close'" :parent-function="close"/>
   </v-snackbar>
 </template>
 
 <script lang="ts">
 import {mapActions, mapState} from "vuex";
 import {defineComponent} from "vue";
+import NormalButton from "@/components/NormalButton.vue";
 
 export default defineComponent({
-
+  components: {NormalButton},
   methods: {
     ...mapActions("snackbar", ["close"]),
   },

@@ -1,10 +1,28 @@
 <template>
-  <h3>{{JSON.stringify(users)}}</h3>
+  <v-container>
+    <h2>all users</h2>
+    <!-- Loading -->
+    <div v-if="users.isLoading()">
+      <h3>LOADING users</h3>
+    </div>
+    <div v-else-if="users.isSuccess()">
+      <p v-for="u in users.requireData()">{{ u.email }}</p>
+    </div>
+
+    <h2>The currently logged in user</h2>
+    <!-- Loading -->
+    <div v-if="user.isLoading()">
+      <h3>LOADING users</h3>
+    </div>
+    <div v-else-if="user.isSuccess()">
+      <p>{{ user.requireData().email }}</p>
+    </div>
+  </v-container>
 </template>
 
-<script>
-import { defineComponent, onMounted, ref } from 'vue'
-import { request } from '@/authorized'
+<script lang="ts">
+import {defineComponent} from 'vue'
+import UserService from "@/api/services/UserService";
 
 /*
  view is just for testing purposes, will be removed
@@ -12,12 +30,11 @@ import { request } from '@/authorized'
 
 export default defineComponent({
   name: 'UsersView',
-  setup () {
-    const users = ref([])
-    onMounted(async () => {
-      users.value = await request('/api/users', 'GET')
-    })
-    return { users }
+  data() {
+    return {
+      user: UserService.get(),
+      users: UserService.getUsers()
+    }
   }
 })
 </script>

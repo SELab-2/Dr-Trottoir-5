@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { Component, Prop, Vue } from "vue-property-decorator";
 import { RouterUtil } from "@/util/RouterUtil";
 import { ErrorComponentPayload } from "@/api/error/types/component/ErrorComponentPayload";
 

@@ -10,9 +10,9 @@
 
 <script lang="ts">
 
-import { EchoError } from './api/EchoFetch/src/types/EchoError'
-import { CustomErrorOptions } from './api/error/types/CustomErrorOptions'
-import { onMounted } from 'vue'
+import {EchoError} from './api/EchoFetch/src/types/EchoError'
+import {CustomErrorOptions} from './api/error/types/CustomErrorOptions'
+import {onMounted} from 'vue'
 import NavigationBar from '@/components/NavigationBar.vue'
 import Snackbar from "@/components/util/Snackbar.vue";
 
@@ -22,11 +22,15 @@ const emitter = new Emitter() //error bus
 
 export default {
   name: 'App',
+
+  beforeCreate() {
+    // Fetch the session data.
+    this.$store.dispatch("session/fetch");
+  },
+
   setup() {
     onMounted(async () => {
 
-      // Fetch the session data.
-      this.$store.dispatch("session/fetch");
 
       emitter.on(
         "error",
