@@ -9,7 +9,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserPublicSerializer, UserSerializer
 
@@ -83,7 +82,6 @@ def registration_view(request):
     if request.method == "POST":
         response = Response()
         serializer = RegistrationSerializer(data=request.data)
-        data = {}
         if serializer.is_valid():
             user = get_user_model().objects.create_user(
                 request.data['email'],
