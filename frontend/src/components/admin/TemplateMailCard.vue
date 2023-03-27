@@ -2,10 +2,10 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ name }}</p>
+        <p>{{ args.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ argsCount }}</p>
+        <p>{{ args.argsCount }}</p>
       </v-col>
       <v-col/>
       <v-col cols="3" class="d-flex align-center justify-end">
@@ -23,11 +23,20 @@
 <script>
 import EditIcon from '../EditIcon.vue'
 import DeleteIcon from '../DeleteIcon.vue'
+
+/**
+ * TemplateMailCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
+ * name: String
+ * argsCount: Number
+ */
+
 export default {
   name: 'TemplateMailCard',
   props: {
-    name: { type: String, default: 'Empty' },
-    argsCount: { type: Number, default: 0 }
+    args: {
+      type: Object,
+      default: () => ({ name: 'Empty', argsCount: 0 })
+    }
   },
   methods: {
     goToEditPage: function () {

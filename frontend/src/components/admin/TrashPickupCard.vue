@@ -2,13 +2,13 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ name }}</p>
+        <p>{{ args.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ day }}</p>
+        <p>{{ args.day }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ formattedTime }}</p>
+        <p>{{ args.formattedTime }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center justify-end">
         <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
@@ -25,12 +25,21 @@
 <script>
 import EditIcon from '../EditIcon.vue'
 import DeleteIcon from '../DeleteIcon.vue'
+
+/**
+ * TrashPickupCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
+ * name: String
+ * day: String
+ * formattedTime: String
+ */
+
 export default {
   name: 'TrashPickupCard',
   props: {
-    formattedTime: { type: String, default: 'Empty' },
-    name: { type: String, default: 'Empty' },
-    day: { type: String, default: 'Empty' }
+    args: {
+      type: Object,
+      default: () => ({ name: 'Empty', day: 'Empty', formattedTime: 'Empty' })
+    }
   },
   methods: {
     goToEditPage: function () {

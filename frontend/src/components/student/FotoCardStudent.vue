@@ -4,17 +4,17 @@
       <v-card-text>
         <v-row align-end>
           <v-col>
-            <p style="font-size: 8px">{{ description }}</p>
+            <p style="font-size: 8px">{{ args.description }}</p>
           </v-col>
           <v-col class="d-flex align-center">
             <v-row justify="end" class="image-margin">
-              <v-img :src="imageURL" :max-width="'150'" :max-height="150"></v-img>
+              <v-img :src="args.imageURL" :max-width="'150'" :max-height="150"></v-img>
             </v-row>
           </v-col>
         </v-row>
         <v-row align="end">
           <v-col>
-            <p style="font-size: 8px">{{ timeStamp }}</p>
+            <p style="font-size: 8px">{{ args.timeStamp }}</p>
           </v-col>
           <v-col>
             <v-row justify="end" class="row-margin">
@@ -36,12 +36,21 @@
 <script>
 import EditIcon from '../EditIcon.vue'
 import DeleteIcon from '../DeleteIcon.vue'
+
+/**
+ * FotoCardStudent component wordt gebruikt door als props een Object met de volgende keys mee te geven:
+ * timeStamp: String
+ * description: String
+ * imageURL: String
+ */
+
 export default {
   name: 'FotoCardStudent',
   props: {
-    timeStamp: { type: String, default: 'Empty time' },
-    description: { type: String, default: 'Geen description meegegeven' },
-    imageURL: { type: String, default: require('@/assets/emptyImage.png') }
+    args: {
+      type: Object,
+      default: () => ({ timeStamp: 'Empty', description: 'Empty', imageURL: 'Empty' })
+    }
   },
   methods: {
     goToEditPage: function () {

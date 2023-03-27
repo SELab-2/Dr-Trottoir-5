@@ -75,6 +75,14 @@
 <script>
 import EditIcon from '@/components/EditIcon.vue'
 
+/**
+ * BuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
+ * gebouw: String
+ * adres: String
+ * status: String
+ * efficiency: Number
+ */
+
 export default {
   name: 'BuildingCard',
   components: { EditIcon },
