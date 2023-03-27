@@ -1,8 +1,8 @@
 export enum UserRole {
-  ADMIN,
-  SUPERSTUDENT,
-  STUDENT,
-  SYNDICUS,
-  BEWONER,
-  AANVRAGER,
+  AD,
+  SU,
+  ST,
+  SY,
+  BE,
+  AA,
 }

@@ -1,4 +1,4 @@
-import { EchoError, EchoPromise } from "./EchoFetch/src/echofetch";
+import { EchoError, EchoPromise } from "echofetch";
 import { CustomErrorOptions } from "./error/types/CustomErrorOptions";
 import { ErrorHandler } from "./error/ErrorHandler";
 

@@ -1,7 +1,7 @@
 /**
  * Payload that will be passed to the component specified in the error component binding.
  */
-import { EchoError } from "../../../EchoFetch/src/echofetch";
+import { EchoError } from "echofetch";
 import { CustomErrorOptions } from "../CustomErrorOptions";
 
 export class ErrorComponentPayload {

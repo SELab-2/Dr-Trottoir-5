@@ -3,7 +3,7 @@ import {
   EchoRequest,
   EchoResponse,
   EchoServiceInterceptor,
-} from "../EchoFetch/src/echofetch";
+} from "echofetch";
 import {setupCache} from 'axios-cache-adapter';
 
 /**

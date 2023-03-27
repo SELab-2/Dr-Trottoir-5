@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { EchoError } from "@/api/EchoFetch/src/echofetch";
+import { EchoError } from "echofetch";
 import { CustomErrorOptions } from "@/api/error/types/CustomErrorOptions";
 import { ErrorComponentPayload } from "@/api/error/types/component/ErrorComponentPayload";
 import ErrorCard from "@/components/error/placeholders/ErrorCard.vue";

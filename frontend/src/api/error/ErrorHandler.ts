@@ -1,4 +1,4 @@
-import {EchoError} from "../EchoFetch/src/echofetch";
+import {EchoError} from "echofetch";
 import {CustomErrorOptions} from "./types/CustomErrorOptions";
 import {CustomErrorMessage} from "./types/CustomErrorMessage";
 import {InputFields} from "@/types/fields/InputFields";
@@ -88,11 +88,12 @@ export class ErrorHandler {
       !error ||
       !error.response ||
       !error.response.data ||
+      // @ts-ignore TODO FIX
       !error.response.data.inputErrors
     ) {
       return;
     }
-
+    // @ts-ignore TODO FIX
     const inputErrors = error.response.data.inputErrors;
 
     // Set the error messages for every field.
@@ -125,11 +126,12 @@ export class ErrorHandler {
       !error ||
       !error.response ||
       !error.response.data ||
+      // @ts-ignore TODO FIX
       !error.response.data.generalErrors
     ) {
       return;
     }
-
+    // @ts-ignore TODO FIX
     const generalErrors = error.response.data.generalErrors;
 
     // Check if any general error was found.
