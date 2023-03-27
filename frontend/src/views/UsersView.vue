@@ -23,6 +23,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import UserService from "@/api/services/UserService";
+import {RequestHandler} from "@/api/RequestHandler";
 
 /*
  view is just for testing purposes, will be removed
@@ -32,8 +33,14 @@ export default defineComponent({
   name: 'UsersView',
   data() {
     return {
-      user: UserService.get(),
-      users: UserService.getUsers()
+      user: RequestHandler.handle(UserService.get(), {
+        id: "getUserError",
+        style: "SNACKBAR"
+      }),
+      users: RequestHandler.handle(UserService.getUsers(), {
+        id: "getUsersError",
+        style: "SNACKBAR"
+      }),
     }
   }
 })
