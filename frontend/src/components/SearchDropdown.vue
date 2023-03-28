@@ -8,46 +8,48 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 <template>
   <v-row align="center">
     <v-col cols="12" class="d-flex justify-center">
-      <v-icon class="icon">mdi-magnify</v-icon>
-      <div class="dropdown" v-if="filteredOptions">
-        <div class="dropdown-toggle">
-          <input
-            :name="name"
-            @focus="showOptions()"
-            @blur="exit()"
-            @keyup="keyMonitor"
-            v-model="searchFilter"
-            v-on:input="showOptions"
-            :placeholder="placeholder"
-          />
-        </div>
-        <transition name="fade">
-          <ul class="dropdown-menu" v-show="optionsShown">
-            <li
-              @mousedown="selectOption(option)"
-              v-for="(option) in filteredOptions"
-              :key="option"
+      <div class="flex-wrap">
+        <div class="dropdown" v-if="filteredOptions">
+          <div class="dropdown-toggle">
+            <v-icon class="icon">mdi-magnify</v-icon>
+            <input
+              :name="name"
+              @focus="showOptions()"
+              @blur="exit()"
+              @keyup="keyMonitor"
+              v-model="searchFilter"
+              v-on:input="showOptions"
+              :placeholder="placeholder"
             >
-              <a href="javascript:void(0)">
-                {{ option }}
-              </a>
-            </li>
-          </ul>
-        </transition>
+          </div>
+          <transition name="fade">
+            <ul class="dropdown-menu" v-show="optionsShown">
+              <li
+                @mousedown="selectOption(option)"
+                v-for="(option) in filteredOptions"
+                :key="option"
+              >
+                <a href="javascript:void(0)">
+                  {{ option }}
+                </a>
+              </li>
+            </ul>
+          </transition>
+        </div>
+        <NormalButton :text="this.key" id="menu-activator" class="button"/>
+        <v-menu activator="#menu-activator" class="text-yellow">
+          <v-list>
+            <v-list-item
+              v-for="property in Object.keys(elements[0])"
+              :key="property"
+              :value="property"
+              @click="changeKey(property)"
+            >
+              <v-list-item-title>{{ property }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
-      <NormalButton :text="this.key" id="menu-activator" class="button"/>
-      <v-menu activator="#menu-activator" class="text-yellow">
-        <v-list>
-          <v-list-item
-            v-for="property in Object.keys(elements[0])"
-            :key="property"
-            :value="property"
-            @click="changeKey(property)"
-          >
-            <v-list-item-title>{{ property }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-col>
   </v-row>
 </template>
@@ -134,18 +136,17 @@ export default {
 <style scoped>
 
 .icon {
-  position: relative;
-  overflow: hidden;
+  position: absolute;
+  top: 30px;
+  left: 10px;
   display: inline-block;
-  top: 38px;
-  left: 37px;
-  z-index: 200;
+  z-index: 300;
 
 }
 
 .button {
   position: relative;
-  top: 35px;
+  top: 22px;
   left: 20px;
   display: inline-block;
   vertical-align: middle;
@@ -153,7 +154,7 @@ export default {
 }
 
 .dropdown {
-  min-width: 160px;
+  min-width: 20px;
   height: 40px;
   position: relative;
   margin: 10px 1px;
