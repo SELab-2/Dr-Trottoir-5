@@ -1,6 +1,11 @@
 <!--
   Een component die een een overzicht geeft hoe ver een ronde al in proces is. Als input verwachten we
   een data object die alle nodige informatie bevat.
+    Name: String
+    Datum: String
+    Progress: Int range: 0-100
+    plannend: Bool
+    students: [String]
 -->
 
 <template>
@@ -49,7 +54,7 @@
 <script>
 import NormalButton from '@/components/NormalButton'
 export default {
-  name: 'RondeCard',
+  name: 'DashboardRoundCard',
   components: { NormalButton },
   props: {
     data: {
