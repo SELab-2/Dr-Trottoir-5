@@ -2,13 +2,13 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ this.data.name }}</p>
+        <p>{{ name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ this.data.day }}</p>
+        <p>{{ day }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ this.data.formattedTime }}</p>
+        <p>{{ formattedTime }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center justify-end">
         <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
@@ -26,14 +26,9 @@
 export default {
   name: 'TrashPickupCard',
   props: {
-    data: {
-      type: Object,
-      default: () => ({
-        formatedTime: 'Empty',
-        name: 'Empty',
-        day: 'Empty'
-      })
-    }
+    formattedTime: { type: String, default: 'Empty' },
+    name: { type: String, default: 'Empty' },
+    day: { type: String, default: 'Empty' }
   },
   methods: {
     goToEditPage: function () {

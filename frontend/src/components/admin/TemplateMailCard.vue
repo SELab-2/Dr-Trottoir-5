@@ -2,10 +2,10 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ this.data.name }}</p>
+        <p>{{ name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ this.data.argsCount }}</p>
+        <p>{{ argsCount }}</p>
       </v-col>
       <v-col/>
       <v-col cols="3" class="d-flex align-center justify-end">
@@ -24,7 +24,8 @@
 export default {
   name: 'TemplateMailCard',
   props: {
-    data: { type: Object, default: () => ({ name: 'Empty', argsCount: 0 }) }
+    name: { type: String, default: 'Empty' },
+    argsCount: { type: Number, default: 0 }
   },
   methods: {
     goToEditPage: function () {
