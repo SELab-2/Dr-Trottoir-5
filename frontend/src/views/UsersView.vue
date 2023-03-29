@@ -2,7 +2,7 @@
   <v-container>
     <h2>all users</h2>
     <!-- Loading -->
-    <div v-if="users.isLoading()">
+    <div v-if="users.isLoading()" :key="loaded.users">
       <h3>LOADING users</h3>
     </div>
     <div v-else-if="users.isSuccess()">
@@ -11,7 +11,7 @@
 
     <h2>The currently logged in user</h2>
     <!-- Loading -->
-    <div v-if="user.isLoading()">
+    <div v-if="user.isLoading()" :key="loaded.user">
       <h3>LOADING users</h3>
     </div>
     <div v-else-if="user.isSuccess()">
@@ -41,7 +41,12 @@ export default defineComponent({
         id: "getUsersError",
         style: "SNACKBAR"
       }),
+      loaded: {}
     }
+  },
+  created() {
+    this.user.finally(() => this.loaded.user = true);
+    this.users.finally(() => this.loaded.users = true);
   }
 })
 </script>
