@@ -1,17 +1,17 @@
 <template>
   <v-app>
-    <StudentCard/>
+    <BuildingCard/>
   </v-app>
 </template>
 
 <script>
 
-import StudentCard from '@/components/admin/StudentCard.vue'
+import BuildingCard from '@/components/admin/BuildingCard.vue'
 
 export default {
   name: 'App',
   components: {
-    StudentCard
+    BuildingCard
   },
   data: () => ({
     //

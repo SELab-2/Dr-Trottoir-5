@@ -4,24 +4,24 @@
       <v-col cols="9">
         <v-row>
           <v-col>
-            <p>{{ args.firstName }}</p>
+            <p>{{ data.firstName }}</p>
           </v-col>
           <v-col>
-            <p>{{ args.secondName }}</p>
+            <p>{{ data.secondName }}</p>
           </v-col>
           <v-col>
-            <p>{{ args.mobileNumber }}</p>
+            <p>{{ data.mobileNumber }}</p>
           </v-col>
           <v-col>
-            <p>{{ args.location }}</p>
+            <p>{{ data.location }}</p>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <p>{{ args.email }}</p>
+            <p>{{ data.email }}</p>
           </v-col>
           <v-col>
-            <p>{{ args.rounds }}</p>
+            <p>{{ data.rounds }}</p>
           </v-col>
         </v-row>
       </v-col>
@@ -58,7 +58,7 @@ import InfoIcon from '@/components/icons/InfoIcon.vue'
 export default {
   name: 'StudentCard',
   props: {
-    args: {
+    data: {
       type: Object,
       default: () => ({ firstName: 'Empty', secondName: 'Empty', mobileNumber: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
     }

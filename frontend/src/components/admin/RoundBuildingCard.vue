@@ -2,10 +2,10 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.args.gebouw }}</p>
+        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.gebouw }}</p>
       </v-col>
       <v-col cols="3">
-        <p>{{ this.args.adres }}</p>
+        <p>{{ this.data.adres }}</p>
       </v-col>
       <v-col cols="1">
         <v-menu>
@@ -78,7 +78,7 @@ export default {
   name: 'RoundBuildingCard',
   components: { DeleteIcon },
   props: {
-    args: {
+    data: {
       type: Object,
       default: () => ({ gebouw: 'Empty', adres: 'Empty', status: '' })
     }
@@ -111,7 +111,7 @@ export default {
     }
   },
   async mounted () {
-    this.status = this.args.status
+    this.status = this.data.status
   }
 }
 </script>

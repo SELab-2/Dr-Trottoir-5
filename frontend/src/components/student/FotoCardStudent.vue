@@ -4,17 +4,17 @@
       <v-card-text>
         <v-row align-end>
           <v-col>
-            <p style="font-size: 8px">{{ args.description }}</p>
+            <p style="font-size: 8px">{{ data.description }}</p>
           </v-col>
           <v-col class="d-flex align-center">
             <v-row justify="end" class="image-margin">
-              <v-img :src="args.imageURL" :max-width="'150'" :max-height="150"></v-img>
+              <v-img :src="data.imageURL" :max-width="'150'" :max-height="150"></v-img>
             </v-row>
           </v-col>
         </v-row>
         <v-row align="end">
           <v-col>
-            <p style="font-size: 8px">{{ args.timeStamp }}</p>
+            <p style="font-size: 8px">{{ data.timeStamp }}</p>
           </v-col>
           <v-col>
             <v-row justify="end" class="row-margin">
@@ -47,7 +47,7 @@ import DeleteIcon from '../icons/DeleteIcon.vue'
 export default {
   name: 'FotoCardStudent',
   props: {
-    args: {
+    data: {
       type: Object,
       default: () => ({ timeStamp: 'Empty', description: 'Empty', imageURL: 'Empty' })
     }

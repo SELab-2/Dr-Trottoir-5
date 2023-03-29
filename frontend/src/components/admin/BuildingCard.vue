@@ -2,18 +2,18 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.args.gebouw }}</p>
+        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.gebouw }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ this.args.adres }}</p>
+        <p>{{ this.data.adres }}</p>
       </v-col>
       <v-col cols="1">
         <p :style="{
     color:
-      this.args.efficiency < 50 ? '#FF1F00' :
-      this.args.efficiency < 75 ? '#E88E4D' :
+      this.data.efficiency < 50 ? '#FF1F00' :
+      this.data.efficiency < 75 ? '#E88E4D' :
       '#39AE68'
-  }">{{ this.args.efficiency }}%</p>
+  }">{{ this.data.efficiency }}%</p>
       </v-col>
       <v-col cols="1">
         <v-menu>
@@ -28,7 +28,7 @@
           <v-list>
             <v-list-item value="download" @click="downloadDocument">
               <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
-              PFD
+              PDF
             </v-list-item>
             <v-list-item value="upload" @click="uploadDocument">
               <v-icon color="#FFE600" icon="mdi-file-upload-outline"></v-icon>
@@ -87,7 +87,7 @@ export default {
   name: 'BuildingCard',
   components: { EditIcon },
   props: {
-    args: {
+    data: {
       type: Object,
       default: () => ({ gebouw: 'Empty', adres: 'Empty', status: '', efficiency: 0 })
     }
@@ -120,7 +120,7 @@ export default {
     }
   },
   async mounted () {
-    this.status = this.args.status
+    this.status = this.data.status
   }
 }
 </script>

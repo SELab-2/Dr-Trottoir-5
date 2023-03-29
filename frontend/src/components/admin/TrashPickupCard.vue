@@ -2,13 +2,13 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ args.name }}</p>
+        <p>{{ data.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ args.day }}</p>
+        <p>{{ data.day }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ args.formattedTime }}</p>
+        <p>{{ data.formattedTime }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center justify-end">
         <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
@@ -36,7 +36,7 @@ import DeleteIcon from '../icons/DeleteIcon.vue'
 export default {
   name: 'TrashPickupCard',
   props: {
-    args: {
+    data: {
       type: Object,
       default: () => ({ name: 'Empty', day: 'Empty', formattedTime: 'Empty' })
     }

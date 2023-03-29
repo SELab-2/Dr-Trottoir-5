@@ -2,10 +2,10 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ args.name }}</p>
+        <p>{{ data.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ args.argsCount }}</p>
+        <p>{{ data.argsCount }}</p>
       </v-col>
       <v-col/>
       <v-col cols="3" class="d-flex align-center justify-end">
@@ -33,7 +33,7 @@ import DeleteIcon from '../icons/DeleteIcon.vue'
 export default {
   name: 'TemplateMailCard',
   props: {
-    args: {
+    data: {
       type: Object,
       default: () => ({ name: 'Empty', argsCount: 0 })
     }
