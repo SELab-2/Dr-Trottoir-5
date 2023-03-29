@@ -1,17 +1,20 @@
 <template>
   <v-app>
-    <BuildingCard/>
+    <v-main>
+      <router-view/>
+    </v-main>
+    <NavigationBar/>
   </v-app>
 </template>
 
 <script>
 
-import BuildingCard from '@/components/admin/BuildingCard.vue'
+import NavigationBar from '@/components/NavigationBar.vue'
 
 export default {
   name: 'App',
   components: {
-    BuildingCard
+    NavigationBar
   },
   data: () => ({
     //
