@@ -9,8 +9,8 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
   <v-row align="center">
     <v-col cols="12" class="d-flex justify-center">
       <div class="flex-wrap">
-        <div class="dropdown" v-if="filteredOptions">
-          <div class="dropdown-toggle">
+        <div class="dropdown container-fluid" v-if="filteredOptions">
+          <div :class="{ 'dropdown-toggle-small': isSmallScreen, 'dropdown-toggle': !isSmallScreen }">
             <v-icon class="icon">mdi-magnify</v-icon>
             <input
               :name="name"
@@ -74,16 +74,22 @@ export default {
     placeholder: {
       type: String,
       required: false,
-      default: 'Please select an option'
+      default: 'Search ...'
     }
   },
   data () {
     return {
+      windowWidth: window.innerWidth,
       selected: '',
       optionsShown: false,
       searchFilter: '',
-      key: Object.keys(this.elements[0])[0]
+      key: Object.keys(this.elements[0])[0],
+      isSmallScreen: false
     }
+  },
+  created () {
+    window.addEventListener('resize', this.checkScreenSize)
+    this.checkScreenSize()
   },
   computed: {
     filteredOptions () {
@@ -98,6 +104,9 @@ export default {
     }
   },
   methods: {
+    checkScreenSize () {
+      this.isSmallScreen = window.innerWidth <= 768
+    },
     changeKey (key) {
       this.key = key
       this.selected = ''
@@ -172,9 +181,22 @@ export default {
   transition: 0.75s ease-in;
   border-radius: 2px 2px 0 0;
 }
+
 .dropdown-toggle input {
-  display: block;
-  width: 350px;
+  width: 360px;
+  margin: 20px auto;
+  padding: 10px 45px;
+  background: white;
+  background-size: 15px 15px;
+  font-size: 16px;
+  border: #e3e3e3;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px,
+    #e3e3e3 0 1px 3px -1px;
+}
+
+.dropdown-toggle-small input {
+  width: 180px;
   margin: 20px auto;
   padding: 10px 45px;
   background: white;
