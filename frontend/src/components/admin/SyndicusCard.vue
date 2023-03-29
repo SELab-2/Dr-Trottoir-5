@@ -48,7 +48,7 @@ import DeleteIcon from '@/components/icons/DeleteIcon.vue'
  * mobileNumber: String
  * location: String
  * email: String
- * rounds: String
+ * buildings: String
  */
 
 export default {
