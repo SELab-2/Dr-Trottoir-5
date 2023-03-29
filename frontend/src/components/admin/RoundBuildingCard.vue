@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import DeleteIcon from '@/components/DeleteIcon.vue'
+import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 /**
  * RoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String

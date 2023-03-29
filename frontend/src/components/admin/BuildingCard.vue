@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import EditIcon from '@/components/EditIcon.vue'
+import EditIcon from '@/components/icons/EditIcon.vue'
 
 /**
  * BuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:

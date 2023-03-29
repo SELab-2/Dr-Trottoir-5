@@ -1,20 +1,17 @@
 <template>
   <v-app>
-    <v-main>
-      <router-view/>
-    </v-main>
-    <NavigationBar/>
+    <StudentCard/>
   </v-app>
 </template>
 
 <script>
 
-import NavigationBar from '@/components/NavigationBar.vue'
+import StudentCard from '@/components/admin/StudentCard.vue'
 
 export default {
   name: 'App',
   components: {
-    NavigationBar
+    StudentCard
   },
   data: () => ({
     //

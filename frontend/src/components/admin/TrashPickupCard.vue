@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import EditIcon from '../EditIcon.vue'
-import DeleteIcon from '../DeleteIcon.vue'
+import EditIcon from '../icons/EditIcon.vue'
+import DeleteIcon from '../icons/DeleteIcon.vue'
 
 /**
  * TrashPickupCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
