@@ -1,17 +1,20 @@
 <template>
   <v-app>
-    <FollowUpRoundBuildingCard/>
+    <v-main>
+      <router-view/>
+    </v-main>
+    <NavigationBar/>
   </v-app>
 </template>
 
 <script>
 
-import FollowUpRoundBuildingCard from '@/components/admin/FollowUpRoundBuildingCard.vue'
+import NavigationBar from '@/components/NavigationBar.vue'
 
 export default {
   name: 'App',
   components: {
-    FollowUpRoundBuildingCard
+    NavigationBar
   },
   data: () => ({
     //
