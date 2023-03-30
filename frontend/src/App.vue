@@ -25,12 +25,13 @@ export default defineComponent({
     const router = useRouter();
 
     router.beforeEach(to => {
+      console.log('Routing to:', to)
       if (!noLogin.includes(to.name.toString())) {
         this.navbar = true;
 
         // Authorize session
         this.$store.dispatch("session/fetch");
-      }
+      } else this.navbar = false;
     });
   },
   mounted() {
