@@ -1,7 +1,7 @@
+from django.conf import settings
+from django.views.static import serve
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.views.static import serve
-from django.conf import settings
 
 
 class MediaView(APIView):
