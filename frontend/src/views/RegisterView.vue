@@ -29,7 +29,7 @@
               ></v-autocomplete>
             </v-col>
             <v-col cols="12">
-              <v-text-field v-model="gsm" :rules="[rules.required]" label="GSM-nummer" required></v-text-field>
+              <v-text-field v-model="phone_nr" :rules="[rules.required]" label="GSM-nummer" required></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
             <v-col class="d-flex ml-auto" cols="12">
@@ -46,10 +46,12 @@
   </v-container>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-import { requestWithBody } from '@/authorized'
+<script lang="ts">
+import {defineComponent, defineEmits} from 'vue'
 import NormalButton from '@/components/NormalButton'
+import {RequestHandler} from '@/api/RequestHandler'
+import AuthService from '@/api/services/AuthService'
+import {AuthRegisterWrapper} from "@/api/wrappers/AuthWrappers";
 
 export default defineComponent({
   name: 'RegisterView',
@@ -64,7 +66,7 @@ export default defineComponent({
     email: '',
     password: '',
     password2: '',
-    gsm: '',
+    phone_nr: '',
     rules: {
       required: value => !!value || 'Dit veld is verplicht.'
     }
@@ -72,19 +74,26 @@ export default defineComponent({
   methods: {
     passwordsMatch () { return this.password === this.password2 || 'Wachtwoorden komen niet overeen.' },
     async apiRegister () {
-      const response = await requestWithBody('/api/register/', 'post', {
-        email: this.email,
-        first_name: this.firstname,
-        last_name: this.lastname,
-        password: this.password
-      })
-      console.log(response)
+      const wrapper = new AuthRegisterWrapper(
+        this.email,
+        this.password,
+        this.firstname,
+        this.lastname,
+        this.phone_nr
+      );
+
+      RequestHandler.handle(AuthService.register(wrapper), {
+        id: "registerError",
+        style: "SNACKBAR"
+      }).then(result => {
+        // TODO: display possible errors, otherwise redirect to /register_done
+      });
     },
     async validate () {
-      const { valid } = await this.$refs.form.validate()
+      const { valid } = await this.$refs.form.validate();
 
       if (valid) {
-        await this.apiRegister()
+        await this.apiRegister();
       }
     }
   }

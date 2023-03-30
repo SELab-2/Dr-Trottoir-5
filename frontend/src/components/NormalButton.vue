@@ -22,14 +22,16 @@ In following example inc is a function defined in methods.
   </v-btn>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'NormalButton',
   props: {
     text: { type: String },
     parentFunction: { type: Function }
   }
-}
+})
 </script>
 
 <style scoped>
