@@ -28,6 +28,14 @@
 </template>
 
 <script>
+
+/**
+ * FotoCardAdmin component wordt gebruikt door als props een Object met de volgende keys mee te geven:
+ * timeStamp: String
+ * description: String
+ * imageURL: String
+ */
+
 export default {
   name: 'FotoCardAdmin',
   props: {
