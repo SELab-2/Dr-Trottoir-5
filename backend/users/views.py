@@ -209,7 +209,8 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user = get_user_model().objects.get(email=request.user)
+            print(request.user)
+            user = get_user_model().objects.get(username=request.user)
             return Response(UserSerializer(user).data)
         except ObjectDoesNotExist:
             raise serializers.ValidationError(
@@ -223,7 +224,7 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
 
     def partial_update(self, request, *args, **kwargs):
         try:
-            user = get_user_model().objects.get(email=request.user)
+            user = get_user_model().objects.get(username=request.user)
             serializer = UserSerializer(user, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()

@@ -72,7 +72,8 @@
 
 <script>
 import NormalButton from '@/components/NormalButton'
-import { request } from '@/authorized'
+import UserService from "@/api/services/UserService";
+import {RequestHandler} from "@/api/RequestHandler";
 
 export default {
   components: { NormalButton },
@@ -89,8 +90,8 @@ export default {
       smallScreen: false
     }
   },
-  async created () {
-    await this.set_data()
+  created() {
+    this.set_data()
   },
   beforeUnmount () {
     if (typeof window !== 'undefined') {
@@ -103,7 +104,10 @@ export default {
   },
   methods: {
     async set_data () {
-      const data = await request('api/user/', 'GET')
+      const data = await RequestHandler.handle(UserService.get(), {
+        id: "getUserError",
+        style: "SNACKBAR"
+      });
       this.first_name = data.first_name
       this.last_name = data.last_name
       this.email = data.email
@@ -116,11 +120,14 @@ export default {
     },
     async save () {
       this.edit = !this.edit
-      await request('api/user/', 'PATCH', {}, {
+      await RequestHandler.handle(UserService.update({
         first_name: this.first_name,
         last_name: this.last_name,
         email: this.email,
         phone_nr: this.phone_nr
+      }), {
+        id: "patchUserError",
+        style: "SNACKBAR"
       })
     },
     onResize () {

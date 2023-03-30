@@ -36,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'date_joined',
+            'phone_nr',
             'id',
             'role'
         ]
