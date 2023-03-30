@@ -3,6 +3,7 @@ from django.conf import settings
 from datetime import timedelta
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenError
 
+
 class RefreshMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
