@@ -28,7 +28,7 @@ def get_tokens_for_user(user):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([ReadOnly])
 def user_view(request):
     response = Response()
     if request.user.is_authenticated:
