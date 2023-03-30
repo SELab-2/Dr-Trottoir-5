@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login, get_user_model
-from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.middleware import csrf
 from django.core.exceptions import ObjectDoesNotExist
@@ -209,7 +208,6 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            print(request.user)
             user = get_user_model().objects.get(username=request.user)
             return Response(UserSerializer(user).data)
         except ObjectDoesNotExist:
@@ -238,4 +236,3 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
                         }
                     ]
                 }, code='invalid')
-
