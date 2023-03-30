@@ -27,7 +27,8 @@
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-end" v-cloak @drop.prevent="addDropFile"
              @dragover.prevent>
-        <v-img class="drag_image" :width="150" :max-height="150" aspect-ratio="1" src="../assets/upload_file.png"></v-img>
+        <v-img class="drag_image" :width="150" :max-height="150" aspect-ratio="1"
+               src="../assets/upload_file.png"></v-img>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-start align-center">
         <v-file-input v-model="file" prepend-icon="mdi-file-upload-outline" class="text_field"
@@ -37,7 +38,8 @@
         <h2>Geschatte tijd</h2>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-text-field placeholder="In minuten" class="text_field" variant="outlined" v-model:model-value="time"></v-text-field>
+        <v-text-field placeholder="In minuten" class="text_field" variant="outlined"
+                      v-model:model-value="time"></v-text-field>
       </v-col>
       <v-col col="12" lg="12" class="d-flex justify-center align-center">
         <normal-button text="Maak gebouw aan" :parent-function="createBuilding"></normal-button>
@@ -49,9 +51,12 @@
 
 <script>
 import NormalButton from '@/components/NormalButton'
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+
 export default {
   name: 'CreateBuildingView',
-  components: { NormalButton },
+  components: {NormalButton},
   data: () => {
     return {
       name: '',
@@ -63,11 +68,27 @@ export default {
     }
   },
   methods: {
-    addDropFile (e) {
-      this.file = e.dataTransfer.files[0]
+    addDropFile(e) {
+      this.file = e.dataTransfer.files[0];
     },
-    createBuilding () {
-      // TODO send POST with building information
+    createBuilding() {
+      const test = this.createManual();
+      console.log(test)
+    },
+    async createManual() {
+      if (this.file === null) {
+        return "Error"
+      }
+      let formData = new FormData()
+      formData.append('file', this.file[0])
+      return RequestHandler.handle(BuildingService.createManual({
+        file: formData,
+        fileType: this.file[0].name.split('.').pop(),
+        manaulStatus: "klaar"
+      }, 'multipart/form-data'), {
+        id: 'createManualError',
+        style: "SNACKBAR"
+      });
     }
   }
 }
