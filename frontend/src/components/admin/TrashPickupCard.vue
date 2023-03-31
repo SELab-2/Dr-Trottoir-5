@@ -2,20 +2,20 @@
   <v-container class="container-border">
     <v-row>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ name }}</p>
+        <p>{{ data.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ day }}</p>
+        <p>{{ data.day }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ formattedTime }}</p>
+        <p>{{ data.formattedTime }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center justify-end">
         <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
-          <img :src="require('@/assets/edit.png')" alt="Button Image" style="max-height: 35px; max-width: 35px;"/>
+          <EditIcon/>
         </v-btn>
         <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
-          <img :src="require('@/assets/delete.png')" alt="Button Image" style="max-height: 35px; max-width: 35px"/>
+          <DeleteIcon/>
         </v-btn>
       </v-col>
     </v-row>
@@ -23,12 +23,23 @@
 </template>
 
 <script>
+import EditIcon from '../icons/EditIcon.vue'
+import DeleteIcon from '../icons/DeleteIcon.vue'
+
+/**
+ * TrashPickupCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
+ * name: String
+ * day: String
+ * formattedTime: String
+ */
+
 export default {
   name: 'TrashPickupCard',
   props: {
-    formattedTime: { type: String, default: 'Empty' },
-    name: { type: String, default: 'Empty' },
-    day: { type: String, default: 'Empty' }
+    data: {
+      type: Object,
+      default: () => ({ name: 'Empty', day: 'Empty', formattedTime: 'Empty' })
+    }
   },
   methods: {
     goToEditPage: function () {
@@ -37,16 +48,14 @@ export default {
     deletePost: function () {
       // TODO
     }
+  },
+  components: {
+    EditIcon,
+    DeleteIcon
   }
 }
 </script>
 
 <style scoped>
-.container-border{
-  border: 1px solid #E3e3e3;
-  border-radius: 25px;
-}
-.button-margin {
-  margin-right: 12px;
-}
+
 </style>
