@@ -68,14 +68,5 @@ export default {
 </script>
 
 <style scoped>
-.row-margin {
-  margin-bottom: 0;
-  margin-right: 0;
-  margin-top: 5px;
-}
 
-.image-margin {
-  margin-right: 0;
-  margin-top: 0;
-}
 </style>
