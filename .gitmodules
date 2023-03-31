@@ -1,0 +1,3 @@
+[submodule "frontend/src/api/EchoFetch"]
+	path = frontend/src/api/EchoFetch
+	url = git@github.com:DeruytterA/EchoFetch.git
