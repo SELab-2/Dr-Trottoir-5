@@ -1,27 +1,89 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
-from rest_framework import serializers, generics
-from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.middleware import csrf
+from rest_framework import serializers, generics
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
-    UserSerializer
+from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserPublicSerializer, UserSerializer
+
 
 
 class UserListAPIView(generics.ListAPIView):
     queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserPublicSerializer
     permission_classes = [AdminPermission | SuperstudentPermission]
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+
+@api_view(['GET'])
+@permission_classes([ReadOnly])
+def user_view(request):
+    response = Response()
+    if request.user.is_authenticated:
+        response.data = UserSerializer(request.user).data
+        return response
+    else:
+        response.data = "{'error': 'no user'}"
+        return response
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    data = request.data
+    response = Response()
+    username = data.get('email', None)
+    password = data.get('password', None)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            data = get_tokens_for_user(user)
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value=data["access"],
+                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
+                value=data["refresh"],
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+            csrf.get_token(request)
+            response.data = UserSerializer(user).data
+            return response
+        else:
+            return Response({"No active": "This account is not active!!"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def registration_view(request):
     if request.method == "POST":
+        response = Response()
         serializer = RegistrationSerializer(data=request.data)
+
         data = {}
         if serializer.is_valid(raise_exception=True):
             if get_user_model().objects.filter(email=request.data["email"]).exists():
@@ -38,20 +100,27 @@ def registration_view(request):
                 request.data['last_name'],
                 request.data['password']
             )
-            data['email'] = request.data['email']
-            data['name'] = request.data['first_name'] + " " + request.data[
-                'last_name']
-            data['token'] = Token.objects.get(user=user).key
+            refresh = RefreshToken.for_user(user)
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value=str(refresh.access_token),
+                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+            response.set_cookie(
+                key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
+                value=str(refresh),
+                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+            )
+            response.data = UserSerializer(user).data
         else:
-            data = serializer.errors
-        return Response(data)
-
-
-@api_view(["GET"])
-@permission_classes([ReadOnly])
-def logout_view(request):
-    request.user.auth_token.delete()
-    return Response('User Logged out successfully')
+            response.data = serializer.errors
+        return response
 
 
 @api_view(['POST'])
@@ -122,11 +191,13 @@ def reset_password(request):
                 }, code='invalid')
 
 
-@api_view(['POST'])
-@permission_classes([AdminPermission | SuperstudentPermission])
+@api_view(['POST', 'GET'])
+@permission_classes([AdminPermission | SuperstudentPermission | ReadOnly])
 def role_assignment_view(request):
-    if request.method == "POST":
+    if request.method == "GET":  # return role of user
+        return Response({'role': request.user.role})
 
+    if request.method == "POST":  # change the role of a user
         serializer = RoleAssignmentSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
 

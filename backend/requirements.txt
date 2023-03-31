@@ -7,3 +7,5 @@ postgres
 psycopg2
 Pillow
 model_bakery
+djangorestframework-simplejwt
+requests
