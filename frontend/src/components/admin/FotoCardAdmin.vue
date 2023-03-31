@@ -54,19 +54,5 @@ export default {
 </script>
 
 <style scoped>
-.row-margin {
-  margin-bottom: 0;
-  margin-right: 0;
-  margin-top: 5px;
-}
 
-.image-margin {
-  margin-right: 0;
-  margin-top: 0;
-}
-
-.container-border{
-  border: 1px solid #E3e3e3;
-  border-radius: 25px;
-}
 </style>
