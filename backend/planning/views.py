@@ -5,7 +5,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
 from django.contrib.auth import get_user_model
 from ronde.models import Ronde
 from .models import *
-from exception.exceptionMessage import ExceptionMessage
+from exceptions.exceptionMessage import ExceptionMessage
 import datetime
 
 
