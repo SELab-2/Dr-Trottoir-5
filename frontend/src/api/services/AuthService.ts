@@ -35,7 +35,7 @@ class AuthService extends EchoService {
   /**
    * Logout the current user.
    */
-  @POST("/logout")
+  @POST("/logout/")
   logout(): EchoPromise<string> {
     return {} as EchoPromise<string>;
   }

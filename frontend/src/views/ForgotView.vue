@@ -62,7 +62,6 @@
 import { defineComponent } from 'vue'
 import router from '@/router'
 import NormalButton from '@/components/NormalButton.vue'
-import { requestWithBody } from '@/authorized'
 
 export default defineComponent({
   name: 'ForgotView',
@@ -107,17 +106,19 @@ export default defineComponent({
       }
     },
     sendOtp () {
-      const response = requestWithBody('/api/forgot/', 'POST', { email: this.email })
-      console.log(response)
+      //const response = requestWithBody('/api/forgot/', 'POST', { email: this.email })
+      //console.log(response)
       this.sendEmail = false
     },
     async resetPassword () {
+      /*
       const response = await requestWithBody('/api/reset/', 'POST', {
         email: this.email,
         otp: this.otp,
         new_password: this.password
       })
       console.log(response)
+       */
       return await router.push({ path: '/login' })
     }
   }
