@@ -3,7 +3,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
 from .models import PickUpDay
 from .serializers import PickUpSerializer
-
+from exceptions.exceptionMessage import ExceptionMessage
 
 class PickUpListCreateView(generics.ListCreateAPIView):
     queryset = PickUpDay.objects.all()
@@ -16,24 +16,23 @@ class PickUpListCreateView(generics.ListCreateAPIView):
         data = request.data
         if data.get("day") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required,
                 "field": "day"
             })
         else:
-            print(PickUpDay.WeekDayEnum.values)
             if data["day"] not in PickUpDay.WeekDayEnum.values:
                 errors.append({
-                    "message": "Not a valid choice",
+                    "message": ExceptionMessage.invalid_enum_choice,
                     "field": "day"
                 })
         if data.get("start_hour") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required,
                 "field": "start_hour"
             })
         if data.get("end_hour") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required,
                 "field": "end_hour"
             })
         if len(errors) > 0:
