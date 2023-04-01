@@ -7,6 +7,7 @@ from .serializers import LocatieEnumSerializer, ManualSerializer, \
     BuildingSerializer, RondeSerializer
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
+from exceptions.exceptionMessage import ExceptionMessage
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -40,13 +41,13 @@ class LocatieEnumListCreateView(generics.ListCreateAPIView):
         errors = []
         if "name" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "name"
             })
 
         elif data["name"] == "":
             errors.append({
-                "message": "field can't be empty",
+                "message": ExceptionMessage.blank_error,
                 "field": "name"
             })
         if len(errors) > 0:
@@ -112,33 +113,33 @@ class ManualListCreateView(generics.ListCreateAPIView):
         errors = []
         if "file" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "file"
             })
         elif data["file"] not in request.FILES.getlist("file"):
             errors.append({
-                "message": "submitted data was not a file",
+                "message": ExceptionMessage.file_upload_error,
                 "field": "file"
             })
         if "fileType" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "fileType"
             })
         elif data["fileType"] == "":
             errors.append({
-                "message": "field can't be blank",
+                "message": ExceptionMessage.blank_error,
                 "field": "fileType"
             })
 
         if "manualStatus" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "manualStatus"
             })
         elif data["manualStatus"] not in ManualStatusField.values:
             errors.append({
-                "message": "not a valid choice",
+                "message": ExceptionMessage.invalid_enum_choice_error,
                 "field": "manualStatus"
             })
         if len(errors) > 0:
@@ -184,17 +185,17 @@ class BuildingListCreateView(generics.ListCreateAPIView):
         errors = []
         if "adres" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "adres"
             })
         elif data["adres"] == "":
             errors.append({
-                "message": "field may not be blank",
+                "message": ExceptionMessage.blank_error,
                 "field": "adres"
             })
         if "ivago_klantnr" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "ivago_klantnr"
             })
         else:
@@ -202,12 +203,12 @@ class BuildingListCreateView(generics.ListCreateAPIView):
                 int(data["ivago_klantnr"])
             except Exception:
                 errors.append({
-                    "message": "field must be integer",
+                    "message": ExceptionMessage.integer_error,
                     "field": "ivago_klantnr"
                 })
         if "manual" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "manual"
             })
         else:
@@ -215,13 +216,13 @@ class BuildingListCreateView(generics.ListCreateAPIView):
                 Manual.objects.get(pk=data["manual"])
             except (Manual.DoesNotExist, ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "manual"
                 })
 
         if "location" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "location"
             })
         else:
@@ -229,7 +230,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
                 LocatieEnum.objects.get(pk=data["location"])
             except (LocatieEnum.DoesNotExist, ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "location"
                 })
         if len(errors) > 0:
@@ -261,33 +262,33 @@ class RondeListCreateView(generics.ListCreateAPIView):
 
         if "name" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "name"
             })
         if "location" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "location"
             })
         else:
             try:
                 LocatieEnum.objects.get(pk=data["location"])
-            except LocatieEnum.DoesNotExist:
+            except (LocatieEnum.DoesNotExist | ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "location"
                 })
         if "buildings" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "buildings"
             })
         else:
             try:
                 Building.objects.get(pk=data["buildings"])
-            except Building.DoesNotExist:
+            except (Building.DoesNotExist | ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "buildings"
                 })
         if len(errors) > 0:
