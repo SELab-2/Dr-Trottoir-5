@@ -3,7 +3,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
 from .models import PickUpDay
 from .serializers import PickUpSerializer
-from exceptions.exceptionMessage import ExceptionMessage
+from exceptions.exceptionHandler import ExceptionHandler
 
 
 class PickUpListCreateView(generics.ListCreateAPIView):
@@ -14,32 +14,15 @@ class PickUpListCreateView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         errors = []
+        data: dict
         data = request.data
-        if data.get("day") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "day"
-            })
-        else:
-            if data["day"] not in PickUpDay.WeekDayEnum.values:
-                errors.append({
-                    "message": ExceptionMessage.invalid_enum_choice_error,
-                    "field": "day"
-                })
-        if data.get("start_hour") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "start_hour"
-            })
-        if data.get("end_hour") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "end_hour"
-            })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+
+        handler = ExceptionHandler()
+        handler.checkEnumValue(data.get("day"), "day",
+                               PickUpDay.WeekDayEnum.values)
+        handler.checkTimeValue(data.get("start_hour"), "start_hour")
+        handler.checkTimeValue(data.get("end_hour"), "end_hour")
+        handler.check()
 
         return super().post(request, *args, **kwargs)
 

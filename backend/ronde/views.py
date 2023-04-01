@@ -7,7 +7,7 @@ from .serializers import LocatieEnumSerializer, ManualSerializer, \
     BuildingSerializer, RondeSerializer
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
-from exceptions.exceptionMessage import ExceptionMessage
+from exceptions.exceptionHandler import ExceptionHandler
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):

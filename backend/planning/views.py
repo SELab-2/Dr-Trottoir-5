@@ -5,7 +5,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
 from django.contrib.auth import get_user_model
 from ronde.models import Ronde
 from .models import *
-from exceptions.exceptionMessage import ExceptionMessage
+from exceptions.exceptionHandler import ExceptionHandler
 import datetime
 
 
@@ -132,7 +132,7 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
                 datetime.datetime.strptime(data["time"], "%Y-%m-%d %H:%M")
             except ValueError:
                 errors.append({
-                    "message": ExceptionMessage.time_format_error,
+                    "message": ExceptionMessage.datetime_format_error,
                     "field": "time"
                 })
         if "infoPerBuilding" not in data:
