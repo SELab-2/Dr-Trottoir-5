@@ -62,6 +62,8 @@
 import { defineComponent } from 'vue'
 import router from '@/router'
 import NormalButton from '@/components/NormalButton.vue'
+import AuthService from "@/api/services/AuthService";
+import {AuthForgotWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
 
 export default defineComponent({
   name: 'ForgotView',
@@ -87,7 +89,7 @@ export default defineComponent({
   },
   beforeUnmount () {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this.onResize, { passive: true })
+      window.removeEventListener('resize', this.onResize)
     }
   },
   mounted () {
@@ -106,20 +108,16 @@ export default defineComponent({
       }
     },
     sendOtp () {
-      //const response = requestWithBody('/api/forgot/', 'POST', { email: this.email })
-      //console.log(response)
+      AuthService.forgot(new AuthForgotWrapper(this.email))
       this.sendEmail = false
     },
-    async resetPassword () {
-      /*
-      const response = await requestWithBody('/api/reset/', 'POST', {
-        email: this.email,
-        otp: this.otp,
-        new_password: this.password
-      })
-      console.log(response)
-       */
-      return await router.push({ path: '/login' })
+    resetPassword () {
+      AuthService.reset(new AuthResetWrapper(
+        this.email,
+        this.password,
+        this.otp
+      ))
+      return router.push({ path: '/login' })
     }
   }
 })

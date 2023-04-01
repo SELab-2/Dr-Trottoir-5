@@ -10,7 +10,7 @@ import { AuthInterceptor } from "@/api/interceptors/AuthInterceptor";
 import config from "@/config";
 import { store } from '../../store';
 import router from "../../router";
-import {AuthLoginWrapper, AuthRegisterWrapper} from "@/api/wrappers/AuthWrappers";
+import {AuthForgotWrapper, AuthLoginWrapper, AuthRegisterWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
 import User from "@/api/models/User";
 
 class AuthService extends EchoService {
@@ -30,6 +30,24 @@ class AuthService extends EchoService {
   @POST("/register/")
   register(@Body() body: AuthLoginWrapper): EchoPromise<User> {
     return {} as EchoPromise<User>;
+  }
+
+  /**
+   * Send an otp.
+   * @param body Email address
+   */
+  @POST("/forgot/")
+  forgot(@Body() body: AuthForgotWrapper): EchoPromise<string> {
+    return {} as EchoPromise<string>
+  }
+
+   /**
+   * Reset the users password
+   * @param body Email, new_password and otp
+   */
+  @POST("/reset/")
+  reset(@Body() body: AuthResetWrapper): EchoPromise<string> {
+    return {} as EchoPromise<string>
   }
 
   /**
