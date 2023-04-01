@@ -5,6 +5,7 @@ from .models import PickUpDay
 from .serializers import PickUpSerializer
 from exceptions.exceptionMessage import ExceptionMessage
 
+
 class PickUpListCreateView(generics.ListCreateAPIView):
     queryset = PickUpDay.objects.all()
     serializer_class = PickUpSerializer

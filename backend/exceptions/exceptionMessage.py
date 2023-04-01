@@ -1,4 +1,3 @@
-
 class ExceptionMessage:
     required_error = "Veld is vereist."
     invalid_enum_choice_error = "Geen geldige keuze."

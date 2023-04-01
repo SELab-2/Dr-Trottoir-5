@@ -10,8 +10,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserPublicSerializer, UserSerializer
-
+from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
+    UserPublicSerializer, UserSerializer
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -72,9 +72,11 @@ def login_view(request):
             response.data = UserSerializer(user).data
             return response
         else:
-            return Response({"No active": "This account is not active!!"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"No active": "This account is not active!!"},
+                            status=status.HTTP_404_NOT_FOUND)
     else:
-        return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"Invalid": "Invalid username or password!!"},
+                        status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])
@@ -84,9 +86,9 @@ def registration_view(request):
         response = Response()
         serializer = RegistrationSerializer(data=request.data)
 
-        data = {}
         if serializer.is_valid(raise_exception=True):
-            if get_user_model().objects.filter(email=request.data["email"]).exists():
+            if get_user_model().objects.filter(
+                    email=request.data["email"]).exists():
                 raise serializers.ValidationError({
                     "errors": [
                         {
