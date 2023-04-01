@@ -5,7 +5,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
 from django.contrib.auth import get_user_model
 from ronde.models import Ronde
 from .models import *
-
+from exception.exceptionMessage import ExceptionMessage
 import datetime
 
 
@@ -21,7 +21,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         if data.get("weekPlanning") is None:
             errors.append(
                 {
-                    "message": "field is required",
+                    "message": ExceptionMessage.required_error,
                     "field": "weekPlanning"
                 }
             )
@@ -30,13 +30,13 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                 WeekPlanning.objects.get(pk=request.data["weekPlanning"])
             except (WeekPlanning.DoesNotExist, ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "weekPlanning"
                 })
 
         if data.get("date") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "date"
             })
         else:
@@ -44,12 +44,12 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                 datetime.datetime.strptime(data["date"], "%Y-%m-%d")
             except ValueError:
                 errors.append({
-                    "message": "date has the wrong format, use YYYY-MM-DD",
+                    "message": ExceptionMessage.date_format_error,
                     "field": "date"
                 })
         if data.get("student") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "student"
             })
         else:
@@ -57,13 +57,13 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                 get_user_model().objects.get(pk=data["student"])
             except (get_user_model().DoesNotExist, ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "student"
                 })
 
         if data.get("ronde") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "ronde"
             })
         else:
@@ -71,7 +71,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                 Ronde.objects.get(pk=data["ronde"])
             except (Ronde.DoesNotExist, ValueError):
                 errors.append({
-                    "message": "reference pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "ronde"
                 })
 
@@ -104,27 +104,27 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
 
         if "pictureType" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "pictureType"
             })
         elif data["pictureType"] not in BuildingPicture.PictureEnum.values:
             errors.append({
-                "message": "not a valid choice",
+                "message": ExceptionMessage.invalid_enum_choice_error,
                 "field": "pictureType"
             })
         if "image" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "image"
             })
         elif data["image"] not in request.FILES.getlist("image"):
             errors.append({
-                "message": "submitted data was not a file",
+                "message": ExceptionMessage.file_upload_error,
                 "field": "image"
             })
         if "time" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "time"
             })
         else:
@@ -132,12 +132,12 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
                 datetime.datetime.strptime(data["time"], "%Y-%m-%d %H:%M")
             except ValueError:
                 errors.append({
-                    "message": "time has wrong format, try YYYY-MM-DD hh:mm",
+                    "message": ExceptionMessage.time_format_error,
                     "field": "time"
                 })
         if "infoPerBuilding" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "infoPerBuilding"
             })
         else:
@@ -145,7 +145,7 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
                 InfoPerBuilding.objects.get(pk=request.data["infoPerBuilding"])
             except (InfoPerBuilding.DoesNotExist, ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "infoPerBuilding"
                 })
         if len(errors) > 0:
@@ -176,7 +176,7 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
         errors = []
         if "dagPlanning" not in data:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "dagPlanning"
             })
         else:
@@ -184,7 +184,7 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
                 DagPlanning.objects.get(pk=request.data["dagPlanning"])
             except (DagPlanning.DoesNotExist, ValueError):
                 errors.append({
-                    "message": "referenced pk not in db",
+                    "message": ExceptionMessage.pk_does_not_exist_error,
                     "field": "dagPlanning"
                 })
         if len(errors) > 0:
@@ -214,12 +214,12 @@ class WeekPlanningCLAPIView(generics.ListCreateAPIView):
         errors = []
         if data.get("week") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "week"
             })
         if data.get("year") is None:
             errors.append({
-                "message": "field is required",
+                "message": ExceptionMessage.required_error,
                 "field": "year"
             })
         if len(errors) > 0:
