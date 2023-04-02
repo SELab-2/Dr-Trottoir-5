@@ -21,11 +21,10 @@ const emitter = require('tiny-emitter/instance')
 export default defineComponent({
   name: 'App',
   async beforeCreate() {
-    const noLogin = ['login', 'register', 'register_done']; // Pages that can be accessed without logging in
+    const noLogin = ['login', 'register']; // Pages that can be accessed without logging in
     const router = useRouter();
 
     router.beforeEach(to => {
-      console.log('Routing to:', to)
       if (!noLogin.includes(to.name.toString())) {
         this.navbar = true;
 

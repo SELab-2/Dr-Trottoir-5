@@ -47,11 +47,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, defineEmits} from 'vue'
-import NormalButton from '@/components/NormalButton'
-import {RequestHandler} from '@/api/RequestHandler'
-import AuthService from '@/api/services/AuthService'
-import {AuthRegisterWrapper} from "@/api/wrappers/AuthWrappers";
+import {defineComponent} from 'vue';
+import {RequestHandler} from '@/api/RequestHandler';
+import AuthService from '@/api/services/AuthService';
+import {AuthRegisterWrapper} from '@/api/wrappers/AuthWrappers';
+import NormalButton from '@/components/NormalButton.vue';
 
 export default defineComponent({
   name: 'RegisterView',

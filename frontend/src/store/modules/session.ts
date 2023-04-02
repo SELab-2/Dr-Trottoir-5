@@ -1,4 +1,3 @@
-import {EchoPromise} from "echofetch";
 import User from "@/api/models/User";
 import UserService from "@/api/services/UserService";
 import {UserRole} from "@/api/models/UserRole";
@@ -36,7 +35,7 @@ export const session = {
           style: "SNACKBAR"
         }).then(user => {
           context.commit("SET_CURRENTUSER", user);
-        });
+        }).catch(() => {});
       }
     },
   },
