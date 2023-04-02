@@ -1,6 +1,10 @@
+import { snackbar } from './modules/snackbar'
+import { modal } from './modules/modal'
+import { session } from './modules/session'
 import { createStore } from 'vuex'
 
-export default createStore({
+export let store
+store = createStore({
   state: {
   },
   getters: {
@@ -10,5 +14,8 @@ export default createStore({
   actions: {
   },
   modules: {
+    snackbar,
+    modal,
+    session
   }
 })
