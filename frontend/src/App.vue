@@ -21,7 +21,7 @@ const emitter = require('tiny-emitter/instance')
 export default defineComponent({
   name: 'App',
   async beforeCreate() {
-    const noLogin = ['login', 'register']; // Pages that can be accessed without logging in
+    const noLogin = ['login', 'register'];  // Pages that can be accessed without logging in
     const router = useRouter();
 
     router.beforeEach(to => {
