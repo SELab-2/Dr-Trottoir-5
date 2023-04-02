@@ -51,7 +51,7 @@ export default defineComponent({
     NavigationBar
   },
   data: () => ({
-    navbar: false
+    navbar: true
   })
 })
 </script>
