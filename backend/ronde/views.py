@@ -1,12 +1,15 @@
-from rest_framework import generics, status, serializers
-from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
 import os
+
+from rest_framework import generics, status, serializers
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+
+from users.permissions import StudentReadOnly, AdminPermission, \
+    SuperstudentPermission
 from .models import *
 from .serializers import LocatieEnumSerializer, ManualSerializer, \
     BuildingSerializer, RondeSerializer
-from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission
+
 from exceptions.exceptionHandler import ExceptionHandler
 
 
@@ -38,22 +41,9 @@ class LocatieEnumListCreateView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        errors = []
-        if "name" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "name"
-            })
-
-        elif data["name"] == "":
-            errors.append({
-                "message": ExceptionMessage.blank_error,
-                "field": "name"
-            })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkNotBlank(data.get("name"), "name")
+        handler.check()
         return super().post(request, *args, **kwargs)
 
 
@@ -109,43 +99,13 @@ class ManualListCreateView(generics.ListCreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
-        data = request.data
-        errors = []
-        if "file" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "file"
-            })
-        elif data["file"] not in request.FILES.getlist("file"):
-            errors.append({
-                "message": ExceptionMessage.file_upload_error,
-                "field": "file"
-            })
-        if "fileType" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "fileType"
-            })
-        elif data["fileType"] == "":
-            errors.append({
-                "message": ExceptionMessage.blank_error,
-                "field": "fileType"
-            })
-
-        if "manualStatus" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "manualStatus"
-            })
-        elif data["manualStatus"] not in ManualStatusField.values:
-            errors.append({
-                "message": ExceptionMessage.invalid_enum_choice_error,
-                "field": "manualStatus"
-            })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        data: dict = request.data
+        handler = ExceptionHandler()
+        handler.checkFile(data.get("file"), "file", request.FILES)
+        handler.checkNotBlank(data.get("fileType"), "fileType")
+        handler.checkEnumValue(data.get("manualStatus"), "manualStatus",
+                               ManualStatusField.values)
+        handler.check()
         return super().post(request, *args, **kwargs)
 
 
@@ -182,61 +142,12 @@ class BuildingListCreateView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        errors = []
-        if "adres" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "adres"
-            })
-        elif data["adres"] == "":
-            errors.append({
-                "message": ExceptionMessage.blank_error,
-                "field": "adres"
-            })
-        if "ivago_klantnr" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "ivago_klantnr"
-            })
-        else:
-            try:
-                int(data["ivago_klantnr"])
-            except Exception:
-                errors.append({
-                    "message": ExceptionMessage.integer_error,
-                    "field": "ivago_klantnr"
-                })
-        if "manual" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "manual"
-            })
-        else:
-            try:
-                Manual.objects.get(pk=data["manual"])
-            except (Manual.DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "manual"
-                })
-
-        if "location" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "location"
-            })
-        else:
-            try:
-                LocatieEnum.objects.get(pk=data["location"])
-            except (LocatieEnum.DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "location"
-                })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkNotBlank(data.get("adres"), "adres")
+        handler.checkInteger(data.get("ivago_klantnr"), "ivago_klantnr")
+        handler.checkPKValue(data.get("manual"), "manual", Manual)
+        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
+        handler.check()
         return super().post(request, *args, **kwargs)
 
 
@@ -259,42 +170,11 @@ class RondeListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         errors = []
-
-        if "name" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "name"
-            })
-        if "location" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "location"
-            })
-        else:
-            try:
-                LocatieEnum.objects.get(pk=data["location"])
-            except (LocatieEnum.DoesNotExist | ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "location"
-                })
-        if "buildings" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "buildings"
-            })
-        else:
-            try:
-                Building.objects.get(pk=data["buildings"])
-            except (Building.DoesNotExist | ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "buildings"
-                })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkRequired("name")
+        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
+        handler.checkPKValue(data.get("buildings"), "buildings", Building)
+        handler.check()
         return super().post(request, *args, **kwargs)
 
 
