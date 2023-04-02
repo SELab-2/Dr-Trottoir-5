@@ -17,73 +17,17 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        errors = []
-        if data.get("weekPlanning") is None:
-            errors.append(
-                {
-                    "message": ExceptionMessage.required_error,
-                    "field": "weekPlanning"
-                }
-            )
-        else:
-            try:
-                WeekPlanning.objects.get(pk=request.data["weekPlanning"])
-            except (WeekPlanning.DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "weekPlanning"
-                })
-
-        if data.get("date") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "date"
-            })
-        else:
-            try:
-                datetime.datetime.strptime(data["date"], "%Y-%m-%d")
-            except ValueError:
-                errors.append({
-                    "message": ExceptionMessage.date_format_error,
-                    "field": "date"
-                })
-        if data.get("student") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "student"
-            })
-        else:
-            try:
-                get_user_model().objects.get(pk=data["student"])
-            except (get_user_model().DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "student"
-                })
-
-        if data.get("ronde") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "ronde"
-            })
-        else:
-            try:
-                Ronde.objects.get(pk=data["ronde"])
-            except (Ronde.DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "ronde"
-                })
-
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkPKValue(data.get("weekPlanning"))
+        handler.checkDateValue(data.get("date"), "date")
+        handler.checkPKValue(data.get("student"), "student", get_user_model())
+        handler.checkPKValue(data.get("ronde"), "ronde", Ronde)
+        handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
     permission_classes = [
@@ -100,58 +44,13 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        errors = []
-
-        if "pictureType" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "pictureType"
-            })
-        elif data["pictureType"] not in BuildingPicture.PictureEnum.values:
-            errors.append({
-                "message": ExceptionMessage.invalid_enum_choice_error,
-                "field": "pictureType"
-            })
-        if "image" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "image"
-            })
-        elif data["image"] not in request.FILES.getlist("image"):
-            errors.append({
-                "message": ExceptionMessage.file_upload_error,
-                "field": "image"
-            })
-        if "time" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "time"
-            })
-        else:
-            try:
-                datetime.datetime.strptime(data["time"], "%Y-%m-%d %H:%M")
-            except ValueError:
-                errors.append({
-                    "message": ExceptionMessage.datetime_format_error,
-                    "field": "time"
-                })
-        if "infoPerBuilding" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "infoPerBuilding"
-            })
-        else:
-            try:
-                InfoPerBuilding.objects.get(pk=request.data["infoPerBuilding"])
-            except (InfoPerBuilding.DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "infoPerBuilding"
-                })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkEnumValue(data.get("pictureType"), "pictureType",
+                               BuildingPicture.PictureEnum.values)
+        handler.checkFile(data.get("image"), "image", request.FILES)
+        handler.checkPKValue(data.get("infoPerBuilding"), "infoPerBuilding",
+                             InfoPerBuilding)
+        handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
@@ -173,24 +72,10 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        errors = []
-        if "dagPlanning" not in data:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "dagPlanning"
-            })
-        else:
-            try:
-                DagPlanning.objects.get(pk=request.data["dagPlanning"])
-            except (DagPlanning.DoesNotExist, ValueError):
-                errors.append({
-                    "message": ExceptionMessage.pk_does_not_exist_error,
-                    "field": "dagPlanning"
-                })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkPKValue(data.get("dagPlanning"), "dagPlanning",
+                             DagPlanning)
+        handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
 
 
@@ -209,23 +94,11 @@ class WeekPlanningCLAPIView(generics.ListCreateAPIView):
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
-
         data = request.data
-        errors = []
-        if data.get("week") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "week"
-            })
-        if data.get("year") is None:
-            errors.append({
-                "message": ExceptionMessage.required_error,
-                "field": "year"
-            })
-        if len(errors) > 0:
-            raise serializers.ValidationError({
-                "errors": errors
-            })
+        handler = ExceptionHandler()
+        handler.checkInteger(data.get("week"), "week")
+        handler.checkInteger(data.get("year"), "year")
+        handler.check()
         return super().post(request, *args, **kwargs)
 
 
