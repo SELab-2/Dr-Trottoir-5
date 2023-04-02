@@ -133,3 +133,15 @@ class ExceptionHandler:
                 "field": fieldname
             })
             return False
+
+    def checkNotBlank(self, value, fieldname):
+        if not self.checkRequired(value, fieldname):
+            return False
+        value : str
+        if value == "":
+            self.errors.append({
+                "message": ExceptionHandler.blank_error,
+                "field": fieldname
+            })
+            return False
+        return True
