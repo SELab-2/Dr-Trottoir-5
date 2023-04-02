@@ -33,7 +33,7 @@ export default defineComponent({
   name: 'NormalButton',
   props: {
     text: { type: String },
-    parentFunction: { type: Function }
+    parentFunction: { type: Function, default: () => {} }
   }
 })
 </script>
