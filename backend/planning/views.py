@@ -3,10 +3,8 @@ from .serializers import *
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
 from django.contrib.auth import get_user_model
-from ronde.models import Ronde
 from .models import *
 from exceptions.exceptionHandler import ExceptionHandler
-import datetime
 
 
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
@@ -18,7 +16,8 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkPKValue(data.get("weekPlanning"), "weekPlanning", WeekPlanning)
+        handler.checkPKValue(data.get("weekPlanning"), "weekPlanning",
+                             WeekPlanning)
         handler.checkDateValue(data.get("date"), "date")
         handler.checkPKValue(data.get("student"), "student", get_user_model())
         handler.checkPKValue(data.get("ronde"), "ronde", Ronde)
@@ -27,7 +26,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-    generics.RetrieveUpdateDestroyAPIView):
+        generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
     permission_classes = [

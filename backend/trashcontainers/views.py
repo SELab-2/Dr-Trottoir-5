@@ -1,14 +1,18 @@
 from rest_framework import generics
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
+from users.permissions import StudentReadOnly, AdminPermission, \
+    SuperstudentPermission
 from .models import TrashContainer
 from .serializers import TrashContainerSerializer
 from exceptions.exceptionHandler import ExceptionHandler
 from pickupdays.models import PickUpDay
 from ronde.models import Building
+
+
 class TrashContainerListCreateView(generics.ListCreateAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [
+        StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -25,4 +29,5 @@ class TrashContainerListCreateView(generics.ListCreateAPIView):
 class TrashContainerRetrieveView(generics.RetrieveAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [
+        StudentReadOnly | AdminPermission | SuperstudentPermission]

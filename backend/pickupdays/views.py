@@ -1,4 +1,4 @@
-from rest_framework import generics, serializers
+from rest_framework import generics
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
 from .models import PickUpDay
@@ -13,7 +13,6 @@ class PickUpListCreateView(generics.ListCreateAPIView):
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
-        errors = []
         data: dict
         data = request.data
 

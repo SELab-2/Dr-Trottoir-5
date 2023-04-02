@@ -137,7 +137,7 @@ class ExceptionHandler:
     def checkNotBlank(self, value, fieldname):
         if not self.checkRequired(value, fieldname):
             return False
-        value : str
+        value: str
         if value == "":
             self.errors.append({
                 "message": ExceptionHandler.blank_error,
