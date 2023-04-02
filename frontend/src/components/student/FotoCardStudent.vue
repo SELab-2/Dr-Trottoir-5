@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-card max-width="800px" min-width="345" class="container-border">
+    <v-card max-width="800px" min-width="250" class="container-border">
       <v-card-text>
         <v-row align-end>
           <v-col align="left" cols="8">

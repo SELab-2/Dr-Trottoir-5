@@ -7,10 +7,10 @@
     </v-col>
   </v-row>
 
-  <h1 align="center">Resto s5</h1>
+  <h1 align="center"> {{ data.buildingName }} </h1>
 
   <v-col align="center">
-    <h3>Aankomst</h3>
+    <h3> {{ data.type }} </h3>
   </v-col>
 
   <div align="center">
@@ -32,7 +32,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({name: 'Empty', argsCount: 0})
+      default: () => ({buildingName: 'Gebouw test', type: "Aankomst"})
     }
   },
   methods: {
