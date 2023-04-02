@@ -169,7 +169,6 @@ class RondeListCreateView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        errors = []
         handler = ExceptionHandler()
         handler.checkRequired("name")
         handler.checkPKValue(data.get("location"), "location", LocatieEnum)
