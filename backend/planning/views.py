@@ -18,7 +18,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkPKValue(data.get("weekPlanning"))
+        handler.checkPKValue(data.get("weekPlanning"), "weekPlanning", WeekPlanning)
         handler.checkDateValue(data.get("date"), "date")
         handler.checkPKValue(data.get("student"), "student", get_user_model())
         handler.checkPKValue(data.get("ronde"), "ronde", Ronde)
