@@ -2,19 +2,21 @@
   <v-container class="container-border">
     <v-row class="text-center">
       <v-col>
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.gebouw }}</p>
+        <p @click="goToBuildingPage" class="text-style-building" style="word-wrap: break-word;">{{
+            this.data.gebouw
+          }}</p>
       </v-col>
       <v-col>
-        <p>{{ this.data.state }}</p>
+        <p style="word-wrap: break-word;">{{ this.data.state }}</p>
       </v-col>
       <v-col>
-        <p>{{ this.data.remark }}</p>
+        <p style="word-wrap: break-word;">{{ this.data.remark }}</p>
       </v-col>
       <v-col>
-        <p :style="{ color: durationColor }">{{ durationText }}</p>
+        <p :style="{ color: durationColor }" style="word-wrap: break-word;">{{ durationText }}</p>
       </v-col>
       <v-col>
-        <p>{{ this.data.location }}</p>
+        <p style="word-wrap: break-word;">{{ this.data.location }}</p>
       </v-col>
     </v-row>
   </v-container>
@@ -62,10 +64,10 @@ export default {
         return minutes + 'min ' + seconds + 's'
       }
     },
-    durationColor () {
+    durationColor() {
       if (this.data.duration === 0) {
         return 'black'
-      } else if (this.data.duration < this.data.optimalDuration) {
+      } else if (this.data.duration > this.data.optimalDuration) {
         return '#FF1F00'
       } else {
         return '#39AE68'
@@ -77,7 +79,7 @@ export default {
       // TODO
     }
   },
-  async mounted () {
+  async mounted() {
     this.optimalDuration = this.data.optimalDuration
   }
 }
@@ -87,12 +89,5 @@ export default {
 .text-style-building {
   text-decoration-line: underline;
   cursor: pointer;
-}
-.container-test {
-  display: inline-block;
-  width: 80%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 </style>
