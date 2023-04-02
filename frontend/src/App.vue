@@ -3,7 +3,7 @@
     <v-main>
       <router-view/>
     </v-main>
-    <NavigationBar/>
+    <NavigationBar v-if="navbar" />
     <snackbar/>
   </v-app>
 </template>
@@ -12,45 +12,46 @@
 
 import {EchoError} from './api/EchoFetch/src/types/EchoError'
 import {CustomErrorOptions} from './api/error/types/CustomErrorOptions'
-import {onMounted} from 'vue'
+import {defineComponent} from 'vue'
 import NavigationBar from '@/components/NavigationBar.vue'
-import Snackbar from "@/components/util/Snackbar.vue";
+import Snackbar from '@/components/util/Snackbar.vue'
+import { useRouter } from 'vue-router'
+const emitter = require('tiny-emitter/instance')
 
-const Emitter = require('tiny-emitter')
-const emitter = new Emitter() //error bus
-
-
-export default {
+export default defineComponent({
   name: 'App',
+  async beforeCreate() {
+    const noLogin = ['login', 'register'];  // Pages that can be accessed without logging in
+    const router = useRouter();
 
-  beforeCreate() {
-    // Fetch the session data.
-    this.$store.dispatch("session/fetch");
+    router.beforeEach(to => {
+      if (!noLogin.includes(to.name.toString())) {
+        this.navbar = true;
+
+        // Authorize session
+        this.$store.dispatch("session/fetch");
+      } else this.navbar = false;
+    });
   },
-
-  setup() {
-    onMounted(async () => {
-
-
-      emitter.on(
-        "error",
-        (error: EchoError, options: CustomErrorOptions) => {
-          if (options.style === "SNACKBAR") {
-            this.$store.dispatch("snackbar/open", {
-              message: error.message,
-              color: "error"
-            });
-          }
+  mounted() {
+    emitter.on(
+      "error",
+      (error: EchoError, options: CustomErrorOptions) => {
+        if (options.style === "SNACKBAR") {
+          this.$store.dispatch("snackbar/open", {
+            message: error.message,
+            color: "error"
+          });
         }
-      )
-    })
+      }
+    )
   },
   components: {
     Snackbar,
     NavigationBar
   },
   data: () => ({
-    //
+    navbar: true
   })
-}
+})
 </script>
