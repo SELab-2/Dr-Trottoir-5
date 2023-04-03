@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.response import Response
 from .serializers import *
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
 
@@ -7,6 +8,39 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        student = request.query_params['student'] if 'student' in request.query_params else None
+        date = request.query_params['date'] if 'date' in request.query_params else None
+
+        if student is not None and date is not None:
+            try:
+                dagPlanning = DagPlanning.objects.get(student=student, date=date)
+                return Response(DagPlanningSerializer(dagPlanning).data)
+            except DagPlanning.DoesNotExist:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db", "field": "dagPlanning"
+                            }
+                        ]
+                    }, code='invalid')
+        elif student is not None:
+            try:
+                dagPlanning = DagPlanning.objects.get(student=student)
+                return Response(DagPlanningSerializer(dagPlanning).data)
+            except DagPlanning.DoesNotExist:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db", "field": "dagPlanning"
+                            }
+                        ]
+                    }, code='invalid')
+
+        return super().get(request=request, args=args, kwargs=kwargs)
 
     def post(self, request, *args, **kwargs):
 

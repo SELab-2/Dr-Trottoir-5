@@ -4,6 +4,15 @@ from django.db import IntegrityError
 from .models import LocatieEnum, Manual, Building, Ronde
 
 
+class LocatieRelatedField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        return LocatieEnumSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
+
+
 class LocatieEnumSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocatieEnum
@@ -39,13 +48,35 @@ class ManaulSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"errors": str(e)})
 
 
+class BuildingRelatedField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        return BuildingSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
+
+
 class BuildingSerializer(serializers.ModelSerializer):
+    location = LocatieRelatedField(read_only=True)
+
     class Meta:
         model = Building
         fields = '__all__'
 
 
+class RondeRelatedField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        return RondeSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
+
+
 class RondeSerializer(serializers.ModelSerializer):
+    buildings = BuildingRelatedField(read_only=True, many=True)
+
     class Meta:
         model = Ronde
         fields = '__all__'

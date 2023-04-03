@@ -30,14 +30,21 @@ export const session = {
      */
     fetch(context: any) {
       if (!context.getters.currentUser) {
-        RequestHandler.handle(UserService.get(), {
-          id: "getUserError",
-          style: "SNACKBAR"
-        }).then(user => {
-          context.commit("SET_CURRENTUSER", user);
-        }).catch(() => {});
+        const saved_user = localStorage.getItem('user');
+        if (!saved_user) {
+          RequestHandler.handle(UserService.get(), {
+            id: "getUserError",
+            style: "SNACKBAR"
+          }).then(user => {
+            localStorage.setItem('user', JSON.stringify(user));
+            context.commit("SET_CURRENTUSER", user);
+          }).catch(() => {});
+        } else context.commit("SET_CURRENTUSER", JSON.parse(saved_user));
       }
     },
+    clearStorage() {
+      localStorage.removeItem('user');
+    }
   },
 
   getters: {
