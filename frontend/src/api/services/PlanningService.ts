@@ -1,12 +1,8 @@
 import {
-  Body,
-  DELETE,
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
   GET,
-  PATCH,
-  POST,
   Query
 } from "@/api/EchoFetch";
 import config from "@/config";
