@@ -117,7 +117,7 @@ registerRoute(
 );
 
 registerRoute(
-  ({url}) => url.pathname.startsWith(`http://172.20.80.1`),
+  ({url}) => url.pathname.startsWith(`${config.FRONTEND.URL}`),
   new CacheFirst({
     cacheName: 'everything',
     plugins: [
