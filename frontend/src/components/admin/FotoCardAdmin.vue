@@ -41,7 +41,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({ timeStamp: 'Empty', description: 'Empty', imageURL: 'https://www.rd.com/wp-content/uploads/2020/12/GettyImages-480585465.jpg' })
+      default: () => ({ timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' })
     }
   },
   methods: {
