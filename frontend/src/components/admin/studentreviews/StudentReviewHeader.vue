@@ -20,7 +20,7 @@
 <script>
 
 export default {
-  name: 'TrashPickupCard',
+  name: 'StudentReviewHeader',
   props: {
     args: {
       default: {

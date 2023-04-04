@@ -24,16 +24,10 @@ The time automatically will shown as the "hh:mm" format
 
 <script>
 
-function toTimeString (time) {
-  let hours = Math.floor(time / 60)
-  if (hours < 10) { hours = '0' + hours }
-  let min = time % 60
-  if (min < 10) { min = '0' + min }
-  return hours + ':' + min
-}
+import { toTimeString } from '@/util/TimeUtil'
 
 export default {
-  name: 'TrashPickupCard',
+  name: 'StudentReviewCard',
   props: {
     args: {
       default: {
