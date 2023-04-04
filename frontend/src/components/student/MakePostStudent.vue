@@ -36,11 +36,14 @@ export default {
     selectImage() {
       const input = document.createElement('input')
       input.type = 'file'
+      // Alleen images accepteren
       input.accept = 'image/*'
       input.onchange = (event) => {
+        // selecteert de eerste file die die de gebruiker heeft geselecteerd
         const file = event.target.files[0]
         const reader = new FileReader()
         reader.onload = (e) => {
+          // zet de result van de reader om naar een base64 string
           this.imageUrl = e.target.result
         }
         reader.readAsDataURL(file)
