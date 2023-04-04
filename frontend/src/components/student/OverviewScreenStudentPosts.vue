@@ -9,29 +9,38 @@
           <v-icon v-on:click="goToFotoPage" dark size="30px" color="black">mdi-camera-outline</v-icon>
         </v-avatar>
     </v-col>
-
-
 </v-row>
   <v-col align="center">
     <h4> {{ data.type }} </h4>
   </v-col>
-
   <div align="center">
-    <FotoCardStudent/>
-    <FotoCardStudent/>
-    <FotoCardStudent/>
-    <FotoCardStudent/>
-    <FotoCardStudent/>
+      <v-col v-for="(fotoData, index) in fotoDataList" :key="index">
+        <FotoCardStudent :data="fotoData"/>
+      </v-col>
   </div>
 
 </template>
 
 <script>
+
+/**
+ * OverviewScreenStudentPosts component wordt gebruikt door als props een Object met de volgende keys mee te geven:
+ * buildingName: String
+ * type: String (Aankomst of Vertrek of Berging)
+ *
+ * Data halen van backend voor de FotoCardStudent componenten zie ´mounted()´
+ */
+
 import FotoCardStudent from "@/components/student/FotoCardStudent.vue";
 
 export default {
   name: 'OverviewScreenStudentPosts',
   components: {FotoCardStudent},
+  data() {
+    return {
+      fotoDataList: []
+    }
+  },
   props: {
     data: {
       type: Object,
@@ -43,6 +52,16 @@ export default {
       // TODO
     }
   },
+  async mounted() {
+    // TODO data halen van backend
+    this.fotoDataList = [
+        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
+        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
+        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
+        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
+        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' }
+      ]
+  }
 }
 </script>
 
