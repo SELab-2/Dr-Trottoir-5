@@ -74,9 +74,6 @@ export default defineComponent({
               color: "success"
             });
 
-            // Clear locally stored user
-            this.$store.dispatch("session/clearStorage");
-
             // Update the current user inside the store.
             this.$store.dispatch("session/fetch");
 

@@ -17,20 +17,20 @@ export default defineComponent({
   components: {
     DayPlanBuilding
   },
-  created() {
+  async created() {
     this.time = this.capitalize(new Date().toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
-    const student = this.$store.getters['session/currentUser'];
-    if (!student) return;
-    const id = student.id;
+    const user = this.$store.getters['session/currentUser'];
+    const id = await user.then(user => user.id).catch(() => null);
+    if (!id) return;
     const date = new Date().toISOString().split('T')[0];
 
     RequestHandler.handle(PlanningService.get(id, date), {
       id: "getDayplanningError",
       style: "SNACKBAR"
-    }).catch(() => {}).then(planning => {
+    }).then(planning => {
       this.buildings = planning.ronde.buildings;
       this.ronde = planning.ronde.name;
-    });
+    }).catch(() => {});
   },
   methods: {
     capitalize(s: string) {
@@ -40,7 +40,7 @@ export default defineComponent({
   data: () => ({
     time: '',
     ronde: 'Er is nog geen ronde ingepland.',
-    buildings: [{}]
+    buildings: []
   })
 });
 </script>

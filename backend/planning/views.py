@@ -16,7 +16,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         if student is not None and date is not None:
             try:
                 dagPlanning = DagPlanning.objects.get(student=student, date=date)
-                return Response(DagPlanningSerializer(dagPlanning).data)
+                return Response(DagPlanningSerializerFull(dagPlanning).data)
             except DagPlanning.DoesNotExist:
                 raise serializers.ValidationError(
                     {
@@ -29,7 +29,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         elif student is not None:
             try:
                 dagPlanning = DagPlanning.objects.get(student=student)
-                return Response(DagPlanningSerializer(dagPlanning).data)
+                return Response(DagPlanningSerializerFull(dagPlanning).data)
             except DagPlanning.DoesNotExist:
                 raise serializers.ValidationError(
                     {
@@ -43,7 +43,6 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         return super().get(request=request, args=args, kwargs=kwargs)
 
     def post(self, request, *args, **kwargs):
-
         try:
             WeekPlanning.objects.get(pk=request.data["weekPlanning"])
         except WeekPlanning.DoesNotExist:

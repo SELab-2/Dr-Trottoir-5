@@ -5,7 +5,6 @@ from .models import LocatieEnum, Manual, Building, Ronde
 
 
 class LocatieRelatedField(serializers.RelatedField):
-
     def to_representation(self, value):
         return LocatieEnumSerializer(value).data
 
@@ -49,7 +48,6 @@ class ManaulSerializer(serializers.ModelSerializer):
 
 
 class BuildingRelatedField(serializers.RelatedField):
-
     def to_representation(self, value):
         return BuildingSerializer(value).data
 
@@ -58,15 +56,16 @@ class BuildingRelatedField(serializers.RelatedField):
 
 
 class BuildingSerializer(serializers.ModelSerializer):
-    location = LocatieRelatedField(read_only=True)
-
     class Meta:
         model = Building
         fields = '__all__'
 
 
-class RondeRelatedField(serializers.RelatedField):
+class BuildingSerializerFull(BuildingSerializer):
+    location = LocatieRelatedField(read_only=True)
 
+
+class RondeRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         return RondeSerializer(value).data
 
@@ -75,8 +74,10 @@ class RondeRelatedField(serializers.RelatedField):
 
 
 class RondeSerializer(serializers.ModelSerializer):
-    buildings = BuildingRelatedField(read_only=True, many=True)
-
     class Meta:
         model = Ronde
         fields = '__all__'
+
+
+class RondeSerializerFull(serializers.ModelSerializer):
+    buildings = BuildingRelatedField(read_only=True, many=True)

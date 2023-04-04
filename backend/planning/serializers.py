@@ -4,11 +4,13 @@ from ronde.serializers import RondeRelatedField
 
 
 class DagPlanningSerializer(serializers.ModelSerializer):
-    ronde = RondeRelatedField(read_only=True)
-
     class Meta:
         model = DagPlanning
         fields = '__all__'
+
+
+class DagPlanningSerializerFull(DagPlanningSerializer):
+    ronde = RondeRelatedField(read_only=True)
 
 
 class BuildingPictureSerializer(serializers.ModelSerializer):
