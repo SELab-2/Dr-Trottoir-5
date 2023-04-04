@@ -19,6 +19,12 @@
       </v-col>
   </div>
 
+  <v-row justify="end" v-if="fotoDataList.length > 0">
+    <v-col cols="12" align="center">
+      <NormalButton text="Taak voltooien" :parent-function="completeTask"/>
+    </v-col>
+  </v-row>
+
 </template>
 
 <script>
@@ -32,10 +38,11 @@
  */
 
 import FotoCardStudent from "@/components/student/FotoCardStudent.vue";
+import NormalButton from "@/components/NormalButton.vue";
 
 export default {
   name: 'OverviewScreenStudentPosts',
-  components: {FotoCardStudent},
+  components: {NormalButton, FotoCardStudent},
   data() {
     return {
       fotoDataList: []
@@ -49,6 +56,9 @@ export default {
   },
   methods: {
     goToFotoPage: function () {
+      // TODO
+    },
+    completeTask: function () {
       // TODO
     }
   },
