@@ -1,19 +1,19 @@
 <template>
-  <v-container>
-    <v-card max-width="450px" min-width="330px" class="container-border">
+  <v-container fluid>
+    <v-card max-width="450px" min-width="250px" class="container-border">
       <v-card-text>
         <v-row align-end>
-          <v-col>
+          <v-col align="left" cols="8">
             <p style="font-size: 8px">{{ data.description }}</p>
           </v-col>
-          <v-col class="d-flex align-center">
+          <v-col class="d-flex align-center" cols="4">
             <v-row justify="end" class="image-margin">
               <v-img :src="data.imageURL" :max-width="'150'" :max-height="150"></v-img>
             </v-row>
           </v-col>
         </v-row>
         <v-row align="end">
-          <v-col>
+          <v-col align="left">
             <p style="font-size: 8px">{{ data.timeStamp }}</p>
           </v-col>
         </v-row>
