@@ -26,7 +26,7 @@ export default defineComponent({
 
     RequestHandler.handle(PlanningService.get(id, date), {
       id: "getDayplanningError",
-      style: "SNACKBAR"
+      style: "NONE"
     }).then(planning => {
       this.buildings = planning.ronde.buildings;
       this.ronde = planning.ronde.name;

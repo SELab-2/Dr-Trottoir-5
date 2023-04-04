@@ -49,7 +49,7 @@ class ManaulSerializer(serializers.ModelSerializer):
 
 class BuildingRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return BuildingSerializer(value).data
+        return BuildingSerializerFull(value).data
 
     def to_internal_value(self, data):
         return data
@@ -67,7 +67,7 @@ class BuildingSerializerFull(BuildingSerializer):
 
 class RondeRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return RondeSerializer(value).data
+        return RondeSerializerFull(value).data
 
     def to_internal_value(self, data):
         return data
@@ -79,5 +79,5 @@ class RondeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class RondeSerializerFull(serializers.ModelSerializer):
+class RondeSerializerFull(RondeSerializer):
     buildings = BuildingRelatedField(read_only=True, many=True)
