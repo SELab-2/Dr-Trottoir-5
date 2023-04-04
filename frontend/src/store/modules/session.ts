@@ -2,6 +2,7 @@ import User from "@/api/models/User";
 import UserService from "@/api/services/UserService";
 import {UserRole} from "@/api/models/UserRole";
 import {RequestHandler} from "@/api/RequestHandler";
+import {EchoPromise} from "@/api/EchoFetch";
 
 export const session = {
   namespaced: true,
@@ -17,7 +18,7 @@ export const session = {
      * @param state
      * @param currentUser User that is logged in.
      */
-    SET_CURRENTUSER(state: any, currentUser: User) {
+    SET_CURRENTUSER(state: any, currentUser: EchoPromise<User>) {
       state.currentUser = currentUser;
     },
   },
@@ -30,14 +31,12 @@ export const session = {
      */
     fetch(context: any) {
       if (!context.getters.currentUser) {
-        RequestHandler.handle(UserService.get(), {
+        context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
           id: "getUserError",
           style: "SNACKBAR"
-        }).then(user => {
-          context.commit("SET_CURRENTUSER", user);
-        }).catch(() => {});
+        }).catch(() => {}));
       }
-    },
+    }
   },
 
   getters: {
@@ -46,7 +45,7 @@ export const session = {
      *
      * @param state
      */
-    currentUser(state: any): User {
+    currentUser(state: any): EchoPromise<User> {
       return state.currentUser;
     },
 
@@ -56,7 +55,7 @@ export const session = {
      * @param state
      */
     isAuthenticated(state: any): boolean {
-      return !state.currentUser;
+      return state.currentUser && state.currentUser.isSuccess();
     },
 
     /**
@@ -66,10 +65,10 @@ export const session = {
      */
     isAdmin(state: any): boolean {
       return (
-        state.currentUser &&
+        state.currentUser && state.currentUser.isSuccess() &&
         (
-          state.currentUser.role == UserRole.AD ||
-          state.currentUser.role == UserRole.SU
+          state.currentUser.requireData().role == UserRole.AD ||
+          state.currentUser.requireData().role == UserRole.SU
         )
       );
     },
