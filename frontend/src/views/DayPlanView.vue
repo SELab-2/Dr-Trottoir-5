@@ -2,6 +2,7 @@
   <v-container align="center">
     <h1>{{ time }}</h1>
     <h2>{{ ronde }}</h2>
+    <normal-button text="Terug" v-bind:parent-function="goBack" block class="mt-2" v-if="buildings.length === 0"></normal-button>
     <DayPlanBuilding v-for="building in buildings" :data="building" />
   </v-container>
 </template>
@@ -11,20 +12,23 @@ import { defineComponent } from 'vue';
 import DayPlanBuilding from '@/components/student/DayPlanBuilding.vue';
 import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
+import NormalButton from "@/components/NormalButton.vue";
+import router from '@/router';
 
 export default defineComponent({
   name: "DayPlanView",
   components: {
-    DayPlanBuilding
+    DayPlanBuilding,
+    NormalButton
   },
   async created() {
-    this.time = this.capitalize(new Date().toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
+    if ('date' in this.$route.query) this.date = this.$route.query.date;
+    this.time = this.capitalize(new Date(this.date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
     const user = this.$store.getters['session/currentUser'];
     const id = await user.then(user => user.id).catch(() => null);
     if (!id) return;
-    const date = new Date().toISOString().split('T')[0];
 
-    RequestHandler.handle(PlanningService.get(id, date), {
+    RequestHandler.handle(PlanningService.get(id, this.date), {
       id: "getDayplanningError",
       style: "NONE"
     }).then(planning => {
@@ -35,10 +39,14 @@ export default defineComponent({
   methods: {
     capitalize(s: string) {
       return s.split(' ').map(s => s[0].toUpperCase() + s.slice(1)).join(' ');
+    },
+    goBack() {
+      router.go(-1);
     }
   },
   data: () => ({
     time: '',
+    date: new Date().toISOString().split('T')[0],
     ronde: 'Er is nog geen ronde ingepland.',
     buildings: []
   })
