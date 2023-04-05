@@ -42,7 +42,7 @@ export default defineComponent({
     },
     goBack() {
       router.go(-1);
-    }
+    },
   },
   data: () => ({
     time: '',
