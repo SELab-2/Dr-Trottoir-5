@@ -20,6 +20,12 @@ const globalCustomErrors: Array<CustomErrorMessage> = [
       "Je bent momenteel niet ingelogd, log in en probeer het opnieuw",
   },
   {
+    code: "403",
+    message: "Geen toegang",
+    description:
+      "Je hebt onvoldoende rechten om deze actie uit te voeren",
+  },
+  {
     code: "404",
     message: "Pagina niet gevonden",
     description:
@@ -39,7 +45,6 @@ const globalCustomErrors: Array<CustomErrorMessage> = [
     description:
       "We hebben problemen met de server. Probeer het later opnieuw.",
   },
-
   {
     code: "network_error",
     message: "Geen connectie met de server.",
@@ -121,6 +126,7 @@ export class ErrorHandler {
    * @param error
    */
   static handleGeneral(error: EchoError) {
+    error.message = this.getCustomMessage(error, new CustomErrorOptions()); // (temp?) fix
     // Check if the general errors are undefined.
     if (
       !error ||
@@ -184,7 +190,7 @@ export class ErrorHandler {
 
     // Ajust some errors that can be displayed better based on the given error code.
     const customError = this.getCustomErrors(options).find(
-      (e) =>
+      e =>
         (error.response &&
           e.code === error.response?.status.toString()) ||
         e.code === error.code
