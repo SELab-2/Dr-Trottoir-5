@@ -1,4 +1,5 @@
 <template>
+    <LoginTopBar :login="false"/>
   <!--
     Het eerste deel van de wachtwoord vergeten pagina waar het email adres ingevuld moet worden zodat de otp kan verstuurd
     worden.
@@ -50,7 +51,7 @@
           :append-inner-icon="value2 ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append-inner="() => (value2 = !value2)"
           :type="value2 ? 'password' : 'text'"
-          label="Tweede keer nieuw wachtwoord"
+          label="Bevestig wachtwoord"
         />
         <v-row class="justify-center my-2">
           <normal-button :parent-function="resetPassword" text="Nieuw wachtwoord opslaan"></normal-button>
@@ -70,12 +71,13 @@ import router from '@/router'
 import NormalButton from '@/components/NormalButton.vue'
 import AuthService from "@/api/services/AuthService";
 import {AuthForgotWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
+import LoginTopBar from "@/components/LoginTopBar.vue";
 
 // TODO input error handling
 
 export default defineComponent({
   name: 'ForgotView',
-  components: { NormalButton },
+  components: {LoginTopBar, NormalButton },
   data: () => ({
     email: '',
     password: '',

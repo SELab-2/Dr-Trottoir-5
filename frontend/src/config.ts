@@ -5,7 +5,7 @@ export default {
     },
 
     BACKEND: {
-      URL: "http://localhost:8080/api"
+      URL: "http://localhost:8000/api"
       //URL: process.env.VUE_APP_BACKEND_URL, TODO
     },
 };
