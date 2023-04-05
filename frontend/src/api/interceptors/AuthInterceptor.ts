@@ -50,9 +50,6 @@ export class AuthInterceptor implements EchoServiceInterceptor {
   }
 
   onError(error: EchoError): EchoError {
-    if (error.toJSON()['message'].includes('401')) {
-      router.push({ path: '/login' })
-    }
     return error;
   }
 }

@@ -63,7 +63,7 @@ export default defineComponent({
   },
   beforeUnmount() {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this.onResize, { passive: true })
+      window.removeEventListener('resize', this.onResize)
     }
   },
   mounted() {
@@ -71,10 +71,10 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-    login() {
-      AuthService.login({ email: this.email, password: this.password })
+     login() {
+       AuthService.login({ email: this.email, password: this.password })
         .then(
-          (data) => {
+          async (data) => {
 
             // Send confirmation message.
             this.$store.dispatch("snackbar/open", {
@@ -83,9 +83,9 @@ export default defineComponent({
             });
 
             // Update the current user inside the store.
-            this.$store.dispatch("session/fetch");
+            await this.$store.dispatch("session/fetch");
 
-            router.push({ path: '/' })
+            await router.push({ path: '/' })
           }
         ).catch((error) => {
 

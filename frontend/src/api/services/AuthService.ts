@@ -62,7 +62,7 @@ class AuthService extends EchoService {
    * Call the logout function and show the progress
    * @param goHome If the user should be send to the homepage after logging out.
    */
-  handleLogout(goHome = false) {
+  async handleLogout(goHome = false) {
     // Send loading message.
     store.dispatch("snackbar/open", {
       message: "Logging out...",
@@ -71,19 +71,16 @@ class AuthService extends EchoService {
     });
 
     this.logout()
-      .then((_) => {
+      .then(async (_) => {
         // Send confirmation message.
         store.dispatch("snackbar/open", {
           message: "Successfully logged out",
           color: "success",
         });
-
-        if (goHome) {
-          router.push("/");
-        }
-
         // Update the current user inside the store.
-        store.dispatch("session/fetch");
+        await store.dispatch("session/fetch");
+
+        await router.push(goHome ? "/" : "/login");
       })
       .catch((error) => {
         ErrorHandler.handle(error, {
