@@ -1,7 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import *
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
+from ronde.models import Ronde
 
 
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
@@ -45,6 +46,14 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
             WeekPlanning.objects.get(pk=request.data["weekPlanning"])
+            ronde = Ronde.objects.get(pk=request.data["ronde"])
+            response = super().post(request=request, args=args, kwargs=kwargs)
+            dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
+
+            # Make a list of InfoPerBuilding
+            for _ in ronde.buildings.all():
+                InfoPerBuilding(dagPlanning=dagPlanning).save()
+            return response
         except WeekPlanning.DoesNotExist:
             raise serializers.ValidationError(
                 {
@@ -54,7 +63,8 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                         }
                     ]
                 }, code='invalid')
-        return super().post(request=request, args=args, kwargs=kwargs)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
