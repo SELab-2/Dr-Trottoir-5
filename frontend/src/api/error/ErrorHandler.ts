@@ -65,8 +65,8 @@ export class ErrorHandler {
     options: CustomErrorOptions,
     fields: InputFields = {}
   ) {
-    let errors = await error.json()
-    console.log(errors)
+    let errors = error.json ? await error.json() : null;
+
     // Handle field errors.
     this.handleInputFields(error, fields)
 
@@ -123,9 +123,10 @@ export class ErrorHandler {
   static handleGeneral(error: EchoError, errors: any) {
     error.message = this.getCustomMessage(error, new CustomErrorOptions()); // (temp?) fix
     // Check if the general errors are undefined.
-    if (errors) {
+    if (!errors || !errors.errors) {
       return;
     }
+
     const generalErrors = errors.errors
 
     // Check if any general error was found.

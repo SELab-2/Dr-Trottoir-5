@@ -80,15 +80,14 @@ export default defineComponent({
             router.push({ path: '/' })
           }
         ).catch((error) => {
-
-        ErrorHandler.handle(
-          error,
-          {
-            id: "login",
-            style: "SNACKBAR"
-          },
-          this.fields
-        );
+          ErrorHandler.handle(
+            error,
+            {
+              id: "login",
+              style: "SNACKBAR"
+            },
+            this.fields
+          );
       })
     },
     onResize() {
