@@ -75,6 +75,7 @@ def login_view(request):
     else:
         return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def logout_view(request):
@@ -83,6 +84,7 @@ def logout_view(request):
     response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
     response.delete_cookie(settings.SIMPLE_JWT['REFRESH_COOKIE'])
     return response
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

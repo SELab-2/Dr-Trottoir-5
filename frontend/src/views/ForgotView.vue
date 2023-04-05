@@ -1,4 +1,8 @@
 <template>
+  <!--
+    Het eerste deel van de wachtwoord vergeten pagina waar het email adres ingevuld moet worden zodat de otp kan verstuurd
+    worden.
+  -->
   <v-card v-if="sendEmail" :flat="smallScreen" color="white" :class="`mx-auto mt-10 h-50 ${smallScreen ? 'w-100' : 'w-66'}`">
     <v-col class="align-center">
       <v-row class="justify-center my-5">
@@ -15,6 +19,9 @@
       </v-form>
     </v-col>
   </v-card>
+  <!--
+    Tweede deel van de wachtwoord vergeten pagina waar de code en het nieuwe wachtwoord moeten ingegeven worden
+  -->
   <v-card v-if="!sendEmail" :flat="smallScreen" color="white" :class="`mx-auto mt-10 ${smallScreen ? 'w-100' : 'w-66'}`">
     <v-col class="align-center">
       <v-row class="justify-center my-5">
@@ -27,7 +34,6 @@
           :model-value="email"
           label="e-mail"
           variant="solo"
-          suffix="Verzend opnieuw"
           append-icon="mdi-email"
           @click:append="sendOtp()"
         />
@@ -65,15 +71,17 @@ import NormalButton from '@/components/NormalButton.vue'
 import AuthService from "@/api/services/AuthService";
 import {AuthForgotWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
 
+// TODO input error handling
+
 export default defineComponent({
   name: 'ForgotView',
   components: { NormalButton },
   data: () => ({
     email: '',
     password: '',
+    password2: '',
     value: 'password',
     value2: 'password',
-    password2: '',
     otp: '',
     prevRoute: '/',
     smallScreen: false,

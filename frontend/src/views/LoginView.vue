@@ -32,6 +32,8 @@ import AuthService from '@/api/services/AuthService'
 import router from '@/router'
 import { defineComponent } from 'vue'
 
+// TODO input error handling
+
 export default defineComponent({
   name: 'LoginView',
   data: () => ({
