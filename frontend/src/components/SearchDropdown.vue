@@ -36,7 +36,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
             </ul>
           </transition>
         </div>
-        <NormalButton :text="this.key" id="menu-activator" class="button"/>
+        <NormalButton :text="capitalize(this.key)" id="menu-activator" class="button"/>
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
@@ -45,7 +45,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
               :value="property"
               @click="changeKey(property)"
             >
-              <v-list-item-title>{{ property }}</v-list-item-title>
+              <v-list-item-title>{{ capitalize(property) }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -56,6 +56,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 
 <script>
 import NormalButton from '@/components/NormalButton'
+import { capitalize } from 'vue'
 
 export default {
   name: 'SearchDropdown',
@@ -77,6 +78,9 @@ export default {
       default: 'Search ...'
     }
   },
+  setup () {
+    return { capitalize }
+  },
   data () {
     return {
       windowWidth: window.innerWidth,
@@ -96,8 +100,9 @@ export default {
       const filtered = []
       const regex = new RegExp(this.searchFilter, 'ig')
       for (const option of this.elements) {
-        if (this.searchFilter.length < 1 || option[this.key].toString().match(regex)) {
-          filtered.push(option[this.key].toString())
+        const value = option[this.key].toString()
+        if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
+          filtered.push(value)
         }
       }
       return filtered
