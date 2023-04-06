@@ -45,8 +45,9 @@ import router from '@/router'
 export default defineComponent({
   name: 'NavigationBar',
   methods: {
-    isAdminOrSu(): Boolean {
-      return this.$store.getters['session/isAdmin']
+    async isAdminOrSu(): Promise<Boolean> {
+      const user = this.$store.getters['session/currentUser'];
+      return user.then(() => this.$store.getters['session/isAdmin']).catch(() => false);
     }
   },
   setup() {
