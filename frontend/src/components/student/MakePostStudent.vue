@@ -11,7 +11,7 @@
         </div>
       </div>
       <div v-else style="height: 100%">
-        <div style="height: 90%; position: center;">
+        <div style="height: 90%;display: flex; justify-content: center; align-items: center;">
           <v-img :src="imageUrl"></v-img>
         </div>
         <div align="right" style="height: 10%">
