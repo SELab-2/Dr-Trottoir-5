@@ -1,9 +1,9 @@
 <template>
-  <div style="height: 40%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <v-col align="center" style="height: 20%">
-      <div v-if="imageUrl === ''" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+  <div style="height: 40%; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden;">
+    <v-col align="center" style="height: 20%; overflow: hidden;">
+      <div v-if="imageUrl === ''" style="height: 100%; display: flex; justify-content: center; align-items: center;overflow: hidden;">
         <div @click="selectImage"
-             style="border: 5px solid #E3e3e3; display: inline-block; padding: 10px; border-radius: 10px;">
+             style="border: 5px solid #E3e3e3; display: inline-block; padding: 10px; border-radius: 10px;overflow: hidden;">
           <v-avatar size="100px">
             <v-icon size="100px" dark>mdi-image</v-icon>
           </v-avatar>
@@ -11,11 +11,13 @@
         </div>
       </div>
       <div v-else style="height: 100%">
-        <div style="height: 90%;display: flex; justify-content: center; align-items: center;">
+        <div style="height: 85%;display: flex; justify-content: center; align-items: center;">
           <v-img :src="imageUrl"></v-img>
         </div>
-        <div align="right" style="height: 10%">
-          <v-btn style="margin-top: 10px" @click="removeImage">Remove</v-btn>
+        <div align="right" style="height: 15%">
+          <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="removeImage">
+                <DeleteIcon/>
+          </v-btn>
         </div>
       </div>
     </v-col>
@@ -26,15 +28,13 @@
     <div align="center">
       <v-form>
         <v-container>
-          <v-textarea label="Beschrijving" outlined rows="3"></v-textarea>
+          <v-textarea label="Beschrijving" outlined v-model="description" rows="4"></v-textarea>
+          <v-checkbox color="#FFE600" v-model="checked" label="Opmerking"></v-checkbox>
         </v-container>
       </v-form>
     </div>
-    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-      <v-checkbox color="#FFE600" v-model="checked" label="Opmerking"></v-checkbox>
       <div class="text-center" style="position: absolute; bottom: 10px; width: 100%;">
-        <NormalButton style="width: 150px; height: 40px" text="Post"/>
-      </div>
+        <NormalButton style="width: 150px; height: 40px" text="Post" :parent-function="uploadData"/>
     </div>
   </div>
 </template>
@@ -44,10 +44,12 @@
 //TODO maak css inplaats van inline styling
 
 import NormalButton from "@/components/NormalButton.vue";
+import DeleteIcon from "@/components/icons/DeleteIcon.vue";
+import {description} from "@/api/EchoFetch/docs/.vuepress/config";
 
 export default {
   name: 'MakePostStudent',
-  components: {NormalButton},
+  components: {DeleteIcon, NormalButton},
   props: {
     data: {
       type: Object,
@@ -58,6 +60,7 @@ export default {
     return {
       imageUrl: '',
       checked: false,
+      description: '',
     }
   },
   methods: {
@@ -80,6 +83,13 @@ export default {
     },
     removeImage() {
       this.imageUrl = '';
+    },
+    uploadData() {
+      //TODO deze data verwerken + terug gaan naar het overview scherm
+      console.log(this.checked);
+      console.log(this.imageUrl);
+      console.log(this.description);
+      //TODO data versturen naar backend
     }
   },
 }
