@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ListPage from '@/components/ListPage'
+import ListPage from '@/components/admin/ListPage'
 import BuildingCard from '@/components/admin/BuildingCard'
 import BuildingHeader from '@/components/admin/BuildingHeader'
 export default {
