@@ -1,9 +1,8 @@
 <template>
   <div style="height: 40%; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden;">
     <v-col align="center" style="height: 20%; overflow: hidden;">
-      <div v-if="imageUrl === ''" style="height: 100%; display: flex; justify-content: center; align-items: center;overflow: hidden;">
-        <div @click="selectImage"
-             style="border: 5px solid #E3e3e3; display: inline-block; padding: 10px; border-radius: 10px;overflow: hidden;">
+      <div v-if="imageUrl === ''" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+        <div @click="selectImage" style="border: 5px solid #E3e3e3; display: inline-block; padding: 10px; border-radius: 10px;">
           <v-avatar size="100px">
             <v-icon size="100px" dark>mdi-image</v-icon>
           </v-avatar>
@@ -11,7 +10,7 @@
         </div>
       </div>
       <div v-else style="height: 100%">
-        <div style="height: 85%;display: flex; justify-content: center; align-items: center;">
+        <div style="height: 85%; display: flex; justify-content: center; align-items: center;">
           <v-img :src="imageUrl"></v-img>
         </div>
         <div align="right" style="height: 15%">
@@ -23,7 +22,7 @@
     </v-col>
   </div>
   <div style="height: 60%; justify-content: center;">
-    <h1 align="center">{{ data.title }}</h1>
+    <h1 align="center">{{ data.nameBuilding }}</h1>
     <h3 align="center">{{ data.type }}</h3>
     <div align="center">
       <v-form>
@@ -40,8 +39,14 @@
 </template>
 
 <script>
-
-//TODO maak css inplaats van inline styling
+//TODO popup als nog niet alles is ingevuld
+/**
+ * MakePostStudent component wordt gebruikt door als props een Object met de volgende keys mee te geven:
+ * nameBuilding: String
+ * type: String (Aankomst of Vertrek of Berging)
+ *
+ * Data moet naar de backend worden gestuurd worden zie functie uploadData.
+ */
 
 import NormalButton from "@/components/NormalButton.vue";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
@@ -53,7 +58,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({title: 'Resto s5', type: 'Aankomst', imageURL: 'Empty'})
+      default: () => ({nameBuilding: 'Resto s5', type: 'Aankomst'})
     }
   },
   data() {
