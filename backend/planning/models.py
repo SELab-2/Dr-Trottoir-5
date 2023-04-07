@@ -38,7 +38,7 @@ class DagPlanning(models.Model):
     weekPlanning : models.ForeignKey
         WeekPlanning object of which it's a member
     """
-    student = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
     date = models.DateField()
 

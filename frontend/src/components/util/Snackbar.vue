@@ -10,11 +10,13 @@
     :top="data.y === 'top'"
     :vertical="data.mode === 'vertical'"
   >
-    {{ data.message }}
+    <div class="mb-3">
+      {{ data.message }}
+    </div>
 
     <v-spacer/>
 
-    <NormalButton :text="'close'" :parent-function="close"/>
+    <NormalButton :text="'sluiten'" :parent-function="close"/>
   </v-snackbar>
 </template>
 

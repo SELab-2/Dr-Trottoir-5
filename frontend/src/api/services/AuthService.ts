@@ -19,7 +19,7 @@ class AuthService extends EchoService {
    * @param body User parameters to login.
    */
   @POST("/login/")
-  login(@Body() body: AuthRegisterWrapper): EchoPromise<User> {
+  login(@Body() body: AuthLoginWrapper): EchoPromise<User> {
     return {} as EchoPromise<User>;
   }
 
@@ -28,7 +28,7 @@ class AuthService extends EchoService {
    * @param body User parameters for the new user.
    */
   @POST("/register/")
-  register(@Body() body: AuthLoginWrapper): EchoPromise<User> {
+  register(@Body() body: AuthRegisterWrapper): EchoPromise<User> {
     return {} as EchoPromise<User>;
   }
 
