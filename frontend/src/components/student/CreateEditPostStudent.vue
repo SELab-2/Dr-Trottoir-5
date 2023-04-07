@@ -95,6 +95,7 @@ export default {
       this.imageUrl = '';
     },
     uploadData() {
+      //TODO check of alles is ingevuld en toon popup indie niet alles is ingevuld
       //TODO deze data verwerken + terug gaan naar het overview scherm
       console.log(this.checked);
       console.log(this.imageUrl); // deze is in base64
@@ -102,6 +103,7 @@ export default {
       //TODO data versturen naar backend
     },
     editData() {
+      //TODO check of alles is ingevuld en toon popup indie niet alles is ingevuld
       //TODO deze data verwerken + terug gaan naar het overview scherm
       console.log(this.checked);
       console.log(this.imageUrl); // deze is in base64
