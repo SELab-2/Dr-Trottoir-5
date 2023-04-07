@@ -14,7 +14,6 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
-
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
@@ -24,22 +23,27 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         handler.checkPKValue(data.get("student"), "student", get_user_model())
         handler.checkPKValue(data.get("ronde"), "ronde", Ronde)
         handler.check()
-        
+
         return super().post(request=request, args=args, kwargs=kwargs)
+
     def get(self, request, *args, **kwargs):
-        student = request.query_params['student'] if 'student' in request.query_params else None
-        date = request.query_params['date'] if 'date' in request.query_params else None
+        student = request.query_params[
+            'student'] if 'student' in request.query_params else None
+        date = request.query_params[
+            'date'] if 'date' in request.query_params else None
 
         if student is not None and date is not None:
             try:
-                dagPlanning = DagPlanning.objects.get(student=student, date=date)
+                dagPlanning = DagPlanning.objects.get(student=student,
+                                                      date=date)
                 return Response(DagPlanningSerializerFull(dagPlanning).data)
             except DagPlanning.DoesNotExist:
                 raise serializers.ValidationError(
                     {
                         "errors": [
                             {
-                                "message": "referenced pk not in db", "field": "dagPlanning"
+                                "message": "referenced pk not in db",
+                                "field": "dagPlanning"
                             }
                         ]
                     }, code='invalid')
@@ -52,19 +56,16 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                     {
                         "errors": [
                             {
-                                "message": "referenced pk not in db", "field": "dagPlanning"
+                                "message": "referenced pk not in db",
+                                "field": "dagPlanning"
                             }
                         ]
                     }, code='invalid')
-
         return super().get(request=request, args=args, kwargs=kwargs)
-
-    
-        
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
     permission_classes = [
@@ -108,18 +109,21 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     # TODO: a user can only see the info per building that he added (?)
 
     def get(self, request, *args, **kwargs):
-        dagPlanning = request.query_params['dagPlanning'] if 'dagPlanning' in request.query_params else None
+        dagPlanning = request.query_params[
+            'dagPlanning'] if 'dagPlanning' in request.query_params else None
 
         if dagPlanning is not None:
             try:
                 DagPlanning.objects.get(pk=dagPlanning)
-                self.queryset = InfoPerBuilding.objects.filter(dagPlanning=dagPlanning)
+                self.queryset = InfoPerBuilding.objects.filter(
+                    dagPlanning=dagPlanning)
             except Exception:
                 raise serializers.ValidationError(
                     {
                         "errors": [
                             {
-                                "message": "referenced pk not in db", "field": "dagPlanning"
+                                "message": "referenced pk not in db",
+                                "field": "dagPlanning"
                             }
                         ]
                     }, code='invalid')
