@@ -13,6 +13,8 @@ from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
 
+from exceptions.exceptionHandler import ExceptionHandler
+
 
 class UserListAPIView(generics.ListAPIView):
     queryset = get_user_model().objects.all()
@@ -84,11 +86,18 @@ def login_view(request):
 def registration_view(request):
     if request.method == "POST":
         response = Response()
-        serializer = RegistrationSerializer(data=request.data)
+        data = request.data
+        serializer = RegistrationSerializer(data=data)
 
+        handler = ExceptionHandler();
+        handler.checkNotBlank(data.get("email"), "email")
+        handler.checkNotBlank(data.get("first_name"), "first_name")
+        handler.checkNotBlank(data.get("last_name"), "last_name")
+        handler.checkNotBlank(data.get("password"), "password")
+        handler.check()
         if serializer.is_valid(raise_exception=True):
             if get_user_model().objects.filter(
-                    email=request.data["email"]).exists():
+                    email=data["email"]).exists():
                 raise serializers.ValidationError({
                     "errors": [
                         {
@@ -97,10 +106,10 @@ def registration_view(request):
                     ]
                 })
             user = get_user_model().objects.create_user(
-                request.data['email'],
-                request.data['first_name'],
-                request.data['last_name'],
-                request.data['password']
+                data['email'],
+                data['first_name'],
+                data['last_name'],
+                data['password']
             )
             refresh = RefreshToken.for_user(user)
             response.set_cookie(
