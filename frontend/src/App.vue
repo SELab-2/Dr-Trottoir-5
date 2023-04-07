@@ -25,18 +25,27 @@ export default defineComponent({
     const router = useRouter();
 
     router.beforeEach( async (to, from, next) => {
-      if (!noLogin.includes(to.name.toString())) {
-        // Authorize session
-        await this.$store.dispatch("session/fetch");
+      const needsLogin = !noLogin.includes(to.name.toString());
+      // Authorize session
+      await this.$store.dispatch("session/fetch", {
+        needsLogin: needsLogin
+      });
 
-        // Check if user is logged in
-        const user = await this.$store.getters['session/currentUser'].catch(() => null);
-        if(user === null) {
-          return next({path: '/login'})
-        }
+      // Check if user is logged in
+      const user = await this.$store.getters['session/currentUser'].catch(() => null);
+
+      if (needsLogin) {
+        if (user === null) return next({path: '/login'});
         this.navbar = true;
-      } else this.navbar = false;
-      next()
+      } else {
+        if (user !== null) {
+          this.navbar = true;
+          return next({path: '/'});
+        }
+        this.navbar = false;
+      }
+
+      next();
     });
   },
   mounted() {

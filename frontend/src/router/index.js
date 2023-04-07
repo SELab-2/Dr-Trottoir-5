@@ -14,6 +14,26 @@ const routes = [
     component: HomeView
   },
   {
+    path: '/student_home',
+    name: 'student_home',
+    component: RegisterDone
+  },
+  {
+    path: '/syndicus_home',
+    name: 'syndicus_home',
+    component: RegisterDone
+  },
+  {
+    path: '/admin_home',
+    name: 'admin_home',
+    component: RegisterDone
+  },
+  {
+    path: '/resident_home',
+    name: 'resident_home',
+    component: RegisterDone
+  },
+  {
     path: '/register',
     name: 'register',
     component: RegisterView

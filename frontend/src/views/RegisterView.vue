@@ -54,6 +54,7 @@ import AuthService from '@/api/services/AuthService';
 import {AuthRegisterWrapper} from '@/api/wrappers/AuthWrappers';
 import NormalButton from '@/components/NormalButton.vue';
 import LoginTopBar from "@/components/LoginTopBar.vue";
+import router from '@/router';
 
 export default defineComponent({
   name: 'RegisterView',
@@ -88,8 +89,18 @@ export default defineComponent({
       RequestHandler.handle(AuthService.register(wrapper), {
         id: "registerError",
         style: "SNACKBAR"
-      }).then(result => {
-        // TODO: display possible errors, otherwise redirect to /register_done
+      }).then(async () => {
+        // Send confirmation message.
+        this.$store.dispatch("snackbar/open", {
+          message: "Registreren gelukt",
+          color: "success"
+        });
+
+        // Update the current user inside the store.
+        this.$store.dispatch("session/clear");
+        await this.$store.dispatch("session/fetch");
+
+        await router.push({ path: '/' });
       });
     },
     async validate () {
