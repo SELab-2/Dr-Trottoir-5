@@ -35,7 +35,7 @@ class ExceptionHandler:
         if not self.checked:
             self.check()
 
-    def checkRequired(self, value, fieldName):
+    def check_required(self, value, fieldName):
         self.checked = False
         if value is None:
             self.errors.append({
@@ -45,7 +45,7 @@ class ExceptionHandler:
             return False
         return True
 
-    def timeFormatChecker(self, value, fieldname, format, message):
+    def check_time_format(self, value, fieldname, format, message):
         self.checked = False
         try:
             datetime.strptime(value, format)
@@ -57,9 +57,9 @@ class ExceptionHandler:
             return False
         return True
 
-    def checkEnumValue(self, value, fieldname, enumValues):
+    def check_enum_value(self, value, fieldname, enumValues):
         """
-        Will call checkRequired()
+        Will call check_required()
         will only add enum exception if value is not None
         Parameters
         ----------
@@ -71,7 +71,9 @@ class ExceptionHandler:
         -------
 
         """
-        if self.checkRequired(value, fieldname) and value not in enumValues:
+        if not self.check_required(value, fieldname):
+            return False
+        if value not in enumValues:
             self.errors.append({
                 "message": ExceptionHandler.invalid_enum_choice_error,
                 "field": fieldname
@@ -80,26 +82,26 @@ class ExceptionHandler:
         return True
 
     def checkTimeValue(self, value, fieldname):
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
-        return self.timeFormatChecker(value, fieldname, "%H:%M",
+        return self.check_time_format(value, fieldname, "%H:%M",
                                       ExceptionHandler.time_format_error)
 
     def checkDateValue(self, value, fieldname):
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
-        return self.timeFormatChecker(value, fieldname, "%Y-%m-%d",
+        return self.check_time_format(value, fieldname, "%Y-%m-%d",
                                       ExceptionHandler.date_format_error)
 
     def checkDateTimeValue(self, value, fieldname):
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
-        return self.timeFormatChecker(value, fieldname, "%Y-%m-%d %H:%M",
+        return self.check_time_format(value, fieldname, "%Y-%m-%d %H:%M",
                                       ExceptionHandler.datetime_format_error)
 
     def checkPKValue(self, value, fieldname, cls: models.Model):
         print(cls)
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
         try:
             cls.objects.get(pk=value)
@@ -118,7 +120,7 @@ class ExceptionHandler:
             return False
 
     def checkFile(self, value, fieldname, files):
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
         if value not in files.getlist(fieldname):
             self.errors.append({
@@ -129,7 +131,7 @@ class ExceptionHandler:
         return True
 
     def checkInteger(self, value, fieldname):
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
         try:
             int(value)
@@ -142,7 +144,7 @@ class ExceptionHandler:
             return False
 
     def checkNotBlank(self, value, fieldname):
-        if not self.checkRequired(value, fieldname):
+        if not self.check_required(value, fieldname):
             return False
         value: str
         if value == "":
