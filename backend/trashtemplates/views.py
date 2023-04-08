@@ -1,6 +1,7 @@
 from rest_framework import generics
 from .models import *
 from trashcontainers.models import TrashContainer
+from planning.models import WeekPlanning
 from pickupdays.models import PickUpDay
 from .serializers import TrashContainerTemplateSerializer
 from rest_framework.response import Response
@@ -100,5 +101,13 @@ def trash_container_view(request, template_id):
 
     if tc_id_wrapper is not None:
         copy.trash_containers.add(tc_id_wrapper)
+
+    planning = WeekPlanning.objects.get(
+        week=current_week,
+        year=current_year
+    )
+
+    # Voeg het copy toe aan de huidige weekplanning
+    planning.trash_templates.add(copy)
 
     return Response({"message": "Success"})
