@@ -1,6 +1,5 @@
 from django.db import models
 from pickupdays.models import PickUpDay
-from ronde.models import Building
 
 
 class TrashContainer(models.Model):
@@ -13,14 +12,9 @@ class TrashContainer(models.Model):
         type : models.CharField
             The type of trash that is in the container
 
-        collection_days : models.ManyToManyField
+        collection_day : models.ManyToManyField
             The days that the container needs to be collected
 
-        special_actions : models.TextField
-            The possible special actions that need to be taken
-
-        building: building
-            building of which it is a trashcontainer
        """
 
     class TrashType(models.TextChoices):
@@ -38,11 +32,5 @@ class TrashContainer(models.Model):
         choices=TrashType.choices
     )
 
-    collection_days = models.ManyToManyField(PickUpDay)
+    collection_day = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
 
-    special_actions = models.TextField(
-        default="",
-        blank=True
-    )
-
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
