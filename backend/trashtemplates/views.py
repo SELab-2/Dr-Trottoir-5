@@ -33,7 +33,7 @@ def make_new_tc_id_wrapper(data, extra_id):
     )
 
     # maak een wrapper met een het gegeven extra id en de nieuwe trashcontainer
-    tc_id_wrapper = TrashContainerIdWrapper.objects.create(
+    tc_id_wrapper, _ = TrashContainerIdWrapper.objects.get_or_create(
         extra_id=extra_id,
         trash_container=new_trash_container
     )
@@ -41,6 +41,9 @@ def make_new_tc_id_wrapper(data, extra_id):
 
 
 def make_copy(template, permanent, current_year, current_week):
+    """
+        Neemt een copy van een template zodat de geschiedenis behouden wordt
+    """
     copy = TrashContainerTemplate.objects.create(
         name=template.name,
         even=template.even,
@@ -58,91 +61,44 @@ def make_copy(template, permanent, current_year, current_week):
 
     return copy
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def add_trash_container_view(request, template_id):
+def trash_container_view(request, template_id):
     data = request.data
     permanent = data["permanent"]
+    method = data["method"]  # add, edit of delete
 
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     template = TrashContainerTemplate.objects.get(id=template_id)
 
-    # maak nieuwe TrashContainerIdWrapper
-    tc_id_wrapper = make_new_tc_id_wrapper(data, ExtraId.objects.create())
+    # alleen bij add moet er een nieuwe ExtraId aangemaakt worden
+    extra_id = ExtraId.objects.create() if method == "add" else ExtraId.objects.get(id=data["extra_id"])
+
+    # alleen bij edit en remove moet er een oude copy verwijderd worden
+    to_remove = None if method == "add" else template.trash_containers.get(extra_id=extra_id)
+
+    # alleen bij edit en add moet er een nieuwe TrashContainerIdWrapper gemaakt worden
+    tc_id_wrapper = None if method == "delete" else make_new_tc_id_wrapper(data, extra_id)
 
     if permanent and template.week == current_week and template.year == current_year:
         # template is in deze week aangemaakt dus moet niet gekopieerd worden bij permanente aanpassing
-        template.trash_containers.add(tc_id_wrapper)
-        return Response({"message": "Afval container succesvol toegevoegd."})
+        if to_remove is not None:
+            template.trash_containers.remove(to_remove)
 
-    # neem een copy
+        if tc_id_wrapper is not None:
+            template.trash_containers.add(tc_id_wrapper)
+
+        return Response({"message": "Success"})
+
+    # neem copy om de geschiedenis te behouden
     copy = make_copy(template, permanent, current_year, current_week)
 
-    # voeg de nieuwe trashcontainer toe aan de copy
-    copy.trash_containers.add(tc_id_wrapper)
-    return Response({"message": "Afval container succesvol toegevoegd."})
+    if to_remove is not None:
+        copy.trash_containers.remove(to_remove)
 
+    if tc_id_wrapper is not None:
+        copy.trash_containers.add(tc_id_wrapper)
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def edit_trash_container_view(request, template_id):
-    data = request.data
-    permanent = data["permanent"]
-
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-    template = TrashContainerTemplate.objects.get(id=template_id)
-
-    # vind de oude versie van de trashcontainer
-    extra_id = ExtraId.objects.get(id=data["extra_id"])
-    to_remove = template.trash_containers.get(extra_id=extra_id)
-
-    # maak de nieuwe TrashContainerIdWrapper
-    tc_id_wrapper = make_new_tc_id_wrapper(data, extra_id)
-
-    if permanent and template.week == current_week and template.year == current_year:
-        # template is in deze week aangemaakt dus moet niet gekopieerd worden bij permanente aanpassing
-        template.trash_containers.remove(to_remove)
-        template.trash_containers.add(tc_id_wrapper)
-        return Response({"message": "Afval container succesvol aangepast."})
-
-    # neem copy
-    copy = make_copy(template, permanent, current_year, current_week)
-
-    # verwijder de oude trashcontainer en voeg de nieuwe toe
-    copy.trash_containers.remove(to_remove)
-    copy.trash_containers.add(tc_id_wrapper)
-
-    return Response({"message": "Afval container succesvol aangepast."})
-
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def delete_trash_container_view(request, template_id):
-    data = request.data
-    permanent = data["permanent"]
-
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-    template = TrashContainerTemplate.objects.get(id=template_id)
-
-    # vind de oude versie van de trashcontainer
-    extra_id = ExtraId.objects.get(id=data["extra_id"])
-    to_remove = template.trash_containers.get(extra_id=extra_id)
-
-
-    if permanent and template.week == current_week and template.year == current_year:
-        # template is in deze week aangemaakt dus moet niet gekopieerd worden bij permanente aanpassing
-        template.trash_containers.remove(to_remove)
-        return Response({"message": "Afval container succesvol verwijderd."})
-
-    # neem copy
-    copy = make_copy(template, permanent, current_year, current_week)
-
-    # verwijder de oude trashcontainer
-    copy.trash_containers.remove(to_remove)
-
-    return Response({"message": "Afval container succesvol verwijderd."})
-
-
+    return Response({"message": "Success"})
