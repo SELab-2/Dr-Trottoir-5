@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from ronde.models import Ronde
-
+from trashtemplates.models import TrashContainerTemplate
 
 class WeekPlanning(models.Model):
     """
@@ -15,13 +15,15 @@ class WeekPlanning(models.Model):
     year : models.IntegerField
         The year of this planning
 
-    dagPlanningen : models.ForeignKey
-        All the DayPlannings for this week
+    trash_templates: models.ManyToManyField(TrashContainerTemplate)
+        The trashtemplates for this week
 
     """
     week = models.IntegerField()
 
     year = models.IntegerField()
+
+    trash_templates = models.ManyToManyField(TrashContainerTemplate)
 
 
 class DagPlanning(models.Model):

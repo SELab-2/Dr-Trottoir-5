@@ -66,6 +66,8 @@ class Building(models.Model):
                 The trash containers a building has.
             locatie : LocatieEnum
                 The location of a building.
+            special_actions : models.TextField
+                The possible special actions that need to be taken
             buildingID: UUID
                 unique identifier of a building to add people
     """
@@ -84,7 +86,10 @@ class Building(models.Model):
         LocatieEnum,
         on_delete=models.DO_NOTHING
     )
-
+    special_actions = models.TextField(
+        default="",
+        blank=True
+    )
     # default uuid.uuid4 is callable en genereerd uuid
     buildingID = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
