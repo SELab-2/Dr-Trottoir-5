@@ -14,11 +14,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: latest
+      - name: Empty EchoFetch directory
+        run: |
+          rm -rf EchoFetch
+        working-directory: ./frontend/src/api
       - name: Checkout submodules
         run: git submodule update --init --recursive
       - name: Setup EchoFetch
         run: |
-          rm -rf *
           npm install
           npm run build
         working-directory: ./frontend/src/api/EchoFetch
