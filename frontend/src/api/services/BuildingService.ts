@@ -1,15 +1,27 @@
-import {Body, Header, EchoPromise, EchoService, EchoServiceBuilder, POST} from "@/api/EchoFetch";
+import {
+  Body,
+  EchoPromise,
+  EchoService,
+  EchoServiceBuilder,
+  POST,
+  FormMultipart,
+  FormField
+} from "@/api/EchoFetch";
 import Building from "@/api/models/Building";
 import {InputField} from "@/types/fields/InputField";
 import BuildingManual from "@/api/models/BuildingManual";
 import config from "@/config";
+import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 
 class BuildingService extends EchoService {
   /**
    * Add building manual
    */
+  @FormMultipart()
   @POST('/ronde/building/manual/')
-  createManual(@Body() body: InputField, @Header('Content-Type') header): EchoPromise<BuildingManual> {
+  createManual(@FormField('file') file : File,
+               @FormField('fileType') fileType : string,
+               @FormField('manaulStatus') manualStatus : BuildingManualStatus): EchoPromise<BuildingManual> {
     return {} as EchoPromise<BuildingManual>
   }
 
@@ -17,7 +29,7 @@ class BuildingService extends EchoService {
    * Create a new building
    */
   @POST('/ronde/building/')
-  createBuilding(@Body() body: InputField) : EchoPromise<Building> {
+  createBuilding(@Body() body: InputField): EchoPromise<Building> {
     return {} as EchoPromise<Building>
   }
 }

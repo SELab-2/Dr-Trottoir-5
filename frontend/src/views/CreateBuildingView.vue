@@ -14,7 +14,7 @@
         <h2>Adres</h2>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-text-field class="text_field" variant="outlined" v-model:model-value="name"></v-text-field>
+        <v-text-field class="text_field" variant="outlined" v-model:model-value="adres"></v-text-field>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
         <h2>Klanten nummer</h2>
@@ -53,6 +53,7 @@
 import NormalButton from '@/components/NormalButton'
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
+import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 
 export default {
   name: 'CreateBuildingView',
@@ -79,15 +80,11 @@ export default {
       if (this.file === null) {
         return "Error"
       }
-      let formData = new FormData()
-      formData.append('file', this.file[0])
-      return RequestHandler.handle(BuildingService.createManual({
-        file: formData,
-        fileType: this.file[0].name.split('.').pop(),
-        manaulStatus: "klaar"
-      }, 'multipart/form-data'), {
+      return RequestHandler.handle(BuildingService.createManual(this.file[0], this.file[0].type,
+        BuildingManualStatus.klaar
+      ), {
         id: 'createManualError',
-        style: "SNACKBAR"
+        style: "SNACKBAR",
       });
     }
   }
