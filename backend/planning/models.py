@@ -43,7 +43,7 @@ class DagPlanning(models.Model):
         All the info from the student about all the buildings
 
     """
-    student = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
     date = models.DateField()
 
