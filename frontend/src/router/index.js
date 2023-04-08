@@ -5,6 +5,7 @@ import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import AdminBuildingView from "@/views/admin/AdminBuildingView";
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: '/dagplanning',
     name: 'dagplanning',
     component: DayPlanView
+  },
+  {
+    path: '/building/:id',
+    name: 'admin_building',
+    component: AdminBuildingView
   },
   {
     path: '/about',
