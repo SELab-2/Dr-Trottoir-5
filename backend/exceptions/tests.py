@@ -44,3 +44,49 @@ class ExceptionHandlerTest(TestCase):
         self.assertFalse(handler.check_enum_value("Bad Value", "name",
                                                   PickUpDay.WeekDayEnum.values))
         self.assertRaises(ValidationError, handler.check)
+
+    def test_time_value_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_time_value("07:05", "name"))
+
+    def test_time_value_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_time_value(None, "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_time_value_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_time_value("42", "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_date_value_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_date_value("2010-02-15", "name"))
+
+    def test_date_value_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_date_value(None, "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_date_value_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_date_value("2010:05-15", "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_date_time_value_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_date_time_value("2010-05-13 07:35",
+                                                      "name"))
+
+    def test_date_time_value_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_date_time_value(None, "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_date_time_value_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_date_time_value("2010:05:13 07-35",
+                                                       "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+
