@@ -23,7 +23,7 @@ class WeekPlanning(models.Model):
 
     year = models.IntegerField()
 
-    trash_templates = models.ManyToManyField(TrashContainerTemplate)
+    trash_templates = models.ManyToManyField(TrashContainerTemplate, blank=True)
 
 
 class DagPlanning(models.Model):
