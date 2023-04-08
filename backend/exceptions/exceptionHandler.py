@@ -98,12 +98,19 @@ class ExceptionHandler:
                                       ExceptionHandler.datetime_format_error)
 
     def checkPKValue(self, value, fieldname, cls: models.Model):
+        print(cls)
         if not self.checkRequired(value, fieldname):
             return False
         try:
             cls.objects.get(pk=value)
             return True
-        except (cls.DoesNotExist | ValueError):
+        except ValueError:
+            self.errors.append({
+                "message": ExceptionHandler.pk_does_not_exist_error,
+                "field": fieldname
+            })
+            return False
+        except cls.DoesNotExist:
             self.errors.append({
                 "message": ExceptionHandler.pk_does_not_exist_error,
                 "field": fieldname
