@@ -110,4 +110,7 @@ def trash_container_view(request, template_id):
     # Voeg het copy toe aan de huidige weekplanning
     planning.trash_templates.add(copy)
 
+    # verwijder de oude template uit de weekplanning
+    planning.trash_templates.remove(template)
+
     return Response({"message": "Success"})

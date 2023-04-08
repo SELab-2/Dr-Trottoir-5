@@ -3,6 +3,7 @@ from django.conf import settings
 from ronde.models import Ronde
 from trashtemplates.models import TrashContainerTemplate
 
+
 class WeekPlanning(models.Model):
     """
     All the day plans for a certain week

@@ -33,4 +33,3 @@ class TrashContainer(models.Model):
     )
 
     collection_day = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
-
