@@ -81,25 +81,25 @@ class ExceptionHandler:
             return False
         return True
 
-    def checkTimeValue(self, value, fieldname):
+    def check_time_value(self, value, fieldname):
         if not self.check_required(value, fieldname):
             return False
         return self.check_time_format(value, fieldname, "%H:%M",
                                       ExceptionHandler.time_format_error)
 
-    def checkDateValue(self, value, fieldname):
+    def check_date_value(self, value, fieldname):
         if not self.check_required(value, fieldname):
             return False
         return self.check_time_format(value, fieldname, "%Y-%m-%d",
                                       ExceptionHandler.date_format_error)
 
-    def checkDateTimeValue(self, value, fieldname):
+    def check_date_time_value(self, value, fieldname):
         if not self.check_required(value, fieldname):
             return False
         return self.check_time_format(value, fieldname, "%Y-%m-%d %H:%M",
                                       ExceptionHandler.datetime_format_error)
 
-    def checkPKValue(self, value, fieldname, cls: models.Model):
+    def check_primary_key_value(self, value, fieldname, cls: models.Model):
         print(cls)
         if not self.check_required(value, fieldname):
             return False
@@ -119,7 +119,7 @@ class ExceptionHandler:
             })
             return False
 
-    def checkFile(self, value, fieldname, files):
+    def check_file(self, value, fieldname, files):
         if not self.check_required(value, fieldname):
             return False
         if value not in files.getlist(fieldname):
@@ -130,7 +130,7 @@ class ExceptionHandler:
             return False
         return True
 
-    def checkInteger(self, value, fieldname):
+    def check_integer(self, value, fieldname):
         if not self.check_required(value, fieldname):
             return False
         try:
@@ -143,7 +143,7 @@ class ExceptionHandler:
             })
             return False
 
-    def checkNotBlank(self, value, fieldname):
+    def check_not_blank(self, value, fieldname):
         if not self.check_required(value, fieldname):
             return False
         value: str

@@ -90,10 +90,10 @@ def registration_view(request):
         serializer = RegistrationSerializer(data=data)
 
         handler = ExceptionHandler();
-        handler.checkNotBlank(data.get("email"), "email")
-        handler.checkNotBlank(data.get("first_name"), "first_name")
-        handler.checkNotBlank(data.get("last_name"), "last_name")
-        handler.checkNotBlank(data.get("password"), "password")
+        handler.check_not_blank(data.get("email"), "email")
+        handler.check_not_blank(data.get("first_name"), "first_name")
+        handler.check_not_blank(data.get("last_name"), "last_name")
+        handler.check_not_blank(data.get("password"), "password")
         handler.check()
         if serializer.is_valid(raise_exception=True):
             if get_user_model().objects.filter(

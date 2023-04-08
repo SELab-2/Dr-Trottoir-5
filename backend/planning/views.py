@@ -17,11 +17,11 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkPKValue(data.get("weekPlanning"), "weekPlanning",
-                             WeekPlanning)
-        handler.checkDateValue(data.get("date"), "date")
-        handler.checkPKValue(data.get("student"), "student", get_user_model())
-        handler.checkPKValue(data.get("ronde"), "ronde", Ronde)
+        handler.check_primary_key_value(data.get("weekPlanning"), "weekPlanning",
+                                        WeekPlanning)
+        handler.check_date_value(data.get("date"), "date")
+        handler.check_primary_key_value(data.get("student"), "student", get_user_model())
+        handler.check_primary_key_value(data.get("ronde"), "ronde", Ronde)
         handler.check()
 
         return super().post(request=request, args=args, kwargs=kwargs)
@@ -83,11 +83,11 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkEnumValue(data.get("pictureType"), "pictureType",
-                               BuildingPicture.PictureEnum.values)
-        handler.checkFile(data.get("image"), "image", request.FILES)
-        handler.checkPKValue(data.get("infoPerBuilding"), "infoPerBuilding",
-                             InfoPerBuilding)
+        handler.check_enum_value(data.get("pictureType"), "pictureType",
+                                 BuildingPicture.PictureEnum.values)
+        handler.check_file(data.get("image"), "image", request.FILES)
+        handler.check_primary_key_value(data.get("infoPerBuilding"), "infoPerBuilding",
+                                        InfoPerBuilding)
         handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
 
@@ -133,8 +133,8 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkPKValue(data.get("dagPlanning"), "dagPlanning",
-                             DagPlanning)
+        handler.check_primary_key_value(data.get("dagPlanning"), "dagPlanning",
+                                        DagPlanning)
         handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
 
@@ -156,8 +156,8 @@ class WeekPlanningCLAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkInteger(data.get("week"), "week")
-        handler.checkInteger(data.get("year"), "year")
+        handler.check_integer(data.get("week"), "week")
+        handler.check_integer(data.get("year"), "year")
         handler.check()
         return super().post(request, *args, **kwargs)
 

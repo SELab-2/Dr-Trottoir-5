@@ -17,16 +17,16 @@ class PickUpListCreateView(generics.ListCreateAPIView):
         data = request.data
 
         handler = ExceptionHandler()
-        handler.checkEnumValue(data.get("day"), "day",
-                               PickUpDay.WeekDayEnum.values)
-        handler.checkTimeValue(data.get("start_hour"), "start_hour")
-        handler.checkTimeValue(data.get("end_hour"), "end_hour")
+        handler.check_enum_value(data.get("day"), "day",
+                                 PickUpDay.WeekDayEnum.values)
+        handler.check_time_value(data.get("start_hour"), "start_hour")
+        handler.check_time_value(data.get("end_hour"), "end_hour")
         handler.check()
 
         return super().post(request, *args, **kwargs)
 
 
-class PickUpDetailView(generics.RetrieveAPIView):
+class PickUpDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PickUpDay.objects.all()
     serializer_class = PickUpSerializer
     permission_classes = [

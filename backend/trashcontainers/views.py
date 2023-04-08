@@ -17,16 +17,16 @@ class TrashContainerListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkEnumValue(data.get("type"), "type",
-                               TrashContainer.TrashType.values)
-        handler.checkPKValue(data.get("collection_days"), "collection_days",
-                             PickUpDay)
-        handler.checkPKValue(data.get("building"), "building", Building)
+        handler.check_enum_value(data.get("type"), "type",
+                                 TrashContainer.TrashType.values)
+        handler.check_primary_key_value(data.get("collection_days"), "collection_days",
+                                        PickUpDay)
+        handler.check_primary_key_value(data.get("building"), "building", Building)
         handler.check()
         return super().post(request, *args, **kwargs)
 
 
-class TrashContainerRetrieveView(generics.RetrieveAPIView):
+class TrashContainerRetrieveView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
     permission_classes = [

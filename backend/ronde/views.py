@@ -42,7 +42,7 @@ class LocatieEnumListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkNotBlank(data.get("name"), "name")
+        handler.check_not_blank(data.get("name"), "name")
         handler.check()
         return super().post(request, *args, **kwargs)
 
@@ -62,7 +62,7 @@ class LocatieEnumRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkNotBlank(data.get("name"), "name")
+        handler.check_not_blank(data.get("name"), "name")
         handler.check()
         return super().put(request, *args, **kwargs)
 
@@ -108,10 +108,10 @@ class ManualListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data: dict = request.data
         handler = ExceptionHandler()
-        handler.checkFile(data.get("file"), "file", request.FILES)
-        handler.checkNotBlank(data.get("fileType"), "fileType")
-        handler.checkEnumValue(data.get("manualStatus"), "manualStatus",
-                               ManualStatusField.values)
+        handler.check_file(data.get("file"), "file", request.FILES)
+        handler.check_not_blank(data.get("fileType"), "fileType")
+        handler.check_enum_value(data.get("manualStatus"), "manualStatus",
+                                 ManualStatusField.values)
         handler.check()
         return super().post(request, *args, **kwargs)
 
@@ -143,10 +143,10 @@ class ManualRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         data: dict = request.data
         handler = ExceptionHandler()
-        handler.checkFile(data.get("file"), "file", request.FILES)
-        handler.checkNotBlank(data.get("fileType"), "fileType")
-        handler.checkEnumValue(data.get("manualStatus"), "manualStatus",
-                               ManualStatusField.values)
+        handler.check_file(data.get("file"), "file", request.FILES)
+        handler.check_not_blank(data.get("fileType"), "fileType")
+        handler.check_enum_value(data.get("manualStatus"), "manualStatus",
+                                 ManualStatusField.values)
         handler.check()
         return super().put(request, *args, **kwargs)
 
@@ -160,10 +160,10 @@ class BuildingListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkNotBlank(data.get("adres"), "adres")
-        handler.checkInteger(data.get("ivago_klantnr"), "ivago_klantnr")
-        handler.checkPKValue(data.get("manual"), "manual", Manual)
-        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
+        handler.check_not_blank(data.get("adres"), "adres")
+        handler.check_integer(data.get("ivago_klantnr"), "ivago_klantnr")
+        handler.check_primary_key_value(data.get("manual"), "manual", Manual)
+        handler.check_primary_key_value(data.get("location"), "location", LocatieEnum)
         handler.check()
         return super().post(request, *args, **kwargs)
 
@@ -180,10 +180,10 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkNotBlank(data.get("adres"), "adres")
-        handler.checkInteger(data.get("ivago_klantnr"), "ivago_klantnr")
-        handler.checkPKValue(data.get("manual"), "manual", Manual)
-        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
+        handler.check_not_blank(data.get("adres"), "adres")
+        handler.check_integer(data.get("ivago_klantnr"), "ivago_klantnr")
+        handler.check_primary_key_value(data.get("manual"), "manual", Manual)
+        handler.check_primary_key_value(data.get("location"), "location", LocatieEnum)
         handler.check()
         return super().put(request, *args, **kwargs)
 
@@ -200,9 +200,9 @@ class RondeListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkRequired("name")
-        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
-        handler.checkPKValue(data.get("buildings"), "buildings", Building)
+        handler.check_required("name")
+        handler.check_primary_key_value(data.get("location"), "location", LocatieEnum)
+        handler.check_primary_key_value(data.get("buildings"), "buildings", Building)
         handler.check()
         return super().post(request, *args, **kwargs)
 
@@ -219,8 +219,8 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.checkRequired("name")
-        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
-        handler.checkPKValue(data.get("buildings"), "buildings", Building)
+        handler.check_required("name")
+        handler.check_primary_key_value(data.get("location"), "location", LocatieEnum)
+        handler.check_primary_key_value(data.get("buildings"), "buildings", Building)
         handler.check()
         return super().put(request, *args, **kwargs)
