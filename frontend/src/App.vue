@@ -16,6 +16,7 @@ import {defineComponent} from 'vue'
 import NavigationBar from '@/components/NavigationBar.vue'
 import Snackbar from '@/components/util/Snackbar.vue'
 import { useRouter } from 'vue-router'
+import config from "@/config";
 const emitter = require('tiny-emitter/instance')
 
 export default defineComponent({
@@ -30,13 +31,16 @@ export default defineComponent({
       await this.$store.dispatch("session/fetch", {
         needsLogin: needsLogin
       });
-
       // Check if user is logged in
       const user = await this.$store.getters['session/currentUser'].catch(() => null);
 
       if (needsLogin) {
         if (user === null) return next({path: '/login'});
         this.navbar = true;
+        console.log(user, to.name.toString(), config.AUTHORIZED[user.role])
+        if (!(config.AUTHORIZED[user.role].includes(to.name.toString()))) {
+         return next({path: '/unauthorized'});
+        }
       } else {
         if (user !== null) {
           this.navbar = true;

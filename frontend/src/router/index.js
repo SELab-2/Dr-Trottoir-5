@@ -6,6 +6,7 @@ import UsersView from '../views/UsersView.vue'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import Unauthorized from "@/views/Unauthorized";
 
 const routes = [
   {
@@ -64,12 +65,9 @@ const routes = [
     component: DayPlanView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/unauthorized',
+    name: 'unauthorized',
+    component: Unauthorized
   }
 ]
 
