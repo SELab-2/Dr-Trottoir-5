@@ -27,5 +27,6 @@ urlpatterns = [
     path('api/pickupdays/', include('pickupdays.urls')),
     path('api/mailtemplates/', include('mailtemplates.urls')),
     path('api/ronde/', include('ronde.urls')),
+    path('api/trashtemplates/', include('trashtemplates.urls')),
     path(f'{settings.MEDIA_URL[1:]}<path:path>/', MediaView.as_view())
 ]

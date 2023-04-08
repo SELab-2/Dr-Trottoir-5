@@ -9,7 +9,7 @@ class ExtraId(models.Model):
         Het moet een model zijn zodat er in BuildingTrashContainerList een ManyToManyField gebruikt kan worden.
     """
 
-    id = models.IntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
 
 
 class BuildingTrashContainerList(models.Model):
@@ -62,6 +62,15 @@ class TrashContainerTemplate(models.Model):
         even : models.BooleanField
             Bepaalt of de template voor even of oneven weken is.
 
+        status : models.TextField
+            Geeft de status van een template aan: actief/tijdelijk/verwijderd/tijdelijk vervangen
+
+        year : models.IntegerField
+            Geeft het jaar aan waarin de template gemaakt is.
+
+        week : models.IntegerField
+            Geeft de week aan waarin de template gemaakt is.
+
         buildings : models.ManyToManyField(BuildingTrashContainerList)
             De lijst met gebouwen die deze template gebruiken en hun geselecteerde trashcontainers.
 
@@ -72,5 +81,8 @@ class TrashContainerTemplate(models.Model):
 
     name = models.TextField()
     even = models.BooleanField()
-    buildings = models.ManyToManyField(BuildingTrashContainerList)
-    trash_containers = models.ManyToManyField(TrashContainerIdWrapper)
+    status = models.TextField()   # TODO choicefield
+    year = models.IntegerField()
+    week = models.IntegerField()
+    buildings = models.ManyToManyField(BuildingTrashContainerList, blank=True)
+    trash_containers = models.ManyToManyField(TrashContainerIdWrapper, blank=True)

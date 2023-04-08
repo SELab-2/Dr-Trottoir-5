@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'ronde',
     'users',
     'planning',
-    'mailtemplates'
+    'mailtemplates',
+    'trashtemplates'
 ]
 
 MIDDLEWARE = [
