@@ -47,7 +47,7 @@ class LocatieEnumListCreateView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class LocatieEnumRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class LocatieEnumRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LocatieEnumSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -58,6 +58,13 @@ class LocatieEnumRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     def get_queryset(self):
         id = self.kwargs['pk']
         return LocatieEnum.objects.filter(id=id)
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.checkNotBlank(data.get("name"), "name")
+        handler.check()
+        return super().put(request, *args, **kwargs)
 
 
 class ManualListCreateView(generics.ListCreateAPIView):
@@ -109,7 +116,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class ManualRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class ManualRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -133,6 +140,16 @@ class ManualRetrieveDestroyView(generics.RetrieveDestroyAPIView):
         id = self.kwargs['pk']
         return Manual.objects.filter(id=id)
 
+    def put(self, request, *args, **kwargs):
+        data: dict = request.data
+        handler = ExceptionHandler()
+        handler.checkFile(data.get("file"), "file", request.FILES)
+        handler.checkNotBlank(data.get("fileType"), "fileType")
+        handler.checkEnumValue(data.get("manualStatus"), "manualStatus",
+                               ManualStatusField.values)
+        handler.check()
+        return super().put(request, *args, **kwargs)
+
 
 class BuildingListCreateView(generics.ListCreateAPIView):
     queryset = Building.objects.all()
@@ -151,7 +168,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BuildingSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -159,6 +176,19 @@ class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     def get_queryset(self):
         id = self.kwargs['pk']
         return Building.objects.filter(id=id)
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.checkNotBlank(data.get("adres"), "adres")
+        handler.checkInteger(data.get("ivago_klantnr"), "ivago_klantnr")
+        handler.checkPKValue(data.get("manual"), "manual", Manual)
+        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
+        handler.check()
+        return super().put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
 
 
 class RondeListCreateView(generics.ListCreateAPIView):
@@ -177,7 +207,7 @@ class RondeListCreateView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class RondeRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RondeSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -185,3 +215,12 @@ class RondeRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     def get_queryset(self):
         id = self.kwargs['pk']
         return Ronde.objects.filter(id=id)
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.checkRequired("name")
+        handler.checkPKValue(data.get("location"), "location", LocatieEnum)
+        handler.checkPKValue(data.get("buildings"), "buildings", Building)
+        handler.check()
+        return super().put(request, *args, **kwargs)
