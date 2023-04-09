@@ -3,8 +3,10 @@ import HomeView from '../views/HomeView.vue'
 import RegisterView from '@/views/RegisterView'
 import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
+import CreateBuildingView from '@/views/admin/CreateBuildingView'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 
 const routes = [
@@ -32,6 +34,16 @@ const routes = [
     path: '/users',
     name: 'users',
     component: UsersView
+  },
+  {
+    path: '/location/create',
+    name: 'create_location',
+    component: CreateLocationView
+  },
+  {
+    path: '/building/create',
+    name: 'create_building',
+    component: CreateBuildingView
   },
   {
     path: '/dagplanning',
