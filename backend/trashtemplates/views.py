@@ -3,6 +3,7 @@ from .models import *
 from trashcontainers.models import TrashContainer
 from planning.models import WeekPlanning
 from pickupdays.models import PickUpDay
+from ronde.models import Building
 from .serializers import TrashContainerTemplateSerializer
 from rest_framework.response import Response
 import datetime
@@ -63,6 +64,14 @@ def make_copy(template, permanent, current_year, current_week):
     return copy
 
 
+def update_many_to_many(many_to_many, old, new):
+    if old is not None:
+        many_to_many.remove(old)
+
+    if new is not None:
+        many_to_many.add(new)
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def trash_container_view(request, template_id):
@@ -85,32 +94,80 @@ def trash_container_view(request, template_id):
 
     if permanent and template.week == current_week and template.year == current_year:
         # template is in deze week aangemaakt dus moet niet gekopieerd worden bij permanente aanpassing
-        if to_remove is not None:
-            template.trash_containers.remove(to_remove)
 
-        if tc_id_wrapper is not None:
-            template.trash_containers.add(tc_id_wrapper)
+        # verwijder de oude en voeg de nieuwe toe
+        update_many_to_many(template.trash_containers, to_remove, tc_id_wrapper)
 
         return Response({"message": "Success"})
 
     # neem copy om de geschiedenis te behouden
     copy = make_copy(template, permanent, current_year, current_week)
 
-    if to_remove is not None:
-        copy.trash_containers.remove(to_remove)
+    # verwijder de oude en voeg de nieuwe toe
+    update_many_to_many(copy.trash_containers, to_remove, tc_id_wrapper)
 
-    if tc_id_wrapper is not None:
-        copy.trash_containers.add(tc_id_wrapper)
-
+    # zoek de weekplanning van deze week
     planning = WeekPlanning.objects.get(
         week=current_week,
         year=current_year
     )
 
-    # Voeg het copy toe aan de huidige weekplanning
+    # Voeg de copy toe aan de huidige weekplanning
     planning.trash_templates.add(copy)
 
     # verwijder de oude template uit de weekplanning
     planning.trash_templates.remove(template)
 
     return Response({"message": "Success"})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def building_view(request, template_id):
+    data = request.data
+
+    method = data["method"]  # add, edit of delete
+
+    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+
+    template = TrashContainerTemplate.objects.get(id=template_id)
+
+    # alleen bij add method is er geen oude die verwijderd moet worden
+    old_building_list = None if method == "add" else template.trash_containers.get(building=data["building_id"])
+
+    new_building_list = None
+    if method != "delete":  # alleen bij add en edit moet een nieuwe gemaakt worden
+        building = Building.objects.get(id=data["building_id"])
+        new_building_list = BuildingTrashContainerList.objects.create(
+            building=building
+        )
+        new_building_list.trash_ids.set(data["selection"])
+
+    if template.week == current_week and template.year == current_year:
+        # template is in deze week aangemaakt dus moet niet gekopieerd worden
+
+        # verwijder de oude en voeg de nieuwe toe
+        update_many_to_many(template.buildings, old_building_list, new_building_list)
+
+        return Response({"message": "Success"})
+
+    # neem copy om de geschiedenis te behouden
+    copy = make_copy(template, True, current_year, current_week)
+
+    # verwijder de oude en voeg de nieuwe toe
+    update_many_to_many(copy.buildings, old_building_list, new_building_list)
+
+    # zoek de weekplanning van deze week
+    planning = WeekPlanning.objects.get(
+        week=current_week,
+        year=current_year
+    )
+
+    # Voeg de copy toe aan de huidige weekplanning
+    planning.trash_templates.add(copy)
+
+    # verwijder de oude template uit de weekplanning
+    planning.trash_templates.remove(template)
+
+    return Response({"message": "Success"})
+    
