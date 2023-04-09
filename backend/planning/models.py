@@ -2,11 +2,57 @@ from django.db import models
 from django.conf import settings
 from ronde.models import Ronde
 from trashtemplates.models import TrashContainerTemplate
+from pickupdays.models import PickUpDay
+
+
+class DagPlanning(models.Model):
+    """
+    The planning for one Ronde on a specific day
+
+    Attributes
+    ----------
+    students : models.ManyToMany
+        The students that will be doing this round
+
+    date : models.ForeignKey
+        The date on which this student will do this round.
+        Only the weekday is stored so the object can be reused in templates.
+
+    ronde : models.ForeignKey
+        The round that the students will do this day
+
+    """
+    students = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+
+    date = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
+
+    ronde = models.ForeignKey(
+        Ronde,
+        on_delete=models.DO_NOTHING
+    )
+
+
+class StudentTemplate(models.Model):
+    """
+    All the day templates for a certain week
+
+    Attributes
+    ----------
+    name : models.TextField
+        The name of this template
+
+    dag_planningen : models.ManyToManyField
+        The DagPlanning objects of this template
+
+    """
+    name = models.TextField()
+    dag_planningen = models.ManyToManyField(DagPlanning)
+
 
 
 class WeekPlanning(models.Model):
     """
-    All the day plans for a certain week
+    All the day templates for a certain week
 
     Attributes
     ----------
@@ -17,7 +63,10 @@ class WeekPlanning(models.Model):
         The year of this planning
 
     trash_templates: models.ManyToManyField(TrashContainerTemplate)
-        The trashtemplates for this week
+        The trash templates for this week
+
+    student_templates: models.ManyToManyField(StudentTemplate)
+        The student templates for this week
 
     """
     week = models.IntegerField()
@@ -25,37 +74,7 @@ class WeekPlanning(models.Model):
     year = models.IntegerField()
 
     trash_templates = models.ManyToManyField(TrashContainerTemplate, blank=True)
-
-
-class DagPlanning(models.Model):
-    """
-    The planning for 1 student for 1 day
-
-    Attributes
-    ----------
-    student : models.OneToOneField
-        The student that will be doing this round
-
-    date : models.DateField
-        The date on which this student will do this round
-
-    ronde : models.ForeignKey
-        The round that the student will do this day
-
-    info : models.ForeignKey
-        All the info from the student about all the buildings
-
-    """
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-
-    date = models.DateField()
-
-    ronde = models.ForeignKey(
-        Ronde,
-        on_delete=models.DO_NOTHING
-    )
-
-    weekPlanning = models.ForeignKey(WeekPlanning, on_delete=models.DO_NOTHING)
+    student_templates = models.ManyToManyField(StudentTemplate, blank=True)
 
 
 class InfoPerBuilding(models.Model):
@@ -64,23 +83,20 @@ class InfoPerBuilding(models.Model):
 
     Attributes
     ----------
-    arrival : models.ForeignKey
-        The images taken when the student arrives on location
-
-    storage : models.ForeignKey
-        The images taken when the student is in the storage location
-
-    departure : models.ForeignKey
-        The images taken when the student departs
-
-    extra : models.ForeignKey
-        Extra images the student has taken
-
     remark : models.TextField
         The remarks about the building
+
+    date : models.DateField
+        The date when this info was created.
+        Because of this we can reuse DagPlanning objects.
+
+    dagPlanning : models.ForeignKey
+        The associated DagPlanning
     """
 
     remark = models.TextField(default="")
+
+    date = models.DateField()
 
     dagPlanning = models.ForeignKey(DagPlanning, on_delete=models.CASCADE)
 
