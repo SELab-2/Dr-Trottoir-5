@@ -41,12 +41,24 @@ class StudentTemplate(models.Model):
     name : models.TextField
         The name of this template
 
+    status : models.TextField
+        Geeft de status van een template aan: actief/tijdelijk/verwijderd/tijdelijk vervangen
+
+    year : models.IntegerField
+        Geeft het jaar aan waarin de template gemaakt is.
+
+    week : models.IntegerField
+        Geeft de week aan waarin de template gemaakt is.
+
     dag_planningen : models.ManyToManyField
         The DagPlanning objects of this template
 
     """
     name = models.TextField()
-    dag_planningen = models.ManyToManyField(DagPlanning)
+    status = models.TextField()  # TODO choicefield
+    year = models.IntegerField()
+    week = models.IntegerField()
+    dag_planningen = models.ManyToManyField(DagPlanning, blank=True)
 
 
 
