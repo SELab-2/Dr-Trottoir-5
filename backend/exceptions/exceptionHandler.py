@@ -100,7 +100,6 @@ class ExceptionHandler:
                                       ExceptionHandler.datetime_format_error)
 
     def check_primary_key_value(self, value, fieldname, cls: models.Model):
-        print(cls)
         if not self.check_required(value, fieldname):
             return False
         try:
