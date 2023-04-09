@@ -26,6 +26,14 @@ class BuildingService extends EchoService {
   }
 
   /**
+   * Get building manual
+   */
+  @GET('/ronde/building/manual/{id}')
+  getManualById(@Path('id') id : number) : EchoPromise<BuildingManual> {
+    return {} as EchoPromise<BuildingManual>
+  }
+
+  /**
    * Create a new building
    */
   @POST('/ronde/building/')
