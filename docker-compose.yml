@@ -17,12 +17,13 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ./startupscript.sh
     volumes:
       - ./backend:/code
     ports:
       - "8000:8000"
     environment:
+      # TODO uit de env file halen? maar hoe?
       - DB_NAME=dr-trottoir
       - DB_USER=postgres
       - DB_PASSWORD=dr-trottoir
@@ -36,7 +37,7 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
-    command: http-server dist
+    command: run serve
     volumes:
       - ./frontend:/code
     ports:
@@ -44,14 +45,10 @@ services:
     depends_on:
       - db
   docs:
-    image: docsy/docsy-example
     build:
       context: .
-      dockerfile: docs.Dockerfile
-    command: server
+      dockerfile: ./docs/Dockerfile
     environment:
       - GIT_CONFIG_NOSYSTEM=true
     ports:
-      - "1313:1313"
-    volumes:
-      - .:/src
+      - "1313:8080"
