@@ -74,12 +74,12 @@ export default {
     },
     editSyndicus() {
       // TODO syndicus aanpassen in de backend + error handling + terug naar de vorige pagina
+      console.log(this.syndicus)
     }
   },
   mounted() {
-
     // TODO als edit true is, dan de syndicus ophalen uit de backend en de data in de velden zetten
-    if (this.props.edit) {
+    if (this.edit) {
       console.log('edit') // TODO
     }
     // TODO dummy data aanpassen door backend data te gebruiken
