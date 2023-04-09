@@ -11,7 +11,7 @@
         <v-text-field class="text_field" variant="outlined" v-model="name"></v-text-field>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center pt-10 pb-10">
-        <normal-button text="Voeg Locatie toe" :parent-function="addLocation"></normal-button>
+        <normal-button text="Voeg locatie toe" :parent-function="addLocation"></normal-button>
       </v-col>
     </v-row>
   </v-card>
