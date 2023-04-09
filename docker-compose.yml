@@ -1,0 +1,57 @@
+version: "3.3"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=dr-trottoir
+    ports:
+      - "5432:5432"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=dr-trottoir
+      - DB_USER=postgres
+      - DB_PASSWORD=dr-trottoir
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL=example@example.com
+      - EMAIL_PASSWORD=example
+    depends_on:
+      - db
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: http-server dist
+    volumes:
+      - ./frontend:/code
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  docs:
+    image: docsy/docsy-example
+    build:
+      context: .
+      dockerfile: docs.Dockerfile
+    command: server
+    environment:
+      - GIT_CONFIG_NOSYSTEM=true
+    ports:
+      - "1313:1313"
+    volumes:
+      - .:/src
