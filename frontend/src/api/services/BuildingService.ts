@@ -21,7 +21,7 @@ class BuildingService extends EchoService {
   @POST('/ronde/building/manual/')
   createManual(@FormField('file') file : File,
                @FormField('fileType') fileType : string,
-               @FormField('manaulStatus') manualStatus : BuildingManualStatus): EchoPromise<BuildingManual> {
+               @FormField('manualStatus') manualStatus : BuildingManualStatus): EchoPromise<BuildingManual> {
     return {} as EchoPromise<BuildingManual>
   }
 
