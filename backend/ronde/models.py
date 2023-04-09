@@ -52,6 +52,8 @@ class Building(models.Model):
             Building database model.
             Attributes
             ----------
+            name : models.Textfield
+                The name of a building
             adres : models.Textfield
                 The adres of a building
             syndicus : models.TextField
@@ -69,6 +71,7 @@ class Building(models.Model):
             buildingID: UUID
                 unique identifier of a building to add people
     """
+    name = models.TextField()
     adres = models.TextField()
     syndicus = models.ForeignKey(
         settings.AUTH_USER_MODEL,

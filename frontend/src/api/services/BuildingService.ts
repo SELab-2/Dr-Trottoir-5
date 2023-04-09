@@ -8,10 +8,10 @@ import {
   FormField
 } from "@/api/EchoFetch";
 import Building from "@/api/models/Building";
-import {InputField} from "@/types/fields/InputField";
 import BuildingManual from "@/api/models/BuildingManual";
 import config from "@/config";
 import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
+import {InputFields} from "@/types/fields/InputFields";
 
 class BuildingService extends EchoService {
   /**
@@ -29,7 +29,7 @@ class BuildingService extends EchoService {
    * Create a new building
    */
   @POST('/ronde/building/')
-  createBuilding(@Body() body: InputField): EchoPromise<Building> {
+  createBuilding(@Body() body: InputFields): EchoPromise<Building> {
     return {} as EchoPromise<Building>
   }
 }

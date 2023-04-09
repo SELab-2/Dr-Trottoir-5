@@ -17,6 +17,18 @@
         <v-text-field class="text_field" variant="outlined" v-model:model-value="adres"></v-text-field>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
+        <h2>Locatie</h2>
+      </v-col>
+      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
+        <v-select class="text_field"
+                  variant="solo"
+                  :items="locations"
+                  item-title="name"
+                  item-value="id"
+                  v-model="selectedLocation"
+        ></v-select>
+      </v-col>
+      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
         <h2>Klanten nummer</h2>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
@@ -28,7 +40,7 @@
       <v-col col="12" lg="6" class="d-flex justify-end" v-cloak @drop.prevent="addDropFile"
              @dragover.prevent>
         <v-img class="drag_image" :width="150" :max-height="150" aspect-ratio="1"
-               src="../assets/upload_file.png"></v-img>
+               src="@/assets/upload_file.png"></v-img>
       </v-col>
       <v-col col="12" lg="6" class="d-flex justify-start align-center">
         <v-file-input v-model="file" prepend-icon="mdi-file-upload-outline" class="text_field"
@@ -54,6 +66,7 @@ import NormalButton from '@/components/NormalButton'
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
 import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
+import LocationService from "@/api/services/LocationService";
 
 export default {
   name: 'CreateBuildingView',
@@ -65,16 +78,44 @@ export default {
       klant_nr: null,
       file: null,
       time: null,
-      smallScreen: false
+      smallScreen: false,
+      locations: [],
+      selectedLocation: ''
     }
+  },
+  async beforeMount() {
+    await RequestHandler.handle(LocationService.getLocations(), {
+      id: 'getLocationsError',
+      style: 'SNACKBAR'
+    }).then(result => {
+        this.locations = result
+      }
+    )
   },
   methods: {
     addDropFile(e) {
       this.file = e.dataTransfer.files[0];
     },
     createBuilding() {
-      const test = this.createManual();
-      console.log(test)
+      // TODO Add geschatte tijd
+      this.createManual().then(result =>
+        RequestHandler.handle(
+          BuildingService.createBuilding({
+            name: this.name,
+            adres: this.adres,
+            ivago_klantnr: this.klant_nr,
+            manual: result['succes']['id'], //TODO just return in backend without succes
+            location: this.selectedLocation
+          }), {
+            id: 'createBuildingError',
+            style: 'SNACKBAR'
+          }
+        ).then(() =>
+          this.$store.dispatch("snackbar/open", {
+            message: "Het gebouw is toegevoegd",
+            color: "success"
+          }))
+      )
     },
     async createManual() {
       if (this.file === null) {
