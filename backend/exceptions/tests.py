@@ -1,12 +1,19 @@
 from django.test import TestCase
 
+from django.utils.datastructures import MultiValueDict
+
 from rest_framework.serializers import ValidationError
 
 from pickupdays.models import PickUpDay
+from planning.models import WeekPlanning
 from .exceptionHandler import ExceptionHandler
+from model_bakery import baker
 
 
 class ExceptionHandlerTest(TestCase):
+
+    def setUp(self) -> None:
+        self.wp = baker.make(WeekPlanning, week=0, year=2023)
 
     def test_required_success(self):
         handler = ExceptionHandler()
@@ -89,4 +96,71 @@ class ExceptionHandlerTest(TestCase):
                                                        "name"))
         self.assertRaises(ValidationError, handler.check)
 
+    def test_primary_key_value_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_primary_key_value(self.wp.id, "name",
+                                                        WeekPlanning))
 
+    def test_primary_key_value_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_primary_key_value(None, "name", None))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_primary_key_value_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(
+            handler.check_primary_key_value(42, "name", WeekPlanning))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_primary_key_value_fail_bad_type(self):
+        handler = ExceptionHandler()
+        self.assertFalse(
+            handler.check_primary_key_value("test", "name", WeekPlanning))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_file_success(self):
+        handler = ExceptionHandler()
+        files = MultiValueDict({"name": ["filefield"]})
+        self.assertTrue(handler.check_file("filefield", "name", files))
+
+    def test_file_fail_none(self):
+        handler = ExceptionHandler()
+        files = MultiValueDict({"name":["filefield"]})
+        self.assertFalse(handler.check_file(None, "name", files))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_file_fail_bad_value(self):
+        handler = ExceptionHandler()
+        files = MultiValueDict({"name": ["a file name"]})
+        self.assertFalse(handler.check_file("definitely not a file name",
+                                            "name",
+                                            files))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_integer_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_integer(42, "name"))
+
+    def test_integer_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_integer(None, "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_integer_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_integer("no integer", "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_not_blank_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_not_blank("not blank", "name"))
+
+    def test_not_blank_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_not_blank(None, "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_not_blank_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_not_blank("", "name"))
+        self.assertRaises(ValidationError, handler.check)
