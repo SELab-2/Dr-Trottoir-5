@@ -5,7 +5,7 @@ import {
   EchoServiceBuilder,
   POST,
   FormMultipart,
-  FormField
+  FormField, GET, Path
 } from "@/api/EchoFetch";
 import Building from "@/api/models/Building";
 import BuildingManual from "@/api/models/BuildingManual";
@@ -30,6 +30,14 @@ class BuildingService extends EchoService {
    */
   @POST('/ronde/building/')
   createBuilding(@Body() body: InputFields): EchoPromise<Building> {
+    return {} as EchoPromise<Building>
+  }
+
+  /**
+   * Get building information
+   */
+  @GET('/ronde/building/{id}')
+  getBuildingById(@Path('id') id : number) : EchoPromise<Building> {
     return {} as EchoPromise<Building>
   }
 }

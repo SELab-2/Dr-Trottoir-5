@@ -53,6 +53,7 @@ const routes = [
   {
     path: '/building/:id',
     name: 'admin_building',
+    props: true,
     component: AdminBuildingView
   },
   {
