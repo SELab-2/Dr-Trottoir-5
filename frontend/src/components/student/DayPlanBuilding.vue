@@ -8,7 +8,7 @@ Example usage:
   <v-container align="center">
     <v-col cols="12" sm="10">
       <v-card class='px-4 rounded-pill' elevation="5" @click="buildingClicked"
-              :color="data.status === 'voltooid' ? 'green-lighten-1' : data.status === 'bezig' ? 'yellow-lighten-1' : 'red-lighten-1'">
+              :color="data.status === 'Voltooid' ? 'green-lighten-1' : data.status === 'Bezig' ? 'yellow-lighten-1' : 'red-lighten-1'">
         <v-card-title class="text-center">
           <v-row justify="center">
             <v-col cols="6" sm="5">
@@ -28,6 +28,7 @@ Example usage:
 
 <script type="js">
 import { defineComponent } from 'vue';
+import router from "@/router";
 
 export default defineComponent({
   name: 'DayPlanBuilding',
@@ -35,11 +36,15 @@ export default defineComponent({
     data: {
       type: Object,
       default: () => ({ adres: 'Leeg', status: 'Onbekend' })
+    },
+    date: {
+      type: String,
+      default: () => new Date().toISOString().split('T')[0]
     }
   },
   methods: {
     buildingClicked () {
-      // TODO: redirect to building page
+      router.push({path: '/building_student', query: {building: this.data.id, date: this.date}});
     }
   }
 })

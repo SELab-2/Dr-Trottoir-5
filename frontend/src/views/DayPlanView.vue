@@ -3,7 +3,7 @@
     <h1>{{ time }}</h1>
     <h2>{{ ronde }}</h2>
     <normal-button text="Terug" v-bind:parent-function="goBack" block class="mt-2" v-if="buildings.length === 0"></normal-button>
-    <DayPlanBuilding v-for="building in buildings" :data="building" />
+    <DayPlanBuilding v-for="building in buildings" :data="building" :date="date" />
   </v-container>
 </template>
 
@@ -32,7 +32,11 @@ export default defineComponent({
       id: "getDayplanningError",
       style: "NONE"
     }).then(planning => {
-      this.buildings = planning.ronde.buildings;
+      const buildings = Object(planning.ronde.buildings);
+      const statusMap = {NS: 'Niet begonnen', ST: 'Bezig', FI: 'Voltooid'};
+      for (let index in planning.status) buildings[index].status = statusMap[planning.status[index]];
+
+      this.buildings = buildings;
       this.ronde = planning.ronde.name;
     }).catch(() => {});
   },

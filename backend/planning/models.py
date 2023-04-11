@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
 from ronde.models import Ronde
@@ -42,6 +43,9 @@ class DagPlanning(models.Model):
     info : models.ForeignKey
         All the info from the student about all the buildings
 
+    status : ArrayField
+        Student status per building, according to building order
+
     """
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
 
@@ -53,6 +57,21 @@ class DagPlanning(models.Model):
     )
 
     weekPlanning = models.ForeignKey(WeekPlanning, on_delete=models.DO_NOTHING)
+
+    class StatusEnum(models.TextChoices):
+        """
+        enum for type of status
+        """
+        NOT_STARTED = "NS", "Not started"
+        STARTED = "ST", "Started"
+        FINISHED = "FI", "Finished"
+
+    status = ArrayField(
+        models.CharField(
+            max_length=2,
+            choices=StatusEnum.choices
+        ), default=list
+    )
 
 
 class InfoPerBuilding(models.Model):

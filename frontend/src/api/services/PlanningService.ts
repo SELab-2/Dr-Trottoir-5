@@ -8,6 +8,7 @@ import {
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import DayPlanning from "@/api/models/Planning";
+import BuildingInfo from "@/api/models/BuildingInfo";
 
 class PlanningService extends EchoService {
   /**
@@ -17,6 +18,22 @@ class PlanningService extends EchoService {
   get(@Query('student') student: string,
       @Query('date') date: string): EchoPromise<DayPlanning> {
     return {} as EchoPromise<DayPlanning>;
+  }
+
+  /**
+   * Get building info for a day planning
+   */
+  @GET("/planning/infoperbuilding/")
+  getInfo(@Query('dagPlanning') dagPlanning: number): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>;
+  }
+
+  /**
+   * Get student images for building info
+   */
+  @GET("/planning/buildingpicture/")
+  getPictures(@Query('infoPerBuilding') infoPerBuilding: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
   }
 
 }
