@@ -99,6 +99,8 @@ def week_planning_view(request, year, week):
         # dit is een week die nog moet komen dus geven we alleen de actieve of nu tijdelijk vervangen templates terug
         student_templates = StudentTemplate.objects.filter(status=Status.ACTIEF) | StudentTemplate.objects.filter(
             status=Status.VERVANGEN)
+        even = week % 2 == 0
+        student_templates = student_templates.filter(even=even)
     else:
         # weekplanning is al voorbij of bezig
         week_planning = WeekPlanning.objects.get(
@@ -107,8 +109,6 @@ def week_planning_view(request, year, week):
         )
         student_templates = week_planning.student_templates.all()
 
-    even = week % 2 == 0
-    student_templates = student_templates.filter(even=even)
     data = StudentTemplateSerializer(student_templates, many=True).data
     return Response(data)
 
@@ -140,10 +140,11 @@ def student_templates_view(request):
         )
 
         planning = get_current_week_planning()
-        # voeg nieuwe template toe aan huidige planning
-        planning.student_templates.add(new_template)
-        data = StudentTemplateSerializer(new_template).data
-        return Response(data)
+        # voeg nieuwe template toe aan huidige planning als even/oneven matcht
+        if new_template.even == (current_week % 2 == 0):
+            planning.student_templates.add(new_template)
+
+        return Response({"message": "Success"})
 
 
 @api_view(["GET", "DELETE"])

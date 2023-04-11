@@ -1,6 +1,5 @@
 from .util import *
-from planning.util import filter_templates, get_week_planning
-from planning.models import WeekPlanning
+from planning.util import filter_templates, get_current_week_planning
 from ronde.models import Building, LocatieEnum
 from .serializers import *
 from rest_framework.response import Response
@@ -33,11 +32,12 @@ def trash_templates_view(request):
             week=current_week
         )
 
-        planning = get_week_planning()
-        # voeg nieuwe template toe aan huidige planning
-        planning.trash_templates.add(new_template)
-        data = TrashContainerTemplateSerializer(new_template).data
-        return Response(data)
+        planning = get_current_week_planning()
+        # voeg nieuwe template toe aan huidige planning als even/oneven matcht
+        if new_template.even == (current_week % 2 == 0):
+            planning.trash_templates.add(new_template)
+
+        return Response({"message": "Success"})
 
 
 @api_view(["DELETE", "GET"])
@@ -49,7 +49,7 @@ def trash_template_view(request, template_id):
 
     if request.method == "DELETE":
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-        planning = get_week_planning()
+        planning = get_current_week_planning()
 
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
@@ -120,10 +120,7 @@ def trash_container_view(request, template_id):
     update_many_to_many(copy.trash_containers, to_remove, tc_id_wrapper)
 
     # zoek de weekplanning van deze week
-    planning, created = WeekPlanning.objects.get_or_create(
-        week=current_week,
-        year=current_year
-    )
+    planning = get_current_week_planning()
 
     # Voeg de copy toe aan de huidige weekplanning
     planning.trash_templates.add(copy)
@@ -182,10 +179,7 @@ def building_view(request, template_id):
     update_many_to_many(copy.buildings, old_building_list, new_building_list)
 
     # zoek de weekplanning van deze week
-    planning, created = WeekPlanning.objects.get_or_create(
-        week=current_week,
-        year=current_year
-    )
+    planning = get_current_week_planning()
 
     # Voeg de copy toe aan de huidige weekplanning
     planning.trash_templates.add(copy)
