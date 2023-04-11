@@ -3,10 +3,11 @@ from rest_framework.response import Response
 from .serializers import *
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
 import datetime
-from trashtemplates.models import Status
+from trashtemplates.models import Status, TrashContainerTemplate
 from ronde.models import LocatieEnum, Ronde
 from ronde.serializers import RondeSerializer
 from pickupdays.models import WeekDayEnum, PickUpDay
+from .util import *
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -89,42 +90,27 @@ class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     # TODO: only the user that created an InfoPerBuilding should be able to update it
 
 
-class WeekPlanningCLAPIView(generics.ListCreateAPIView):
-    queryset = WeekPlanning.objects.all()
-    serializer_class = WeekPlanningSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def week_planning_view(request, year, week):
+    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
+    if year > current_year or (current_year == year and week > current_week):
+        # dit is een week die nog moet komen dus geven we alleen de actieve of nu tijdelijk vervangen templates terug
+        student_templates = StudentTemplate.objects.filter(status=Status.ACTIEF) | StudentTemplate.objects.filter(
+            status=Status.VERVANGEN)
+    else:
+        # weekplanning is al voorbij of bezig
+        week_planning = WeekPlanning.objects.get(
+            week=week,
+            year=year
+        )
+        student_templates = week_planning.student_templates.all()
 
-class WeekPlanningRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = WeekPlanning.objects.all()
-    serializer_class = WeekPlanningSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
-
-
-def make_copy(template, permanent, current_year, current_week):
-    """
-        Neemt een copy van een template zodat de geschiedenis behouden wordt
-    """
-
-    copy = StudentTemplate.objects.create(
-        name=template.name,
-        even=template.even,
-        status=Status.ACTIEF if permanent else Status.EENMALIG,
-        start_hour=template.start_hour,
-        end_hour=template.end_hour,
-        location=template.location,
-        year=current_year,
-        week=current_week
-    )
-    copy.rondes.set(template.rondes.all())
-    copy.dag_planningen.set(template.dag_planningen.all())
-
-    # verander de status van de nu oude template
-    template.status = Status.INACTIEF if permanent else Status.VERVANGEN
-    template.week = current_week
-    template.save()
-
-    return copy
+    even = week % 2 == 0
+    student_templates = student_templates.filter(even=even)
+    data = StudentTemplateSerializer(student_templates, many=True).data
+    return Response(data)
 
 
 @api_view(["GET", "POST"])
@@ -132,21 +118,8 @@ def make_copy(template, permanent, current_year, current_week):
 def student_templates_view(request):
     if request.method == "GET":
         templates = StudentTemplate.objects.all()
+        result = filter_templates(templates)
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-        for template in templates:
-            is_current = template.week == current_week or template.year == current_year
-            # template was tijdelijk veranderd maar de week is voorbij dus nu geldt deze weer
-            if template.status == Status.VERVANGEN and not is_current:
-                template.status = Status.ACTIEF
-                template.save()
-            # template was tijdelijk maar de week is voorbij dus nu geldt deze niet meer
-            elif template.status == Status.EENMALIG and not is_current:
-                template.status = Status.INACTIEF
-                template.save()
-
-        result = templates.filter(status=Status.ACTIEF) | templates.filter(status=Status.EENMALIG) | templates.filter(
-            status=Status.VERVANGEN)
         data = StudentTemplateSerializer(result, many=True).data
         return Response(data)
 
@@ -166,10 +139,7 @@ def student_templates_view(request):
             week=current_week
         )
 
-        planning, _ = WeekPlanning.objects.get_or_create(
-            week=current_week,
-            year=current_year
-        )
+        planning = get_current_week_planning()
         # voeg nieuwe template toe aan huidige planning
         planning.student_templates.add(new_template)
         data = StudentTemplateSerializer(new_template).data
@@ -185,10 +155,7 @@ def student_template_view(request, template_id):
 
     if request.method == "DELETE":
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-        planning, _ = WeekPlanning.objects.get_or_create(
-            week=current_week,
-            year=current_year
-        )
+        planning = get_current_week_planning()
 
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
@@ -211,20 +178,6 @@ def student_template_view(request, template_id):
             planning.student_templates.remove(template)
 
         return Response({"message": "Success"})
-
-
-def make_dag_planning(day, start_hour, end_hour, ronde, students):
-    pickup_day, _ = PickUpDay.objects.get_or_create(
-        day=day,
-        start_hour=start_hour,
-        end_hour=end_hour
-    )
-    dag_planning, _ = DagPlanning.objects.get_or_create(
-        ronde_id=ronde,
-        time=pickup_day
-    )
-    dag_planning.students.set(students)
-    return dag_planning
 
 
 @api_view(["GET", "POST"])
@@ -284,13 +237,6 @@ def rondes_view(request, template_id):
         return Response({"message": "Success"})
 
 
-def delete_old_dag_planning(old_dag_planningen, day, template):
-    for old_dag_planning in old_dag_planningen:
-        if old_dag_planning.time.day == day:
-            template.dag_planningen.remove(old_dag_planning)
-            break
-
-
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, ronde_id):
@@ -301,7 +247,6 @@ def dagplanning_view(request, template_id, ronde_id):
         dag_planningen = template.dag_planningen.filter(ronde=ronde_id)
         data = DagPlanningSerializer(dag_planningen, many=True).data
         return Response(data)
-
 
     data = request.data
     permanent = data["permanent"]

@@ -1,8 +1,6 @@
-from rest_framework import generics
-from .models import *
-from trashcontainers.models import TrashContainer
+from .util import *
+from planning.util import filter_templates, get_week_planning
 from planning.models import WeekPlanning
-from pickupdays.models import PickUpDay
 from ronde.models import Building, LocatieEnum
 from .serializers import *
 from rest_framework.response import Response
@@ -11,84 +9,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 
-def make_new_tc_id_wrapper(data, extra_id):
-    """
-        Maakt nieuwe TrashContainerIdWrapper aan
-    """
-    # maak nieuwe pickupday met de aangepaste data
-    new_pickup_day, _ = PickUpDay.objects.get_or_create(
-        day=data["day"],
-        start_hour=data["start_hour"],
-        end_hour=data["end_hour"]
-    )
-
-    # maak nieuwe container met de net gemaakte pickupday
-    new_trash_container, _ = TrashContainer.objects.get_or_create(
-        type=data["type"],
-        collection_day=new_pickup_day
-    )
-
-    # maak een wrapper met een het gegeven extra id en de nieuwe trashcontainer
-    tc_id_wrapper, _ = TrashContainerIdWrapper.objects.get_or_create(
-        extra_id=extra_id,
-        trash_container=new_trash_container
-    )
-    return tc_id_wrapper
-
-
-def make_copy(template, permanent, current_year, current_week):
-    """
-        Neemt een copy van een template zodat de geschiedenis behouden wordt
-    """
-
-    copy = TrashContainerTemplate.objects.create(
-        name=template.name,
-        even=template.even,
-        status=Status.ACTIEF if permanent else Status.EENMALIG,
-        location=template.location,
-        year=current_year,
-        week=current_week
-    )
-    copy.buildings.set(template.buildings.all())
-    copy.trash_containers.set(template.trash_containers.all())
-
-    # verander de status van de nu oude template
-    template.status = Status.INACTIEF if permanent else Status.VERVANGEN
-    template.week = current_week
-    template.save()
-
-    return copy
-
-
-def update_many_to_many(many_to_many, old, new):
-    if old is not None:
-        many_to_many.remove(old)
-
-    if new is not None:
-        many_to_many.add(new)
-
-
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def trash_templates_view(request):
 
     if request.method == "GET":
         templates = TrashContainerTemplate.objects.all()
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-        for template in templates:
-            is_current = template.week == current_week or template.year == current_year
-            # template was tijdelijk veranderd maar de week is voorbij dus nu geldt deze weer
-            if template.status == Status.VERVANGEN and not is_current:
-                template.status = Status.ACTIEF
-                template.save()
-            # template was tijdelijk maar de week is voorbij dus nu geldt deze niet meer
-            elif template.status == Status.EENMALIG and not is_current:
-                template.status = Status.INACTIEF
-                template.save()
-
-        result = templates.filter(status=Status.ACTIEF) | templates.filter(status=Status.EENMALIG) | templates.filter(
-            status=Status.VERVANGEN)
+        result = filter_templates(templates)
         data = TrashContainerTemplateSerializer(result, many=True).data
         return Response(data)
 
@@ -106,10 +33,7 @@ def trash_templates_view(request):
             week=current_week
         )
 
-        planning, _ = WeekPlanning.objects.get_or_create(
-            week=current_week,
-            year=current_year
-        )
+        planning = get_week_planning()
         # voeg nieuwe template toe aan huidige planning
         planning.trash_templates.add(new_template)
         data = TrashContainerTemplateSerializer(new_template).data
@@ -125,10 +49,7 @@ def trash_template_view(request, template_id):
 
     if request.method == "DELETE":
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-        planning, _ = WeekPlanning.objects.get_or_create(
-            week=current_week,
-            year=current_year
-        )
+        planning = get_week_planning()
 
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
