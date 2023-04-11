@@ -15,9 +15,8 @@ class DagPlanning(models.Model):
     students : models.ManyToMany
         The students that will be doing this round
 
-    week_day : models.ForeignKey
-        The weekday on which the students will do this round.
-        Only the weekday is stored so the object can be reused in templates.
+    time : models.ForeignKey
+        The weekday, start hour and end hour
 
     ronde : models.ForeignKey
         The round that the students will do this day
@@ -25,7 +24,7 @@ class DagPlanning(models.Model):
     """
     students = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
-    week_day = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
+    time = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
 
     ronde = models.ForeignKey(
         Ronde,
@@ -57,6 +56,12 @@ class StudentTemplate(models.Model):
     week : models.IntegerField
         Geeft de week aan waarin de template gemaakt is.
 
+    start_hour : models.TimeField
+        De standaard tijd wanneer een ronde begint.
+
+    start_hour : models.TimeField
+        De standaard tijd wanneer een ronde eindigt.
+
     rondes : models.ManyToManyField
         Al de rondes die in deze template zitten.
 
@@ -72,6 +77,8 @@ class StudentTemplate(models.Model):
         max_length=1,
         choices=Status.choices
     )
+    start_hour = models.TimeField()
+    end_hour = models.TimeField()
     year = models.IntegerField()
     week = models.IntegerField()
     rondes = models.ManyToManyField(Ronde, blank=True)

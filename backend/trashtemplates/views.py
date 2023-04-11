@@ -99,7 +99,7 @@ def trash_templates_view(request):
 
         new_template = TrashContainerTemplate.objects.create(
             name=data["name"],
-            even=data["even"].lower() == "true",
+            even=data["even"],
             status=Status.ACTIEF,
             location=location,
             year=current_year,
