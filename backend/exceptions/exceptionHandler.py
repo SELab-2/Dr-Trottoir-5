@@ -58,6 +58,7 @@ class ExceptionHandler:
         return True
 
     def check_enum_value(self, value, fieldname, enumValues):
+        self.checked = False
         if value is None:
             return True
         if value not in enumValues:
@@ -74,6 +75,7 @@ class ExceptionHandler:
         return self.check_enum_value(value, fieldname, enumValues)
 
     def check_time_value(self, value, fieldname):
+        self.checked = False
         if value is None:
             return True
         return self.check_time_format(value, fieldname, "%H:%M",
@@ -85,6 +87,7 @@ class ExceptionHandler:
         return self.check_time_value(value, fieldname)
 
     def check_date_value(self, value, fieldname):
+        self.checked = False
         if value is None:
             return True
         return self.check_time_format(value, fieldname, "%Y-%m-%d",
@@ -96,6 +99,7 @@ class ExceptionHandler:
         return self.check_date_value(value, fieldname)
 
     def check_date_time_value(self, value, fieldname):
+        self.checked = False
         if value is None:
             return True
         return self.check_time_format(value, fieldname, "%Y-%m-%d %H:%M",
@@ -107,6 +111,7 @@ class ExceptionHandler:
         return self.check_date_time_value(value, fieldname)
 
     def check_primary_key(self, value, fieldname, cls: models.Model):
+        self.checked = False
         if value is None:
             return True
         try:
@@ -132,6 +137,7 @@ class ExceptionHandler:
         return self.check_primary_key(value, fieldname, cls)
 
     def check_file(self, value, fieldname, files):
+        self.checked = False
         if value is None:
             return True
         if value not in files.getlist(fieldname):
@@ -148,6 +154,7 @@ class ExceptionHandler:
         return self.check_file(value, fieldname, files)
 
     def check_integer(self, value, fieldname):
+        self.checked = False
         if value is None:
             return True
         try:
@@ -166,6 +173,7 @@ class ExceptionHandler:
         return self.check_integer(value, fieldname)
 
     def check_not_blank(self, value, fieldname):
+        self.checked = False
         if value is None:
             return True
         value: str
