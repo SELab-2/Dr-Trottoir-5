@@ -113,4 +113,4 @@ class Ronde(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name="Locatie"
     )
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, blank=True)
