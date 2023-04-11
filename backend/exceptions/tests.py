@@ -125,7 +125,7 @@ class ExceptionHandlerTest(TestCase):
 
     def test_file_fail_none(self):
         handler = ExceptionHandler()
-        files = MultiValueDict({"name":["filefield"]})
+        files = MultiValueDict({"name": ["filefield"]})
         self.assertFalse(handler.check_file(None, "name", files))
         self.assertRaises(ValidationError, handler.check)
 
@@ -163,4 +163,4 @@ class ExceptionHandlerTest(TestCase):
     def test_not_blank_fail_bad_value(self):
         handler = ExceptionHandler()
         self.assertFalse(handler.check_not_blank("", "name"))
-        self.assertRaises(ValidationError, handler.check)
+        self.assertRaises(ValidationError, handler.check)&
