@@ -97,7 +97,7 @@ def trash_templates_view(request):
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         location = LocatieEnum.objects.get(id=data["location"])
 
-        result = TrashContainerTemplate.objects.create(
+        new_template = TrashContainerTemplate.objects.create(
             name=data["name"],
             even=data["even"].lower() == "true",
             status=Status.ACTIEF,
@@ -105,8 +105,16 @@ def trash_templates_view(request):
             year=current_year,
             week=current_week
         )
-        data = TrashContainerTemplateSerializer(result).data
+
+        planning, _ = WeekPlanning.objects.get_or_create(
+            week=current_week,
+            year=current_year
+        )
+        # voeg nieuwe template toe aan huidige planning
+        planning.trash_templates.add(new_template)
+        data = TrashContainerTemplateSerializer(new_template).data
         return Response(data)
+
 
 @api_view(["DELETE", "GET"])
 @permission_classes([AllowAny])
@@ -116,6 +124,12 @@ def trash_template_view(request, template_id):
         return Response(TrashContainerTemplateSerializerFull(template).data)
 
     if request.method == "DELETE":
+        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        planning, _ = WeekPlanning.objects.get_or_create(
+            week=current_week,
+            year=current_year
+        )
+
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
             original = TrashContainerTemplate.objects.get(
@@ -125,8 +139,12 @@ def trash_template_view(request, template_id):
             original.status = Status.ACTIEF
             original.save()
 
+            # voeg de originele terug toe aan de huidige weekplanning
+            planning.trash_templates.add(original)
+
         template.status = Status.INACTIEF
         template.save()
+        planning.trash_templates.remove(template)
 
         return Response({"message": "Success"})
 
