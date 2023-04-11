@@ -12,7 +12,6 @@ import BuildingManual from "@/api/models/BuildingManual";
 import config from "@/config";
 import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 import {InputFields} from "@/types/fields/InputFields";
-import {srCyrl} from "vuetify/locale";
 
 class BuildingService extends EchoService {
   /**
