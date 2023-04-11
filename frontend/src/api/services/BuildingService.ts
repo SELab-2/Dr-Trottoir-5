@@ -5,13 +5,14 @@ import {
   EchoServiceBuilder,
   POST,
   FormMultipart,
-  FormField, GET, Path
+  FormField, GET, Path, DELETE
 } from "@/api/EchoFetch";
 import Building from "@/api/models/Building";
 import BuildingManual from "@/api/models/BuildingManual";
 import config from "@/config";
 import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 import {InputFields} from "@/types/fields/InputFields";
+import {srCyrl} from "vuetify/locale";
 
 class BuildingService extends EchoService {
   /**
@@ -34,6 +35,14 @@ class BuildingService extends EchoService {
   }
 
   /**
+   * Delete building manual
+   */
+  @DELETE('/ronde/building/manual/{id}')
+  deleteManualById(@Path('id') id : number) : EchoPromise<string> {
+    return {} as EchoPromise<string>
+  }
+
+  /**
    * Create a new building
    */
   @POST('/ronde/building/')
@@ -47,6 +56,15 @@ class BuildingService extends EchoService {
   @GET('/ronde/building/{id}')
   getBuildingById(@Path('id') id : number) : EchoPromise<Building> {
     return {} as EchoPromise<Building>
+  }
+
+
+  /**
+   * Delete building
+   */
+  @DELETE('/ronde/building/{id}')
+  deleteBuildingById(@Path('id') id : number) : EchoPromise<string> {
+    return {} as EchoPromise<string>
   }
 }
 

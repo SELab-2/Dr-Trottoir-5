@@ -2,7 +2,7 @@
   <v-card color="white" class="mx-auto my-16 w-75">
     <v-row>
       <v-col md="12" lg="12" class="d-flex justify-lg-space-between pl-5 pr-5 pt-5">
-        <v-btn icon="mdi-delete"></v-btn>
+        <v-btn @click="dialog = true" icon="mdi-delete"></v-btn>
         <v-btn icon="mdi-pencil"></v-btn>
       </v-col>
       <v-col lg="12" md="12" class="d-flex align-center justify-center">
@@ -12,30 +12,49 @@
         <h2>Adres: {{ adres }}</h2>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
-        <p>{{manual}}</p>
+        <p>{{ manual }}</p>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
         <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
       </v-col>
-      <v-col  md="12" lg="12" class="d-flex align-center justify-center">
+      <v-col md="12" lg="12" class="d-flex align-center justify-center">
         <h2>Vuilnis planning: {{ name }}</h2>
       </v-col>
       <!-- Add list of planning cards -->
-      <v-col  md="12" lg="12" class="d-flex align-center justify-center pb-5">
+      <v-col md="12" lg="12" class="d-flex align-center justify-center pb-10">
         <normal-button text="Nieuwe ophaling" :parent-function="addPlanning"></normal-button>
       </v-col>
     </v-row>
   </v-card>
+  <v-dialog v-model="dialog" content-class="d-flex align-center justify-end">
+    <v-card class="overflow-hidden h-50 w-50">
+      <v-row>
+        <v-col md="12" lg="12" class="d-flex align-center justify-center pt-10">
+          <p>
+            Bent u zeker dat u dit gebouw wilt verwijderen?
+          </p>
+        </v-col>
+        <v-col md="6" lg="6" class="d-flex align-center justify-end pb-10">
+          <normal-button text="Ja" @click="deleteBuilding"></normal-button>
+        </v-col>
+        <v-col md="6" lg="6" class="d-flex align-center justify-start pb-10">
+          <normal-button text="Nee" @click="dialog = false"></normal-button>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 import NormalButton from "@/components/NormalButton";
 import BuildingService from "@/api/services/BuildingService";
 import {RequestHandler} from "@/api/RequestHandler";
+import router from "@/router";
 
 export default {
   name: "AdminBuildingView",
   components: {NormalButton},
+  props: ['id'],
   data: () => {
     return {
       name: '',
@@ -43,6 +62,7 @@ export default {
       manual: null,
       ivago_klantnr: 0,
       planningen: [],
+      dialog: false
     }
   },
   beforeMount() {
@@ -57,11 +77,27 @@ export default {
         id: 'getManualByBuildingError',
         style: 'SNACKBAR'
       })
+    }).catch(() => {
+      // TODO Go to list of buildings page
+      router.push({name: "home"})
     })
   },
   methods: {
     addPlanning() {
-      // TODO planning toevoegen voor gebouw
+      // TODO Add planning for building
+    },
+    deleteBuilding() {
+      RequestHandler.handle(BuildingService.deleteManualById(this.manual.id), {
+        id: 'deleteManualError',
+        style: "SNACKBAR"
+      }).then(() => {
+        RequestHandler.handle(BuildingService.deleteBuildingById(this.$route.params.id), {
+          id: 'deleteBuildingError',
+          style: "SNACKBAR"
+        })
+      })
+      // TODO Go to list of buildings page
+      router.push({name: 'home'})
     }
   }
 }
