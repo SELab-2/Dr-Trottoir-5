@@ -20,10 +20,10 @@ class TrashContainerSerializer(serializers.ModelSerializer):
             special_actions=validated_data.get("special_actions", "")
         )
 
-        validated_data['collection_days'].sort()
+        validated_data['collection_days'].sort(key=lambda x: x.day)
         if options.exists():
             for option in options:
-                collection_days = sorted(list(option.collection_days.all()))
+                collection_days = sorted(list(option.collection_days.all()), key=lambda x: x.day)
                 if validated_data['collection_days'] == collection_days:
                     return option
 

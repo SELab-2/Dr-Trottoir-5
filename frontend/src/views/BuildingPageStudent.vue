@@ -1,14 +1,68 @@
 <template>
+  <v-container align="center">
+    <v-card>
+      <v-card-title class="mt-2">
+        <h1>{{building.location.name}}</h1>
+        <v-row align="center" class="my-4">
+          <v-btn prepend-icon="mdi-map-marker" class="mx-auto my-2" color="secondary"
+                 :href="'https://www.google.com/maps/search/?api=1&query='+ encodeURIComponent(building.adres)" target="_blank">
+            {{building.adres}}
+          </v-btn>
+          <v-btn class="mx-auto" color="secondary">
+            Info
+          </v-btn>
+        </v-row>
+      </v-card-title>
+      <v-card-text>
+        <v-card
+          class="mx-auto"
+          max-width="300"
+        >
+          <v-list density="compact">
+            <v-list-subheader>Containers</v-list-subheader>
 
+            <v-list-item
+              v-for="(item, i) in containers"
+              :key="i"
+              :title="trashMap[item.type]"
+              :subtitle="item.special_actions"
+              align="left"
+              active-color="primary"
+            >
+              <template v-slot:prepend>
+                <v-icon icon="mdi-trash-can" color="green"></v-icon>
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-card-text>
+      <v-card-text>
+        <normal-button text="Aankomst" v-bind:parent-function="clickArrival" block class="mb-3"
+                       v-bind:append-icon="this.pictures.includes('AR') ? 'mdi-check' : ''">
+        </normal-button>
+        <normal-button text="Berging" v-bind:parent-function="clickStorage" block class="mb-3"
+                       v-bind:append-icon="this.pictures.includes('ST') ? 'mdi-check' : ''">
+        </normal-button>
+        <normal-button text="Vertrek" v-bind:parent-function="clickDeparture" block class="mb-3"
+                       v-bind:append-icon="this.pictures.includes('DE') ? 'mdi-check' : ''">
+        </normal-button>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
+import NormalButton from "@/components/NormalButton";
+import ContainerService from "@/api/services/ContainerService";
 
 export default defineComponent({
   name: "BuildingPageStudent",
+  components: {
+    NormalButton
+  },
   async created() {
     if ('date' in this.$route.query) this.date = this.$route.query.date;
     if ('building' in this.$route.query) {
@@ -23,6 +77,7 @@ export default defineComponent({
       if (!planning) return;
 
       const building_index = planning.ronde.buildings.findIndex(b => b.id == this.$route.query.building);
+      this.building = planning.ronde.buildings[building_index];
       const infos = await RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
         style: "NONE"
@@ -30,19 +85,45 @@ export default defineComponent({
       if (!infos) return;
       const info = infos[building_index];
 
-      const pictures = await RequestHandler.handle(PlanningService.getPictures(info.id), {
+      RequestHandler.handle(PlanningService.getPictures(info.id), {
         id: "getPicturesError",
         style: "NONE"
-      }).then(picture => picture).catch(() => null);
-      if (!pictures) return;
+      }).then(picture => this.pictures = picture.map(p => p.pictureType)).catch(() => null);
 
-      console.log(planning, info, pictures);
-      // Get infoperbuilding for this day + corresponding images
-      // Get trashcontainers for this building and day and display as tasks
+      const containers = await RequestHandler.handle(ContainerService.get(this.building.id), {
+        id: "getContainersError",
+        style: "NONE"
+      }).then(c => c).catch(() => null);
+      if (!containers) return;
+
+      const weekDays = ['SU','MO','TU','WE','TH','FR','SA'];
+      const day = weekDays[new Date(this.date).getDay()];
+      this.containers = containers.filter(c => c.collection_days_detail.map(d => d.day).includes(day));
     }
   },
   data: () => ({
-    date: new Date().toISOString().split('T')[0]
-  })
+    date: new Date().toISOString().split('T')[0],
+    building: {location: {name: ''}, adres: ''},
+    trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
+    containers: [],
+    pictures: []
+  }),
+  methods: {
+    clickArrival() {
+
+    },
+    clickStorage() {
+
+    },
+    clickDeparture() {
+
+    }
+  }
 });
 </script>
+
+<style>
+  .v-btn__append .v-icon {
+    color: limegreen;
+  }
+</style>
