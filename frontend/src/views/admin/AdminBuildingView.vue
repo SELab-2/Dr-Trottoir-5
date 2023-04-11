@@ -18,7 +18,7 @@
         <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
       </v-col>
       <v-col  md="12" lg="12" class="d-flex align-center justify-center">
-        <h1>Vuilnis planning: {{ name }}</h1>
+        <h2>Vuilnis planning: {{ name }}</h2>
       </v-col>
       <!-- Add list of planning cards -->
       <v-col  md="12" lg="12" class="d-flex align-center justify-center pb-5">
