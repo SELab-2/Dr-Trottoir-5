@@ -17,11 +17,14 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.check_primary_key_value_required(data.get("weekPlanning"), "weekPlanning",
+        handler.check_primary_key_value_required(data.get("weekPlanning"),
+                                                 "weekPlanning",
                                                  WeekPlanning)
         handler.check_date_value_required(data.get("date"), "date")
-        handler.check_primary_key_value_required(data.get("student"), "student", get_user_model())
-        handler.check_primary_key_value_required(data.get("ronde"), "ronde", Ronde)
+        handler.check_primary_key_value_required(data.get("student"),
+                                                 "student", get_user_model())
+        handler.check_primary_key_value_required(data.get("ronde"), "ronde",
+                                                 Ronde)
         handler.check()
 
         return super().post(request=request, args=args, kwargs=kwargs)
@@ -65,11 +68,35 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_primary_key_value_required(data.get("weekPlanning"),
+                                                 "weekPlanning",
+                                                 WeekPlanning)
+        handler.check_date_value_required(data.get("date"), "date")
+        handler.check_primary_key_value_required(data.get("student"),
+                                                 "student", get_user_model())
+        handler.check_primary_key_value_required(data.get("ronde"), "ronde",
+                                                 Ronde)
+        handler.check()
+        return super().put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_primary_key(data.get("weekPlanning"), "weekPlanning",
+                                  WeekPlanning)
+        handler.check_date_value(data.get("date"), "date")
+        handler.check_primary_key(data.get("ronde"), "ronde", Ronde)
+        handler.check()
+        return super().patch(request, *args, **kwargs)
 
 
 class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
@@ -83,10 +110,12 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.check_enum_value_required(data.get("pictureType"), "pictureType",
+        handler.check_enum_value_required(data.get("pictureType"),
+                                          "pictureType",
                                           BuildingPicture.PictureEnum.values)
         handler.check_file_required(data.get("image"), "image", request.FILES)
-        handler.check_primary_key_value_required(data.get("infoPerBuilding"), "infoPerBuilding",
+        handler.check_primary_key_value_required(data.get("infoPerBuilding"),
+                                                 "infoPerBuilding",
                                                  InfoPerBuilding)
         handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
@@ -97,7 +126,32 @@ class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BuildingPictureSerializer
     permission_classes = [
         StudentPermission | AdminPermission | SuperstudentPermission]
+
     # TODO: only the user that created a BuildingPicture should be able to update it
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_enum_value_required(data.get("pictureType"),
+                                          "pictureType",
+                                          BuildingPicture.PictureEnum.values)
+        handler.check_file_required(data.get("image"), "image", request.FILES)
+        handler.check_primary_key_value_required(data.get("infoPerBuilding"),
+                                                 "infoPerBuilding",
+                                                 InfoPerBuilding)
+        handler.check()
+        super().put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_enum_value(data.get("pictureType"), "pictureType",
+                                 BuildingPicture.PictureEnum.values)
+        handler.check_file(data.get("image"), "image", request.FILES)
+        handler.check_primary_key(data.get("infoPerBuilding"),
+                                  "infoPerBuilding", InfoPerBuilding)
+        handler.check()
+        super().patch(request, *args, **kwargs)
 
 
 class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
@@ -133,7 +187,8 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.check_primary_key_value_required(data.get("dagPlanning"), "dagPlanning",
+        handler.check_primary_key_value_required(data.get("dagPlanning"),
+                                                 "dagPlanning",
                                                  DagPlanning)
         handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
@@ -144,7 +199,25 @@ class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = InfoPerBuildingSerializer
     permission_classes = [
         StudentPermission | AdminPermission | SuperstudentPermission]
+
     # TODO: only the user that created an InfoPerBuilding should be able to update it
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_primary_key_value_required(data.get("dagPlanning"),
+                                                 "dagPlanning",
+                                                 DagPlanning)
+        handler.check()
+        return super().put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_primary_key(data.get("dagPlanning"), "dagPlanning",
+                                  DagPlanning)
+        handler.check()
+        return super().patch(request, *args, **kwargs)
 
 
 class WeekPlanningCLAPIView(generics.ListCreateAPIView):
@@ -167,3 +240,19 @@ class WeekPlanningRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = WeekPlanningSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
+
+    def put(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_integer_required(data.get("week"), "week")
+        handler.check_integer_required(data.get("year"), "year")
+        handler.check()
+        return super().put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_integer(data.get("week"), "week")
+        handler.check_integer(data.get("year"), "year")
+        handler.check()
+        return super().patch(request, *args, **kwargs)
