@@ -17,10 +17,10 @@ class PickUpListCreateView(generics.ListCreateAPIView):
         data = request.data
 
         handler = ExceptionHandler()
-        handler.check_enum_value(data.get("day"), "day",
-                                 PickUpDay.WeekDayEnum.values)
-        handler.check_time_value(data.get("start_hour"), "start_hour")
-        handler.check_time_value(data.get("end_hour"), "end_hour")
+        handler.check_enum_value_required(data.get("day"), "day",
+                                          PickUpDay.WeekDayEnum.values)
+        handler.check_time_value_required(data.get("start_hour"), "start_hour")
+        handler.check_time_value_required(data.get("end_hour"), "end_hour")
         handler.check()
 
         return super().post(request, *args, **kwargs)
