@@ -12,7 +12,7 @@
         <h2>Adres: {{ adres }}</h2>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
-        <p>{{ manual }}</p>
+        <normal-button text="Handleiding" :parent-function="getManual"></normal-button>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
         <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
@@ -73,16 +73,22 @@ export default {
       this.name = result.name
       this.adres = result.adres
       this.ivago_klantnr = result.ivago_klantnr
-      this.manual = await RequestHandler.handle(BuildingService.getManualById(result.manual), {
+       await RequestHandler.handle(BuildingService.getManualById(result.manual), {
         id: 'getManualByBuildingError',
         style: 'SNACKBAR'
-      })
+      }).then(manual => {
+        this.manual = manual.file
+       })
     }).catch(() => {
       // TODO Go to list of buildings page
       router.push({name: "home"})
     })
   },
   methods: {
+    // TODO Add cookies
+    async getManual() {
+      await fetch(this.manual, {method: 'GET', credentials: 'include', redirect: 'follow'})
+    },
     addPlanning() {
       // TODO Add planning for building
     },
