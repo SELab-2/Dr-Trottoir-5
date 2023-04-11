@@ -1,8 +1,9 @@
 from django.db import models
 from django.conf import settings
 from ronde.models import Ronde
-from trashtemplates.models import TrashContainerTemplate
+from trashtemplates.models import TrashContainerTemplate, Status
 from pickupdays.models import PickUpDay
+from ronde.models import LocatieEnum
 
 
 class DagPlanning(models.Model):
@@ -34,15 +35,21 @@ class DagPlanning(models.Model):
 
 class StudentTemplate(models.Model):
     """
-    All the day templates for a certain week
+    Studenten template die studenten met rondes matcht.
 
     Attributes
     ----------
     name : models.TextField
-        The name of this template
+        De naam van deze template
+
+    even : models.BooleanField
+        Bepaalt of de template voor even of oneven weken is.
+
+    location : models.ForeignKey
+        De locatie van de template.
 
     status : models.TextField
-        Geeft de status van een template aan: actief/tijdelijk/verwijderd/tijdelijk vervangen
+        Geeft de status van een template aan.
 
     year : models.IntegerField
         Geeft het jaar aan waarin de template gemaakt is.
@@ -50,14 +57,24 @@ class StudentTemplate(models.Model):
     week : models.IntegerField
         Geeft de week aan waarin de template gemaakt is.
 
+    rondes : models.ManyToManyField
+        Al de rondes die in deze template zitten.
+
     dag_planningen : models.ManyToManyField
-        The DagPlanning objects of this template
+        Al de dagplanningen van deze rondes.
 
     """
     name = models.TextField()
-    status = models.TextField()  # TODO choicefield
+    even = models.BooleanField()
+    location = models.ForeignKey(LocatieEnum, on_delete=models.DO_NOTHING)
+
+    status = models.CharField(
+        max_length=1,
+        choices=Status.choices
+    )
     year = models.IntegerField()
     week = models.IntegerField()
+    rondes = models.ManyToManyField(Ronde, blank=True)
     dag_planningen = models.ManyToManyField(DagPlanning, blank=True)
 
 
