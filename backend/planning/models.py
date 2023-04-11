@@ -14,8 +14,8 @@ class DagPlanning(models.Model):
     students : models.ManyToMany
         The students that will be doing this round
 
-    date : models.ForeignKey
-        The date on which this student will do this round.
+    week_day : models.ForeignKey
+        The weekday on which the students will do this round.
         Only the weekday is stored so the object can be reused in templates.
 
     ronde : models.ForeignKey
@@ -24,7 +24,7 @@ class DagPlanning(models.Model):
     """
     students = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
-    date = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
+    week_day = models.ForeignKey(PickUpDay, on_delete=models.DO_NOTHING)
 
     ronde = models.ForeignKey(
         Ronde,

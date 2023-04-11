@@ -1,5 +1,5 @@
 from django.db import models
-from ronde.models import Building
+from ronde.models import Building, LocatieEnum
 from trashcontainers.models import TrashContainer
 
 
@@ -50,6 +50,17 @@ class TrashContainerIdWrapper(models.Model):
     trash_container = models.ForeignKey(TrashContainer, on_delete=models.DO_NOTHING)
 
 
+class Status(models.TextChoices):
+    """
+        Enum for the status of templates
+    """
+    EENMALIG = "E", "Eenmalig"
+    VERVANGEN = "V", "Vervangen"
+    ACTIEF = "A", "Actief"
+    INACTIEF = "I", "Inactief"
+
+
+
 class TrashContainerTemplate(models.Model):
     """
         Template die ervoor zorgt dat gebouwen vaste trashcontainers hebben elke week.
@@ -62,8 +73,11 @@ class TrashContainerTemplate(models.Model):
         even : models.BooleanField
             Bepaalt of de template voor even of oneven weken is.
 
-        status : models.TextField
-            Geeft de status van een template aan: actief/tijdelijk/verwijderd/tijdelijk vervangen
+        location : models.ForeignKey
+            De locatie van de template
+
+        status : models.CharField
+            Geeft de status van een template aan
 
         year : models.IntegerField
             Geeft het jaar aan waarin de template gemaakt is.
@@ -81,7 +95,11 @@ class TrashContainerTemplate(models.Model):
 
     name = models.TextField()
     even = models.BooleanField()
-    status = models.TextField()   # TODO choicefield
+    location = models.ForeignKey(LocatieEnum, on_delete=models.DO_NOTHING)
+    status = models.CharField(
+        max_length=1,
+        choices=Status.choices
+    )
     year = models.IntegerField()
     week = models.IntegerField()
     buildings = models.ManyToManyField(BuildingTrashContainerList, blank=True)
