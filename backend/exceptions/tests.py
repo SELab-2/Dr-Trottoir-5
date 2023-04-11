@@ -163,4 +163,4 @@ class ExceptionHandlerTest(TestCase):
     def test_not_blank_fail_bad_value(self):
         handler = ExceptionHandler()
         self.assertFalse(handler.check_not_blank("", "name"))
-        self.assertRaises(ValidationError, handler.check)&
+        self.assertRaises(ValidationError, handler.check)
