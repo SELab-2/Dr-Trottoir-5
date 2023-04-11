@@ -89,7 +89,7 @@ def registration_view(request):
         data = request.data
         serializer = RegistrationSerializer(data=data)
 
-        handler = ExceptionHandler();
+        handler = ExceptionHandler()
         handler.check_not_blank_required(data.get("email"), "email")
         handler.check_not_blank_required(data.get("first_name"), "first_name")
         handler.check_not_blank_required(data.get("last_name"), "last_name")

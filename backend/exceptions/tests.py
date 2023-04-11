@@ -235,8 +235,8 @@ class ExceptionHandlerTest(TestCase):
         files = MultiValueDict({"name": ["a file name"]})
         self.assertFalse(
             handler.check_file("definitely not a file name",
-                                        "name",
-                                        files))
+                               "name",
+                               files))
         self.assertRaises(ValidationError, handler.check)
 
     def test_file_required_fail_bad_value(self):
