@@ -141,10 +141,14 @@ def trash_template_view(request, template_id):
 
             # voeg de originele terug toe aan de huidige weekplanning
             planning.trash_templates.add(original)
-
-        template.status = Status.INACTIEF
-        template.save()
-        planning.trash_templates.remove(template)
+            # verwijder de oude uit de huidige planning
+            planning.trash_templates.remove(template)
+            # verwijder hem ook uit de database omdat hij eenmalig was en dus niet nodig is voor de geschiedenis
+            template.delete()
+        else:
+            template.status = Status.INACTIEF
+            template.save()
+            planning.trash_templates.remove(template)
 
         return Response({"message": "Success"})
 
