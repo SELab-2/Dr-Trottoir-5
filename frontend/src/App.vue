@@ -37,7 +37,7 @@ export default defineComponent({
       if (needsLogin) {
         if (user === null) return next({path: '/login'});
         this.navbar = true;
-        console.log(user, to.name.toString(), config.AUTHORIZED[user.role])
+
         if (!(config.AUTHORIZED[user.role].includes(to.name.toString()))) {
          return next({path: '/unauthorized'});
         }
