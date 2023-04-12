@@ -49,7 +49,7 @@ class BuildingService extends EchoService {
     return {} as EchoPromise<any>
   }
 
-  // TODO Check Error with EchoFetch no payloud
+  @FormMultipart()
   @PATCH('/ronde/building/manual/{id}/')
   updateManualFileById(@Path('id') id: number,
                        @FormField('file') file: File,

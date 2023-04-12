@@ -2,7 +2,7 @@
   <v-card v-if="!edit" color="white" class="mx-auto my-16 w-75">
     <v-row>
       <v-col md="12" lg="12" class="d-flex justify-lg-space-between pl-5 pr-5 pt-5">
-        <v-btn @click="dialog = true" icon="mdi-delete"></v-btn>
+        <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
         <v-btn @click="edit = true" icon="mdi-pencil"></v-btn>
       </v-col>
       <v-col lg="12" md="12" class="d-flex align-center justify-center">
@@ -79,23 +79,7 @@
       </v-col>
     </v-row>
   </v-card>
-  <v-dialog v-model="dialog" content-class="d-flex align-center justify-end">
-    <v-card class="overflow-hidden h-50 w-50">
-      <v-row>
-        <v-col md="12" lg="12" class="d-flex align-center justify-center pt-10">
-          <p>
-            Bent u zeker dat u dit gebouw wilt verwijderen?
-          </p>
-        </v-col>
-        <v-col md="6" lg="6" class="d-flex align-center justify-end pb-10">
-          <normal-button text="Ja" @click="deleteBuilding"></normal-button>
-        </v-col>
-        <v-col md="6" lg="6" class="d-flex align-center justify-start pb-10">
-          <normal-button text="Nee" @click="dialog = false"></normal-button>
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-dialog>
+  <ConfirmDialog ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?" :confirm_function="deleteBuilding"></ConfirmDialog>
 </template>
 
 <script>
@@ -103,11 +87,11 @@ import NormalButton from "@/components/NormalButton";
 import BuildingService from "@/api/services/BuildingService";
 import {RequestHandler} from "@/api/RequestHandler";
 import router from "@/router";
-import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
+import ConfirmDialog from "@/components/util/ConfirmDialog"
 
 export default {
   name: "AdminBuildingView",
-  components: {NormalButton},
+  components: {ConfirmDialog, NormalButton},
   props: ['id'],
   data: () => {
     return {
@@ -180,7 +164,6 @@ export default {
         ivago_klantnr: this.ivago_klantnr,
       }
       if (this.new_manual !== null) {
-        console.log("here")
         await RequestHandler.handle(BuildingService.updateManualFileById(
           this.manual.id,
           this.new_manual[0], this.new_manual[0].type,
