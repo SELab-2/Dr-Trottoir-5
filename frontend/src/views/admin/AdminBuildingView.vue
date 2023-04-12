@@ -11,14 +11,17 @@
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
         <h2>Adres: {{ adres }}</h2>
       </v-col>
-      <v-col md="12" lg="12" class="d-flex align-center justify-center">
+      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
         <normal-button text="Handleiding" :parent-function="getManual"></normal-button>
+      </v-col>
+      <v-col md="6" lg="6" class="d-flex align-center justify-start">
+        <v-text-field readonly variant="solo" class="text_field" :model-value="manaul_status"></v-text-field>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
         <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
-        <h2>Vuilnis planning: {{ name }}</h2>
+        <h2>Vuilnis planning:</h2>
       </v-col>
       <!-- Add list of planning cards -->
       <v-col md="12" lg="12" class="d-flex align-center justify-center pb-10">
@@ -60,12 +63,13 @@ export default {
       name: '',
       adres: '',
       manual: null,
+      manaul_status: '',
       ivago_klantnr: 0,
       planningen: [],
       dialog: false
     }
   },
-  beforeMount() {
+  beforeCreate() {
     RequestHandler.handle(BuildingService.getBuildingById(this.$route.params.id), {
       id: 'getBuildingError',
       style: 'SNACKBAR'
@@ -73,12 +77,13 @@ export default {
       this.name = result.name
       this.adres = result.adres
       this.ivago_klantnr = result.ivago_klantnr
-       await RequestHandler.handle(BuildingService.getManualById(result.manual), {
+      await RequestHandler.handle(BuildingService.getManualById(result.manual), {
         id: 'getManualByBuildingError',
         style: 'SNACKBAR'
       }).then(manual => {
         this.manual = manual.file
-       })
+        this.manaul_status = manual.manualStatus
+      })
     }).catch(() => {
       // TODO Go to list of buildings page
       router.push({name: "home"})
@@ -86,8 +91,8 @@ export default {
   },
   methods: {
     // TODO Add cookies
-    async getManual() {
-      await fetch(this.manual, {method: 'GET', credentials: 'include', redirect: 'follow'})
+    getManual() {
+      window.open(this.manual)
     },
     addPlanning() {
       // TODO Add planning for building
@@ -109,3 +114,11 @@ export default {
 }
 </script>
 
+<style>
+.text_field {
+  height: 40px;
+  max-width: 150px;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+</style>
