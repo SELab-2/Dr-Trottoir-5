@@ -4,7 +4,7 @@
       <v-card-text>
         <v-row align-end>
           <v-col align="left" cols="8">
-            <p style="font-size: 8px">{{ data.description }}</p>
+            <p style="font-size: 15px">{{ data.description }}</p>
           </v-col>
           <v-col class="d-flex align-center" cols="4">
             <v-row justify="end" class="image-margin">
@@ -14,7 +14,7 @@
         </v-row>
         <v-row align="end">
           <v-col align="left">
-            <p style="font-size: 8px">{{ data.timeStamp }}</p>
+            <p style="font-size: 10px">{{ data.timeStamp }}</p>
           </v-col>
         </v-row>
       </v-card-text>
