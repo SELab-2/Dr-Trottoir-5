@@ -74,7 +74,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ManualRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManaulSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
     """
@@ -88,7 +88,7 @@ class ManualRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
             serializer = ManaulSerializer(manual, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-            return Response({"succes": ["Updated Manual"]})
+            return Response(serializer.data)
         except Manual.DoesNotExist:
             raise serializers.ValidationError(
                 {

@@ -24,7 +24,7 @@
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
         <h2>Vuilnis planning:</h2>
       </v-col>
-      <!-- Add list of planning cards -->
+      <!-- TODO Add list of planning cards -->
       <v-col md="12" lg="12" class="d-flex align-center justify-center pb-10">
         <normal-button text="Nieuwe ophaling" :parent-function="addPlanning"></normal-button>
       </v-col>
@@ -124,6 +124,8 @@ export default {
             style: 'SNACKBAR'
           }).then(manual => {
             this.manual = manual
+            // Fixes the correct url to open the file
+            this.manual.file = this.manual.file.substring(this.manual.file.indexOf('/api/'))
           })
         } else {
           this.$store.dispatch("snackbar/open", {
@@ -133,7 +135,7 @@ export default {
         }
       }).catch(() => {
         // TODO Go to list of buildings page
-        //router.push({name: 'home'})
+        // router.push({name: 'home'})
       })
     },
     getManual() {
@@ -170,7 +172,7 @@ export default {
           this.manual.manualStatus), {
           id: 'updateManualFileError',
           style: 'SNACKBAR'
-        })
+        }).then(manual => this.manual = manual)
       } else {
         await RequestHandler.handle(BuildingService.updateManualStatusById(this.manual.id, {
           manualStatus: this.manual.manualStatus
