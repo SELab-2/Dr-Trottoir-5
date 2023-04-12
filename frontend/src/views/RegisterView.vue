@@ -1,4 +1,5 @@
 <template>
+  <LoginTopBar :login="false"/>
   <v-container>
     <v-card class='px-4'>
       <v-card-title align="center" class="bg-primary mt-2 rounded-xl">
@@ -52,10 +53,12 @@ import {RequestHandler} from '@/api/RequestHandler';
 import AuthService from '@/api/services/AuthService';
 import {AuthRegisterWrapper} from '@/api/wrappers/AuthWrappers';
 import NormalButton from '@/components/NormalButton.vue';
+import LoginTopBar from "@/components/LoginTopBar.vue";
 
 export default defineComponent({
   name: 'RegisterView',
   components: {
+    LoginTopBar,
     NormalButton
   },
   data: () => ({
