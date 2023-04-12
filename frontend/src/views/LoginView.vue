@@ -1,4 +1,5 @@
 <template>
+  <LoginTopBar :login="true"/>
   <v-card :class="`mx-auto my-16 h-75 ${smallScreen ? 'w-100' : 'w-75'}`" :flat="smallScreen" color="white">
     <v-col class="align-center py-8">
       <v-card-title align="center" class="bg-primary mt-2 rounded-xl">
@@ -11,11 +12,13 @@
         ></v-text-field>
         <v-text-field
           v-model="password"
+          :append-inner-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append-inner="() => (value = !value)"
+          :type="value ? 'password' : 'text'"
           label="Wachtwoord"
-          type="password"
         ></v-text-field>
         <div v-if="error !== ''" class="text-red">{{ error.message }}</div>
-        <router-link to="/forgot">Wachtwoord vergeten?</router-link> <!-- TODO /FORGOT page -->
+        <router-link to="/forgot">Wachtwoord vergeten?</router-link>
         <normal-button text="Login" v-bind:parent-function="login" block class="mt-2"></normal-button>
       </v-form>
       <v-row class="mx-auto justify-center">
@@ -32,18 +35,23 @@ import AuthService from '@/api/services/AuthService'
 import router from '@/router'
 import { defineComponent } from 'vue'
 import NormalButton from '@/components/NormalButton'
+import LoginTopBar from "@/components/LoginTopBar.vue";
+
+// TODO input error handling
 
 export default defineComponent({
   name: 'LoginView',
   data: () => ({
     email: '',
+    value: 'password',
     password: '',
     error: '',
     prevRoute: '/',
     smallScreen: false
   }),
   components: {
-    NormalButton
+    NormalButton,
+    LoginTopBar
   },
   beforeRouteEnter(to, from, next) {
     // save the previous path so we can return after the login is done
@@ -55,7 +63,7 @@ export default defineComponent({
   },
   beforeUnmount() {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this.onResize, { passive: true })
+      window.removeEventListener('resize', this.onResize)
     }
   },
   mounted() {
@@ -63,10 +71,10 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-    login() {
-      AuthService.login({ email: this.email, password: this.password })
+     login() {
+       AuthService.login({ email: this.email, password: this.password })
         .then(
-          (data) => {
+          async (data) => {
 
             // Send confirmation message.
             this.$store.dispatch("snackbar/open", {
@@ -75,9 +83,9 @@ export default defineComponent({
             });
 
             // Update the current user inside the store.
-            this.$store.dispatch("session/fetch");
+            await this.$store.dispatch("session/fetch");
 
-            router.push({ path: '/' })
+            await router.push({ path: '/' })
           }
         ).catch((error) => {
 
@@ -92,7 +100,7 @@ export default defineComponent({
       })
     },
     onResize() {
-      this.smallScreen = window.innerWidth < 500
+      this.smallScreen = window.innerWidth < 600
     }
   }
 })

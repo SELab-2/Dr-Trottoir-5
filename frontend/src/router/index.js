@@ -4,6 +4,7 @@ import RegisterView from '@/views/RegisterView'
 import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
 import CreateBuildingView from '@/views/admin/CreateBuildingView'
+import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
 import CreateLocationView from "@/views/admin/CreateLocationView";
@@ -29,6 +30,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/forgot',
+    name: 'forgot',
+    component: ForgotView
   },
   {
     path: '/users',
