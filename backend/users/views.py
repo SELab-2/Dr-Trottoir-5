@@ -80,7 +80,7 @@ def login_view(request):
 @permission_classes([AllowAny])
 def logout_view(request):
     logout(request=request)
-    response = Response({"message": "You have been logout succesfully"})
+    response = Response({"message": "You have been logged out succefully"})
     response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
     response.delete_cookie(settings.SIMPLE_JWT['REFRESH_COOKIE'])
     return response
