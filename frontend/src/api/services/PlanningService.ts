@@ -1,8 +1,9 @@
 import {
+  DELETE,
   EchoPromise,
   EchoService,
-  EchoServiceBuilder,
-  GET,
+  EchoServiceBuilder, FormField, FormMultipart,
+  GET, Path, POST,
   Query
 } from "@/api/EchoFetch";
 import config from "@/config";
@@ -33,6 +34,29 @@ class PlanningService extends EchoService {
    */
   @GET("/planning/buildingpicture/")
   getPictures(@Query('infoPerBuilding') infoPerBuilding: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Delete a building picture
+   */
+  @DELETE("/planning/buildingpicture/{id}/")
+  deletePicture(@Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Post building picture
+   */
+  @POST("/planning/buildingpicture/")
+  @FormMultipart()
+  uploadPicture(
+    @FormField("image") image: File,
+    @FormField("infoPerBuilding") infoPerBuilding: number,
+    @FormField("pictureType") pictureType: string,
+    @FormField("time") time: string,
+    @FormField("remark") remark: string
+  ): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

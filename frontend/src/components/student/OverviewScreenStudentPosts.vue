@@ -4,9 +4,9 @@
       <h1 align="center"> {{ data.buildingName }} </h1>
       <h4> {{ data.type }} </h4>
       <v-avatar class="own-button-margin" align="center">
-        <v-icon v-on:click="goToFotoPage" dark size="40px" color="black">mdi-camera-outline</v-icon>
+        <v-icon v-on:click="goToPhotoPage" dark size="40px" color="black">mdi-camera-outline</v-icon>
       </v-avatar>
-      <FotoCardStudent v-for="(fotoData, index) in fotoDataList" :key="index" :data="fotoData" />
+      <FotoCardStudent v-for="(fotoData, index) in data.images" :key="index" :data="fotoData" />
       <NormalButton text="Taak voltooien" :parent-function="completeTask" class="mb-3"/>
     </v-card>
   </v-container>
@@ -24,38 +24,24 @@
 
 import FotoCardStudent from "@/components/student/FotoCardStudent.vue";
 import NormalButton from "@/components/NormalButton.vue";
+import router from "@/router";
 
 export default {
   name: 'OverviewScreenStudentPosts',
   components: {NormalButton, FotoCardStudent},
-  data() {
-    return {
-      fotoDataList: []
-    }
-  },
   props: {
     data: {
       type: Object,
-      default: () => ({buildingName: 'Gebouw test', type: "Aankomst"})
+      default: () => ({buildingName: '', type: '', images: [], info: ''})
     }
   },
   methods: {
-    goToFotoPage: function () {
-      // TODO
+    goToPhotoPage() {
+      router.push({path: '/student_post', query: {building: this.data.buildingName, type: this.data.type, info: this.data.info}});
     },
-    completeTask: function () {
-      // TODO
+    completeTask() {
+      router.go(-1);
     }
-  },
-  async mounted() {
-    // TODO data halen van backend
-    this.fotoDataList = [
-        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
-        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
-        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
-        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' },
-        { timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' }
-      ]
   }
 }
 </script>

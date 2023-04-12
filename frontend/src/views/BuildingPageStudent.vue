@@ -84,9 +84,9 @@ export default defineComponent({
         style: "NONE"
       }).then(info => info).catch(() => null);
       if (!infos) return;
-      const info = infos[building_index];
+      this.info = infos[building_index].id;
 
-      RequestHandler.handle(PlanningService.getPictures(info.id), {
+      RequestHandler.handle(PlanningService.getPictures(this.info), {
         id: "getPicturesError",
         style: "NONE"
       }).then(picture => this.pictures = picture.map(p => p.pictureType)).catch(() => null);
@@ -107,17 +107,18 @@ export default defineComponent({
     building: {location: {name: ''}, adres: '', id: ''},
     trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
     containers: [],
-    pictures: []
+    pictures: [],
+    info: ''
   }),
   methods: {
     clickArrival() {
-      router.push({path: '/student_arrival', query: {building: this.building.id}});
+      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst'}});
     },
     clickStorage() {
-
+      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging'}});
     },
     clickDeparture() {
-
+      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek'}});
     },
     buildingInfo() {
       router.push({path: '/building_info', query: {building: this.building.id}});

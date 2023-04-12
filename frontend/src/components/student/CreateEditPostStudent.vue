@@ -1,48 +1,46 @@
 <template>
-  <div class="top-div-style">
-    <v-col align="center" style="overflow: hidden;">
-      <div v-if="imageUrl === ''" class="if-div-style">
-        <div @click="selectImage" class="image-upload-placeholder">
-          <v-avatar size="100px">
-            <v-icon size="100px" dark>mdi-image</v-icon>
-          </v-avatar>
-          <p>Klik voor een foto toe te voegen</p>
+  <v-container align="center">
+    <v-card max-width="750px">
+      <div class="top-div-style">
+        <div v-if="imageUrl === ''" class="if-div-style mt-3 mb-2">
+          <div @click="selectImage" class="image-upload-placeholder">
+            <v-avatar size="100px">
+              <v-icon size="100px" dark>mdi-image</v-icon>
+            </v-avatar>
+            <p>Klik om een foto toe te voegen</p>
+          </div>
+        </div>
+        <div v-else>
+          <div class="image-div-style">
+            <v-img :src="imageUrl"></v-img>
+          </div>
+          <div align="center" style="height: 15%">
+            <v-btn icon tile class="icon-size" v-on:click="removeImage">
+                  <DeleteIcon/>
+            </v-btn>
+          </div>
         </div>
       </div>
-      <div v-else style="height: 100%">
-        <div class="image-div-style">
-          <v-img :src="imageUrl"></v-img>
+      <div class="bottom-div-style">
+        <h1 align="center">{{ data.buildingName }}</h1>
+        <h3 align="center">{{ data.type }}</h3>
+        <div align="center">
+          <v-form>
+            <v-container>
+              <v-textarea label="Beschrijving" outlined v-model="description" rows="4"></v-textarea>
+            </v-container>
+          </v-form>
         </div>
-        <div align="right" style="height: 15%">
-          <v-btn icon tile class="icon-size" v-on:click="removeImage">
-                <DeleteIcon/>
-          </v-btn>
+        <div align="center">
+          <NormalButton v-if="!data.edit" class="own-button-style mb-4 mx-2" text="Uploaden" :parent-function="uploadData" />
+          <NormalButton v-else class="own-button-style my-2 mx-2" text="Bevestig" :parent-function="editData"/>
         </div>
       </div>
-    </v-col>
-  </div>
-  <div class="bottom-div-style">
-    <h1 align="center">{{ data.nameBuilding }}</h1>
-    <h3 align="center">{{ data.type }}</h3>
-    <div align="center">
-      <v-form>
-        <v-container>
-          <v-textarea label="Beschrijving" outlined v-model="description" rows="4"></v-textarea>
-          <v-checkbox color="#FFE600" v-model="checked" label="Opmerking"></v-checkbox>
-        </v-container>
-      </v-form>
-    </div>
-    <div v-if="!this.data.edit" class="text-center button-positioning-div">
-      <NormalButton class="own-button-style" text="Post" :parent-function="uploadData"/>
-    </div>
-    <div v-else class="text-center button-positioning-div">
-      <NormalButton class="own-button-style" text="Bevestig" :parent-function="editData"/>
-    </div>
-  </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
-//TODO popup als nog niet alles is ingevuld
 /**
  * CreateEditPostStudent component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * edit: Boolean deze wordt gebruikt om te bepalen of de component gebruikt wordt om een post te maken of te bewerken.
@@ -50,12 +48,17 @@
  *
  * nameBuilding: String
  * type: String (Aankomst of Vertrek of Berging)
+ * info: ID for infoPerBuilding
  *
  * Data (aangepaste) moet naar de backend worden gestuurd worden zie functie uploadData en editData.
  */
 
 import NormalButton from "@/components/NormalButton.vue";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
+import {RequestHandler} from "@/api/RequestHandler";
+import PlanningService from "@/api/services/PlanningService";
+import router from "@/router";
+const emitter = require('tiny-emitter/instance');
 
 export default {
   name: 'CreateEditPostStudent',
@@ -63,49 +66,65 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({nameBuilding: 'Resto s5', type: 'Aankomst', edit: false})
+      default: () => ({nameBuilding: '', type: '', info: '', edit: false})
     }
   },
   data() {
     return {
       imageUrl: '',
-      checked: false,
       description: '',
     }
   },
   methods: {
     selectImage() {
-      const input = document.createElement('input')
-      input.type = 'file'
+      const input = document.createElement('input');
+      input.style = 'display: none;';
+      input.id = 'input';
+      document.body.appendChild(input);
+      input.type = 'file';
       // Alleen images accepteren
-      input.accept = 'image/*'
+      input.accept = 'image/*';
       input.onchange = (event) => {
         // selecteert de eerste file die die de gebruiker heeft geselecteerd
-        const file = event.target.files[0]
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          // zet de result van de reader om naar een base64 string
-          this.imageUrl = e.target.result
-        }
-        reader.readAsDataURL(file)
+        this.imageUrl = URL.createObjectURL(event.target.files[0]);
       }
-      input.click()
+      input.click();
     },
     removeImage() {
       this.imageUrl = '';
     },
-    uploadData() {
-      //TODO check of alles is ingevuld en toon popup indie niet alles is ingevuld
-      //TODO deze data verwerken + terug gaan naar het overview scherm
-      console.log(this.checked);
-      console.log(this.imageUrl); // deze is in base64
-      console.log(this.description);
-      //TODO data versturen naar backend
+    async uploadData() {
+      if (this.imageUrl === '') {
+        emitter.emit("error", {message: 'Voeg een foto toe.'}, {
+          style: 'SNACKBAR',
+          id: 'imageURLEmptyError'
+        })
+        router.afterEach(() => {
+          emitter.emit("error-clear");
+        });
+        return;
+      }
+      const input = document.getElementById("input");
+      const image = input.files[0];
+      this.imageUrl = '';
+      await RequestHandler.handle(PlanningService.uploadPicture(
+        image,
+        this.data.info,
+        this.data.type === 'Aankomst' ? 'AR' : this.data.type === 'Berging' ? 'ST' : this.data.type === 'Extra' ? 'EX' : 'DE',
+        new Date().toISOString(),
+        this.description
+      ), {
+        id: "uploadImageError",
+        style: "SNACKBAR"
+      }).then(b => b).catch(() => null);
+      input.value = '';
+      input.remove();
+
+      router.go(-1);
     },
     editData() {
       //TODO check of alles is ingevuld en toon popup indie niet alles is ingevuld
       //TODO deze data verwerken + terug gaan naar het overview scherm
-      console.log(this.checked);
       console.log(this.imageUrl); // deze is in base64
       console.log(this.description);
       //TODO aangepaste data versturen naar backend
@@ -121,15 +140,13 @@ export default {
 
 <style scoped>
 .top-div-style {
-  height: 40%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  margin: 2px;
 }
 .bottom-div-style{
-  height: 60%;
   justify-content: center;
 }
 
@@ -146,18 +163,15 @@ export default {
   border-radius: 10px;
 }
 .image-div-style {
-  height: 85%;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100px;
+  height: 100px;
+  margin: 2px;
 }
 .own-button-style {
   width: 150px;
   height: 40px;
-}
-.button-positioning-div {
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
 }
 </style>

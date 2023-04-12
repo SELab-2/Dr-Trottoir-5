@@ -7,7 +7,8 @@ import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
 import BuildingPageStudent from "@/views/BuildingPageStudent";
 import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
-import StudentPostArrival from "@/views/StudentPostArrival";
+import StudentCreatePost from "@/views/StudentCreatePost";
+import StudentPostView from "@/views/StudentPostView";
 
 const routes = [
   {
@@ -51,9 +52,14 @@ const routes = [
     component: InfoScreenBuilding
   },
   {
-    path: '/student_arrival',
-    name: 'student_arrival',
-    component: StudentPostArrival
+    path: '/student_post_view',
+    name: 'student_post_view',
+    component: StudentPostView
+  },
+  {
+    path: '/student_post',
+    name: 'student_post',
+    component: StudentCreatePost
   },
   {
     path: '/about',
