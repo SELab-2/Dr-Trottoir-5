@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
 import uuid
@@ -83,6 +84,9 @@ class Building(models.Model):
     location = models.ForeignKey(
         LocatieEnum,
         on_delete=models.DO_NOTHING
+    )
+    remarks = ArrayField(
+        models.TextField(), default=list
     )
 
     # default uuid.uuid4 is callable en genereerd uuid

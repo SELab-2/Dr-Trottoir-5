@@ -1,26 +1,31 @@
 <template>
-  <div align="center">
-    <h1>{{ data.nameBuilding }}</h1>
-    <v-container>
-      <v-img style="max-height: 30vh;" :src="data.imageURL"></v-img>
-    </v-container>
-  </div>
-  <v-container >
-    <v-btn rounded="xl" @click="downloadFile">
-      <v-icon color="#FFE600" dark>mdi-file</v-icon>
-      <p style="color: #FFE600">Handleiding</p>
-    </v-btn>
+  <v-container align="center">
+    <v-card max-width="750px">
+      <div align="center">
+        <h1>{{ building.location.name }}</h1>
+        <v-container>
+          <v-img style="max-height: 30vh;" src="https://fastly.4sqi.net/img/general/600x600/19969996_0_j-yue3dnyHZniurJBZ8e-8qoaN7xNAgwYWWwz0uHU.jpg"></v-img>
+        </v-container>
+      </div>
+      <v-container >
+        <v-btn rounded="xl" @click="downloadFile">
+          <v-icon color="#FFE600" dark>mdi-file</v-icon>
+          <p style="color: #FFE600">Handleiding</p>
+        </v-btn>
+      </v-container>
+      <v-card class="container-border ma-2">
+        <h2 class="mt-2">Opmerkingen:</h2>
+        <v-list>
+          <v-list-item v-for="remark in building.remarks">{{ remark }}</v-list-item>
+        </v-list>
+      </v-card>
+    </v-card>
   </v-container>
-  <v-container class="container-border">
-    <h2>Opmerkingen:</h2>
-    <v-list>
-      <v-list-item v-for="remark in data.remarks">{{ remark }}</v-list-item>
-    </v-list>
-  </v-container>
-
 </template>
 
 <script>
+import {RequestHandler} from "@/api/RequestHandler";
+import RoundService from "@/api/services/RoundService";
 
 /**
  * InfoScreenBuilding component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -41,15 +46,25 @@ export default {
       })
     }
   },
+  data: () => ({
+    building: {location: {name: 'Empty'}, manual: {file: ''}, remarks: []},
+  }),
+  async created() {
+    if ('building' in this.$route.query) {
+      const building = await RequestHandler.handle(RoundService.getBuilding(this.$route.query.building), {
+        id: "getBuildingError",
+        style: "NONE"
+      }).then(b => b).catch(() => null);
+      if (!building) return;
+
+      console.log(building);
+      this.building = building;
+    }
+  },
   methods: {
-    downloadFile: function () {
-      // TODO file opvragen van de backend en downloaden
-      console.log("Download file")
+    downloadFile() {
+      window.open(this.building.manual.file);
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

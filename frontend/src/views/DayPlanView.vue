@@ -1,9 +1,11 @@
 <template>
   <v-container align="center">
-    <h1>{{ time }}</h1>
-    <h2>{{ ronde }}</h2>
-    <normal-button text="Terug" v-bind:parent-function="goBack" block class="mt-2" v-if="buildings.length === 0"></normal-button>
-    <DayPlanBuilding v-for="building in buildings" :data="building" :date="date" />
+    <v-card max-width="750px" class="py-3">
+      <h1>{{ time }}</h1>
+      <h2>{{ ronde }}</h2>
+      <normal-button text="Terug" v-bind:parent-function="goBack" block class="mt-2" v-if="buildings.length === 0"></normal-button>
+      <DayPlanBuilding v-for="building in buildings" :data="building" :date="date" />
+    </v-card>
   </v-container>
 </template>
 

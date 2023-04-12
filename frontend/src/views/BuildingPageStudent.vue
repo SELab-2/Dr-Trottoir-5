@@ -1,6 +1,6 @@
 <template>
   <v-container align="center">
-    <v-card>
+    <v-card max-width="750px">
       <v-card-title class="mt-2">
         <h1>{{building.location.name}}</h1>
         <v-row align="center" class="my-4">
@@ -8,7 +8,7 @@
                  :href="'https://www.google.com/maps/search/?api=1&query='+ encodeURIComponent(building.adres)" target="_blank">
             {{building.adres}}
           </v-btn>
-          <v-btn class="mx-auto" color="secondary">
+          <v-btn class="mx-auto" color="secondary" :onclick="buildingInfo">
             Info
           </v-btn>
         </v-row>
@@ -57,6 +57,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton";
 import ContainerService from "@/api/services/ContainerService";
+import router from "@/router";
 
 export default defineComponent({
   name: "BuildingPageStudent",
@@ -103,20 +104,23 @@ export default defineComponent({
   },
   data: () => ({
     date: new Date().toISOString().split('T')[0],
-    building: {location: {name: ''}, adres: ''},
+    building: {location: {name: ''}, adres: '', id: ''},
     trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
     containers: [],
     pictures: []
   }),
   methods: {
     clickArrival() {
-
+      router.push({path: '/student_arrival', query: {building: this.building.id}});
     },
     clickStorage() {
 
     },
     clickDeparture() {
 
+    },
+    buildingInfo() {
+      router.push({path: '/building_info', query: {building: this.building.id}});
     }
   }
 });

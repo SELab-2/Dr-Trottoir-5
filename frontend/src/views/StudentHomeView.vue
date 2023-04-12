@@ -1,6 +1,6 @@
 <template>
   <v-container align="center">
-    <v-card height="auto">
+    <v-card height="auto" max-width="750px">
       <v-card-title class="mt-2">
         <h1>Planning</h1>
       </v-card-title>

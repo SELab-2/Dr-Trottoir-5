@@ -6,6 +6,8 @@ import UsersView from '../views/UsersView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
 import BuildingPageStudent from "@/views/BuildingPageStudent";
+import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
+import StudentPostArrival from "@/views/StudentPostArrival";
 
 const routes = [
   {
@@ -42,6 +44,16 @@ const routes = [
     path: '/building_student',
     name: 'building_student',
     component: BuildingPageStudent
+  },
+  {
+    path: '/building_info',
+    name: 'building_info',
+    component: InfoScreenBuilding
+  },
+  {
+    path: '/student_arrival',
+    name: 'student_arrival',
+    component: StudentPostArrival
   },
   {
     path: '/about',
