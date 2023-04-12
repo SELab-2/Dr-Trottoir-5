@@ -4,7 +4,7 @@
       <div align="center">
         <h1>{{ building.location.name }}</h1>
         <v-container>
-          <v-img style="max-height: 30vh;" src="https://fastly.4sqi.net/img/general/600x600/19969996_0_j-yue3dnyHZniurJBZ8e-8qoaN7xNAgwYWWwz0uHU.jpg"></v-img>
+          <v-img style="max-height: 30vh;" src=""></v-img>
         </v-container>
       </div>
       <v-container >

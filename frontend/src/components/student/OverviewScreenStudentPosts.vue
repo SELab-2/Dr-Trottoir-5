@@ -6,7 +6,8 @@
       <v-avatar class="own-button-margin" align="center">
         <v-icon v-on:click="goToPhotoPage" dark size="40px" color="black">mdi-camera-outline</v-icon>
       </v-avatar>
-      <FotoCardStudent v-for="(fotoData, index) in data.images" :key="index" :data="fotoData" />
+      <FotoCardStudent v-for="(fotoData, index) in data.images" :key="index" :data="fotoData"
+        :buildingName="data.buildingName" :type="data.type" :info="data.info"/>
       <NormalButton text="Taak voltooien" :parent-function="completeTask" class="mb-3"/>
     </v-card>
   </v-container>
@@ -32,12 +33,15 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({buildingName: '', type: '', images: [], info: ''})
+      default: () => ({buildingName: '', type: '', images: [], info: '', planning: '', building_id: ''})
     }
   },
   methods: {
     goToPhotoPage() {
-      router.push({path: '/student_post', query: {building: this.data.buildingName, type: this.data.type, info: this.data.info}});
+      router.push({path: '/student_post', query: {
+        building: this.data.buildingName, type: this.data.type, info: this.data.info, planning: this.data.planning,
+        building_id: this.data.building_id
+      }});
     },
     completeTask() {
       router.go(-1);

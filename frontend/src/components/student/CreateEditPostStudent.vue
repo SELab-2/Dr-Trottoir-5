@@ -66,13 +66,14 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({nameBuilding: '', type: '', info: '', edit: false})
+      default: () => ({nameBuilding: '', type: '', info: '', edit: false, id: '', planning: '', building_id: ''})
     }
   },
   data() {
     return {
       imageUrl: '',
       description: '',
+      original: {}
     }
   },
   methods: {
@@ -93,7 +94,7 @@ export default {
     removeImage() {
       this.imageUrl = '';
     },
-    async uploadData() {
+    imageCheck() {
       if (this.imageUrl === '') {
         emitter.emit("error", {message: 'Voeg een foto toe.'}, {
           style: 'SNACKBAR',
@@ -102,11 +103,15 @@ export default {
         router.afterEach(() => {
           emitter.emit("error-clear");
         });
-        return;
+        return false;
       }
+
+      return true;
+    },
+    async uploadData() {
+      if (!this.imageCheck()) return;
       const input = document.getElementById("input");
       const image = input.files[0];
-      this.imageUrl = '';
       await RequestHandler.handle(PlanningService.uploadPicture(
         image,
         this.data.info,
@@ -117,22 +122,70 @@ export default {
         id: "uploadImageError",
         style: "SNACKBAR"
       }).then(b => b).catch(() => null);
-      input.value = '';
-      input.remove();
+
+      RequestHandler.handle(PlanningService.getPlanning(this.data.planning), {
+        id: "getDayplanningError",
+        style: "NONE"
+      }).then(async planning => {
+        const building_index = planning.ronde.buildings.findIndex(b => b.id == this.data.building_id);
+        planning.status[building_index] = this.data.type === 'Vertrek' ? 'FI' : 'ST';
+        await RequestHandler.handle(PlanningService.updatePlanningStatus(this.data.planning, {status: planning.status}), {
+          id: 'updatePlanningError',
+          style: 'NONE'
+        }).then(() => {}).catch(() => null);
+
+        this.imageUrl = '';
+        input.value = '';
+        input.remove();
+
+        router.go(-1);
+      }).catch(() => null);
+    },
+    async editData() {
+      if (!this.imageCheck()) return;
+      const input = document.getElementById("input");
+      if (!input) {
+        await RequestHandler.handle(PlanningService.patchPicture(
+          this.data.id,
+          this.data.info,
+          this.data.type === 'Aankomst' ? 'AR' : this.data.type === 'Berging' ? 'ST' : this.data.type === 'Extra' ? 'EX' : 'DE',
+          new Date().toISOString(),
+          this.description
+        ), {
+          id: "patchImageError",
+          style: "SNACKBAR"
+        }).then(b => b).catch(() => null);
+      } else {
+        const image = input.files[0];
+        await RequestHandler.handle(PlanningService.updatePicture(
+          this.data.id,
+          image,
+          this.data.info,
+          this.data.type === 'Aankomst' ? 'AR' : this.data.type === 'Berging' ? 'ST' : this.data.type === 'Extra' ? 'EX' : 'DE',
+          new Date().toISOString(),
+          this.description
+        ), {
+          id: "editImageError",
+          style: "SNACKBAR"
+        }).then(b => b).catch(() => null);
+        this.imageUrl = '';
+        input.value = '';
+        input.remove();
+      }
 
       router.go(-1);
-    },
-    editData() {
-      //TODO check of alles is ingevuld en toon popup indie niet alles is ingevuld
-      //TODO deze data verwerken + terug gaan naar het overview scherm
-      console.log(this.imageUrl); // deze is in base64
-      console.log(this.description);
-      //TODO aangepaste data versturen naar backend
     }
   },
   mounted() {
     if (this.data.edit){
-      //TODO data ophalen van backend aan de hand van de ID (image, description, checked)
+      RequestHandler.handle(PlanningService.getPicture(this.data.id), {
+        id: "getImageError",
+        style: "SNACKBAR"
+      }).then(b => {
+        this.description = b.remark;
+        this.imageUrl = b.image;
+        this.original = b;
+      }).catch(() => null);
     }
   }
 }

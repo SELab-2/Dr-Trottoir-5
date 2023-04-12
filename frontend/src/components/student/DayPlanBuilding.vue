@@ -7,7 +7,7 @@ Example usage:
 <template>
   <v-container align="center">
     <v-col cols="12" sm="10">
-      <v-card class='px-4 rounded-pill' elevation="5" @click="buildingClicked"
+      <v-card class='px-2 rounded-pill' elevation="5" @click="buildingClicked"
               :color="data.status === 'Voltooid' ? 'green-lighten-1' : data.status === 'Bezig' ? 'yellow-lighten-1' : 'red-lighten-1'">
         <v-card-title class="text-center">
           <v-row justify="center">

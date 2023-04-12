@@ -15,11 +15,12 @@ export default defineComponent({
     OverviewScreenStudentPosts
   },
   data: () => ({
-    data: {images: [], type: '', buildingName: '', info: ''}
+    data: {images: [], type: '', buildingName: '', info: '', planning: ''}
   }),
   async created() {
     if (!('building' in this.$route.query)) return;
     if (!('type' in this.$route.query)) return;
+    if (!('planning' in this.$route.query)) return;
     const typeMap = {Extra: 'EX', Aankomst: 'AR', Vertrek: 'DE', Berging: 'ST'};
     if ('info' in this.$route.query) {
       const images = await RequestHandler.handle(PlanningService.getPictures(this.$route.query.info), {
@@ -34,7 +35,10 @@ export default defineComponent({
       }).then(b => b).catch(() => null);
       if (!building) return;
 
-      this.data = {images: images, type: this.$route.query.type, buildingName: building.location.name, info: this.$route.query.info};
+      this.data = {
+        images: images, type: this.$route.query.type, buildingName: building.location.name, info: this.$route.query.info,
+        planning: this.$route.query.planning, building_id: building.id
+      };
     }
   }
 });

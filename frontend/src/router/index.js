@@ -9,6 +9,7 @@ import BuildingPageStudent from "@/views/BuildingPageStudent";
 import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
 import StudentCreatePost from "@/views/StudentCreatePost";
 import StudentPostView from "@/views/StudentPostView";
+import StudentEditPost from "@/views/StudentEditPost";
 
 const routes = [
   {
@@ -60,6 +61,11 @@ const routes = [
     path: '/student_post',
     name: 'student_post',
     component: StudentCreatePost
+  },
+  {
+    path: '/student_post_edit',
+    name: 'student_post_edit',
+    component: StudentEditPost
   },
   {
     path: '/about',

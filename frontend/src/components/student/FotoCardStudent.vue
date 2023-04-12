@@ -38,6 +38,7 @@ import EditIcon from '../icons/EditIcon.vue'
 import DeleteIcon from '../icons/DeleteIcon.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
+import router from "@/router";
 
 /**
  * FotoCardStudent component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -52,11 +53,14 @@ export default {
     data: {
       type: Object,
       default: () => ({ time: 'Empty', remark: 'Empty', image: 'Empty', id: '' })
-    }
+    },
+    buildingName: {type: String, default: ''},
+    type: {type: String, default: ''},
+    info: {type: String, default: ''}
   },
   methods: {
     goToEditPage() {
-      // TODO
+      router.push({path: '/student_post_edit', query: {building: this.buildingName, type: this.type, info: this.info, id: this.data.id}});
     },
     deletePost() {
       RequestHandler.handle(PlanningService.deletePicture(this.data.id), {

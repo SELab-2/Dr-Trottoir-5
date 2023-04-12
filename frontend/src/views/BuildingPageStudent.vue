@@ -76,6 +76,7 @@ export default defineComponent({
         style: "NONE"
       }).then(planning => planning).catch(() => null);
       if (!planning) return;
+      this.planning = planning.id;
 
       const building_index = planning.ronde.buildings.findIndex(b => b.id == this.$route.query.building);
       this.building = planning.ronde.buildings[building_index];
@@ -108,17 +109,18 @@ export default defineComponent({
     trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
     containers: [],
     pictures: [],
-    info: ''
+    info: '',
+    planning: ''
   }),
   methods: {
     clickArrival() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst'}});
+      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning}});
     },
     clickStorage() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging'}});
+      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning}});
     },
     clickDeparture() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek'}});
+      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning}});
     },
     buildingInfo() {
       router.push({path: '/building_info', query: {building: this.building.id}});
