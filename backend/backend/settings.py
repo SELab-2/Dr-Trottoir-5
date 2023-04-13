@@ -29,7 +29,18 @@ SECRET_KEY = 'django-insecure-mz0gymvj@n5wl2p0yau(vj0e3jdx_wok78+ead*=p4)$w)g5(z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['sel2-5.ugent.be', '157.193.244.115', 'localhost']
+ALLOWED_HOSTS = [
+    'sel2-5.ugent.be', '157.193.244.115',
+    # DEVELOPMENT BELOW THIS
+    'localhost', '192.168.178.34', '127.0.0.1'
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://sel2-5.ugent.be",
+    # DEVELOPMENT ORIGINS BELOW THIS
+    "http://localhost:8080",
+    "http://192.168.178.34:8080"
+]
 
 # Application definition
 
@@ -48,10 +59,12 @@ INSTALLED_APPS = [
     'users',
     'planning',
     'mailtemplates',
-    'trashtemplates'
+    'trashtemplates',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
