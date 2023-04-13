@@ -17,6 +17,7 @@ class TrashContainerSerializer(serializers.ModelSerializer):
         """
         options = TrashContainer.objects.filter(
             type=validated_data['type'],
+            building=validated_data['building'],
             special_actions=validated_data.get("special_actions", "")
         )
 
