@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.core.mail import send_mail
 from django.middleware import csrf
 from django.core.exceptions import ObjectDoesNotExist
