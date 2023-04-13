@@ -1,9 +1,10 @@
 <template>
+  <LoginTopBar :login="true"/>
   <v-card :class="`mx-auto my-16 h-75 ${smallScreen ? 'w-100' : 'w-75'}`" :flat="smallScreen" color="white">
     <v-col class="align-center py-8">
-      <v-sheet :class="`mx-auto rounded-xl ${smallScreen ? ' w-100' : 'w-75'}`" color="black">
-        <v-img :class="`mx-auto ${smallScreen ? ' w-100' : 'w-75'}`" src="../assets/logo.png"/>
-      </v-sheet>
+      <v-card-title align="center" class="bg-primary mt-2 rounded-xl">
+        <v-img src="../assets/logo.png" height="75px" width="150px"></v-img>
+      </v-card-title>
       <v-form :class="`${smallScreen ? ' w-100' : 'w-50'} mx-auto my-5`" @submit.prevent>
         <v-text-field
           v-model="email"
@@ -11,12 +12,14 @@
         ></v-text-field>
         <v-text-field
           v-model="password"
+          :append-inner-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append-inner="() => (value = !value)"
+          :type="value ? 'password' : 'text'"
           label="Wachtwoord"
-          type="password"
         ></v-text-field>
         <div v-if="error !== ''" class="text-red">{{ error.message }}</div>
-        <router-link to="/forgot">Wachtwoord vergeten?</router-link> <!-- TODO /FORGOT page -->
-        <v-btn block class="mt-2" @click="login">Login</v-btn>
+        <router-link to="/forgot">Wachtwoord vergeten?</router-link>
+        <normal-button text="Login" v-bind:parent-function="login" block class="mt-2"></normal-button>
       </v-form>
       <v-row class="mx-auto justify-center">
         <div class="mx-2">Geen account?</div>
@@ -31,16 +34,25 @@ import { ErrorHandler } from '@/api/error/ErrorHandler'
 import AuthService from '@/api/services/AuthService'
 import router from '@/router'
 import { defineComponent } from 'vue'
+import NormalButton from '@/components/NormalButton'
+import LoginTopBar from "@/components/LoginTopBar.vue";
+
+// TODO input error handling
 
 export default defineComponent({
   name: 'LoginView',
   data: () => ({
     email: '',
+    value: 'password',
     password: '',
     error: '',
     prevRoute: '/',
     smallScreen: false
   }),
+  components: {
+    NormalButton,
+    LoginTopBar
+  },
   beforeRouteEnter(to, from, next) {
     // save the previous path so we can return after the login is done
     next(vm => {
@@ -51,7 +63,7 @@ export default defineComponent({
   },
   beforeUnmount() {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this.onResize, { passive: true })
+      window.removeEventListener('resize', this.onResize)
     }
   },
   mounted() {
@@ -59,10 +71,10 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-    login() {
-      AuthService.login({ email: this.email, password: this.password })
+     login() {
+       AuthService.login({ email: this.email, password: this.password })
         .then(
-          (data) => {
+          async (data) => {
 
             // Send confirmation message.
             this.$store.dispatch("snackbar/open", {
@@ -71,24 +83,23 @@ export default defineComponent({
             });
 
             // Update the current user inside the store.
-            this.$store.dispatch("session/fetch");
+            await this.$store.dispatch("session/fetch");
 
-            router.push({ path: '/' })
+            await router.push({ path: '/' })
           }
         ).catch((error) => {
-
-        ErrorHandler.handle(
-          error,
-          {
-            id: "login",
-            style: "SNACKBAR"
-          },
-          this.fields
-        );
+          ErrorHandler.handle(
+            error,
+            {
+              id: "login",
+              style: "SNACKBAR"
+            },
+            this.fields
+          );
       })
     },
     onResize() {
-      this.smallScreen = window.innerWidth < 500
+      this.smallScreen = window.innerWidth < 600
     }
   }
 })

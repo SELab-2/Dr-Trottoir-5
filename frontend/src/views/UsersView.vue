@@ -45,8 +45,8 @@ export default defineComponent({
     }
   },
   created() {
-    this.user.finally(() => this.loaded.user = true);
-    this.users.finally(() => this.loaded.users = true);
+    this.user.finally(() => this.loaded.user = true).catch(() => {});
+    this.users.finally(() => this.loaded.users = true).catch(() => {});
   }
 })
 </script>

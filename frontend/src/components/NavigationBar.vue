@@ -19,7 +19,7 @@
       <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-email-outline" title="Templates"
                    value="templates"></v-list-item>
       <v-list-item prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
-      <v-list-item prepend-icon="mdi-logout" title="Logout" value="logout"></v-list-item>
+      <v-list-item prepend-icon="mdi-logout" @click="this.logout()" title="Logout" value="logout"></v-list-item>
     </v-list>
     <v-divider></v-divider>
   </v-navigation-drawer>
@@ -41,20 +41,26 @@
 
 import { onMounted, onBeforeUnmount, ref, defineComponent } from 'vue'
 import router from '@/router'
+import AuthService from "@/api/services/AuthService";
 
 export default defineComponent({
   name: 'NavigationBar',
   methods: {
-    isAdminOrSu(): Boolean {
-      return this.$store.getters['session/isAdmin']
+    async isAdminOrSu(): Promise<Boolean> {
+      const user = this.$store.getters['session/currentUser'];
+      return user.then(() => this.$store.getters['session/isAdmin']).catch(() => false);
     }
   },
   setup() {
     const drawer = ref(false)
     const smallScreen = ref(false)
 
+    const logout = () => {
+      return AuthService.handleLogout()
+    }
+
     const goBack = () => {
-      return router.go(-1)
+      return router.back()
     }
     const onResize = () => {
       smallScreen.value = window.innerWidth < 700
@@ -71,7 +77,8 @@ export default defineComponent({
     return {
       drawer,
       smallScreen,
-      goBack
+      goBack,
+      logout
     }
   }
 })

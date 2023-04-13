@@ -78,6 +78,16 @@ def login_view(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+def logout_view(request):
+    logout(request=request)
+    response = Response({"message": "You have been logged out succefully"})
+    response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+    response.delete_cookie(settings.SIMPLE_JWT['REFRESH_COOKIE'])
+    return response
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def registration_view(request):
     if request.method == "POST":
         response = Response()

@@ -1,4 +1,4 @@
-import {EchoError} from "echofetch";
+import {EchoError} from 'echofetch';
 import {CustomErrorOptions} from "./types/CustomErrorOptions";
 import {CustomErrorMessage} from "./types/CustomErrorMessage";
 import {InputFields} from "@/types/fields/InputFields";
@@ -20,6 +20,12 @@ const globalCustomErrors: Array<CustomErrorMessage> = [
       "Je bent momenteel niet ingelogd, log in en probeer het opnieuw",
   },
   {
+    code: "403",
+    message: "Geen toegang",
+    description:
+      "Je hebt onvoldoende rechten om deze actie uit te voeren",
+  },
+  {
     code: "404",
     message: "Pagina niet gevonden",
     description:
@@ -39,7 +45,6 @@ const globalCustomErrors: Array<CustomErrorMessage> = [
     description:
       "We hebben problemen met de server. Probeer het later opnieuw.",
   },
-
   {
     code: "network_error",
     message: "Geen connectie met de server.",
@@ -55,23 +60,25 @@ export class ErrorHandler {
    * @param options
    * @param fields
    */
-  static handle(
+  static async handle(
     error: EchoError,
     options: CustomErrorOptions,
     fields: InputFields = {}
   ) {
+    let errors = error.json ? await error.json() : null;
+
     // Handle field errors.
-    this.handleInputFields(error, fields);
+    this.handleInputFields(error, fields)
 
     // Handle general errors.
-    this.handleGeneral(error);
+    this.handleGeneral(error, errors)
 
     // Emit the error on the ErrorBus.
-    emitter.emit("error", error, options);
+    emitter.emit("error", error, options)
 
     // Clear the error when navigating to a different route.
     router.afterEach(() => {
-      emitter.emit("error-clear");
+      emitter.emit("error-clear")
     });
 
   }
@@ -79,27 +86,19 @@ export class ErrorHandler {
   /**
    * Handle the error for the given InputFields.
    * This will add an error to every given field with errors.
-   * @param error
+   * @param errors
    * @param fields
    */
-  static handleInputFields(error: EchoError, fields: InputFields) {
+  static handleInputFields(errors: any, fields: InputFields) {
     // Check if the input errors are undefined.
-    if (
-      !error ||
-      !error.response ||
-      !error.response.data ||
-      // @ts-ignore TODO FIX
-      !error.response.data.inputErrors
-    ) {
+    if (!errors) {
       return;
     }
-    // @ts-ignore TODO FIX
-    const inputErrors = error.response.data.inputErrors;
 
     // Set the error messages for every field.
     for (const fieldName of Object.keys(fields)) {
       const fieldValue = fields[fieldName];
-      const fieldNewError = inputErrors.find(
+      const fieldNewError = errors.find(
         (inputError: InputFieldError) => inputError.field === fieldName
       );
 
@@ -119,20 +118,16 @@ export class ErrorHandler {
    * Handle general errors.
    * This will modify the error to the first given "generalError" message
    * @param error
+   * @param errors
    */
-  static handleGeneral(error: EchoError) {
+  static handleGeneral(error: EchoError, errors: any) {
+    error.message = this.getCustomMessage(error, new CustomErrorOptions()); // (temp?) fix
     // Check if the general errors are undefined.
-    if (
-      !error ||
-      !error.response ||
-      !error.response.data ||
-      // @ts-ignore TODO FIX
-      !error.response.data.generalErrors
-    ) {
+    if (!errors || !errors.errors) {
       return;
     }
-    // @ts-ignore TODO FIX
-    const generalErrors = error.response.data.generalErrors;
+
+    const generalErrors = errors.errors
 
     // Check if any general error was found.
     if (generalErrors.length > 0) {
@@ -184,10 +179,9 @@ export class ErrorHandler {
 
     // Ajust some errors that can be displayed better based on the given error code.
     const customError = this.getCustomErrors(options).find(
-      (e) =>
-        (error.response &&
-          e.code === error.response?.status.toString()) ||
-        e.code === error.code
+      e =>
+        (error.status &&
+          e.code === error.status.toString())
     );
 
     return customError;

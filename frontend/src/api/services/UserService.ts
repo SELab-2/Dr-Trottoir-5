@@ -3,7 +3,7 @@ import User from "../models/User";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import {InputFields} from "@/types/fields/InputFields";
-import {AuthLoginWrapper, AuthRegisterWrapper} from "@/api/wrappers/AuthWrappers";
+import {AuthLoginWrapper} from "@/api/wrappers/AuthWrappers";
 import {UserRole} from "@/api/models/UserRole";
 
 class UserService extends EchoService {

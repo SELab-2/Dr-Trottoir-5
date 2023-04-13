@@ -14,5 +14,20 @@ module.exports = defineConfig({
     vuetify: {
       // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
     }
+  },
+  pwa: {
+    name: 'Dr-Trottoir',
+    themeColor: '#ffe70a',
+    msTileColor: '#000000',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'black',
+
+    // configure the workbox plugin
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      // swSrc is required in InjectManifest mode.
+      swSrc: './src/service-worker.js',
+      // ...other Workbox options...
+    }
   }
 })
