@@ -77,7 +77,7 @@ def no_copy(template, permanent, current_year, current_week):
     niks gekopieerd worden.
     """
     return template.status == Status.EENMALIG or (
-            permanent and template.week == current_week and template.year == current_year)
+        permanent and template.week == current_week and template.year == current_year)
 
 
 def add_if_match(many_to_many, new_template, current_week):

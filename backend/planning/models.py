@@ -85,7 +85,6 @@ class StudentTemplate(models.Model):
     dag_planningen = models.ManyToManyField(DagPlanning, blank=True)
 
 
-
 class WeekPlanning(models.Model):
     """
     All the day templates for a certain week

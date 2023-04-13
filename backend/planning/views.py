@@ -1,12 +1,12 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import *
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
+from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
 import datetime
-from trashtemplates.models import Status, TrashContainerTemplate
+from trashtemplates.models import Status
 from ronde.models import LocatieEnum, Ronde
 from ronde.serializers import RondeSerializer
-from pickupdays.models import WeekDayEnum, PickUpDay
+from pickupdays.models import WeekDayEnum
 from .util import *
 
 from rest_framework.decorators import api_view, permission_classes

@@ -3,6 +3,7 @@ from .models import *
 from ronde.serializers import BuildingRelatedField
 from trashcontainers.serializers import TrashContainerRelatedField
 
+
 class TrashContainerIdWrapperSerializer(serializers.ModelSerializer):
     trash_container = TrashContainerRelatedField(read_only=True)
 
