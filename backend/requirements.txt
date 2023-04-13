@@ -9,3 +9,4 @@ Pillow
 model_bakery
 djangorestframework-simplejwt
 requests
+django-cors-headers

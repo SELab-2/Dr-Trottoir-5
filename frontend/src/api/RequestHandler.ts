@@ -13,8 +13,8 @@ export class RequestHandler {
         errorOptions: CustomErrorOptions
     ): EchoPromise<T> {
         // Handle the error when it occurs.
-        request.getPromise().catch((error: EchoError) => {
-            ErrorHandler.handle(error, errorOptions);
+        request.getPromise().catch(async (error: EchoError) => {
+          await ErrorHandler.handle(error, errorOptions);
         });
 
         return request;
