@@ -22,7 +22,7 @@
   </v-dialog>
 </template>
 
-<script>
+<script lang="ts">
 import {mapActions, mapState} from "vuex";
 import {ModalData} from "@/store/modules/modal";
 import LoadingModal from "../modal/LoadingModal.vue";
@@ -79,6 +79,10 @@ export default defineComponent({
         } else {
           return this.$store.state.modal.data.component;
         }
+      },
+
+      set(component: unknown | Function) {
+        /* Needed but never used */
       }
     }
   }
