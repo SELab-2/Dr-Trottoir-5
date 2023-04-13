@@ -5,6 +5,7 @@ export default class User {
   first_name: string;
   last_name: string;
   date_joined: string;
+  phone_nr: string;
   role: UserRole;
   email: string;
 }
