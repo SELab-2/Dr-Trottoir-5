@@ -10,6 +10,10 @@ urlpatterns = [
     path("studenttemplates/", views.student_templates_view),
     path("studenttemplates/<int:template_id>/", views.student_template_view),
     path("studenttemplates/<int:template_id>/rondes/", views.rondes_view),
-    path("studenttemplates/<int:template_id>/<int:ronde_id>/dagplanningen/", views.dagplanning_view)
+    path("studenttemplates/<int:template_id>/rondes/<int:ronde_id>/", views.ronde_view),
+    path("studenttemplates/<int:template_id>/rondes/<int:ronde_id>/dagplanningen/", views.dagplanningen_view),
+    path("studenttemplates/<int:template_id>/dagplanningen/<int:dag_id>/", views.dagplanning_view, {'permanent': True}),
+    path("studenttemplates/<int:template_id>/dagplanningen/<int:dag_id>/eenmalig/", views.dagplanning_view,
+         {'permanent': True})
 
 ]

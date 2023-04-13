@@ -8,6 +8,7 @@ from ronde.models import LocatieEnum, Ronde
 from ronde.serializers import RondeSerializer
 from pickupdays.models import WeekDayEnum
 from .util import *
+from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -117,13 +118,19 @@ def week_planning_view(request, year, week):
 @permission_classes([AllowAny])
 def student_templates_view(request):
     if request.method == "GET":
+        """
+        Geeft alle templates die niet inactief zijn terug.
+        """
         templates = StudentTemplate.objects.all()
         result = filter_templates(templates)
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         data = StudentTemplateSerializer(result, many=True).data
         return Response(data)
 
     if request.method == "POST":
+        """
+        Maakt een nieuwe StudentTemplate aan.
+        TODO checks
+        """
         data = request.data
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         location = LocatieEnum.objects.get(id=data["location"])
@@ -139,23 +146,27 @@ def student_templates_view(request):
             week=current_week
         )
 
-        planning = get_current_week_planning()
-        # voeg nieuwe template toe aan huidige planning als even/oneven matcht
-        if new_template.even == (current_week % 2 == 0):
-            planning.student_templates.add(new_template)
-
+        add_if_match(get_current_week_planning().student_templates, new_template, current_week)
         return Response({"message": "Success"})
 
 
-@api_view(["GET", "DELETE"])
+@api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def student_template_view(request, template_id):
     template = StudentTemplate.objects.get(id=template_id)
     if request.method == "GET":
+        """
+        Geeft de StudentTemplate terug.
+        """
         return Response(StudentTemplateSerializer(template).data)
+    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     if request.method == "DELETE":
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        """
+        Verwijderd de StudentTemplate.
+        Als deze eenmalig was mag deze volledig uit de database verwijderd worden en moet degene die vervangen
+        was terug actief gezet worden.
+        """
         planning = get_current_week_planning()
 
         if template.status == Status.EENMALIG:
@@ -180,6 +191,64 @@ def student_template_view(request, template_id):
 
         return Response({"message": "Success"})
 
+    if request.method == "PATCH":
+        """
+        Past de StudentTemplate aan.
+        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
+        """
+        data = request.data
+        permanent = data["permanent"]
+
+        if "name" not in data:
+            data["name"] = template.name
+
+        if "even" not in data:
+            data["even"] = template.even
+
+        if "location" not in data:
+            data["location"] = template.location
+        else:
+            data["location"] = LocatieEnum.objects.get(id=data["location"])
+
+        if "start_hour" not in data:
+            data["start_hour"] = template.start_hour
+
+        if "end_hour" not in data:
+            data["end_hour"] = template.end_hour
+
+        validate_student_template_data(data)
+
+        planning = get_current_week_planning()
+
+        if no_copy(template, permanent, current_year, current_week):
+            template.name = data["name"]
+            template.even = data["even"]
+            template.location = data["location"]
+            template.start_hour = data["start_hour"],
+            template.end_hour = data["end_hour"],
+            template.save()
+            add_if_match(planning.student_templates, template, current_week)
+            return Response({"message": "Success"})
+
+        new_template = StudentTemplate.objects.create(
+            name=data["name"],
+            even=data["even"],
+            status=Status.ACTIEF,
+            location=data["location"],
+            start_hour=data["start_hour"],
+            end_hour=data["end_hour"],
+            year=current_year,
+            week=current_week
+        )
+        add_if_match(planning.student_templates, new_template, current_week)
+
+        # oude template op inactief zetten
+        template.status = Status.INACTIEF
+        template.save()
+        remove_if_match(planning.student_templates, template, current_week)
+
+        return Response({"message": "Success"})
+
 
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
@@ -187,98 +256,148 @@ def rondes_view(request, template_id):
     template = StudentTemplate.objects.get(id=template_id)
 
     if request.method == "GET":
+        """
+        Geeft alle rondes van deze template terug.
+        """
         data = RondeSerializer(template.rondes.all(), many=True).data
         return Response(data)
 
     if request.method == "POST":
+        """
+        Voegt een nieuwe Ronde toe aan de template.
+        """
         data = request.data
-        method = data["method"]  # add of delete
-        permanent = data["permanent"]
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         ronde = Ronde.objects.get(id=data["ronde"])
 
-        if template.status == Status.VERVANGEN or template.status == Status.INACTIEF:
-            # templates met deze status mogen niet aangepast worden
-            return Response({"error": "Mag niet"})
-
-        if method == "delete":
-            to_remove = template.dag_planningen.filter(ronde=ronde)
-
-            if template.status == Status.EENMALIG or (
-                    permanent and template.week == current_week and template.year == current_year):
-                # als de template eenmalig is moet deze niet gekopieerd worden
-                # ook wanneer het een permanente aanpassing is op een actieve template die deze week is aangemaakt
-                template.dag_planningen.remove(*to_remove)
-                template.rondes.remove(ronde)
-                return Response({"message": "Success"})
-
-            copy = make_copy(template, permanent, current_year, current_week)
-            copy.dag_planningen.remove(*to_remove)
-            copy.rondes.remove(ronde)
-            return Response({"message": "Success"})
-
-        # method == "add"
         dag_planningen = []
+
+        data["start_hour"] = template.start_hour
+        data["end_hour"] = template.start_hour
+        data["students"] = []
         for day in WeekDayEnum:
-            dag_planning = make_dag_planning(day, template.start_hour, template.end_hour, data["ronde"], [])
+            data["day"] = day
+            dag_planning = make_dag_planning(data)
             dag_planningen.append(dag_planning)
 
-        if template.status == Status.EENMALIG or (
-                permanent and template.week == current_week and template.year == current_year):
-            # als de template eenmalig is moet deze niet gekopieerd worden
-            # ook wanneer het een permanente aanpassing is op een actieve template die deze week is aangemaakt
+        if no_copy(template, True, current_year, current_week):
             template.rondes.add(ronde)
             template.dag_planningen.add(*dag_planningen)
-            return Response({"message": "Success"})
+        else:
+            copy = make_copy(template, True, current_year, current_week)
+            copy.rondes.add(ronde)
+            copy.dag_planningen.add(*dag_planningen)
+            remove_if_match(get_current_week_planning().student_templates, template, current_week)
+            add_if_match(get_current_week_planning().student_templates, copy, current_week)
+        return Response({"message": "Success"})
 
-        copy = make_copy(template, permanent, current_year, current_week)
-        copy.rondes.add(ronde)
-        copy.dag_planningen.add(*dag_planningen)
+
+@api_view(["DELETE"])
+@permission_classes([AllowAny])
+def ronde_view(request, template_id, ronde_id):
+    template = StudentTemplate.objects.get(id=template_id)
+    ronde = Ronde.objects.get(id=ronde_id)
+
+    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+
+    if request.method == "DELETE":
+        """
+        Verwijderd een ronde en al zijn dagplanningen uit de template.
+        """
+        to_remove = template.dag_planningen.filter(ronde=ronde)
+
+        if no_copy(template, True, current_year, current_week):
+            template.dag_planningen.remove(*to_remove)
+            template.rondes.remove(ronde)
+        else:
+            copy = make_copy(template, True, current_year, current_week)
+            copy.dag_planningen.remove(*to_remove)
+            copy.rondes.remove(ronde)
+            remove_if_match(get_current_week_planning().student_templates, template, current_week)
+            add_if_match(get_current_week_planning().student_templates, copy, current_week)
         return Response({"message": "Success"})
 
 
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
-def dagplanning_view(request, template_id, ronde_id):
+def dagplanningen_view(request, template_id, ronde_id):
     template = StudentTemplate.objects.get(id=template_id)
-    ronde = Ronde.objects.get(id=ronde_id)
 
     if request.method == "GET":
+        """
+        Geeft alle dagplanningen van een ronde terug.
+        """
         dag_planningen = template.dag_planningen.filter(ronde=ronde_id)
         data = DagPlanningSerializer(dag_planningen, many=True).data
         return Response(data)
 
-    data = request.data
-    permanent = data["permanent"]
-    method = data["method"]
+    if request.method == "POST":
+        """
+        Maakt een nieuwe DagPlanning aan.
+        """
+        data = request.data
+        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+
+        data["ronde"] = Ronde.objects.get(id=ronde_id)
+        validate_dag_planning_data(data)
+        new_dag_planning = make_dag_planning(data)
+
+        update(
+            template,
+            "dag_planningen",
+            None,
+            new_dag_planning,
+            True,
+            get_current_week_planning().student_templates
+        )
+
+        return Response({"message": "Success"})
+
+
+@api_view(["DELETE", "PATCH"])
+@permission_classes([AllowAny])
+def dagplanning_view(request, template_id, ronde_id, dag_id, permanent):
+
+    template = StudentTemplate.objects.get(id=template_id)
+
+    dag_planning = DagPlanning.objects.get(id=dag_id)
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
-    old_dag_planningen = template.dag_planningen.all()
+    if request.method == "DELETE":
+        """
+        Verwijder een DagPlanning van de template
+        """
 
-    if template.status == Status.EENMALIG or (
-            permanent and template.week == current_week and template.year == current_year):
-
-        if method == "delete":
-            delete_old_dag_planning(old_dag_planningen, data["day"], template)
-            return Response({"message": "Success"})
-
-        for new_dag_planning in data["dag_planningen"]:
-            delete_old_dag_planning(old_dag_planningen, new_dag_planning["day"], template)
-            dag_planning = make_dag_planning(new_dag_planning["day"], new_dag_planning["start_hour"],
-                                             new_dag_planning["end_hour"], ronde_id, new_dag_planning["students"])
-            template.dag_planningen.add(dag_planning)
+        update(
+            template,
+            "dag_planningen",
+            dag_planning,
+            None,
+            permanent,
+            get_current_week_planning().student_templates
+        )
         return Response({"message": "Success"})
 
-    copy = make_copy(template, permanent, current_year, current_week)
+    if request.method == "PATCH":
+        """
+        Verander de studenten voor een DagPlanning
+        """
+        data = request.data
 
-    if method == "delete":
-        delete_old_dag_planning(old_dag_planningen, data["day"], copy)
+        data["day"] = dag_planning.time.day
+        data["start_hour"] = dag_planning.time.start_hour
+        data["end_hour"] = dag_planning.time.end_hour
+        data["ronde"] = dag_planning.ronde
+
+        new_dag_planning = make_dag_planning(data)
+
+        update(
+            template,
+            "dag_planningen",
+            dag_planning,
+            new_dag_planning,
+            permanent,
+            get_current_week_planning().student_templates
+        )
         return Response({"message": "Success"})
-
-    for new_dag_planning in data["dag_planningen"]:
-        delete_old_dag_planning(old_dag_planningen, new_dag_planning["day"], copy)
-        dag_planning = make_dag_planning(new_dag_planning["day"], new_dag_planning["start_hour"],
-                                         new_dag_planning["end_hour"], ronde, new_dag_planning["students"])
-        copy.dag_planningen.add(*dag_planning)
-    return Response({"message": "Success"})
