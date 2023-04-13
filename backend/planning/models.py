@@ -105,6 +105,12 @@ class WeekPlanning(models.Model):
         The student templates for this week
 
     """
+    def __getitem__(self, item):
+        if item == "trash_templates":
+            return self.trash_templates
+        if item == "student_templates":
+            return self.student_templates
+
     week = models.IntegerField()
 
     year = models.IntegerField()

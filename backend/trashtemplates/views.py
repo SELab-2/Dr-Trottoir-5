@@ -11,14 +11,20 @@ from rest_framework.permissions import AllowAny
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def trash_templates_view(request):
-
     if request.method == "GET":
+        """
+        Geeft alle templates die niet inactief zijn terug.
+        """
         templates = TrashContainerTemplate.objects.all()
         result = filter_templates(templates)
         data = TrashContainerTemplateSerializer(result, many=True).data
         return Response(data)
 
     if request.method == "POST":
+        """
+        Maakt een nieuwe TrashContainerTemplate aan.
+        TODO checks
+        """
         data = request.data
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         location = LocatieEnum.objects.get(id=data["location"])
@@ -32,25 +38,30 @@ def trash_templates_view(request):
             week=current_week
         )
 
-        planning = get_current_week_planning()
-        # voeg nieuwe template toe aan huidige planning als even/oneven matcht
-        if new_template.even == (current_week % 2 == 0):
-            planning.trash_templates.add(new_template)
+        add_if_match(get_current_week_planning().trash_templates, new_template, current_week)
 
         return Response({"message": "Success"})
 
 
-@api_view(["DELETE", "GET"])
+@api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def trash_template_view(request, template_id):
     template = TrashContainerTemplate.objects.get(id=template_id)
+    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    planning = get_current_week_planning()
+
     if request.method == "GET":
+        """
+        Geeft de TrashContainerTemplate terug.
+        """
         return Response(TrashContainerTemplateSerializerFull(template).data)
 
     if request.method == "DELETE":
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-        planning = get_current_week_planning()
-
+        """
+        Verwijderd de TrashContainerTemplate.
+        Als deze eenmalig was mag deze volledig uit de database verwijderd worden en moet degene die vervangen
+        was terug actief gezet worden.
+        """
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
             original = TrashContainerTemplate.objects.get(
@@ -61,130 +72,250 @@ def trash_template_view(request, template_id):
             original.save()
 
             # voeg de originele terug toe aan de huidige weekplanning
-            planning.trash_templates.add(original)
+            add_if_match(planning.trash_templates, original, current_week)
+
             # verwijder de oude uit de huidige planning
-            planning.trash_templates.remove(template)
+            remove_if_match(planning.trash_templates, template, current_week)
             # verwijder hem ook uit de database omdat hij eenmalig was en dus niet nodig is voor de geschiedenis
             template.delete()
         else:
             template.status = Status.INACTIEF
             template.save()
-            planning.trash_templates.remove(template)
+            remove_if_match(planning.trash_templates, template, current_week)
+
+        return Response({"message": "Success"})
+
+    if request.method == "PATCH":
+        """
+        Past de TrashContainerTemplate aan.
+        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
+        """
+        data = request.data
+        permanent = data["permanent"]
+
+        if "name" in data:
+            pass
+            # checks
+        else:
+            data["name"] = template.name
+
+        if "even" in data:
+            pass
+            # checks
+        else:
+            data["even"] = template.even
+
+        if "location" in data:
+            data["location"] = LocatieEnum.objects.get(id=data["location"])
+            # checks
+        else:
+            data["location"] = template.location
+
+        if no_copy(template, permanent, current_year, current_week):
+            template.name = data["name"]
+            template.even = data["even"]
+            template.location = data["location"]
+            template.save()
+            add_if_match(planning.trash_templates, template, current_week)
+            return Response({"message": "Success"})
+
+        new_template = TrashContainerTemplate.objects.create(
+            name=data["name"],
+            even=data["even"],
+            status=Status.ACTIEF,
+            location=data["location"],
+            year=current_year,
+            week=current_week
+        )
+        add_if_match(planning.trash_templates, new_template, current_week)
+
+        # oude template op inactief zetten
+        template.status = Status.INACTIEF
+        template.save()
+        remove_if_match(planning.trash_templates, template, current_week)
 
         return Response({"message": "Success"})
 
 
 @api_view(["POST", "GET"])
 @permission_classes([AllowAny])
-def trash_container_view(request, template_id):
-    data = request.data
-
+def trash_containers_view(request, template_id, permanent):
     template = TrashContainerTemplate.objects.get(id=template_id)
 
-    if request.method == "GET":  # give list of all trash containers
+    if request.method == "GET":
+        """
+        Geeft alle trash containers de template terug.
+        """
         data = TrashContainerIdWrapperSerializer(template.trash_containers.all(), many=True).data
         return Response(data)
 
-    if template.status == Status.VERVANGEN or template.status == Status.INACTIEF:
-        # templates met deze status mogen niet aangepast worden
-        return Response({"error": "Mag niet"})
+    if request.method == "POST":
+        """
+        Voegt de nieuwe TrashContainer toe aan de template adhv een TrashContainerIdWrapper.
+        """
+        data = request.data
 
-    permanent = data["permanent"]
-    method = data["method"]  # add, edit of delete
+        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        extra_id = ExtraId.objects.create()
+        new_tc_id_wrapper = make_new_tc_id_wrapper(data, extra_id)
 
-    # alleen bij add moet er een nieuwe ExtraId aangemaakt worden
-    extra_id = ExtraId.objects.create() if method == "add" else ExtraId.objects.get(id=data["extra_id"])
-
-    # alleen bij edit en remove moet er een oude copy verwijderd worden
-    to_remove = None if method == "add" else template.trash_containers.get(extra_id=extra_id)
-
-    # alleen bij edit en add moet er een nieuwe TrashContainerIdWrapper gemaakt worden
-    tc_id_wrapper = None if method == "delete" else make_new_tc_id_wrapper(data, extra_id)
-
-    if template.status == Status.EENMALIG or (
-            permanent and template.week == current_week and template.year == current_year):
-        # als de template eenmalig is moet deze niet gekopieerd worden
-        # ook wanneer het een permanente aanpassing is op een actieve template die deze week is aangemaakt
-
-        # verwijder de oude en voeg de nieuwe toe
-        update_many_to_many(template.trash_containers, to_remove, tc_id_wrapper)
+        update(
+            template,
+            "trash_containers",
+            None,
+            new_tc_id_wrapper,
+            permanent,
+            get_current_week_planning().trash_templates
+        )
 
         return Response({"message": "Success"})
 
-    # neem copy om de geschiedenis te behouden
-    copy = make_copy(template, permanent, current_year, current_week)
 
-    # verwijder de oude en voeg de nieuwe toe
-    update_many_to_many(copy.trash_containers, to_remove, tc_id_wrapper)
+@api_view(["GET", "DELETE", "PATCH"])
+@permission_classes([AllowAny])
+def trash_container_view(request, template_id, extra_id, permanent):
 
-    # zoek de weekplanning van deze week
-    planning = get_current_week_planning()
+    template = TrashContainerTemplate.objects.get(id=template_id)
+    tc_id_wrapper = template.trash_containers.get(extra_id=extra_id)
 
-    # Voeg de copy toe aan de huidige weekplanning
-    planning.trash_templates.add(copy)
+    if request.method == "GET":
+        """
+        Geeft een TrashContainer terug.
+        """
+        data = TrashContainerIdWrapperSerializer(tc_id_wrapper).data
+        return Response(data)
 
-    # verwijder de oude template uit de weekplanning
-    planning.trash_templates.remove(template)
+    if request.method == "DELETE":
+        """
+        Verwijderd de TrashContainer van de template.
+        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
+        """
 
-    return Response({"message": "Success"})
+        update(
+            template,
+            "trash_containers",
+            tc_id_wrapper,
+            None,
+            permanent,
+            get_current_week_planning().trash_templates
+        )
+        return Response({"message": "Success"})
+
+    if request.method == "PATCH":
+        """
+        Past een TrashContainer aan.
+        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
+        """
+        data = request.data
+
+        if "day" not in data:
+            data["day"] = tc_id_wrapper.trash_container.collection_day.day
+
+        if "start_hour" not in data:
+            data["start_hour"] = tc_id_wrapper.trash_container.collection_day.start_hour
+
+        if "end_hour" not in data:
+            data["end_hour"] = tc_id_wrapper.trash_container.collection_day.end_hour
+
+        if "type" not in data:
+            data["type"] = tc_id_wrapper.trash_container.type
+
+        new_tc_id_wrapper = make_new_tc_id_wrapper(data, tc_id_wrapper.extra_id)
+
+        update(
+            template,
+            "trash_containers",
+            tc_id_wrapper,
+            new_tc_id_wrapper,
+            permanent,
+            get_current_week_planning().trash_templates
+        )
+
+        return Response({"message": "Success"})
 
 
 @api_view(["POST", "GET"])
 @permission_classes([AllowAny])
-def building_view(request, template_id):
+def buildings_view(request, template_id, permanent):
     data = request.data
 
     template = TrashContainerTemplate.objects.get(id=template_id)
 
-    if request.method == "GET":  # give list of all buildings
+    if request.method == "GET":
+        """
+        Geeft alle gebouwen van deze template terug samen met hun selecties.
+        """
         data = BuildingTrashContainerListSerializer(template.buildings.all(), many=True).data
         return Response(data)
 
-    if template.status == Status.VERVANGEN or template.status == Status.INACTIEF:
-        # templates met deze status mogen niet aangepast worden
-        return Response({"error": "Mag niet"})
-
-    permanent = data["permanent"]
-    method = data["method"]  # add, edit of delete
-
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-    # alleen bij add method is er geen oude die verwijderd moet worden
-    old_building_list = None if method == "add" else template.buildings.get(building=data["building"])
-
-    new_building_list = None
-    if method != "delete":  # alleen bij add en edit moet een nieuwe gemaakt worden
+    if request.method == "POST":
+        """
+        Voegt een nieuw gebouw samen met zijn selectie toe aan de template.
+        """
+        # checks
         building = Building.objects.get(id=data["building"])
         new_building_list = BuildingTrashContainerList.objects.create(
             building=building
         )
         new_building_list.trash_ids.set(data["selection"])
 
-    if template.status == Status.EENMALIG or (
-            permanent and template.week == current_week and template.year == current_year):
-        # als de template eenmalig is moet deze niet gekopieerd worden
-        # ook wanneer het een permanente aanpassing is op een actieve template die deze week is aangemaakt
+        update(
+            template,
+            "buildings",
+            None,
+            new_building_list,
+            permanent,
+            get_current_week_planning().student_templates
+        )
+        return Response({"message": "Success"})
 
-        # verwijder de oude en voeg de nieuwe toe
-        update_many_to_many(template.buildings, old_building_list, new_building_list)
+
+@api_view(["GET", "DELETE", "PATCH"])
+@permission_classes([AllowAny])
+def building_view(request, template_id, building_id, permanent):
+
+    template = TrashContainerTemplate.objects.get(id=template_id)
+    building_list = template.buildings.get(building=building_id)
+
+    if request.method == "GET":
+        """
+        Geeft het gebouw met zijn selectie terug.
+        """
+        data = BuildingTrashContainerListSerializer(building_list).data
+        return Response(data)
+
+    if request.method == "DELETE":
+        """
+        Verwijderd het gebouw en zijn selectie van de template.
+        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
+        """
+        update(
+            template,
+            "buildings",
+            building_list,
+            None,
+            permanent,
+            get_current_week_planning().student_templates
+        )
 
         return Response({"message": "Success"})
 
-    # neem copy om de geschiedenis te behouden
-    copy = make_copy(template, permanent, current_year, current_week)
+    if request.method == "PATCH":
+        """
+        Past de selectie van een gebouw aan.
+        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
+        """
+        data = request.data
 
-    # verwijder de oude en voeg de nieuwe toe
-    update_many_to_many(copy.buildings, old_building_list, new_building_list)
+        new_building_list = make_new_building_list(building_id, data["selection"])
 
-    # zoek de weekplanning van deze week
-    planning = get_current_week_planning()
-
-    # Voeg de copy toe aan de huidige weekplanning
-    planning.trash_templates.add(copy)
-
-    # verwijder de oude template uit de weekplanning
-    planning.trash_templates.remove(template)
-
-    return Response({"message": "Success"})
+        update(
+            template,
+            "buildings",
+            building_list,
+            new_building_list,
+            permanent,
+            get_current_week_planning().student_templates
+        )
+        return Response({"message": "Success"})
