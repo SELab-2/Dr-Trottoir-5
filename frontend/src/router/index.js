@@ -7,6 +7,11 @@ import UsersView from '../views/UsersView.vue'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import BuildingList from "@/views/listViews/BuildingList";
+import RoundList from "@/views/listViews/RoundList";
+import StudentList from "@/views/listViews/StudentList";
+import SyndicusList from "@/views/listViews/SyndicusList";
+import TemplateList from "@/views/listViews/TemplateList";
 
 const routes = [
   {
@@ -56,7 +61,32 @@ const routes = [
     path: '/account',
     name: 'account',
     component: AccountView
-  }
+  },
+  {
+    path: '/gebouwen',
+    name: 'gebouwen',
+    component: BuildingList
+  },
+  {
+    path: '/rondes',
+    name: 'rondes',
+    component: RoundList
+  },
+  {
+    path: '/studenten',
+    name: 'studenten',
+    component: StudentList
+  },
+  {
+    path: '/syndicussen',
+    name: 'syndicussen',
+    component: SyndicusList
+  },
+  {
+    path: '/mailtemplates',
+    name: 'mailtemplates',
+    component: TemplateList
+  },
 ]
 
 const router = createRouter({
