@@ -114,11 +114,12 @@ def update_many_to_many(template, many_to_many, old, new):
         template[many_to_many].add(new)
 
 
-def update(template, many_to_many, old, new, permanent, template_list):
+def update(template, many_to_many, old, new, permanent, template_list, copy_template=make_copy):
     """
     Past het betreffende many_to_many veld van de template aan.
     Als het nodig is wordt er ook een copy gemaakt van de template zodat de geschiedenis behouden wordt.
 
+    @param copy_template: Functie die een template kopieert
     @param template: De originele template
     @param many_to_many: Het veld dat aangepast wordt van de template
     @param old: De oude waarde
@@ -130,7 +131,7 @@ def update(template, many_to_many, old, new, permanent, template_list):
     if no_copy(template, permanent, current_year, current_week):
         update_many_to_many(template, many_to_many, old, new)
     else:
-        copy = make_copy(template, permanent, current_year, current_week)
+        copy = copy_template(template, permanent, current_year, current_week)
         update_many_to_many(copy, many_to_many, old, new)
         remove_if_match(template_list, template, current_week)
         add_if_match(template_list, copy, current_week)

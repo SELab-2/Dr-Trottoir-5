@@ -14,6 +14,6 @@ urlpatterns = [
     path("studenttemplates/<int:template_id>/rondes/<int:ronde_id>/dagplanningen/", views.dagplanningen_view),
     path("studenttemplates/<int:template_id>/dagplanningen/<int:dag_id>/", views.dagplanning_view, {'permanent': True}),
     path("studenttemplates/<int:template_id>/dagplanningen/<int:dag_id>/eenmalig/", views.dagplanning_view,
-         {'permanent': True})
+         {'permanent': False})
 
 ]

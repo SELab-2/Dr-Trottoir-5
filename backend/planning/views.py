@@ -339,7 +339,7 @@ def dagplanningen_view(request, template_id, ronde_id):
         data = request.data
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
-        data["ronde"] = Ronde.objects.get(id=ronde_id)
+        data["ronde"] = ronde_id
         validate_dag_planning_data(data)
         new_dag_planning = make_dag_planning(data)
 
@@ -349,7 +349,8 @@ def dagplanningen_view(request, template_id, ronde_id):
             None,
             new_dag_planning,
             True,
-            get_current_week_planning().student_templates
+            get_current_week_planning().student_templates,
+            copy_template=make_copy
         )
 
         return Response({"message": "Success"})
@@ -357,7 +358,7 @@ def dagplanningen_view(request, template_id, ronde_id):
 
 @api_view(["DELETE", "PATCH"])
 @permission_classes([AllowAny])
-def dagplanning_view(request, template_id, ronde_id, dag_id, permanent):
+def dagplanning_view(request, template_id, dag_id, permanent):
 
     template = StudentTemplate.objects.get(id=template_id)
 
@@ -375,7 +376,8 @@ def dagplanning_view(request, template_id, ronde_id, dag_id, permanent):
             dag_planning,
             None,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().student_templates,
+            copy_template=make_copy
         )
         return Response({"message": "Success"})
 
@@ -386,9 +388,14 @@ def dagplanning_view(request, template_id, ronde_id, dag_id, permanent):
         data = request.data
 
         data["day"] = dag_planning.time.day
-        data["start_hour"] = dag_planning.time.start_hour
-        data["end_hour"] = dag_planning.time.end_hour
-        data["ronde"] = dag_planning.ronde
+        if "start_hour" not in data:
+            data["start_hour"] = dag_planning.time.start_hour
+        if "end_hour" not in data:
+            data["end_hour"] = dag_planning.time.end_hour
+        if "ronde" not in data:
+            data["ronde"] = dag_planning.ronde.id
+        if "students" not in data:
+            data["students"] = dag_planning.students.all()
 
         new_dag_planning = make_dag_planning(data)
 
@@ -398,6 +405,7 @@ def dagplanning_view(request, template_id, ronde_id, dag_id, permanent):
             dag_planning,
             new_dag_planning,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().student_templates,
+            copy_template=make_copy
         )
         return Response({"message": "Success"})
