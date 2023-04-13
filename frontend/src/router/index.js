@@ -3,8 +3,10 @@ import StudentHomeView from '../views/StudentHomeView.vue'
 import RegisterView from '@/views/RegisterView'
 import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
+import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import Unauthorized from "@/views/Unauthorized";
 import BuildingPageStudent from "@/views/BuildingPageStudent";
 import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
 import StudentCreatePost from "@/views/StudentCreatePost";
@@ -14,8 +16,28 @@ import StudentEditPost from "@/views/StudentEditPost";
 const routes = [
   {
     path: '/',
+    name: 'home',
+    component: HomeView
+  },
+  {
+    path: '/student_home',
     name: 'student_home',
     component: StudentHomeView
+  },
+  {
+    path: '/syndicus_home',
+    name: 'syndicus_home',
+    component: RegisterDone
+  },
+  {
+    path: '/admin_home',
+    name: 'admin_home',
+    component: RegisterDone
+  },
+  {
+    path: '/resident_home',
+    name: 'resident_home',
+    component: RegisterDone
   },
   {
     path: '/register',
@@ -33,6 +55,11 @@ const routes = [
     component: LoginView
   },
   {
+    path: '/forgot',
+    name: 'forgot',
+    component: ForgotView
+  },
+  {
     path: '/users',
     name: 'users',
     component: UsersView
@@ -43,6 +70,9 @@ const routes = [
     component: DayPlanView
   },
   {
+    path: '/unauthorized',
+    name: 'unauthorized',
+    component: Unauthorized
     path: '/building_student',
     name: 'building_student',
     component: BuildingPageStudent
@@ -66,14 +96,6 @@ const routes = [
     path: '/student_post_edit',
     name: 'student_post_edit',
     component: StudentEditPost
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   }
 ]
 

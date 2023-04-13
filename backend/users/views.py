@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.middleware import csrf
@@ -74,6 +74,16 @@ def login_view(request):
             return Response({"No active": "This account is not active!!"}, status=status.HTTP_404_NOT_FOUND)
     else:
         return Response({"Invalid": "Invalid username or password!!"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def logout_view(request):
+    logout(request=request)
+    response = Response({"message": "You have been logout succesfully"})
+    response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+    response.delete_cookie(settings.SIMPLE_JWT['REFRESH_COOKIE'])
+    return response
 
 
 @api_view(['POST'])
