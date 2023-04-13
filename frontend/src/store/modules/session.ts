@@ -30,12 +30,10 @@ export const session = {
      * @param context
      */
     fetch(context: any) {
-      if (!context.getters.currentUser) {
-        context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
-          id: "getUserError",
-          style: "SNACKBAR"
-        }).catch(() => {}));
-      }
+      context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
+        id: "getUserError",
+        style: "SNACKBAR"
+      }).catch(() => {}));
     }
   },
 
