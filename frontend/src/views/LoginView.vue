@@ -83,7 +83,7 @@ export default defineComponent({
             });
 
             // Update the current user inside the store.
-            this.$store.dispatch("session/clear");
+            await this.$store.dispatch("session/clear");
             await this.$store.dispatch("session/fetch");
 
             await router.push({ path: '/' });

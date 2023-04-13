@@ -26,11 +26,10 @@ export default defineComponent({
   async created() {
     if ('date' in this.$route.query) this.date = this.$route.query.date;
     this.time = this.capitalize(new Date(this.date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
-    const user = this.$store.getters['session/currentUser'];
-    const id = await user.then(user => user.id).catch(() => null);
-    if (!id) return;
+    const user = await this.$store.getters['session/currentUser'];
+    if (!user) return;
 
-    RequestHandler.handle(PlanningService.get(id, this.date), {
+    RequestHandler.handle(PlanningService.get(user.id, this.date), {
       id: "getDayplanningError",
       style: "NONE"
     }).then(planning => {

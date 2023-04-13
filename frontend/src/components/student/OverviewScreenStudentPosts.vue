@@ -3,12 +3,12 @@
     <v-card max-width="750px">
       <h1 align="center"> {{ data.buildingName }} </h1>
       <h4> {{ data.type }} </h4>
-      <v-avatar class="own-button-margin" align="center">
+      <v-avatar class="own-button-margin w-100" align="center">
         <v-icon v-on:click="goToPhotoPage" dark size="40px" color="black">mdi-camera-outline</v-icon>
       </v-avatar>
       <FotoCardStudent v-for="(fotoData, index) in data.images" :key="index" :data="fotoData"
         :buildingName="data.buildingName" :type="data.type" :info="data.info"/>
-      <NormalButton text="Taak voltooien" :parent-function="completeTask" class="mb-3"/>
+      <NormalButton text="Taak voltooien" :parent-function="completeTask" class="mb-3 w-75"/>
     </v-card>
   </v-container>
 </template>

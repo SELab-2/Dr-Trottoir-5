@@ -57,7 +57,6 @@ export default {
       }).then(b => b).catch(() => null);
       if (!building) return;
 
-      console.log(building);
       this.building = building;
     }
   },

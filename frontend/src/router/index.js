@@ -12,6 +12,7 @@ import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
 import StudentCreatePost from "@/views/StudentCreatePost";
 import StudentPostView from "@/views/StudentPostView";
 import StudentEditPost from "@/views/StudentEditPost";
+import HomeView from "@/views/HomeView";
 
 const routes = [
   {
@@ -73,6 +74,8 @@ const routes = [
     path: '/unauthorized',
     name: 'unauthorized',
     component: Unauthorized
+  },
+  {
     path: '/building_student',
     name: 'building_student',
     component: BuildingPageStudent

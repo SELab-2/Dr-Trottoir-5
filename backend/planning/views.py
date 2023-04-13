@@ -72,7 +72,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
 
 
 class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):

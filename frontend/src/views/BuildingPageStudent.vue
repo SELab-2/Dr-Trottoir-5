@@ -2,7 +2,7 @@
   <v-container align="center">
     <v-card max-width="750px">
       <v-card-title class="mt-2">
-        <h1>{{building.location.name}}</h1>
+        <h1 class="text-wrap">{{building.location.name}}</h1>
         <v-row align="center" class="my-4">
           <v-btn prepend-icon="mdi-map-marker" class="mx-auto my-2" color="secondary"
                  :href="'https://www.google.com/maps/search/?api=1&query='+ encodeURIComponent(building.adres)" target="_blank">
@@ -85,6 +85,7 @@ export default defineComponent({
         style: "NONE"
       }).then(info => info).catch(() => null);
       if (!infos) return;
+
       this.info = infos[building_index].id;
 
       RequestHandler.handle(PlanningService.getPictures(this.info), {
