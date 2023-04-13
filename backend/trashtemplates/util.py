@@ -82,18 +82,18 @@ def no_copy(template, permanent, current_year, current_week):
 
 def add_if_match(many_to_many, new_template, current_week):
     """
-    Voeg de niewe template alleen maar toe als even/oneven matcht.
+    Voeg de niewe template alleen maar toe als even/oneven matcht en hij er nog niet inzit.
     """
-    if new_template.even == (current_week % 2 == 0):
+    if new_template.even == (current_week % 2 == 0) and not many_to_many.filter(id=new_template).exists():
         many_to_many.add(new_template)
 
 
 def remove_if_match(many_to_many, old_template, current_week):
     """
-    Verwijder de oude template alleen maar toe als hij in de many_to_many zot.
+    Verwijder de oude template alleen maar als hij in de many_to_many zat.
     Dit kan alleen wanneer even/oneven matcht.
     """
-    if old_template.even == (current_week % 2 == 0):
+    if old_template.even == (current_week % 2 == 0) and many_to_many.filter(id=old_template).exists():
         many_to_many.remove(old_template)
 
 

@@ -69,6 +69,10 @@ class StudentTemplate(models.Model):
         Al de dagplanningen van deze rondes.
 
     """
+    def __getitem__(self, item):
+        if item == "dag_planningen":
+            return self.dag_planningen
+
     name = models.TextField()
     even = models.BooleanField()
     location = models.ForeignKey(LocatieEnum, on_delete=models.DO_NOTHING)

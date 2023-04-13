@@ -56,20 +56,20 @@ def get_current_week_planning():
     return planning
 
 
-def make_dag_planning(day, start_hour, end_hour, ronde, students):
+def make_dag_planning(data):
     """
     Maakt een nieuwe DagPlanning aan.
     """
     pickup_day, _ = PickUpDay.objects.get_or_create(
-        day=day,
-        start_hour=start_hour,
-        end_hour=end_hour
+        day=data["day"],
+        start_hour=data["start_hour"],
+        end_hour=data["end_hour"]
     )
     dag_planning, _ = DagPlanning.objects.get_or_create(
-        ronde_id=ronde,
+        ronde_id=data["ronde"],
         time=pickup_day
     )
-    dag_planning.students.set(students)
+    dag_planning.students.set(data["students"])
     return dag_planning
 
 
@@ -107,3 +107,13 @@ def delete_old_dag_planning(old_dag_planningen, day, template):
         if old_dag_planning.time.day == day:
             template.dag_planningen.remove(old_dag_planning)
             break
+
+
+def validate_student_template_data(data):
+    # TODO error handling
+    pass
+
+
+def validate_dag_planning_data(data):
+    # TODO error handling
+    pass
