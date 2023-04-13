@@ -92,6 +92,11 @@ class TrashContainerTemplate(models.Model):
             Lijst van alle trashcontainers in deze template.
 
     """
+    def __getitem__(self, item):
+        if item == "buildings":
+            return self.buildings
+        if item == "trash_containers":
+            return self.trash_containers
 
     name = models.TextField()
     even = models.BooleanField()
