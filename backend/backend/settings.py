@@ -32,7 +32,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'sel2-5.ugent.be', '157.193.244.115',
     # DEVELOPMENT BELOW THIS
-    'localhost', '192.168.178.34'
+    'localhost', '192.168.178.34', '127.0.0.1'
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
