@@ -60,7 +60,6 @@ class Status(models.TextChoices):
     INACTIEF = "I", "Inactief"
 
 
-
 class TrashContainerTemplate(models.Model):
     """
         Template die ervoor zorgt dat gebouwen vaste trashcontainers hebben elke week.

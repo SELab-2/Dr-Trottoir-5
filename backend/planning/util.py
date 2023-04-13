@@ -1,6 +1,6 @@
 from .serializers import *
 from trashtemplates.models import Status, TrashContainerTemplate
-from pickupdays.models import WeekDayEnum, PickUpDay
+from pickupdays.models import PickUpDay
 import datetime
 
 
@@ -71,7 +71,6 @@ def make_dag_planning(day, start_hour, end_hour, ronde, students):
     )
     dag_planning.students.set(students)
     return dag_planning
-
 
 
 def make_copy(template, permanent, current_year, current_week):

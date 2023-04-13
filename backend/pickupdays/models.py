@@ -19,7 +19,6 @@ class PickUpDay(models.Model):
         The pickup day and hours for a TrashContainer.
     """
 
-
     day = models.CharField(
         max_length=2,
         choices=WeekDayEnum.choices

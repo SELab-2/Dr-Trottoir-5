@@ -80,7 +80,7 @@ class Building(models.Model):
     ivago_klantnr = models.IntegerField()
     manual = models.ForeignKey(
         Manual,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE, blank=True, null=True
     )
     location = models.ForeignKey(
         LocatieEnum,
