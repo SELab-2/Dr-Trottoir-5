@@ -93,8 +93,13 @@ export default {
   methods: {
     async createTemplate () {
       if (this.template.name === '' || this.template.text === '') {
-        return "Error"
+        this.$store.dispatch("snackbar/open", {
+          message: "Vul alle velden in",
+          color: "error"
+        })
+        return
       }
+
       return RequestHandler.handle(
 
         MailTemplateService.createMailTemplate(
@@ -106,7 +111,11 @@ export default {
         {
         id: 'createMailTemplateError',
         style: "SNACKBAR",
-      });
+      }).then(() =>
+          this.$store.dispatch("snackbar/open", {
+            message: "Mail template toegevoegd",
+            color: "success"
+          }))
     },
     editTemplate: function () {
       // TODO object aanpassen in de backend + error handling
