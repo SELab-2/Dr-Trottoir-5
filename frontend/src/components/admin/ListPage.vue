@@ -99,6 +99,9 @@ export default {
       searched: '',
       key: Object.keys(this.elements[0])[0]
     }
+  },
+  beforeCreate() {
+    console.log(this.elements)
   }
 }
 </script>
