@@ -23,6 +23,7 @@ class UserPublicSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
+            'phone_nr',
             'role'
         ]
 
@@ -35,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'date_joined',
+            'phone_nr',
             'id',
             'role'
         ]
