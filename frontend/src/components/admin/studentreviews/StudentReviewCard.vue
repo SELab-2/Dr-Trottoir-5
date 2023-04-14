@@ -24,7 +24,7 @@ The time automatically will shown as the "hh:mm" format
 
 <script>
 
-import { toTimeString } from '@/util/TimeUtil'
+import { toTimeString } from '@/util/TimeUtil.ts'
 
 export default {
   name: 'StudentReviewCard',
