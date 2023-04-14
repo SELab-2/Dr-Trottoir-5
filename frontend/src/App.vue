@@ -21,16 +21,22 @@ const emitter = require('tiny-emitter/instance')
 export default defineComponent({
   name: 'App',
   async beforeCreate() {
-    const noLogin = ['login', 'register'];  // Pages that can be accessed without logging in
+    const noLogin = ['login', 'register', 'forgot'];  // Pages that can be accessed without logging in
     const router = useRouter();
 
-    router.beforeEach(to => {
+    router.beforeEach( async (to, from, next) => {
       if (!noLogin.includes(to.name.toString())) {
-        this.navbar = true;
-
         // Authorize session
-        this.$store.dispatch("session/fetch");
+        await this.$store.dispatch("session/fetch");
+
+        // Check if user is logged in
+        const user = await this.$store.getters['session/currentUser'].catch(() => null);
+        if(user === null) {
+          return next({path: '/login'})
+        }
+        this.navbar = true;
       } else this.navbar = false;
+      next()
     });
   },
   mounted() {
