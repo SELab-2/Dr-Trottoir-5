@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import {RequestHandler} from "@/api/RequestHandler";
+import MailTemplateService from "@/api/services/MailTemplateService";
 
 /**
  * CreateEditMailTemplate component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -89,9 +91,22 @@ export default {
     tab: null
   }),
   methods: {
-    createTemplate: function () {
-      // TODO object aanpassen in de backend + error handling
-      console.log(this.template)
+    async createTemplate () {
+      if (this.template.name === '' || this.template.text === '') {
+        return "Error"
+      }
+      return RequestHandler.handle(
+
+        MailTemplateService.createMailTemplate(
+          {
+            name: this.template.name,
+            content: this.template.text
+          }
+        ),
+        {
+        id: 'createMailTemplateError',
+        style: "SNACKBAR",
+      });
     },
     editTemplate: function () {
       // TODO object aanpassen in de backend + error handling
@@ -100,6 +115,7 @@ export default {
     closeDialog: function () {
       this.showDialog = false
     }
+
   }, computed: {
     formattedText() {
       return this.template.text.replace(/#([^#]*)#/g, '<b>$1</b>');
