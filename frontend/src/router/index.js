@@ -7,6 +7,7 @@ import UsersView from '../views/UsersView.vue'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import CreateSyndicusView from "@/views/admin/CreateSyndicusView";
 
 const routes = [
   {
@@ -43,6 +44,11 @@ const routes = [
     path: '/dagplanning',
     name: 'dagplanning',
     component: DayPlanView
+  },
+  {
+    path: '/syndicus/create',
+    name: 'syndicus_create',
+    component: CreateSyndicusView
   },
   {
     path: '/about',

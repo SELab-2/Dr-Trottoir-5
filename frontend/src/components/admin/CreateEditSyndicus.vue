@@ -2,14 +2,14 @@
   <v-container>
     <h1 v-if="!edit">Maak nieuwe Syndicus aan</h1>
     <h1 v-else>Syndicus aanpassen</h1>
-    </v-container>
+  </v-container>
   <v-container>
     <v-form>
       <label class="black-text">Syndicus</label>
       <v-autocomplete
         clearable
         :items="this.allUsers"
-        item-title="name"
+        :item-title="item => `${item.first_name}  ${item.last_name}`"
         item-value="id"
         v-model="syndicus.id"
       ></v-autocomplete>
@@ -45,6 +45,8 @@
  */
 
 import NormalButton from "@/components/NormalButton.vue";
+import {RequestHandler} from "@/api/RequestHandler";
+import UserService from "@/api/services/UserService";
 
 export default {
   name: 'CreateEditSyndicus',
@@ -58,7 +60,7 @@ export default {
   data() {
     return {
       allUsers: [],
-      allLocations :[],
+      allLocations: [],
       allBuildings: [],
       syndicus: {
         id: null,
@@ -82,18 +84,26 @@ export default {
     if (this.edit) {
       console.log('edit') // TODO
     }
-    // TODO dummy data aanpassen door backend data te gebruiken
-    this.allUsers = [
-        {id: 1, name: 'John Doe'},
-        {id: 2, name: 'Jane Smith'},
-        {id: 3, name: 'Bob Johnson'},
+    RequestHandler.handle(UserService.getUsers(), {
+      id: 'getAllUsersError',
+      style: 'SNACKBAR',
+      customMessages: [
+        {
+          code: '500',
+          message: 'Kon alle gebruikers niet ophalen.',
+          description: 'Kon gebruikers niet ophalen.'
+        }
       ]
-      this.allLocations = ['Gent', 'Brussel', 'Antwerpen']
-      this.allBuildings = [
-        {id: 1, name: 'Building 1'},
-        {id: 2, name: 'Building 2'},
-        {id: 3, name: 'Building 3'},
-      ]
+    }).then(users => {
+      this.allUsers = users.filter(x => x.role === 'AA')
+      console.log(this.allUsers)
+    })
+    this.allLocations = ['Gent', 'Brussel', 'Antwerpen']
+    this.allBuildings = [
+      {id: 1, name: 'Building 1'},
+      {id: 2, name: 'Building 2'},
+      {id: 3, name: 'Building 3'},
+    ]
   }
 }
 </script>
