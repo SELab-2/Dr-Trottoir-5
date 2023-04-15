@@ -39,7 +39,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://sel2-5.ugent.be",
     # DEVELOPMENT ORIGINS BELOW THIS
     "http://localhost:8080",
-    "http://192.168.178.34:8080"
+    "http://192.168.178.34:8080",
+    "http://localhost:8081",
+    "http://192.168.178.34:8081"
 ]
 
 # Application definition
