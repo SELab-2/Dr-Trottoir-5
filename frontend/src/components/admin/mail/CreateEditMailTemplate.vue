@@ -118,8 +118,30 @@ export default {
           }))
     },
     editTemplate: function () {
-      // TODO object aanpassen in de backend + error handling
-      console.log(this.template)
+    if (this.template.name === '' || this.template.text === '') {
+        this.$store.dispatch("snackbar/open", {
+          message: "Vul alle velden in",
+          color: "error"
+        })
+        return
+      }
+
+      return RequestHandler.handle(
+        MailTemplateService.updateMailTemplate(
+          this.$route.params.id,
+          {
+            name: this.template.name,
+            content: this.template.text
+          }
+        ),
+        {
+          id: 'editMailTemplateError',
+          style: "SNACKBAR",
+        }).then(() =>
+          this.$store.dispatch("snackbar/open", {
+            message: "Mail template aangepast",
+            color: "success"
+          }))
     },
     closeDialog: function () {
       this.showDialog = false
@@ -130,11 +152,17 @@ export default {
       return this.template.text.replace(/#([^#]*)#/g, '<b>$1</b>');
     }
   },
-  mounted() {
+  async mounted() {
     if (this.edit) {
-      // TODO data halen van de template die aangepast moet worden
-      this.template.name = 'TODO data uitlezen van de backend'
-      this.template.text = 'TODO data #uitlezen# van de backend'
+      await RequestHandler.handle(
+        MailTemplateService.getMailTemplate(this.$route.params.id),
+        {
+          id: 'getMailTemplateError',
+          style: "SNACKBAR",
+        }).then((response) => {
+          this.template.name = response.name
+          this.template.text = response.content
+        })
     }
   }
 }

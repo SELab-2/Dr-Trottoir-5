@@ -8,6 +8,7 @@ import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
 import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
+import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
 
 const routes = [
   {
@@ -43,6 +44,11 @@ const routes = [
   {
     path: '/mail-template/create',
     name: 'create_mail-template',
+    component: CreateMailTemplateView
+  },
+  {
+    path: '/mail-template/:id',
+    name: 'mail-template',
     component: AdminMailTemplateView
   },
   {

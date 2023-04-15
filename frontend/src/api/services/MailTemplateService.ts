@@ -3,7 +3,7 @@ import {
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
-  POST,
+  POST, GET, PATCH, Path
 } from "@/api/EchoFetch";
 
 import MailTemplate from "@/api/models/MailTemplate";
@@ -20,7 +20,22 @@ class MailTemplateService extends EchoService {
     return {} as EchoPromise<MailTemplate>
   }
 
+  /**
+   * Get mail template by id
+   */
 
+  @GET('/mailtemplates/{id}/')
+  getMailTemplate(@Path('id') id: number): EchoPromise<MailTemplate> {
+    return {} as EchoPromise<MailTemplate>
+  }
+
+  /**
+   * Update mail template
+   */
+  @PATCH('/mailtemplates/{id}/')
+  updateMailTemplate(@Path('id') id: number, @Body() body: InputFields): EchoPromise<MailTemplate> {
+    return {} as EchoPromise<MailTemplate>
+  }
 
 
 }
