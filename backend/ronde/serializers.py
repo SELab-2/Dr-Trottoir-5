@@ -15,7 +15,7 @@ class LocatieRelatedField(serializers.RelatedField):
 class LocatieEnumSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocatieEnum
-        fields = ['name']
+        fields = '__all__'
 
     def create(self, validated_data):
         """
