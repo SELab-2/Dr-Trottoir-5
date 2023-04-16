@@ -74,9 +74,7 @@ class Building(models.Model):
             buildingID: UUID
                 unique identifier of a building to add people
     """
-    name = models.TextField(
-        default=""
-    )
+    name = models.TextField()
     adres = models.TextField()
     syndicus = models.ForeignKey(
         settings.AUTH_USER_MODEL,
