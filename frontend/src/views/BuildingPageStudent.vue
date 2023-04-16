@@ -85,7 +85,6 @@ export default defineComponent({
         style: "NONE"
       }).then(info => info).catch(() => null);
       if (!infos) return;
-
       this.info = infos[building_index].id;
 
       RequestHandler.handle(PlanningService.getPictures(this.info), {
@@ -102,6 +101,7 @@ export default defineComponent({
       const weekDays = ['SU','MO','TU','WE','TH','FR','SA'];
       const day = weekDays[new Date(this.date).getDay()];
       this.containers = containers.filter(c => c.collection_days_detail.map(d => d.day).includes(day));
+      // this.containers = containers.filter(c => c.collection_day === day);
     }
   },
   data: () => ({
