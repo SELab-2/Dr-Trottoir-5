@@ -3,19 +3,18 @@ import {
   EchoService,
   EchoServiceBuilder,
   GET,
-  Path
+  Query
 } from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
-import Building from "@/api/models/Building";
 
-class RoundService extends EchoService {
+class ContainerService extends EchoService {
   /**
-   * Get a building by id
+   * Get a day planning.
    */
-  @GET("/ronde/building/{id}")
-  getBuilding(@Path('id') id: number): EchoPromise<Building> {
-    return {} as EchoPromise<Building>;
+  @GET("/containers/")
+  get(@Query('building') building: string): EchoPromise<any> {
+    return {} as EchoPromise<any>;
   }
 
 }
@@ -23,4 +22,4 @@ class RoundService extends EchoService {
 export default new EchoServiceBuilder()
   .setBaseUrl(config.BACKEND.URL)
   .addInterceptor(new AuthInterceptor())
-  .build(RoundService);
+  .build(ContainerService);
