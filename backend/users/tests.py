@@ -1,7 +1,7 @@
-from rest_framework.authtoken.views import obtain_auth_token
+from django.contrib.sessions.middleware import SessionMiddleware
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from .views import registration_view, logout_view, UserListAPIView, forgot_password, reset_password, \
-    role_assignment_view
+    role_assignment_view, login_view
 from .models import User
 
 
@@ -11,8 +11,8 @@ class UserTestCase(APITestCase):
     """
 
     def setUp(self):
-        self.register = {"email": "test@test.com", "first_name": "First", "last_name": "Last", "password": "Pass"}
-        self.login = {"username": "test@test.com", "password": "Pass"}
+        self.register = {"email": "test@test.com", "first_name": "First", "last_name": "Last", "password": "Pass", "phone_nr": ""}
+        self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
         self.su = User.objects.create(role="SU", username="su")
 
@@ -21,7 +21,7 @@ class UserTestCase(APITestCase):
         request = factory.post("/api/register/", self.register)
         response = registration_view(request).data
         self.assertEqual(response["email"], "test@test.com")
-        self.assertIn("token", response)
+        self.assertIn("role", response)
 
     def testUserRegistrationMissingEmail(self):
         factory = APIRequestFactory()
@@ -38,8 +38,9 @@ class UserTestCase(APITestCase):
 
         # Login to the newly made account
         request = factory.post("/api/login/", self.login)
-        response = obtain_auth_token(request).data
-        self.assertIn("token", response)
+        session = SessionMiddleware(login_view)
+        response = session(request).data
+        self.assertIn("role", response)
 
     def testUserForgotPassword(self):
         factory = APIRequestFactory()
@@ -85,10 +86,12 @@ class UserTestCase(APITestCase):
 
     def testUserLogout(self):
         factory = APIRequestFactory()
-        request = factory.get("/api/logout")
+        request = factory.post("/api/logout")
         force_authenticate(request, user=self.user)
-        response = logout_view(request).data
-        self.assertEqual(response, "User Logged out successfully")
+
+        session = SessionMiddleware(logout_view)
+        response = session(request).data
+        self.assertEqual(response['message'], "You have been logged out succefully")
 
     def testListUserPermissions(self):
         factory = APIRequestFactory()
