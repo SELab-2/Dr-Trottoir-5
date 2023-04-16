@@ -14,7 +14,7 @@
         v-model="tab"
       >
         <v-tab value="one">Pas aan</v-tab>
-        <v-tab value="two">Previeuw</v-tab>
+        <v-tab value="two">Preview</v-tab>
       </v-tabs>
 
       <v-card-text>
