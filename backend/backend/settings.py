@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'users',
     'planning',
     'mailtemplates',
+    'trashtemplates',
     'corsheaders'
 ]
 
