@@ -2,7 +2,17 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import *
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
-from ronde.models import Ronde
+from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
+import datetime
+from trashtemplates.models import Status
+from ronde.models import LocatieEnum, Ronde
+from ronde.serializers import RondeSerializer
+from pickupdays.models import WeekDayEnum
+from .util import *
+from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
@@ -73,19 +83,6 @@ class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIV
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
-
-
-from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
-import datetime
-from trashtemplates.models import Status
-from ronde.models import LocatieEnum, Ronde
-from ronde.serializers import RondeSerializer
-from pickupdays.models import WeekDayEnum
-from .util import *
-from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
 
 
 class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
