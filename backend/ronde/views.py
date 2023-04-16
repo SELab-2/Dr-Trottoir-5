@@ -76,7 +76,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 
 class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ManaulSerializer
+    serializer_class = ManualSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
     """
         View that gets, deletes and updates a specific Manual
@@ -86,7 +86,7 @@ class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         id = self.kwargs['pk']
         try:
             manual = Manual.objects.get(id=id)
-            serializer = ManaulSerializer(manual, data=request.data, partial=True)
+            serializer = ManualSerializer(manual, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             return Response(serializer.data)
