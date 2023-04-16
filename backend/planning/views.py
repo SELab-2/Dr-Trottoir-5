@@ -2,7 +2,6 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import *
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
-from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
 import datetime
 from trashtemplates.models import Status
 from ronde.models import LocatieEnum, Ronde
