@@ -1,4 +1,5 @@
 version: "3.3"
+
 services:
   db:
     image: postgres
@@ -14,6 +15,8 @@ services:
     ports:
       - "8081:8080"
   backend:
+    env_file:
+      - backend/.env
     build:
       context: backend
       dockerfile: Dockerfile
@@ -23,17 +26,19 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # TODO uit de env file halen? maar hoe?
-      - DB_NAME=dr-trottoir
-      - DB_USER=postgres
-      - DB_PASSWORD=dr-trottoir
-      - DB_HOST=db
-      - DB_PORT=5432
-      - EMAIL=example@example.com
-      - EMAIL_PASSWORD=example
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - EMAIL=${EMAIL}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     depends_on:
       - db
   frontend:
+    env_file:
+      - .env.production
+      - .env.production.local #indien bestaat overschrijf met deze waarden
     build:
       context: frontend
       dockerfile: Dockerfile
