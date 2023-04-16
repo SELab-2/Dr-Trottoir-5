@@ -1,15 +1,15 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.core.mail import send_mail
 from django.middleware import csrf
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers, generics
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, StudentPermission
 from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserPublicSerializer, UserSerializer
 
 
@@ -80,7 +80,7 @@ def login_view(request):
 @permission_classes([AllowAny])
 def logout_view(request):
     logout(request=request)
-    response = Response({"message": "You have been logout succesfully"})
+    response = Response({"message": "You have been logged out succefully"})
     response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
     response.delete_cookie(settings.SIMPLE_JWT['REFRESH_COOKIE'])
     return response
@@ -97,6 +97,7 @@ def registration_view(request):
                 request.data['email'],
                 request.data['first_name'],
                 request.data['last_name'],
+                request.data['phone_nr'],
                 request.data['password']
             )
             refresh = RefreshToken.for_user(user)
@@ -129,8 +130,8 @@ def forgot_password(request):
         Send an email with an otp when forgot password is used.
     """
     email = request.data['email']
-    user = get_user_model().objects.get(email=email)
     if get_user_model().objects.filter(email=email).exists():
+        user = get_user_model().objects.get(email=email)
         send_mail(
             subject='Nieuw wachtwoord voor Dr Trottoir.',
             message=f'{user.otp}',  # TODO  email text schrijven
@@ -195,7 +196,10 @@ def role_assignment_view(request):
                         "errors": [{"message": "Superstudent can't make someone Admin", "field": "role"}]
                     }, code='not allowed')
 
-            user = get_user_model().objects.get(email=request.data['email'])
+            try:
+                user = get_user_model().objects.get(email=request.data['email'])
+            except get_user_model().DoesNotExist:
+                user = None
 
             if not user:
                 raise serializers.ValidationError(
@@ -209,3 +213,39 @@ def role_assignment_view(request):
         else:
             data = serializer.errors
         return Response(data)
+
+
+class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = get_user_model().objects.get(username=request.user)
+            return Response(UserSerializer(user).data)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced user not in db", "field": "token"
+                        }
+                    ]
+                }, code='invalid')
+
+    def partial_update(self, request, *args, **kwargs):
+        try:
+            user = get_user_model().objects.get(username=request.user)
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            return Response({"succes": ["Updated user"]})
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced user not in db", "field": "token"
+                        }
+                    ]
+                }, code='invalid')

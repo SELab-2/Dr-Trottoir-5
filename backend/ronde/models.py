@@ -67,6 +67,8 @@ class Building(models.Model):
                 The trash containers a building has.
             locatie : LocatieEnum
                 The location of a building.
+            special_actions : models.TextField
+                The possible special actions that need to be taken
             buildingID: UUID
                 unique identifier of a building to add people
     """
@@ -79,7 +81,7 @@ class Building(models.Model):
     ivago_klantnr = models.IntegerField()
     manual = models.ForeignKey(
         Manual,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE, blank=True, null=True
     )
     location = models.ForeignKey(
         LocatieEnum,
@@ -89,6 +91,10 @@ class Building(models.Model):
         models.TextField(), default=list
     )
 
+    special_actions = models.TextField(
+        default="",
+        blank=True
+    )
     # default uuid.uuid4 is callable en genereerd uuid
     buildingID = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
@@ -112,4 +118,4 @@ class Ronde(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name="Locatie"
     )
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, blank=True)

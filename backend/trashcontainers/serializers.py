@@ -1,15 +1,15 @@
 from rest_framework import serializers
 from .models import TrashContainer
-from pickupdays.serializers import PickUpSerializer
+from pickupdays.serializers import PickUpDayRelatedField
 
 
 class TrashContainerSerializer(serializers.ModelSerializer):
 
-    collection_days_detail = PickUpSerializer(source='collection_days', many=True, read_only=True)
+    collection_day = PickUpDayRelatedField(read_only=True)
 
     class Meta:
         model = TrashContainer
-        fields = "__all__"
+        fields = ['collection_day', 'type']
 
     def create(self, validated_data):
         """
@@ -28,4 +28,10 @@ class TrashContainerSerializer(serializers.ModelSerializer):
                 if validated_data['collection_days'] == collection_days:
                     return option
 
-        return super().create(validated_data)
+
+class TrashContainerRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return TrashContainerSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
