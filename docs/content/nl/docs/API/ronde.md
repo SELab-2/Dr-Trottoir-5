@@ -1,8 +1,8 @@
 ---
-categories: ["api", "containers"]
-tags: ["api", "examples", "containers"]
-title: "Containers API"
-linkTitle: "Containers API"
+categories: ["api", "ronde"]
+tags: ["api", "examples", "ronde"]
+title: "Ronde API"
+linkTitle: "Ronde API"
 date: 2023-03-14
 description: >
   Deze pagina geeft meer info over de verschillende **ronde** endpoints

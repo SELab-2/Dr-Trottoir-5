@@ -14,6 +14,7 @@ class CreateTest(APITestCase):
         self.wp = baker.make(WeekPlanning, week=0, year=2023)
         self.dp = baker.make(DagPlanning, date="2023-08-31", weekPlanning=self.wp)
         self.ronde = baker.make(Ronde)
+        self.ronde.save()
         self.ipb = InfoPerBuilding.objects.create(remark="test", dagPlanning=self.dp)
         self.user = User.objects.create(role="SU")
 
