@@ -46,7 +46,7 @@ def get_current_week_planning():
         return planning
 
     # planning bestaat nog niet
-    even = current_year % 2 == 0
+    even = current_week % 2 == 0
 
     # bij filter_templates wordt alles nu normaal omgezet naar actief of verwijderd
     trash_templates = filter_templates(TrashContainerTemplate.objects.all()).filter(even=even)
