@@ -12,9 +12,7 @@ class LocatieEnum(models.Model):
             name : models.TextField
                 The name of a location.
     """
-    name = models.TextField(
-        default=""
-    )
+    name = models.TextField()
 
 
 class ManualStatusField(models.TextChoices):
@@ -79,9 +77,7 @@ class Building(models.Model):
     name = models.TextField(
         default=""
     )
-    adres = models.TextField(
-        default=""
-    )
+    adres = models.TextField()
     syndicus = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.DO_NOTHING
@@ -122,9 +118,7 @@ class Ronde(models.Model):
              The different buildings that need te be visited in a ronde
     """
 
-    name = models.TextField(
-        default=""
-    )
+    name = models.TextField()
     location = models.ForeignKey(
         LocatieEnum,
         on_delete=models.DO_NOTHING,
