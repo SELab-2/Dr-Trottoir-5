@@ -73,6 +73,8 @@ class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIV
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+
+
 from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
 import datetime
 from trashtemplates.models import Status
