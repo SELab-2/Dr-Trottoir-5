@@ -37,13 +37,12 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
-    command: run serve
+    command: -s dist -l 8080
     volumes:
       - ./frontend:/code
     ports:
       - "8080:8080"
-    depends_on:
-      - db
+
   docs:
     build:
       context: .
