@@ -36,8 +36,8 @@ class UserService extends EchoService {
    * TODO Backend support
    */
   @PATCH("/user/")
-  update(@Body() body: InputFields): EchoPromise<string> {
-    return {} as EchoPromise<string>;
+  update(@Body() body: InputFields): EchoPromise<User> {
+    return {} as EchoPromise<User>;
   }
 
   /**
