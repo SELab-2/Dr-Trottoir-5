@@ -20,7 +20,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col cols="12">
-        <RoundSearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements"/>
+        <RoundSearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements" :key-value="this.key"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -72,6 +72,11 @@ export default {
       type: Array,
       default: () => [],
       required: true
+    },
+    keyValue: {
+      type: String,
+      default: '',
+      required: true
     }
   },
   methods: {
@@ -88,7 +93,7 @@ export default {
       const filtered = []
       const regex = new RegExp(this.searched, 'ig')
       for (const el of this.elements) {
-        if (this.key !== 'title') {
+        if (this.key !== 'name') {
           if (el.buildings.filter(value => value[this.key].toString().match(regex)).length !== 0) {
             filtered.push(el)
           }
@@ -104,7 +109,7 @@ export default {
   data () {
     return {
       searched: '',
-      key: Object.keys(this.elements[0])[0]
+      key: this.keyValue
     }
   }
 }

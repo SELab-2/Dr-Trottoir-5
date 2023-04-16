@@ -3,7 +3,7 @@
     <v-row class="text-center">
       <v-col cols="12">
         <v-row class="pa-5 row">
-          <h2>{{ data.title }}</h2>
+          <h2>{{ data.name }}</h2>
           <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="editRound">
             <EditIcon/>
           </v-btn>
@@ -41,7 +41,7 @@ export default {
   components: { BuildingHeader, RoundBuildingCard, EditIcon, DeleteIcon },
   props: {
     data: {
-      title: {type: String, default: 'Ronde X'},
+      name: {type: String, default: 'Ronde X'},
       buildings: {type: Array, default: () => []}
     },
     keyValue: { type: String, default: 'title' },
@@ -57,8 +57,6 @@ export default {
   },
   computed: {
     filteredOptions () {
-      console.log(this.keyValue)
-      console.log(this.searched)
       if (this.keyValue !== 'title'){
         const filtered = []
         const regex = new RegExp(this.searched, 'ig')

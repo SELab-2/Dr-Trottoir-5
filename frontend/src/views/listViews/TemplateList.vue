@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Templates" :head-component="headComponent" />
+  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" key-value="name"/>
 </template>
 
 <script>
@@ -19,11 +19,9 @@ export default {
       elements: []
     }
   },
-  beforeCreate() {
-    RequestHandler.handle(EmailTemplateService.getEmailTemplates()).then(async result => {
-      for (const el of result){
-          this.elements.push({ titel: el.name, argsCount: 0 })
-      }
+  async beforeMount() {
+    await RequestHandler.handle(EmailTemplateService.getEmailTemplates(), {id: 'getEmailTemplatesError', style: 'SNACKBAR'}).then(async result => {
+      this.elements = result
     })
   }
 }

@@ -76,6 +76,11 @@ export default {
       type: String,
       required: false,
       default: 'Search ...'
+    },
+    keyValue: {
+      type: String,
+      default: '',
+      required: true
     }
   },
   setup () {
@@ -87,12 +92,11 @@ export default {
       selected: '',
       optionsShown: false,
       searchFilter: '',
-      key: Object.keys(this.elements[0])[0],
+      key: this.keyValue,
       isSmallScreen: false
     }
   },
   created () {
-    console.log(this.elements)
     window.addEventListener('resize', this.checkScreenSize)
     this.checkScreenSize()
   },
@@ -101,7 +105,7 @@ export default {
       const filtered = []
       const regex = new RegExp(this.searchFilter, 'ig')
       for (const option of this.elements) {
-        if (this.key !== 'title') {
+        if (this.key !== 'name') {
           for (const el of option.buildings) {
             const value = el[this.key].toString()
             if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {

@@ -1,11 +1,14 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Syndicusen" :head-component="headComponent" />
+  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Syndicusen" :head-component="headComponent" key-value="first_name"/>
 </template>
 
 <script>
 import ListPage from '@/components/admin/ListPage'
 import SyndicusCard from '@/components/admin/SyndicusCard'
 import PersonHeader from '@/components/admin/PersonHeader'
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+import UserService from "@/api/services/UserService";
 
 export default {
   name: 'SyndicusList',
@@ -13,16 +16,20 @@ export default {
   data () {
     return {
       childComponent: SyndicusCard,
-      elements: [
-        { firstName: 'Baas A', secondName: 'Van Hengouwen', mobileNumber: '0498636925', location: 'Gent', email: 'baasgebouwA@gmail.com', buildings: 'Gebouw A' },
-        { firstName: 'Baas B', secondName: 'Van Den Berge', mobileNumber: '0498626925', location: 'Gent', email: 'baasgebouwB@gmail.com', buildings: 'Gebouw B' },
-        { firstName: 'Baas C', secondName: 'Van Dorpe', mobileNumber: '0498638925', location: 'Gent', email: 'baasgebouwC@gmail.com', buildings: 'Gebouw C' }
-      ],
+      elements: [],
       headComponent: PersonHeader
     }
   },
-  beforeMount () {
+  async beforeMount () {
     this.headComponent.props.student = false
+    await RequestHandler.handle(UserService.getUsers(), {id: 'getUsers', style: 'SNACKBAR'})
+      .then(async result => {
+        for (const user in result) {
+          if (user.role === "SY"){
+            this.elements.push(user)
+          }
+        }
+    })
   }
 }
 </script>

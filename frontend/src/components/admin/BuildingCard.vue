@@ -89,7 +89,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({ gebouw: 'Empty', adres: 'Empty', status: '', efficiency: 0 })
+      default: () => ({ gebouw: 'Empty', adres: 'Empty', status: 'Klaar', efficiency: 0 })
     }
   },
   data: () => ({

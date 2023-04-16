@@ -20,7 +20,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col cols="12">
-        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements"/>
+        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:keyChange="onKeyChange" :elements="elements" :key-value="key"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -72,6 +72,11 @@ export default {
       type: Array,
       default: () => [],
       required: true
+    },
+    keyValue: {
+      type: String,
+      required: true,
+      default: 'name'
     }
   },
   methods: {
@@ -85,10 +90,12 @@ export default {
   computed: {
     filteredOptions () {
       const filtered = []
-      const regex = new RegExp(this.searched, 'ig')
-      for (const el of this.elements) {
-        if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
-          filtered.push(el)
+      if (this.key !== 'key'){
+        const regex = new RegExp(this.searched, 'ig')
+          for (const el of this.elements) {
+            if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
+              filtered.push(el)
+            }
         }
       }
       return filtered
@@ -97,11 +104,8 @@ export default {
   data () {
     return {
       searched: '',
-      key: Object.keys(this.elements[0])[0]
+      key: this.keyValue
     }
-  },
-  beforeCreate() {
-    console.log(this.elements)
   }
 }
 </script>

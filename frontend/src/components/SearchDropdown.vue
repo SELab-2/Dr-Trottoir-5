@@ -36,7 +36,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
             </ul>
           </transition>
         </div>
-        <NormalButton :text="capitalize(this.key)" id="menu-activator" class="button"/>
+        <NormalButton :text="capitalize(key)" id="menu-activator" class="button"/>
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
@@ -76,6 +76,11 @@ export default {
       type: String,
       required: false,
       default: 'Search ...'
+    },
+    keyValue: {
+      type: String,
+      required: true,
+      default: 'name'
     }
   },
   setup () {
@@ -87,8 +92,8 @@ export default {
       selected: '',
       optionsShown: false,
       searchFilter: '',
-      key: Object.keys(this.elements[0])[0],
-      isSmallScreen: false
+      isSmallScreen: false,
+      key: this.keyValue
     }
   },
   created () {
@@ -98,11 +103,13 @@ export default {
   computed: {
     filteredOptions () {
       const filtered = []
-      const regex = new RegExp(this.searchFilter, 'ig')
-      for (const option of this.elements) {
-        const value = option[this.key].toString()
-        if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
-          filtered.push(value)
+      if (this.key !== ''){
+        const regex = new RegExp(this.searchFilter, 'ig')
+        for (const option of this.elements) {
+          const value = option[this.key].toString()
+          if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
+            filtered.push(value)
+          }
         }
       }
       return filtered
@@ -116,7 +123,7 @@ export default {
       this.key = key
       this.selected = ''
       this.searchFilter = ''
-      this.$emit('key', this.key)
+      this.$emit('keyChange', this.key)
       this.$emit('selected', this.selected)
     },
     selectOption (option) {

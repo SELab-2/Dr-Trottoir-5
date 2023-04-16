@@ -4,13 +4,13 @@
       <v-col cols="9">
         <v-row>
           <v-col>
-            <p>{{ data.firstName }}</p>
+            <p>{{ data.first_name }}</p>
           </v-col>
           <v-col>
-            <p>{{ data.secondName }}</p>
+            <p>{{ data.last_name }}</p>
           </v-col>
           <v-col>
-            <p>{{ data.mobileNumber }}</p>
+            <p>{{ data.phone_nr }}</p>
           </v-col>
           <v-col>
             <p>{{ data.location }}</p>
@@ -60,7 +60,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({ firstName: 'Empty', secondName: 'Empty', mobileNumber: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
+      default: () => ({ first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
     }
   },
   methods: {
