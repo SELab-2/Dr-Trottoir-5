@@ -34,15 +34,10 @@
       <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
         <v-text-field class="text_field" variant="outlined" v-model:model-value="klant_nr"></v-text-field>
       </v-col>
-      <v-col col="12" lg="12" class="d-flex justify-center align-center pt-10">
+      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
         <h2>Handleiding</h2>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-end" v-cloak @drop.prevent="addDropFile"
-             @dragover.prevent>
-        <v-img class="drag_image" :width="150" :max-height="150" aspect-ratio="1"
-               src="@/assets/upload_file.png"></v-img>
-      </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-start align-center">
+      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
         <v-file-input v-model="file" prepend-icon="mdi-file-upload-outline" class="text_field"
                       variant="outlined"></v-file-input>
       </v-col>
