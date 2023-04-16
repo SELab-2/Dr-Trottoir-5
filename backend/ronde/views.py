@@ -4,7 +4,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 import os
 from django.conf import settings
 from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManaulSerializer, BuildingSerializer, RondeSerializer
+from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer, \
+    BuildingSerializerFull
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
 
 
@@ -44,13 +45,13 @@ class LocatieEnumRetrieveDestroyView(generics.RetrieveDestroyAPIView):
 
 class ManualListCreateView(generics.ListCreateAPIView):
     queryset = Manual.objects.all()
-    serializer_class = ManaulSerializer
+    serializer_class = ManualSerializer
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def create(self, request, *args, **kwargs):
         """
-            Post method that creates a Manual record. The manaul is saved in media root
+            Post method that creates a Manual record. The manual is saved in media root
         """
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -75,7 +76,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 
 class ManualRetrieveDestroyView(generics.RetrieveDestroyAPIView):
-    serializer_class = ManaulSerializer
+    serializer_class = ManualSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
     """
         View that deletes and gets a specific Location
@@ -103,7 +104,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
 
 
 class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
-    serializer_class = BuildingSerializer
+    serializer_class = BuildingSerializerFull
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def get_queryset(self):

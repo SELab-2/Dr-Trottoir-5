@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
 from ronde.models import Ronde
@@ -68,6 +69,9 @@ class StudentTemplate(models.Model):
     dag_planningen : models.ManyToManyField
         Al de dagplanningen van deze rondes.
 
+    status : ArrayField
+        Student status per building, according to building order
+
     """
     def __getitem__(self, item):
         if item == "dag_planningen":
@@ -87,6 +91,21 @@ class StudentTemplate(models.Model):
     week = models.IntegerField()
     rondes = models.ManyToManyField(Ronde, blank=True)
     dag_planningen = models.ManyToManyField(DagPlanning, blank=True)
+
+    class StatusEnum(models.TextChoices):
+        """
+        enum for type of status
+        """
+        NOT_STARTED = "NS", "Not started"
+        STARTED = "ST", "Started"
+        FINISHED = "FI", "Finished"
+
+    status = ArrayField(
+        models.CharField(
+            max_length=2,
+            choices=StatusEnum.choices
+        ), default=list
+    )
 
 
 class WeekPlanning(models.Model):

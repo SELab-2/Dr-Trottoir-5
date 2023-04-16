@@ -1,7 +1,7 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import *
-from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
+from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
 import datetime
 from trashtemplates.models import Status
 from ronde.models import LocatieEnum, Ronde
@@ -14,12 +14,101 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
 
+class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
+    queryset = DagPlanning.objects.all()
+    serializer_class = DagPlanningSerializer
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        student = request.query_params['student'] if 'student' in request.query_params else None
+        date = request.query_params['date'] if 'date' in request.query_params else None
+
+        if student is not None and date is not None:
+            try:
+                dagPlanning = DagPlanning.objects.get(student=student, date=date)
+                return Response(DagPlanningSerializerFull(dagPlanning).data)
+            except DagPlanning.DoesNotExist:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db", "field": "dagPlanning"
+                            }
+                        ]
+                    }, code='invalid')
+        elif student is not None:
+            try:
+                dagPlanning = DagPlanning.objects.get(student=student)
+                return Response(DagPlanningSerializerFull(dagPlanning).data)
+            except DagPlanning.DoesNotExist:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db", "field": "dagPlanning"
+                            }
+                        ]
+                    }, code='invalid')
+
+        return super().get(request=request, args=args, kwargs=kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            WeekPlanning.objects.get(pk=request.data["weekPlanning"])
+            ronde = Ronde.objects.get(pk=request.data["ronde"])
+            response = super().post(request=request, args=args, kwargs=kwargs)
+            dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
+
+            # Make a list of InfoPerBuilding and statuses
+            for _ in ronde.buildings.all():
+                InfoPerBuilding(dagPlanning=dagPlanning).save()
+                dagPlanning.status.append('NS')
+            dagPlanning.save()
+            return response
+        except WeekPlanning.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced pk not in db", "field": "weekPlanning"
+                        }
+                    ]
+                }, code='invalid')
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DagPlanning.objects.all()
+    serializer_class = DagPlanningSerializerFull
+    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+
+
 class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
 
     # TODO: a user can only see the pictures that he added (?)
+
+    def get(self, request, *args, **kwargs):
+        infoPerBuilding = request.query_params['infoPerBuilding'] if 'infoPerBuilding' in request.query_params else None
+
+        if infoPerBuilding is not None:
+            try:
+                InfoPerBuilding.objects.get(pk=infoPerBuilding)
+                self.queryset = BuildingPicture.objects.filter(infoPerBuilding=infoPerBuilding)
+            except Exception:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db", "field": "infoPerBuilding"
+                            }
+                        ]
+                    }, code='invalid')
+
+        return super().get(request=request, args=args, kwargs=kwargs)
 
     def post(self, request, *args, **kwargs):
         try:

@@ -74,10 +74,11 @@ class AuthService extends EchoService {
       .then(async (_) => {
         // Send confirmation message.
         store.dispatch("snackbar/open", {
-          message: "Successfully logged out",
+          message: "U bent uitgelogd",
           color: "success",
         });
         // Update the current user inside the store.
+        store.dispatch("session/clear");
         await store.dispatch("session/fetch");
 
         await router.push(goHome ? "/" : "/login");

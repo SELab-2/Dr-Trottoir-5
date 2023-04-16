@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
 import uuid
@@ -86,6 +87,10 @@ class Building(models.Model):
         LocatieEnum,
         on_delete=models.DO_NOTHING
     )
+    remarks = ArrayField(
+        models.TextField(), default=list
+    )
+
     special_actions = models.TextField(
         default="",
         blank=True
