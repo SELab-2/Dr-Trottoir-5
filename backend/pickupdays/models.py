@@ -24,3 +24,9 @@ class PickUpDay(models.Model):
 
     start_hour = models.TimeField()
     end_hour = models.TimeField()
+
+    def __eq__(self, other):
+        return self.start_hour == other.start_hour and self.end_hour == other.end_hour
+
+    def __lt__(self, other):
+        return self.start_hour < other.start_hour
