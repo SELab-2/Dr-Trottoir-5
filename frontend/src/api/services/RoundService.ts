@@ -1,26 +1,21 @@
 import {
-  Body,
-  DELETE,
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
   GET,
-  PATCH,
-  POST,
-  Query
+  Path
 } from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
-import DayPlanning from "@/api/models/Planning";
+import Building from "@/api/models/Building";
 
-class PlanningService extends EchoService {
+class RoundService extends EchoService {
   /**
-   * Get a day planning.
+   * Get a building by id
    */
-  @GET("/planning/dagplanning/")
-  get(@Query('student') student: string,
-      @Query('date') date: string): EchoPromise<DayPlanning> {
-    return {} as EchoPromise<DayPlanning>;
+  @GET("/ronde/building/{id}")
+  getBuilding(@Path('id') id: number): EchoPromise<Building> {
+    return {} as EchoPromise<Building>;
   }
 
 }
@@ -28,4 +23,4 @@ class PlanningService extends EchoService {
 export default new EchoServiceBuilder()
   .setBaseUrl(config.BACKEND.URL)
   .addInterceptor(new AuthInterceptor())
-  .build(PlanningService);
+  .build(RoundService);

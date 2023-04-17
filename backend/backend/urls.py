@@ -22,10 +22,11 @@ from .views import MediaView
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('api/', include('users.urls')),
-    path('api/planning/', include('planning.urls')),
+    path('api/', include('planning.urls')),
     path('api/containers/', include('trashcontainers.urls')),
     path('api/pickupdays/', include('pickupdays.urls')),
     path('api/mailtemplates/', include('mailtemplates.urls')),
     path('api/ronde/', include('ronde.urls')),
+    path('api/trashtemplates/', include('trashtemplates.urls')),
     path(f'{settings.MEDIA_URL[1:]}<path:path>/', MediaView.as_view())
 ]
