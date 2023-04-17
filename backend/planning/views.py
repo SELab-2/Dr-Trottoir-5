@@ -303,6 +303,7 @@ def student_templates_view(request):
         handler.check_not_blank_required(data.get("name"), "name")
         handler.check_time_value_required(data.get("start_hour"), "start_hour")
         handler.check_time_value_required(data.get("end_hour"), "end_hour")
+        handler.check_boolean_required(data.get("even"), "even")
         handler.check()
 
         location = LocatieEnum.objects.get(id=data["location"])
@@ -441,7 +442,10 @@ def rondes_view(request, template_id):
         """
         data = request.data
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
+        handler = ExceptionHandler()
+        handler.check_primary_key_value_required(data.get("ronde"), "ronde",
+                                                 Ronde)
+        handler.check()
         ronde = Ronde.objects.get(id=data["ronde"])
 
         dag_planningen = []
