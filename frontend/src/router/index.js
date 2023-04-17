@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StudentHomeView from '../views/StudentHomeView.vue'
-import HomeView from '../views/HomeView.vue'
 import AccountView from '../views/AccountView'
 import RegisterView from '@/views/RegisterView'
 import LoginView from '../views/LoginView.vue'
@@ -9,6 +8,9 @@ import CreateBuildingView from '@/views/admin/CreateBuildingView'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import CreateRoundView from "@/views/CreateRoundView.vue";
+import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
+import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
 import Unauthorized from "@/views/Unauthorized";
 import BuildingPageStudent from "@/views/BuildingPageStudent";
 import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
@@ -80,12 +82,26 @@ const routes = [
     component: CreateBuildingView
   },
   {
+    path: '/mail-template/create',
+    name: 'create_mail-template',
+    component: CreateMailTemplateView
+  },
+  {
+    path: '/mail-template/:id',
+    name: 'mail-template',
+    component: AdminMailTemplateView
+  },
+  {
     path: '/dagplanning',
     name: 'dagplanning',
     component: DayPlanView
   },
   {
-<<<<<<< HEAD
+    path: '/create_round',
+    name: 'create_round',
+    component: CreateRoundView
+  },
+  {
     path: '/unauthorized',
     name: 'unauthorized',
     component: Unauthorized
@@ -114,20 +130,12 @@ const routes = [
     path: '/student_post_edit',
     name: 'student_post_edit',
     component: StudentEditPost
-=======
+  },
+  {
     path: '/building/:id',
     name: 'admin_building',
     props: true,
     component: AdminBuildingView
-  },
-  {
->>>>>>> c77011bed7d762c02ba8ac7b9fcadf0b9a45306d
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
     path: '/account',
