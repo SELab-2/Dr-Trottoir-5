@@ -1,7 +1,6 @@
 from rest_framework import generics
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
 from .serializers import *
-from ronde.models import Building
 from rest_framework.response import Response
 from planning.models import WeekPlanning
 from trashtemplates.models import TrashContainerIdWrapper

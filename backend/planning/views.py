@@ -1,5 +1,5 @@
 from pickupdays.models import WeekDayEnum
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -7,7 +7,7 @@ from ronde.models import LocatieEnum, Ronde
 from ronde.serializers import RondeSerializer
 from trashtemplates.models import Status
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
+from users.permissions import AdminPermission, SuperstudentPermission, StudentPermission
 
 from .util import *
 
