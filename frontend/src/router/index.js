@@ -20,6 +20,8 @@ import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
+import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
 
 const routes = [
   {
@@ -142,6 +144,16 @@ const routes = [
     path: '/account',
     name: 'account',
     component: AccountView
+  },
+  {
+    path: '/studenttemplates',
+    name: 'studenttemplates',
+    component: StudentTemplateView
+  },
+  {
+    path: '/studenttemplates/:id',
+    name: 'studenttemplate',
+    component: StudentTemplateEditView
   }
 ]
 

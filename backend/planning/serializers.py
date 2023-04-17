@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from ronde.serializers import RondeRelatedField
+from ronde.serializers import RondeRelatedField, LocatieRelatedField
 from pickupdays.serializers import PickUpDayRelatedField
 
 
@@ -17,6 +17,7 @@ class DagPlanningSerializerFull(DagPlanningSerializer):
 
 
 class StudentTemplateSerializer(serializers.ModelSerializer):
+    location = LocatieRelatedField(read_only=True)
     class Meta:
         model = StudentTemplate
         fields = '__all__'
