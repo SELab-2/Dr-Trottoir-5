@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StudentHomeView from '../views/StudentHomeView.vue'
-import HomeView from '../views/HomeView.vue'
 import AccountView from '../views/AccountView'
 import RegisterView from '@/views/RegisterView'
 import LoginView from '../views/LoginView.vue'
@@ -8,6 +7,8 @@ import UsersView from '../views/UsersView.vue'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
+import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
 import Unauthorized from "@/views/Unauthorized";
 import BuildingPageStudent from "@/views/BuildingPageStudent";
 import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
@@ -66,6 +67,16 @@ const routes = [
     path: '/users',
     name: 'users',
     component: UsersView
+  },
+  {
+    path: '/mail-template/create',
+    name: 'create_mail-template',
+    component: CreateMailTemplateView
+  },
+  {
+    path: '/mail-template/:id',
+    name: 'mail-template',
+    component: AdminMailTemplateView
   },
   {
     path: '/dagplanning',
