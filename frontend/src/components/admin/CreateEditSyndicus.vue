@@ -123,7 +123,7 @@ export default {
         await this.update(building_id, syndicus)
       }
       await RequestHandler.handle(AuthService.updateRoleOfUser({
-        email: this.allUsers.filter(user => user.id === this.syndicus.id)[0].email,
+        email: this.allUsers.find(user => user.id === this.syndicus.id).email,
         role: 'SY'
       }), {
         id: 'addSyndicusRole',
