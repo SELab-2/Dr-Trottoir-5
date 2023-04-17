@@ -14,7 +14,7 @@
         v-model="syndicus.id"
       >
         <template v-slot:no-data>
-          <div class="px-4">Er zijn geen nieuwe gebruikers.</div>
+          <div class="px-4">Er zijn geen gebruikers.</div>
         </template>
       </v-autocomplete>
       <label class="black-text">Locatie</label>
@@ -25,6 +25,7 @@
         item-title="name"
         item-value="id"
         v-model="syndicus.location"
+        @update:modelValue="updateBuilding"
       ></v-autocomplete>
       <label class="black-text">Gebouwen</label>
       <v-autocomplete
@@ -76,37 +77,50 @@ export default {
       allLocations: [],
       allBuildings: [],
       syndicus: {
-        id: '',
-        location: '',
-        buildings: []
+        id: null,
+        location: null,
+        buildings: [],
+        old_buildings: []
       }
     }
   },
   methods: {
+    async update(building_id, syndicus) {
+      /**
+       * This method is the request we send to the backend. The body exists of an updated list
+       * of syndicussen for a specific building.
+       */
+      await RequestHandler.handle(BuildingService.updateBuildingById(Number(building_id), {
+        'syndicus': syndicus
+      }), {
+        id: 'addSyndicusToBuilding',
+        style: 'SNACKBAR',
+        customMessages: [
+          {
+            code: '500',
+            message: 'Kon de syndicus niet toevoegen aan het gebouw.',
+            description: 'Kon de syndicus niet toevoegen aan het gebouw.'
+          }
+        ]
+      })
+    },
     async addSyndicus() {
-      if (this.syndicus.id === '' || this.syndicus.location === '' || this.buildings.length === 0) {
+      /**
+       * For adding a syndicus do we need to check if all fields are not empty. After this can
+       * we send a request with an updated list. We do this for every selected building. We than change
+       * the role of the user to syndicus.
+       */
+      if (this.syndicus.id === null || this.syndicus.location === null || this.buildings.length === 0) {
         this.$store.dispatch("snackbar/open", {
-          message: "Een van de verplichte velden is leeg.",
+          message: "Een of meerdere van de verplichte velden zijn leeg.",
           color: "error"
         })
         return;
       }
       for (let building_id of this.syndicus.buildings) {
-        let syndicus = this.allBuildings.filter(building => building.id === building_id)[0].syndicus
+        let syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
         syndicus.push(this.syndicus.id)
-        await RequestHandler.handle(BuildingService.updateBuildingById(Number(building_id), {
-          'syndicus': syndicus
-        }), {
-          id: 'addSyndicusToBuilding',
-          style: 'SNACKBAR',
-          customMessages: [
-            {
-              code: '500',
-              message: 'Kon de syndicus niet toevoegen aan het gebouw.',
-              description: 'Kon de syndicus niet toevoegen aan het gebouw.'
-            }
-          ]
-        })
+        await this.update(building_id, syndicus)
       }
       await RequestHandler.handle(AuthService.updateRoleOfUser({
         email: this.allUsers.filter(user => user.id === this.syndicus.id)[0].email,
@@ -122,35 +136,84 @@ export default {
           }
         ]
       })
-      console.log(this.$router.back())
+      await this.$router.back()
     },
-    editSyndicus() {
-      // TODO syndicus aanpassen in de backend + error handling + terug naar de vorige pagina
-      console.log(this.syndicus)
+    async editSyndicus() {
+      /**
+       * If we want to edit the buildings of a syndicus we have two options. There are buildings removed
+       * or buildings been added to the syndicus. For every option do we need to update the list of syndicates of a building.
+       */
+      for (let building_id of this.syndicus.old_buildings) {
+        if (!this.syndicus.buildings.includes(building_id)) {
+          let syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
+          const index = syndicus.indexOf(this.syndicus.id)
+          syndicus.splice(index, 1)
+          await this.update(building_id, syndicus)
+        }
+      }
+      for (let building_id of this.syndicus.buildings) {
+        if (!this.syndicus.old_buildings.includes(building_id)) {
+          const syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
+          syndicus.push(this.syndicus.id)
+          await this.update(building_id, syndicus)
+        }
+      }
+      await this.$router.back()
+    },
+    updateBuilding() {
+      /**
+       * Every time the location of a syndicus is changed we update the selected buildings
+       * for the given syndicus.
+       */
+      if (this.edit) {
+        const buildings = this.allBuildings.filter(building =>
+          building.syndicus.includes(this.syndicus.id)).map(building => building.id)
+        this.syndicus.old_buildings = buildings
+        this.syndicus.buildings = buildings
+      }
     }
   },
   mounted() {
-    // TODO als edit true is, dan de syndicus ophalen uit de backend en de data in de velden zetten
+    /**
+     * We collect the needed data to adjust or add a syndicus.
+     * We need a list of locations, a list of users that are not registered or have the role syndicus.
+     * A list of all the buildings that are registered with us.
+     */
     if (this.edit) {
-      console.log('edit') // TODO
-    }
-    RequestHandler.handle(UserService.getUsers(), {
-      id: 'getAllUsersError',
-      style: 'SNACKBAR',
-      customMessages: [
-        {
-          code: '500',
-          message: 'Kon alle gebruikers niet ophalen.',
-          description: 'Kon gebruikers niet ophalen.'
-        }
-      ]
-    }).then(users => {
-      this.allUsers = users.filter(x => x.role === 'AA').map(user => {
-        user['name'] = `${user.first_name} ${user.last_name}`
-        return user
+      RequestHandler.handle(UserService.getUsers(), {
+        id: 'getAllSyndicusUsersError',
+        style: 'SNACKBAR',
+        customMessages: [
+          {
+            code: '500',
+            message: 'Kon alle syndicussen niet ophalen.',
+            description: 'Kon syndicussen niet ophalen.'
+          }
+        ]
+      }).then(users => {
+        this.allUsers = users.filter(x => x.role === 'SY').map(user => {
+          user['name'] = `${user.first_name} ${user.last_name}`
+          return user
+        })
       })
-      console.log(this.allUsers)
-    })
+    } else {
+      RequestHandler.handle(UserService.getUsers(), {
+        id: 'getAllUsersError',
+        style: 'SNACKBAR',
+        customMessages: [
+          {
+            code: '500',
+            message: 'Kon alle gebruikers niet ophalen.',
+            description: 'Kon gebruikers niet ophalen.'
+          }
+        ]
+      }).then(users => {
+        this.allUsers = users.filter(x => x.role === 'AA').map(user => {
+          user['name'] = `${user.first_name} ${user.last_name}`
+          return user
+        })
+      })
+    }
     RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR',
