@@ -217,7 +217,7 @@ def role_assignment_view(request):
 
 class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+    permission_classes = [ReadOnly | StudentPermission | AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         try:
