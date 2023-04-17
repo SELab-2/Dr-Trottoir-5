@@ -84,7 +84,7 @@ def add_if_match(many_to_many, new_template, current_week):
     """
     Voeg de niewe template alleen maar toe als even/oneven matcht en hij er nog niet inzit.
     """
-    if new_template.even == (current_week % 2 == 0) and not many_to_many.filter(id=new_template).exists():
+    if new_template.even == (current_week % 2 == 0) and not many_to_many.filter(id=new_template.id).exists():
         many_to_many.add(new_template)
 
 
