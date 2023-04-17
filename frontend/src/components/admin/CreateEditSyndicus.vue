@@ -10,14 +10,20 @@
         clearable
         :items="this.allUsers"
         :item-title="item => `${item.first_name}  ${item.last_name}`"
-        item-value="id"
-        v-model="syndicus.id"
-      ></v-autocomplete>
+        :item-value="item => item"
+        v-model="syndicus.syndicus"
+      >
+        <template v-slot:no-data>
+          <div class="px-4">Er zijn geen nieuwe gebruikers.</div>
+        </template>
+      </v-autocomplete>
       <label class="black-text">Locatie</label>
       <v-autocomplete
         clearable
         outlined
         :items="this.allLocations"
+        item-title="name"
+        item-value="id"
         v-model="syndicus.location"
       ></v-autocomplete>
       <label class="black-text">Buildings</label>
@@ -29,7 +35,11 @@
         item-value="id"
         v-model="syndicus.buildings"
         multiple
-      ></v-autocomplete>
+      >
+        <template v-slot:no-data>
+          <div class="px-4">Er zijn geen gebouwen.</div>
+        </template>
+      </v-autocomplete>
     </v-form>
     <normal-button v-if="!edit" text="Voeg syndicus toe" :parent-function="addSyndicus"/>
     <normal-button v-else text="Pas syndicus aan" :parent-function="editSyndicus"/>
@@ -47,6 +57,8 @@
 import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import UserService from "@/api/services/UserService";
+import BuildingService from "@/api/services/BuildingService";
+import LocationService from "@/api/services/LocationService";
 
 export default {
   name: 'CreateEditSyndicus',
@@ -63,7 +75,7 @@ export default {
       allLocations: [],
       allBuildings: [],
       syndicus: {
-        id: null,
+        syndicus: null,
         location: '',
         buildings: []
       }
@@ -96,14 +108,33 @@ export default {
       ]
     }).then(users => {
       this.allUsers = users.filter(x => x.role === 'AA')
-      console.log(this.allUsers)
     })
-    this.allLocations = ['Gent', 'Brussel', 'Antwerpen']
-    this.allBuildings = [
-      {id: 1, name: 'Building 1'},
-      {id: 2, name: 'Building 2'},
-      {id: 3, name: 'Building 3'},
-    ]
+    RequestHandler.handle(LocationService.getLocations(), {
+      id: 'getLocationsError',
+      style: 'SNACKBAR',
+      customMessages: [
+        {
+          code: '500',
+          message: 'Kon de locaties niet ophalen.',
+          description: 'Kon de locaties niet ophalen.'
+        }
+      ]
+    }).then(locations => {
+      this.allLocations = locations
+    })
+    RequestHandler.handle(BuildingService.getAllBuildings(), {
+      id: 'getBuildingsError',
+      style: 'SNACKBAR',
+      customMessages: [
+        {
+          code: '500',
+          message: 'Kon de gebouwen niet ophalen.',
+          description: 'Kon de gebouwen niet ophalen.'
+        }
+      ]
+    }).then(buildings => {
+      this.allBuildings = buildings
+    })
   }
 }
 </script>

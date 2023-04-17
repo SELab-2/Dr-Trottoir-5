@@ -14,6 +14,15 @@ import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 import {InputFields} from "@/types/fields/InputFields";
 
 class BuildingService extends EchoService {
+
+  /**
+   * Get all buildings
+   */
+  @GET('/ronde/building')
+  getAllBuildings() : EchoPromise<[Building]> {
+    return {} as EchoPromise<[Building]>
+  }
+
   /**
    * Add building manual
    */
