@@ -19,7 +19,7 @@ class ExceptionHandler:
     file_upload_error = "Data is geen bestand."
     blank_error = "Veld kan niet leeg zijn."
     integer_error = "Veld moet een positief getal zijn."
-
+    boolean_error = "Veld moet een Boolse waarde zijn."
     def __init__(self):
         self.errors = []
         self.checked = False
@@ -171,6 +171,25 @@ class ExceptionHandler:
         if not self.check_required(value, fieldname):
             return False
         return self.check_integer(value, fieldname)
+
+    def check_boolean(self, value, fieldname):
+        self.checked = False
+        if value is None:
+            return True
+        try:
+            bool(value)
+            return True
+        except ValueError:
+            self.errors.append({
+                "message": ExceptionHandler.boolean_error,
+                "field": fieldname
+            })
+            return False
+
+    def check_boolean_required(self, value, fieldname):
+        if not self.check_required(value, fieldname):
+            return False
+        return self.check_boolean(value, fieldname)
 
     def check_not_blank(self, value, fieldname):
         self.checked = False
