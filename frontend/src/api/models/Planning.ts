@@ -6,4 +6,5 @@ export default class DayPlanning {
   date: string;
   ronde: Round;
   weekPlanning: number;
+  status: [string];
 }

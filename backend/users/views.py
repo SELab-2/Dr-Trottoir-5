@@ -130,8 +130,8 @@ def forgot_password(request):
         Send an email with an otp when forgot password is used.
     """
     email = request.data['email']
-    user = get_user_model().objects.get(email=email)
     if get_user_model().objects.filter(email=email).exists():
+        user = get_user_model().objects.get(email=email)
         send_mail(
             subject='Nieuw wachtwoord voor Dr Trottoir.',
             message=f'{user.otp}',  # TODO  email text schrijven
@@ -196,7 +196,10 @@ def role_assignment_view(request):
                         "errors": [{"message": "Superstudent can't make someone Admin", "field": "role"}]
                     }, code='not allowed')
 
-            user = get_user_model().objects.get(email=request.data['email'])
+            try:
+                user = get_user_model().objects.get(email=request.data['email'])
+            except get_user_model().DoesNotExist:
+                user = None
 
             if not user:
                 raise serializers.ValidationError(

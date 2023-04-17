@@ -74,18 +74,19 @@ export default defineComponent({
      login() {
        AuthService.login({ email: this.email, password: this.password })
         .then(
-          async (data) => {
+          async () => {
 
             // Send confirmation message.
             this.$store.dispatch("snackbar/open", {
-              message: "Successfully logged in",
+              message: "U bent ingelogd",
               color: "success"
             });
 
             // Update the current user inside the store.
+            await this.$store.dispatch("session/clear");
             await this.$store.dispatch("session/fetch");
 
-            await router.push({ path: '/' })
+            await router.push({ path: '/' });
           }
         ).catch((error) => {
           ErrorHandler.handle(
