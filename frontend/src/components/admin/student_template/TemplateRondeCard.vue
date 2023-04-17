@@ -34,6 +34,7 @@
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
+import router from "@/router";
 
 export default {
   name: "TemplateRondeCard",
@@ -50,11 +51,16 @@ export default {
   },
   methods: {
     async on_delete() {
-      await RequestHandler.handle(StudentTemplateService.removeRound(this.data.template_id, this.data.ronde_id), {
+      const response = await RequestHandler.handle(StudentTemplateService.removeRound(this.data.template_id, this.data.ronde_id), {
           id: 'deleteRound',
           style: 'SNACKBAR'
       })
       this.$emit('round_removed')
+      if (response["new_id"] !== undefined) {
+        const new_id = response["new_id"]
+        this.$emit('copy', new_id)
+        await router.replace({path: `/studenttemplates/${new_id}`})
+      }
     }
   }
 }

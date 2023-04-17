@@ -3,11 +3,11 @@
     <div class="text-h4 text-md-h2 text-lg-h1">
       Studenten Templates
     </div>
-    <v-btn variant="outlined" >
+    <v-btn :to="'/studenttemplates/add'" variant="outlined" >
         Nieuwe Aanmaken
     </v-btn>
   </v-row>
-  <StudentTemplateCard v-for="template in templates" :data="{
+  <StudentTemplateCard @removed="remove_template" v-for="template in templates" :data="{
       template_id: template.id,
       name: template.name,
       location: template.location.name,
@@ -38,7 +38,13 @@ export default {
         id: "getStudentTemplatesError",
         style: "SNACKBAR"
       }).then(templates => templates).catch(() => []);
+  },
+  methods: {
+    remove_template(template_id) {
+      this.templates = this.templates.filter(template => template.id !== template_id)
+    }
   }
+
 }
 </script>
 

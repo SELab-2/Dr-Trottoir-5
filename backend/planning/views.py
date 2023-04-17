@@ -236,7 +236,7 @@ def student_templates_view(request):
         )
 
         add_if_match(get_current_week_planning().student_templates, new_template, current_week)
-        return Response({"message": "Success"})
+        return Response({"message": "Success", "new_id": new_template.id})
 
 
 @api_view(["GET", "DELETE", "PATCH"])
@@ -314,6 +314,7 @@ def student_template_view(request, template_id):
 
         planning = get_current_week_planning()
 
+        response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
             template.even = data["even"]
@@ -322,7 +323,7 @@ def student_template_view(request, template_id):
             #template.end_hour = data["end_hour"],
             template.save()
             add_if_match(planning.student_templates, template, current_week)
-            return Response({"message": "Success"})
+            return Response(response)
 
         new_template = StudentTemplate.objects.create(
             name=data["name"],
@@ -340,8 +341,8 @@ def student_template_view(request, template_id):
         template.status = Status.INACTIEF
         template.save()
         remove_if_match(planning.student_templates, template, current_week)
-
-        return Response({"message": "Success"})
+        response["new_id"] = new_template.id
+        return Response(response)
 
 
 @api_view(["GET", "POST"])
@@ -375,6 +376,7 @@ def rondes_view(request, template_id):
             dag_planning = make_dag_planning(data)
             dag_planningen.append(dag_planning)
 
+        response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.rondes.add(ronde)
             template.dag_planningen.add(*dag_planningen)
@@ -384,7 +386,9 @@ def rondes_view(request, template_id):
             copy.dag_planningen.add(*dag_planningen)
             remove_if_match(get_current_week_planning().student_templates, template, current_week)
             add_if_match(get_current_week_planning().student_templates, copy, current_week)
-        return Response({"message": "Success"})
+            response["new_id"] = copy.id
+
+        return Response(response)
 
 
 @api_view(["DELETE"])
@@ -401,6 +405,7 @@ def ronde_view(request, template_id, ronde_id):
         """
         to_remove = template.dag_planningen.filter(ronde=ronde)
 
+        response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.dag_planningen.remove(*to_remove)
             template.rondes.remove(ronde)
@@ -410,7 +415,8 @@ def ronde_view(request, template_id, ronde_id):
             copy.rondes.remove(ronde)
             remove_if_match(get_current_week_planning().student_templates, template, current_week)
             add_if_match(get_current_week_planning().student_templates, copy, current_week)
-        return Response({"message": "Success"})
+            response["new_id"] = copy.id
+        return Response(response)
 
 
 @api_view(["GET", "POST"])

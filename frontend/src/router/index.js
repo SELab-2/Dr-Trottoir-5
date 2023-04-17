@@ -22,6 +22,7 @@ import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
 import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
 import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
+import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
 
 const routes = [
   {
@@ -149,6 +150,11 @@ const routes = [
     path: '/studenttemplates',
     name: 'studenttemplates',
     component: StudentTemplateView
+  },
+    {
+    path: '/studenttemplates/add',
+    name: 'add_studenttemplate',
+    component: StudentTemplateAddView
   },
   {
     path: '/studenttemplates/:id',

@@ -58,7 +58,7 @@
       <v-btn @click="add_round()" class="mx-5">Voeg nieuwe ronde toe</v-btn>
     </v-col>
   </v-row>
-  <TemplateRondeCard @round_removed="() => remove_ronde(ronde.id)" v-for="ronde in rondes" :data="{
+  <TemplateRondeCard @copy="(new_id) => copy_taken(new_id)" @round_removed="() => remove_ronde(ronde.id)" v-for="ronde in rondes" :data="{
       template_id: this.template_id,
       ronde_id: ronde.id,
       name: ronde.name,
@@ -73,6 +73,7 @@ import LocationService from "@/api/services/LocationService";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import TemplateRondeCard from "@/components/admin/student_template/TemplateRondeCard.vue";
 import RoundService from "@/api/services/RoundService";
+import router from "@/router";
 
 export default {
   name: "StudentTemplateEditView",
@@ -118,7 +119,7 @@ export default {
 
     // get all rounds
     this.all_rondes = await RequestHandler.handle(RoundService.getRondes(), {
-      id: 'getLocationsError',
+      id: 'getRondesError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
 
@@ -131,6 +132,10 @@ export default {
     this.rondes = this.template.rondes
   },
   methods: {
+    async copy_taken(new_id) {
+      this.template_id = new_id
+      return await router.replace({path: `/studenttemplates/${new_id}`})
+    },
     async save_edit() {
       this.edit = false
       const body = {
@@ -141,22 +146,27 @@ export default {
         location: this.location.id
       }
 
-      await RequestHandler.handle(StudentTemplateService.updateStudentTemplate(this.template_id, body), {
+      const response = await RequestHandler.handle(StudentTemplateService.updateStudentTemplate(this.template_id, body), {
           id: 'updateStudentTemplate',
           style: 'SNACKBAR'
-      })
+      }).then(res => res)
+      if (response["new_id"] !== undefined) {
+        await this.copy_taken(response["new_id"])
+      }
     },
     async add_round() {
       const body = {ronde: this.add_id}
-      await RequestHandler.handle(StudentTemplateService.addRound(this.template_id, body), {
+      const response = await RequestHandler.handle(StudentTemplateService.addRound(this.template_id, body), {
           id: 'studentTemplateAddRound',
           style: 'SNACKBAR'
       })
-
       for (let ronde of this.all_rondes) {
         if (ronde.id === this.add_id) {
           this.rondes.push(ronde)
         }
+      }
+      if (response["new_id"] !== undefined) {
+        await this.copy_taken(response["new_id"])
       }
     },
     remove_ronde(ronde_id) {

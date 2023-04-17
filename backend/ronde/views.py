@@ -151,7 +151,7 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class RondeListCreateView(generics.ListCreateAPIView):
     queryset = Ronde.objects.all()
-    serializer_class = RondeSerializer
+    serializer_class = RondeRelatedFieldSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
 

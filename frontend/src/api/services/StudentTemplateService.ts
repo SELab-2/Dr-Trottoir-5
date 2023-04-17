@@ -10,8 +10,18 @@ class StudentTemplateService extends EchoService {
     return {} as EchoPromise<StudentTemplate[]>;
   }
 
+  @POST('/studenttemplates/')
+  addStudentTemplate(@Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
   @PATCH('/studenttemplates/{id}/')
   updateStudentTemplate(@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+
+  @DELETE('/studenttemplates/{id}/')
+  deleteStudentTemplate(@Path('id') id: number): EchoPromise<any> {
     return {} as EchoPromise<any>
   }
 
