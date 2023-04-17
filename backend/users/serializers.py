@@ -20,6 +20,7 @@ class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = [
+            'id',
             'email',
             'first_name',
             'last_name',

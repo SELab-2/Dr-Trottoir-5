@@ -9,9 +9,9 @@
       <v-autocomplete
         clearable
         :items="this.allUsers"
-        :item-title="item => `${item.first_name}  ${item.last_name}`"
-        :item-value="item => item"
-        v-model="syndicus.syndicus"
+        item-title="name"
+        item-value="id"
+        v-model="syndicus.id"
       >
         <template v-slot:no-data>
           <div class="px-4">Er zijn geen nieuwe gebruikers.</div>
@@ -75,7 +75,7 @@ export default {
       allLocations: [],
       allBuildings: [],
       syndicus: {
-        syndicus: null,
+        id: '',
         location: '',
         buildings: []
       }
@@ -107,7 +107,7 @@ export default {
         }
       ]
     }).then(users => {
-      this.allUsers = users.filter(x => x.role === 'AA')
+      this.allUsers = users.filter(x => x.role === 'AA').map(user => user['name'] = `${user.first_name} ${user.last_name}`)
     })
     RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
