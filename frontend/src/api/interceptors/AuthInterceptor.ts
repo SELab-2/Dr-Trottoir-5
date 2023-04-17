@@ -4,6 +4,7 @@ import {
   EchoResponse,
   EchoServiceInterceptor,
 } from 'echofetch';
+import router from '@/router'
 
 // Create a cache for storing the network results.
 

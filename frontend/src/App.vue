@@ -16,6 +16,7 @@ import {defineComponent} from 'vue'
 import NavigationBar from '@/components/NavigationBar.vue'
 import Snackbar from '@/components/util/Snackbar.vue'
 import { useRouter } from 'vue-router'
+import config from "@/config";
 const emitter = require('tiny-emitter/instance')
 
 export default defineComponent({
@@ -25,18 +26,30 @@ export default defineComponent({
     const router = useRouter();
 
     router.beforeEach( async (to, from, next) => {
-      if (!noLogin.includes(to.name.toString())) {
-        // Authorize session
-        await this.$store.dispatch("session/fetch");
+      const needsLogin = !noLogin.includes(to.name.toString());
+      // Authorize session
+      await this.$store.dispatch("session/fetch", {
+        needsLogin: needsLogin
+      });
+      // Check if user is logged in
+      const user = await this.$store.getters['session/currentUser'].catch(() => null);
 
-        // Check if user is logged in
-        const user = await this.$store.getters['session/currentUser'].catch(() => null);
-        if(user === null) {
-          return next({path: '/login'})
-        }
+      if (needsLogin) {
+        if (user === null) return next({path: '/login'});
         this.navbar = true;
-      } else this.navbar = false;
-      next()
+
+        if (!(config.AUTHORIZED[user.role].includes(to.name.toString()))) {
+         return next({path: '/unauthorized'});
+        }
+      } else {
+        if (user !== null) {
+          this.navbar = true;
+          return next({path: '/'});
+        }
+        this.navbar = false;
+      }
+
+      next();
     });
   },
   mounted() {
