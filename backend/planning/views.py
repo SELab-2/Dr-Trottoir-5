@@ -1,22 +1,16 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from .serializers import *
-from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission, StudentPermission
 from django.contrib.auth import get_user_model
-from .models import *
-from exceptions.exceptionHandler import ExceptionHandler
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
-import datetime
-from trashtemplates.models import Status
-from ronde.models import LocatieEnum, Ronde
-from ronde.serializers import RondeSerializer
-from pickupdays.models import WeekDayEnum
-from .util import *
-from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
-
+from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
+from exceptions.exceptionHandler import ExceptionHandler
+from pickupdays.models import WeekDayEnum
+from ronde.serializers import RondeSerializer
+from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
+from users.permissions import StudentReadOnly, AdminPermission, \
+    SuperstudentPermission, StudentPermission
+from .util import *
 
 
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
@@ -24,8 +18,6 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     serializer_class = DagPlanningSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
-
-        return super().post(request=request, args=args, kwargs=kwargs)
 
     def get(self, request, *args, **kwargs):
         student = request.query_params[
@@ -86,8 +78,9 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         dagPlanning.save()
         return response
 
+
 class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [
@@ -127,18 +120,21 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     # TODO: a user can only see the pictures that he added (?)
 
     def get(self, request, *args, **kwargs):
-        infoPerBuilding = request.query_params['infoPerBuilding'] if 'infoPerBuilding' in request.query_params else None
+        infoPerBuilding = request.query_params[
+            'infoPerBuilding'] if 'infoPerBuilding' in request.query_params else None
 
         if infoPerBuilding is not None:
             try:
                 InfoPerBuilding.objects.get(pk=infoPerBuilding)
-                self.queryset = BuildingPicture.objects.filter(infoPerBuilding=infoPerBuilding)
+                self.queryset = BuildingPicture.objects.filter(
+                    infoPerBuilding=infoPerBuilding)
             except Exception:
                 raise serializers.ValidationError(
                     {
                         "errors": [
                             {
-                                "message": "referenced pk not in db", "field": "infoPerBuilding"
+                                "message": "referenced pk not in db",
+                                "field": "infoPerBuilding"
                             }
                         ]
                     }, code='invalid')
@@ -265,7 +261,8 @@ def week_planning_view(request, year, week):
 
     if year > current_year or (current_year == year and week > current_week):
         # dit is een week die nog moet komen dus geven we alleen de actieve of nu tijdelijk vervangen templates terug
-        student_templates = StudentTemplate.objects.filter(status=Status.ACTIEF) | StudentTemplate.objects.filter(
+        student_templates = StudentTemplate.objects.filter(
+            status=Status.ACTIEF) | StudentTemplate.objects.filter(
             status=Status.VERVANGEN)
         even = week % 2 == 0
         student_templates = student_templates.filter(even=even)
@@ -305,7 +302,7 @@ def student_templates_view(request):
                                                  "location", LocatieEnum)
         handler.check_not_blank_required(data.get("name"), "name")
         handler.check_time_value_required(data.get("start_hour"), "start_hour")
-        handler.check_time_value_required(data.get("end_hour"),"end_hour")
+        handler.check_time_value_required(data.get("end_hour"), "end_hour")
         handler.check()
 
         location = LocatieEnum.objects.get(id=data["location"])
@@ -321,7 +318,8 @@ def student_templates_view(request):
             week=current_week
         )
 
-        add_if_match(get_current_week_planning().student_templates, new_template, current_week)
+        add_if_match(get_current_week_planning().student_templates,
+                     new_template, current_week)
         return Response({"message": "Success"})
 
 
@@ -463,8 +461,10 @@ def rondes_view(request, template_id):
             copy = make_copy(template, True, current_year, current_week)
             copy.rondes.add(ronde)
             copy.dag_planningen.add(*dag_planningen)
-            remove_if_match(get_current_week_planning().student_templates, template, current_week)
-            add_if_match(get_current_week_planning().student_templates, copy, current_week)
+            remove_if_match(get_current_week_planning().student_templates,
+                            template, current_week)
+            add_if_match(get_current_week_planning().student_templates, copy,
+                         current_week)
         return Response({"message": "Success"})
 
 
@@ -489,8 +489,10 @@ def ronde_view(request, template_id, ronde_id):
             copy = make_copy(template, True, current_year, current_week)
             copy.dag_planningen.remove(*to_remove)
             copy.rondes.remove(ronde)
-            remove_if_match(get_current_week_planning().student_templates, template, current_week)
-            add_if_match(get_current_week_planning().student_templates, copy, current_week)
+            remove_if_match(get_current_week_planning().student_templates,
+                            template, current_week)
+            add_if_match(get_current_week_planning().student_templates, copy,
+                         current_week)
         return Response({"message": "Success"})
 
 
@@ -534,7 +536,6 @@ def dagplanningen_view(request, template_id, ronde_id):
 @api_view(["DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
-
     template = StudentTemplate.objects.get(id=template_id)
 
     dag_planning = DagPlanning.objects.get(id=dag_id)

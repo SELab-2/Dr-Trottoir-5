@@ -7,10 +7,12 @@ from django.conf import settings
 from rest_framework import generics, status, serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
+from users.permissions import StudentReadOnly, AdminPermission, \
+    SuperstudentPermission
 
 from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer
+from .serializers import LocatieEnumSerializer, ManualSerializer, \
+    BuildingSerializer, RondeSerializer
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -123,7 +125,9 @@ class ManualListCreateView(generics.ListCreateAPIView):
         handler.check()
         return super().post(request, *args, **kwargs)
 
-class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class ManualRetrieveUpdateDestroyAPIView(
+    generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -135,7 +139,8 @@ class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
         id = self.kwargs['pk']
         try:
             manual = Manual.objects.get(id=id)
-            serializer = ManualSerializer(manual, data=request.data, partial=True)
+            serializer = ManualSerializer(manual, data=request.data,
+                                          partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             return Response(serializer.data)
@@ -144,7 +149,8 @@ class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
                 {
                     "errors": [
                         {
-                            "message": "referenced manual not in db", "field": "id"
+                            "message": "referenced manual not in db",
+                            "field": "id"
                         }
                     ]
                 }, code='invalid')
@@ -205,6 +211,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
         handler.check()
         return super().post(request, *args, **kwargs)
 
+
 class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BuildingSerializer
     permission_classes = [
@@ -214,7 +221,8 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         id = self.kwargs['pk']
         try:
             building = Building.objects.get(id=id)
-            serializer = BuildingSerializer(building, data=request.data, partial=True)
+            serializer = BuildingSerializer(building, data=request.data,
+                                            partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
             return Response({"succes": ["Updated building"]})
@@ -223,7 +231,8 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
                 {
                     "errors": [
                         {
-                            "message": "referenced building not in db", "field": "id"
+                            "message": "referenced building not in db",
+                            "field": "id"
                         }
                     ]
                 }, code='invalid')

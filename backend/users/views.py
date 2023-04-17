@@ -1,21 +1,20 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login, get_user_model, logout
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.middleware import csrf
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers, generics
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
-    UserPublicSerializer, UserSerializer
 
 from exceptions.exceptionHandler import ExceptionHandler
-from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, StudentPermission
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer, UserPublicSerializer, UserSerializer
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, \
+    StudentPermission
+from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
+    UserPublicSerializer, UserSerializer
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -242,7 +241,8 @@ def role_assignment_view(request):
                     }, code='not allowed')
 
             try:
-                user = get_user_model().objects.get(email=request.data['email'])
+                user = get_user_model().objects.get(
+                    email=request.data['email'])
             except get_user_model().DoesNotExist:
                 user = None
 
@@ -266,7 +266,8 @@ def role_assignment_view(request):
 
 class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [ReadOnly | StudentPermission | AdminPermission | SuperstudentPermission]
+    permission_classes = [
+        ReadOnly | StudentPermission | AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         try:
@@ -277,7 +278,8 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
                 {
                     "errors": [
                         {
-                            "message": "referenced user not in db", "field": "token"
+                            "message": "referenced user not in db",
+                            "field": "token"
                         }
                     ]
                 }, code='invalid')
@@ -294,7 +296,8 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
                 {
                     "errors": [
                         {
-                            "message": "referenced user not in db", "field": "token"
+                            "message": "referenced user not in db",
+                            "field": "token"
                         }
                     ]
                 }, code='invalid')
