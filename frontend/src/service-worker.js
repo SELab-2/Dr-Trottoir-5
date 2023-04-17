@@ -1,9 +1,12 @@
 import config from '@/config'
 import { registerRoute, Route } from 'workbox-routing';
-import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheFirst } from 'workbox-strategies';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {CacheableResponsePlugin} from 'workbox-cacheable-response';
 
+import {precacheAndRoute} from 'workbox-precaching';
+
+precacheAndRoute(self.__WB_MANIFEST);
 
 // todo check of alle pathnames wel kloppen
 
@@ -104,6 +107,22 @@ registerRoute(
     plugins: [
       new ExpirationPlugin({
         maxEntries: 60, //todo test of dit veel/weinig is
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+      }),
+      new CacheableResponsePlugin({
+        statuses: [0, 200]
+      })
+    ],
+  })
+);
+
+registerRoute(
+  ({url}) => url.pathname.startsWith(`${config.FRONTEND.URL}`),
+  new CacheFirst({
+    cacheName: 'everything',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 120, //todo test of dit veel/weinig is
         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
       }),
       new CacheableResponsePlugin({

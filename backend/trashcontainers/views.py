@@ -1,7 +1,7 @@
 from rest_framework import generics
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
-from .models import TrashContainer
+from .serializers import *
 from .serializers import TrashContainerSerializer
 from exceptions.exceptionHandler import ExceptionHandler
 from pickupdays.models import PickUpDay

@@ -10,7 +10,7 @@ import { AuthInterceptor } from "@/api/interceptors/AuthInterceptor";
 import config from "@/config";
 import { store } from '../../store';
 import router from "../../router";
-import {AuthLoginWrapper, AuthRegisterWrapper} from "@/api/wrappers/AuthWrappers";
+import {AuthForgotWrapper, AuthLoginWrapper, AuthRegisterWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
 import User from "@/api/models/User";
 
 class AuthService extends EchoService {
@@ -33,9 +33,27 @@ class AuthService extends EchoService {
   }
 
   /**
+   * Send an otp.
+   * @param body Email address
+   */
+  @POST("/forgot/")
+  forgot(@Body() body: AuthForgotWrapper): EchoPromise<string> {
+    return {} as EchoPromise<string>
+  }
+
+   /**
+   * Reset the users password
+   * @param body Email, new_password and otp
+   */
+  @POST("/reset/")
+  reset(@Body() body: AuthResetWrapper): EchoPromise<string> {
+    return {} as EchoPromise<string>
+  }
+
+  /**
    * Logout the current user.
    */
-  @POST("/logout")
+  @POST("/logout/")
   logout(): EchoPromise<string> {
     return {} as EchoPromise<string>;
   }
@@ -44,7 +62,7 @@ class AuthService extends EchoService {
    * Call the logout function and show the progress
    * @param goHome If the user should be send to the homepage after logging out.
    */
-  handleLogout(goHome = false) {
+  async handleLogout(goHome = false) {
     // Send loading message.
     store.dispatch("snackbar/open", {
       message: "Logging out...",
@@ -53,19 +71,17 @@ class AuthService extends EchoService {
     });
 
     this.logout()
-      .then((_) => {
+      .then(async (_) => {
         // Send confirmation message.
         store.dispatch("snackbar/open", {
-          message: "Successfully logged out",
+          message: "U bent uitgelogd",
           color: "success",
         });
-
-        if (goHome) {
-          router.push("/");
-        }
-
         // Update the current user inside the store.
-        store.dispatch("session/fetch");
+        store.dispatch("session/clear");
+        await store.dispatch("session/fetch");
+
+        await router.push(goHome ? "/" : "/login");
       })
       .catch((error) => {
         ErrorHandler.handle(error, {

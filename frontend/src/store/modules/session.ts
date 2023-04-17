@@ -28,14 +28,24 @@ export const session = {
      * Open a new modal.
      *
      * @param context
+     * @param args
      */
-    fetch(context: any) {
-      if (!context.getters.currentUser) {
+    fetch(context: any, args: {needsLogin}) {
+      if (context.state.currentUser === null) {
+        const style = args && args.needsLogin && args.needsLogin === true ? "SNACKBAR" : "NONE";
         context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
           id: "getUserError",
-          style: "SNACKBAR"
+          style: style
         }).catch(() => {}));
       }
+    },
+
+    /**
+     * Clear the currently stored user
+     * @param context
+     */
+    clear(context: any) {
+      if (context.state.currentUser !== null) context.state.currentUser = null;
     }
   },
 

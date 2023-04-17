@@ -13,6 +13,7 @@ class Registration(models.Model):
     email = models.EmailField(unique=True)
     first_name = models.TextField(default="")
     last_name = models.TextField(default="")
+    phone_nr = models.TextField(default="")
     password = models.CharField(max_length=30, default=None)
 
 
@@ -42,7 +43,7 @@ class RoleAssignment(models.Model):
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, password):
+    def create_user(self, email, first_name, last_name, phone_nr, password):
         if not email:
             raise serializers.ValidationError(
                 {
@@ -57,7 +58,8 @@ class CustomUserManager(BaseUserManager):
             email=self.normalize_email(email),
             username=email,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
+            phone_nr=phone_nr
         )
         user.set_password(password)
         user.save()
@@ -80,10 +82,13 @@ class User(AbstractUser):
         last_name: models.TextField
             Last name of user
 
+        phone_nr: models.TextField
+            Phone number of user
+
         role: models.CharField
             The role of the user e.g. Admin, Student,...
 
-        otp: models.CharFIeld
+        otp: models.CharField
             A one time password that is used when a user forgets his password.
 
         TODO location (ManyToMany)field for Students to know at which location they work
@@ -94,6 +99,7 @@ class User(AbstractUser):
     email = models.EmailField(verbose_name='email', unique=True)
     first_name = models.TextField()
     last_name = models.TextField()
+    phone_nr = models.TextField()
 
     role = models.CharField(
         max_length=2,
