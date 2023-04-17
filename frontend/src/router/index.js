@@ -7,6 +7,7 @@ import UsersView from '../views/UsersView.vue'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import CreateRoundView from "@/views/CreateRoundView.vue";
 import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
 import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
 import Unauthorized from "@/views/Unauthorized";
@@ -82,6 +83,11 @@ const routes = [
     path: '/dagplanning',
     name: 'dagplanning',
     component: DayPlanView
+  },
+  {
+    path: '/create_round',
+    name: 'create_round',
+    component: CreateRoundView
   },
   {
     path: '/unauthorized',
