@@ -10,6 +10,7 @@ import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import Building from "@/api/models/Building";
 import {RoundWrapper} from "@/api/wrappers/RoundWrapper";
+import Round from "@/api/models/Round";
 
 class RoundService extends EchoService {
   /**
@@ -42,6 +43,11 @@ class RoundService extends EchoService {
   @POST("/ronde/")
   createRound(@Body() body: RoundWrapper): EchoPromise<any> {
     return {} as EchoPromise<any>;
+  }
+
+  @GET("/ronde/")
+  getRondes(): EchoPromise<Round> {
+    return {} as EchoPromise<Round>;
   }
 
 }

@@ -1,13 +1,34 @@
-import {EchoPromise, EchoService, EchoServiceBuilder, GET} from "@/api/EchoFetch";
+import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, Path, POST} from "@/api/EchoFetch";
 import StudentTemplate from "@/api/models/StudentTemplate";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 
 class StudentTemplateService extends EchoService {
 
-@GET("/studenttemplates/")
+  @GET("/studenttemplates/")
   getStudentTemplates(): EchoPromise<StudentTemplate[]> {
     return {} as EchoPromise<StudentTemplate[]>;
+  }
+
+  @PATCH('/studenttemplates/{id}/')
+  updateStudentTemplate(@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+  @GET('/studenttemplates/{template_id}/')
+  getStudentTemplate(@Path('template_id') template_id: number): EchoPromise<StudentTemplate> {
+    return {} as EchoPromise<StudentTemplate>
+  }
+
+  @POST('/studenttemplates/{template_id}/rondes/')
+  addRound(@Path('template_id') template_id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+  @DELETE('/studenttemplates/{template_id}/rondes/{ronde_id}/')
+  removeRound(@Path('template_id') template_id: number,
+              @Path('ronde_id') ronde_id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>
   }
 }
 

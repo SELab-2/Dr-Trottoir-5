@@ -8,7 +8,7 @@
     </v-btn>
   </v-row>
   <StudentTemplateCard v-for="template in templates" :data="{
-      id: template.id,
+      template_id: template.id,
       name: template.name,
       location: template.location.name,
       even: template.even,

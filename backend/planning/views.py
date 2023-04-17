@@ -286,7 +286,6 @@ def student_template_view(request, template_id):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         data = request.data
-        permanent = data["permanent"]
 
         if "name" not in data:
             data["name"] = template.name
@@ -301,20 +300,26 @@ def student_template_view(request, template_id):
 
         if "start_hour" not in data:
             data["start_hour"] = template.start_hour
+        else:
+            start_hour = [int(t) for t in data["start_hour"].split(":")]
+            data["start_hour"] = datetime.time(start_hour[0], start_hour[1])
 
         if "end_hour" not in data:
             data["end_hour"] = template.end_hour
+        else:
+            end_hour = [int(t) for t in data["end_hour"].split(":")]
+            data["end_hour"] = datetime.time(end_hour[0], end_hour[1])
 
         validate_student_template_data(data)
 
         planning = get_current_week_planning()
 
-        if no_copy(template, permanent, current_year, current_week):
+        if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
             template.even = data["even"]
             template.location = data["location"]
-            template.start_hour = data["start_hour"],
-            template.end_hour = data["end_hour"],
+            #template.start_hour = data["start_hour"]
+            #template.end_hour = data["end_hour"],
             template.save()
             add_if_match(planning.student_templates, template, current_week)
             return Response({"message": "Success"})
