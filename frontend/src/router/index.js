@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: StudentHomeView
   },
   {
     path: '/student_home',
