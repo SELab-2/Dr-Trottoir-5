@@ -53,6 +53,8 @@ class Building(models.Model):
             Building database model.
             Attributes
             ----------
+            name : models.Textfield
+                The name of a building
             adres : models.Textfield
                 The adres of a building
             syndicus : models.TextField
@@ -72,6 +74,7 @@ class Building(models.Model):
             buildingID: UUID
                 unique identifier of a building to add people
     """
+    name = models.TextField()
     adres = models.TextField()
     syndicus = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -81,7 +84,8 @@ class Building(models.Model):
     ivago_klantnr = models.IntegerField()
     manual = models.ForeignKey(
         Manual,
-        on_delete=models.CASCADE, blank=True, null=True
+        on_delete=models.SET_NULL,
+        null=True
     )
     location = models.ForeignKey(
         LocatieEnum,

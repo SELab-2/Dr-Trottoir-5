@@ -1,12 +1,13 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
 import os
+
 from django.conf import settings
-from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer, \
-    BuildingSerializerFull
+from rest_framework import generics, status, serializers
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
+
+from .models import LocatieEnum, Manual, Building, Ronde
+from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -75,12 +76,30 @@ class ManualListCreateView(generics.ListCreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ManualRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class ManualRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
     """
-        View that deletes and gets a specific Location
+        View that gets, deletes and updates a specific Manual
     """
+
+    def partial_update(self, request, *args, **kwargs):
+        id = self.kwargs['pk']
+        try:
+            manual = Manual.objects.get(id=id)
+            serializer = ManualSerializer(manual, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            return Response(serializer.data)
+        except Manual.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced manual not in db", "field": "id"
+                        }
+                    ]
+                }, code='invalid')
 
     def delete(self, request, *args, **kwargs):
         id = self.kwargs['pk']
@@ -103,9 +122,27 @@ class BuildingListCreateView(generics.ListCreateAPIView):
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
 
-class BuildingRetrieveDestroyView(generics.RetrieveDestroyAPIView):
-    serializer_class = BuildingSerializerFull
+class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = BuildingSerializer
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+
+    def partial_update(self, request, *args, **kwargs):
+        id = self.kwargs['pk']
+        try:
+            building = Building.objects.get(id=id)
+            serializer = BuildingSerializer(building, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            return Response({"succes": ["Updated building"]})
+        except Building.DoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced building not in db", "field": "id"
+                        }
+                    ]
+                }, code='invalid')
 
     def get_queryset(self):
         id = self.kwargs['pk']
