@@ -23,6 +23,7 @@ import HomeView from "@/views/HomeView.vue";
 import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
 import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
 import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
+import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
 
 const routes = [
   {
@@ -160,6 +161,11 @@ const routes = [
     path: '/studenttemplates/:id',
     name: 'studenttemplate',
     component: StudentTemplateEditView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id',
+    name: 'ronde_dagplanningen',
+    component: RondeDagplanningenView
   }
 ]
 

@@ -2,6 +2,7 @@ import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, 
 import StudentTemplate from "@/api/models/StudentTemplate";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
+import DayPlanning from "@/api/models/Planning";
 
 class StudentTemplateService extends EchoService {
 
@@ -39,6 +40,12 @@ class StudentTemplateService extends EchoService {
   removeRound(@Path('template_id') template_id: number,
               @Path('ronde_id') ronde_id: number): EchoPromise<any> {
     return {} as EchoPromise<any>
+  }
+
+  @GET('/studenttemplates/{template_id}/rondes/{ronde_id}/dagplanningen/')
+  getDagPlanningen(@Path('template_id') template_id: number,
+              @Path('ronde_id') ronde_id: number): EchoPromise<DayPlanning> {
+    return {} as EchoPromise<DayPlanning>
   }
 }
 

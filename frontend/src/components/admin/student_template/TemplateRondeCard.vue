@@ -2,7 +2,6 @@
 <v-card
     class="mx-auto w-75 my-10"
     variant="outlined"
-    :to="`/studenttemplates/${data.template_id}`"
   >
     <v-card-item>
       <div>
@@ -20,8 +19,8 @@
     </v-card-item>
 
     <v-card-actions class="px-3 my-1 justify-space-between">
-      <v-btn variant="outlined" to="/unauthorized">
-        Dag planningen aanpassen
+      <v-btn variant="outlined" :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`">
+        Dagplanningen
       </v-btn>
       <v-btn @click="on_delete" variant="outlined">
         Verwijderen

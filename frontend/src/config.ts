@@ -21,7 +21,7 @@ export default {
     SU: ['admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round'],
     AD: [
       'admin_home', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round',
-      'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate'
+      'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen'
     ]
   }
 };

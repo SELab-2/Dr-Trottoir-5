@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
 
 from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer
+from .serializers import *
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
