@@ -1,12 +1,13 @@
-from rest_framework import generics, status, serializers
-from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
 import os
+
 from django.conf import settings
-from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer, \
-    BuildingSerializerFull
+from rest_framework import generics, status, serializers
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
+
+from .models import LocatieEnum, Manual, Building, Ronde
+from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
