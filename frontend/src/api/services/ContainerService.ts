@@ -13,7 +13,9 @@ class ContainerService extends EchoService {
    * Get a day planning.
    */
   @GET("/containers/")
-  get(@Query('building') building: string): EchoPromise<any> {
+  get(@Query('building') building: string,
+      @Query('year') year: number,
+      @Query('week') week: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

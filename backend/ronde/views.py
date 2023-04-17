@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission
 
 from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer
+from .serializers import LocatieEnumSerializer, ManualSerializer, BuildingSerializer, RondeSerializer, \
+    BuildingSerializerFull
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -123,7 +124,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
 
 
 class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = BuildingSerializer
+    serializer_class = BuildingSerializerFull
     permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def partial_update(self, request, *args, **kwargs):

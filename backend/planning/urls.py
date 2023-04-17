@@ -7,6 +7,8 @@ urlpatterns = [
     path("infoperbuilding/", views.InfoPerBuildingCLAPIView.as_view()),
     path("infoperbuilding/<int:pk>/", views.InfoPerBuildingRUDAPIView.as_view()),
     path("weekplanning/<int:year>/<int:week>/", views.week_planning_view),
+    path("dagplanning/<int:year>/<int:week>/<int:day>/", views.student_dayplan),
+    path("dagplanning/<int:pk>/", views.DagPlanningRetrieveUpdateAPIView.as_view()),
     path("studenttemplates/", views.student_templates_view),
     path("studenttemplates/<int:template_id>/", views.student_template_view),
     path("studenttemplates/<int:template_id>/rondes/", views.rondes_view),

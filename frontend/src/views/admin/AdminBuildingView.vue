@@ -118,15 +118,10 @@ export default {
         this.name = result.name
         this.adres = result.adres
         this.ivago_klantnr = result.ivago_klantnr
+
         if (result.manual != null) {
-          await RequestHandler.handle(BuildingService.getManualById(result.manual), {
-            id: 'getManualByBuildingError',
-            style: 'SNACKBAR'
-          }).then(manual => {
-            this.manual = manual
-            // Fixes the correct url to open the file
-            this.manual.file = this.manual.file.substring(this.manual.file.indexOf('/api/'))
-          })
+          this.manual = result.manual;
+          this.manual.file = this.manual.file.substring(this.manual.file.indexOf('/api/'))
         } else {
           this.$store.dispatch("snackbar/open", {
             message: "Het gebouw heeft geen handleiding.",

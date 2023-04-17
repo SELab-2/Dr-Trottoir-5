@@ -1,84 +1,42 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from .serializers import *
-from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
-import datetime
-from trashtemplates.models import Status
-from ronde.models import LocatieEnum, Ronde
-from ronde.serializers import RondeSerializer
 from pickupdays.models import WeekDayEnum
-from .util import *
-from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
-
+from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from ronde.models import LocatieEnum, Ronde
+from ronde.serializers import RondeSerializer
+from trashtemplates.models import Status
+from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
+from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPermission, StudentPermission
+
+from .util import *
 
 
-class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
-    queryset = DagPlanning.objects.all()
-    serializer_class = DagPlanningSerializer
-    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
+@api_view(["GET"])
+@permission_classes([StudentPermission])
+def student_dayplan(request, year, week, day):
+    if request.method == "GET":
+        if day < 0 or day > 6:
+            return Response(status=400)
+        days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+        day_name = days[day]
 
-    def get(self, request, *args, **kwargs):
-        student = request.query_params['student'] if 'student' in request.query_params else None
-        date = request.query_params['date'] if 'date' in request.query_params else None
+        templates = StudentTemplate.objects.filter(year=year, week=week)
+        dayplan = None
+        for template in templates:
+            for plan in template.dag_planningen.all():
+                if plan.time.day == day_name and request.user in plan.students.all():
+                    dayplan = plan
+                    break
 
-        if student is not None and date is not None:
-            try:
-                dagPlanning = DagPlanning.objects.get(student=student, date=date)
-                return Response(DagPlanningSerializerFull(dagPlanning).data)
-            except DagPlanning.DoesNotExist:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [
-                            {
-                                "message": "referenced pk not in db", "field": "dagPlanning"
-                            }
-                        ]
-                    }, code='invalid')
-        elif student is not None:
-            try:
-                dagPlanning = DagPlanning.objects.get(student=student)
-                return Response(DagPlanningSerializerFull(dagPlanning).data)
-            except DagPlanning.DoesNotExist:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [
-                            {
-                                "message": "referenced pk not in db", "field": "dagPlanning"
-                            }
-                        ]
-                    }, code='invalid')
+        if dayplan is None:
+            return Response(status=404)
 
-        return super().get(request=request, args=args, kwargs=kwargs)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            WeekPlanning.objects.get(pk=request.data["weekPlanning"])
-            ronde = Ronde.objects.get(pk=request.data["ronde"])
-            response = super().post(request=request, args=args, kwargs=kwargs)
-            dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
-
-            # Make a list of InfoPerBuilding and statuses
-            for _ in ronde.buildings.all():
-                InfoPerBuilding(dagPlanning=dagPlanning).save()
-                dagPlanning.status.append('NS')
-            dagPlanning.save()
-            return response
-        except WeekPlanning.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced pk not in db", "field": "weekPlanning"
-                        }
-                    ]
-                }, code='invalid')
-        except Exception:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        data = DagPlanningSerializerFull(dayplan).data
+        return Response(data)
 
 
-class DagPlanningRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]

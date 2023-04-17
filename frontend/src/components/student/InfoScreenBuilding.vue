@@ -2,7 +2,7 @@
   <v-container align="center">
     <v-card max-width="750px">
       <div align="center">
-        <h1>{{ building.location.name }}</h1>
+        <h1>{{ building.name }}</h1>
         <v-container>
           <v-img style="max-height: 30vh;" src=""></v-img>
         </v-container>
