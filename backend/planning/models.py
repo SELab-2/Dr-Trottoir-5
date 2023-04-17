@@ -32,6 +32,21 @@ class DagPlanning(models.Model):
         on_delete=models.DO_NOTHING
     )
 
+    class StatusEnum(models.TextChoices):
+        """
+        enum for type of status
+        """
+        NOT_STARTED = "NS", "Not started"
+        STARTED = "ST", "Started"
+        FINISHED = "FI", "Finished"
+
+    status = ArrayField(
+        models.CharField(
+            max_length=2,
+            choices=StatusEnum.choices
+        ), default=list
+    )
+
 
 class StudentTemplate(models.Model):
     """
@@ -91,21 +106,6 @@ class StudentTemplate(models.Model):
     week = models.IntegerField()
     rondes = models.ManyToManyField(Ronde, blank=True)
     dag_planningen = models.ManyToManyField(DagPlanning, blank=True)
-
-    class StatusEnum(models.TextChoices):
-        """
-        enum for type of status
-        """
-        NOT_STARTED = "NS", "Not started"
-        STARTED = "ST", "Started"
-        FINISHED = "FI", "Finished"
-
-    status = ArrayField(
-        models.CharField(
-            max_length=2,
-            choices=StatusEnum.choices
-        ), default=list
-    )
 
 
 class WeekPlanning(models.Model):

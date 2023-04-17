@@ -3,6 +3,8 @@ from trashtemplates.models import Status, TrashContainerTemplate
 from pickupdays.models import PickUpDay
 import datetime
 
+from ronde.models import Ronde
+
 
 def filter_templates(templates):
     """
@@ -53,6 +55,7 @@ def get_current_week_planning():
     student_templates = filter_templates(StudentTemplate.objects.all()).filter(even=even)
     planning.trash_templates.set(trash_templates)
     planning.student_templates.set(student_templates)
+    planning.save()
     return planning
 
 
@@ -65,11 +68,18 @@ def make_dag_planning(data):
         start_hour=data["start_hour"],
         end_hour=data["end_hour"]
     )
+    ronde = Ronde.objects.get(id=data["ronde"])
     dag_planning, _ = DagPlanning.objects.get_or_create(
         ronde_id=data["ronde"],
         time=pickup_day
     )
+
+    for _ in ronde.buildings.all():
+        InfoPerBuilding(dagPlanning=dag_planning, date=datetime.datetime.now()).save()
+        dag_planning.status.append('NS')
+
     dag_planning.students.set(data["students"])
+    dag_planning.save()
     return dag_planning
 
 
