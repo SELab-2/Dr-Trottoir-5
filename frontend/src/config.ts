@@ -18,7 +18,7 @@ export default {
       'student_post_view', 'building_info', 'building_student'
     ],
     SY: ['syndicus_home', 'account', 'unauthorized', 'home'],
-    SU: ['admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location'],
-    AD: ['admin_home', 'account', 'unauthorized', 'home', 'create_building', 'create_location']
+    SU: ['admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round'],
+    AD: ['admin_home', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round']
   }
 };

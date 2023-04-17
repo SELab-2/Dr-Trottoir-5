@@ -19,12 +19,13 @@ import StudentPostView from "@/views/StudentPostView";
 import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
+import HomeView from "@/views/HomeView.vue";
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: StudentHomeView
+    component: HomeView
   },
   {
     path: '/student_home',
