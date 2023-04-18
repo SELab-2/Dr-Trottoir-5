@@ -7,10 +7,56 @@ import {
   FormMultipart,
   FormField, GET, Path, DELETE, PATCH
 } from "@/api/EchoFetch";
-import Building from "@/api/models/Building";import config from "@/config";
+import Building from "@/api/models/Building";
+import BuildingManual from "@/api/models/BuildingManual";
+import config from "@/config";
+import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 import {InputFields} from "@/types/fields/InputFields";
 
 class BuildingService extends EchoService {
+  /**
+   * Add building manual
+   */
+  @FormMultipart()
+  @POST('/ronde/building/manual/')
+  createManual(@FormField('file') file: File,
+               @FormField('fileType') fileType: string,
+               @FormField('manualStatus') manualStatus: BuildingManualStatus): EchoPromise<BuildingManual> {
+    return {} as EchoPromise<BuildingManual>
+  }
+
+  /**
+   * Get building manual
+   */
+  @GET('/ronde/building/manual/{id}')
+  getManualById(@Path('id') id: number): EchoPromise<BuildingManual> {
+    return {} as EchoPromise<BuildingManual>
+  }
+
+  /**
+   * Delete building manual
+   */
+  @DELETE('/ronde/building/manual/{id}')
+  deleteManualById(@Path('id') id: number): EchoPromise<void> {
+    return {} as EchoPromise<void>
+  }
+
+  /**
+   * Update a building manual
+   */
+  @PATCH('/ronde/building/manual/{id}/')
+  updateManualStatusById(@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+  @FormMultipart()
+  @PATCH('/ronde/building/manual/{id}/')
+  updateManualFileById(@Path('id') id: number,
+                       @FormField('file') file: File,
+                       @FormField('fileType') fileType: string,
+                       @FormField('manualStatus') manualStatus: BuildingManualStatus): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
 
   /**
    * Create a new building

@@ -1,28 +1,48 @@
 import {
   Body,
-  DELETE,
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
   GET,
-  PATCH,
-  POST,
-  Query
+  Path, POST
 } from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
-import DayPlanning from "@/api/models/Planning";
 import Building from "@/api/models/Building";
 import Round from "@/api/models/Round";
+import {RoundWrapper} from "@/api/wrappers/RoundWrapper";
 
-class PlanningService extends EchoService {
+class RoundService extends EchoService {
   /**
-   * Get a day planning.
+   * Get a building by id
    */
-  @GET("/planning/dagplanning/")
-  get(@Query('student') student: string,
-      @Query('date') date: string): EchoPromise<DayPlanning> {
-    return {} as EchoPromise<DayPlanning>;
+  @GET("/ronde/building/{id}")
+  getBuilding(@Path('id') id: number): EchoPromise<Building> {
+    return {} as EchoPromise<Building>;
+  }
+
+  /**
+   * Get all locations
+   */
+  @GET("/ronde/locatie")
+  getLocations(): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Get all buildings
+   */
+  @GET("/ronde/building")
+  getBuildings(): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Create new round
+   */
+  @POST("/ronde/")
+  createRound(@Body() body: RoundWrapper): EchoPromise<any> {
+    return {} as EchoPromise<any>;
   }
 
   /**
@@ -38,4 +58,4 @@ class PlanningService extends EchoService {
 export default new EchoServiceBuilder()
   .setBaseUrl(config.BACKEND.URL)
   .addInterceptor(new AuthInterceptor())
-  .build(PlanningService);
+  .build(RoundService);

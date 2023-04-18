@@ -55,6 +55,7 @@ def login_view(request):
                 key=settings.SIMPLE_JWT['AUTH_COOKIE'],
                 value=data["access"],
                 expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
@@ -63,6 +64,7 @@ def login_view(request):
                 key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
                 value=data["refresh"],
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
@@ -105,6 +107,7 @@ def registration_view(request):
                 key=settings.SIMPLE_JWT['AUTH_COOKIE'],
                 value=str(refresh.access_token),
                 expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
@@ -113,6 +116,7 @@ def registration_view(request):
                 key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
                 value=str(refresh),
                 expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
@@ -130,8 +134,8 @@ def forgot_password(request):
         Send an email with an otp when forgot password is used.
     """
     email = request.data['email']
-    user = get_user_model().objects.get(email=email)
     if get_user_model().objects.filter(email=email).exists():
+        user = get_user_model().objects.get(email=email)
         send_mail(
             subject='Nieuw wachtwoord voor Dr Trottoir.',
             message=f'{user.otp}',  # TODO  email text schrijven
@@ -196,7 +200,10 @@ def role_assignment_view(request):
                         "errors": [{"message": "Superstudent can't make someone Admin", "field": "role"}]
                     }, code='not allowed')
 
-            user = get_user_model().objects.get(email=request.data['email'])
+            try:
+                user = get_user_model().objects.get(email=request.data['email'])
+            except get_user_model().DoesNotExist:
+                user = None
 
             if not user:
                 raise serializers.ValidationError(
@@ -214,7 +221,7 @@ def role_assignment_view(request):
 
 class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+    permission_classes = [ReadOnly | StudentPermission | AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         try:
