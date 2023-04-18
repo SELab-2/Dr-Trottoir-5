@@ -90,6 +90,7 @@ class RondeSerializer(serializers.ModelSerializer):
 
 class RondeRelatedFieldSerializer(serializers.ModelSerializer):
     location = LocatieRelatedField(read_only=True)
+
     class Meta:
         model = Ronde
         fields = '__all__'

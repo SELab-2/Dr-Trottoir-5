@@ -319,8 +319,8 @@ def student_template_view(request, template_id):
             template.name = data["name"]
             template.even = data["even"]
             template.location = data["location"]
-            #template.start_hour = data["start_hour"]
-            #template.end_hour = data["end_hour"],
+            # template.start_hour = data["start_hour"]
+            # template.end_hour = data["end_hour"],
             template.save()
             add_if_match(planning.student_templates, template, current_week)
             return Response(response)
