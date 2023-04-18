@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Gebouwen" :head-component="headComponent" key-value="gebouw"/>
+  <ListPage :add-function="addBuilding" :child-component="childComponent" :elements="elements" title="Gebouwen" :head-component="headComponent" key-value="name"/>
 </template>
 
 <script>
@@ -7,20 +7,21 @@ import ListPage from '@/components/admin/ListPage'
 import BuildingCard from '@/components/admin/BuildingCard'
 import BuildingHeader from '@/components/admin/BuildingHeader'
 import {RequestHandler} from "@/api/RequestHandler";
-import EmailTemplateService from "@/api/services/EmailTemplateService";
 import BuildingService from "@/api/services/BuildingService";
+import router from "@/router";
 export default {
   name: 'BuildingList',
   components: { ListPage },
   data () {
     return {
       childComponent: BuildingCard,
-      elements: [
-        { gebouw: 'Gebouw A', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Klaar', efficiency: 60 },
-        { gebouw: 'Gebouw B', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Update nodig', efficiency: 20 },
-        { gebouw: 'Gebouw C', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Klaar', efficiency: 90 }
-      ],
+      elements: [],
       headComponent: BuildingHeader
+    }
+  },
+  methods: {
+    addBuilding : function () {
+      router.push({ path: '/building/create'});
     }
   },
   async beforeMount() {

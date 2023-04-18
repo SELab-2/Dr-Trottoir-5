@@ -14,9 +14,11 @@ Heeft als nodige argumenten nodig:
     <v-row class="text-center">
       <v-col cols="12">
         <v-row class="pa-5">
-            <h1>{{ title }}</h1>
+            <h1>{{ this.title }}</h1>
           <v-row></v-row>
-            <NormalButton text="+" v-bind:parent-function="addFunction"/>
+            <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+              <NormalButton text="+" v-bind:parent-function="addFunction"/>
+            </div>
         </v-row>
       </v-col>
       <v-col cols="12">

@@ -111,7 +111,7 @@ export default {
       searched: '',
       key: this.keyValue
     }
-  }
+  },
 }
 </script>
 

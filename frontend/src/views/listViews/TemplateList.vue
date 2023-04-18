@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" key-value="name"/>
+  <ListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" key-value="name"/>
 </template>
 
 <script>
@@ -8,6 +8,7 @@ import TemplateMailCard from '@/components/admin/TemplateMailCard'
 import TemplateMailCardHeader from '@/components/admin/TemplateMailCardHeader'
 import {RequestHandler} from "@/api/RequestHandler";
 import EmailTemplateService from "@/api/services/EmailTemplateService";
+import router from "@/router";
 
 export default {
   name: 'TemplateList',
@@ -17,6 +18,11 @@ export default {
       childComponent: TemplateMailCard,
       headComponent: TemplateMailCardHeader,
       elements: []
+    }
+  },
+  methods: {
+    addMethod: function () {
+      router.push({ path: '/mail-template/create' })
     }
   },
   async beforeMount() {

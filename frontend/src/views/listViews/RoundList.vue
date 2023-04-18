@@ -1,5 +1,5 @@
 <template>
-  <RoundListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Rondes" key-value="name" />
+  <RoundListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Rondes" key-value="name" />
 </template>
 
 <script>
@@ -9,37 +9,32 @@ import ListBuildings from '@/components/admin/ListBuildings'
 import {RequestHandler} from "@/api/RequestHandler";
 import UserService from "@/api/services/UserService";
 import RoundService from "@/api/services/RoundService";
+import BuildingService from "@/api/services/BuildingService";
+import router from "@/router";
 export default {
   name: 'RoundList',
   components: {ListPage, RoundListPage },
   data () {
     return {
       childComponent: ListBuildings,
-      elements: [
-        {
-          name: 'Ronde 1',
-          buildings: [
-            { gebouw: 'Gebouw A', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Klaar' },
-            { gebouw: 'Gebouw B', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Update nodig' }
-          ]
-        },
-        {
-          name: 'Ronde 2',
-          buildings: [
-            { gebouw: 'Gebouw A', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Klaar' },
-            { gebouw: 'Gebouw B', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Update nodig' },
-            { gebouw: 'Gebouw C', adres: 'Zwijnaarde straat 40, 9052 Gent', status: 'Klaar' }
-          ]
-        },
-      ]
+      elements: []
+    }
+  },
+  methods: {
+    addMethod: function () {
+      router.push({ path: '/create_round'});
     }
   },
   async beforeMount () {
     await RequestHandler.handle(RoundService.getRounds(), {id: 'getRounds', style: 'SNACKBAR'})
       .then(async result => {
-        for (const round in result) {
-          this.elements.push(round)
+        this.elements = result
+        for (const el of this.elements) {
+          for (let building of el.buildings) {
+            await RequestHandler.handle(BuildingService.getBuildingById(building)).then(async resultBuilding => building = resultBuilding)
+          }
         }
+        console.log(this.elements)
     })
   }
 }

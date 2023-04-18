@@ -24,8 +24,9 @@ export default {
     this.headComponent.props.student = false
     await RequestHandler.handle(UserService.getUsers(), {id: 'getUsers', style: 'SNACKBAR'})
       .then(async result => {
-        for (const user in result) {
-          if (user.role === "SY"){
+        for (const user of result) {
+          if (user.role === "AD"){
+            console.log(user)
             this.elements.push(user)
           }
         }

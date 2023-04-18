@@ -23,6 +23,7 @@
 <script>
 import EditIcon from '../icons/EditIcon.vue'
 import DeleteIcon from '../icons/DeleteIcon.vue'
+import MailTemplate from "@/api/models/MailTemplate";
 
 /**
  * TemplateMailCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -34,8 +35,8 @@ export default {
   name: 'TemplateMailCard',
   props: {
     data: {
-      type: Object,
-      default: () => ({ name: 'Empty', argsCount: 0 })
+      type: MailTemplate,
+      required: true
     }
   },
   methods: {
