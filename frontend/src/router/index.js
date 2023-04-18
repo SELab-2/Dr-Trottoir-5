@@ -20,6 +20,7 @@ import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import AdminStudentChangeUser from "@/views/AdminStudentChangeUser";
 
 const routes = [
   {
@@ -142,6 +143,12 @@ const routes = [
     path: '/account',
     name: 'account',
     component: AccountView
+  },
+  {
+    path: '/gebruiker/:id',
+    name: 'adjust_user',
+    props: true,
+    component: AdminStudentChangeUser
   }
 ]
 

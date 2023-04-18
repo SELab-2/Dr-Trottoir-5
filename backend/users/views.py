@@ -219,6 +219,45 @@ def role_assignment_view(request):
         return Response(data)
 
 
+class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AdminPermission | SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        id = self.kwargs['pk']
+        try:
+            user = get_user_model().objects.get(id=id)
+            return Response(UserSerializer(user).data)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced user not in db", "field": "token"
+                        }
+                    ]
+                }, code='invalid')
+
+    def partial_update(self, request, *args, **kwargs):
+        id = self.kwargs['pk']
+        try:
+            user = get_user_model().objects.get(id=id)
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            return Response({"succes": ["Updated user"]})
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError(
+                {
+                    "errors": [
+                        {
+                            "message": "referenced user not in db", "field": "token"
+                        }
+                    ]
+                }, code='invalid')
+
+
 class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [ReadOnly | StudentPermission | AdminPermission | SuperstudentPermission]
