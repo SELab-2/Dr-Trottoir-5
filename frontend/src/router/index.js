@@ -149,23 +149,23 @@ const routes = [
     component: AccountView
   },
   {
-    path: '/gebouwen',
-    name: 'gebouwen',
+    path: '/buildings',
+    name: 'buildings',
     component: BuildingList
   },
   {
-    path: '/rondes',
-    name: 'rondes',
+    path: '/rounds',
+    name: 'rounds',
     component: RoundList
   },
   {
-    path: '/studenten',
-    name: 'studenten',
+    path: '/students',
+    name: 'students',
     component: StudentList
   },
   {
-    path: '/syndicussen',
-    name: 'syndicussen',
+    path: '/syndicusen',
+    name: 'syndicusen',
     component: SyndicusList
   },
   {

@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Studenten" :head-component="headComponent" key-value="first_name"/>
+  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Studenten" :head-component="headComponent" :keys="keys"/>
 </template>
 
 <script>
@@ -17,6 +17,7 @@ export default {
     return {
       childComponent: StudentCard,
       elements: [],
+      keys: ['first_name', 'last_name', 'phone_nr', 'email'],
       headComponent: PersonHeader
     }
   },

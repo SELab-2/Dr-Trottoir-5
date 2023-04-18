@@ -22,7 +22,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col cols="12">
-        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:keyChange="onKeyChange" :elements="elements" :key-value="key"/>
+        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:keyChange="onKeyChange" :elements="elements" :keys="keys"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -75,10 +75,10 @@ export default {
       default: () => [],
       required: true
     },
-    keyValue: {
-      type: String,
-      required: true,
-      default: 'name'
+    keys: {
+      type: Array,
+      default: () => ['default'],
+      required: true
     }
   },
   methods: {
@@ -95,6 +95,7 @@ export default {
       if (this.key !== 'key'){
         const regex = new RegExp(this.searched, 'ig')
           for (const el of this.elements) {
+            console.log(el)
             if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
               filtered.push(el)
             }
@@ -106,7 +107,7 @@ export default {
   data () {
     return {
       searched: '',
-      key: this.keyValue
+      key: this.keys[0]
     }
   }
 }

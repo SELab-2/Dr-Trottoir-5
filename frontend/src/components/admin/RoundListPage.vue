@@ -20,7 +20,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col cols="12">
-        <RoundSearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements" :key-value="this.key"/>
+        <RoundSearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements" :keys="this.keys"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -73,9 +73,9 @@ export default {
       default: () => [],
       required: true
     },
-    keyValue: {
-      type: String,
-      default: '',
+    keys: {
+      type: Array,
+      default: () => ['default'],
       required: true
     }
   },
@@ -85,23 +85,20 @@ export default {
     },
     onKeyChange (newValue) {
       this.key = newValue
-      console.log(this.key)
     }
   },
   computed: {
     filteredOptions () {
       const filtered = []
       const regex = new RegExp(this.searched, 'ig')
-      for (const el of this.elements) {
-        if (this.key !== 'name') {
-          if (el.buildings.filter(value => value[this.key].toString().match(regex)).length !== 0) {
+      if (this.key === 'roundName') {
+        for (const el of this.elements) {
+          if (this.searched.length < 1 || el['name'].toString().match(regex)) {
             filtered.push(el)
           }
-        } else {
-            if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
-              filtered.push(el)
-            }
-          }
+        }
+      } else {
+          return this.elements
       }
       return filtered
     }
@@ -109,7 +106,7 @@ export default {
   data () {
     return {
       searched: '',
-      key: this.keyValue
+      key: this.keys[0]
     }
   },
 }

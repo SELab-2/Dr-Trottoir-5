@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     filteredOptions () {
-      if (this.keyValue !== 'title'){
+      if (this.keyValue !== 'roundName'){
         const filtered = []
         const regex = new RegExp(this.searched, 'ig')
         for (const el of this.buildings) {

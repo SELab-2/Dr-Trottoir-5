@@ -1,5 +1,5 @@
 <template>
-  <RoundListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Rondes" key-value="name" />
+  <RoundListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Rondes" :keys="keys" />
 </template>
 
 <script>
@@ -17,7 +17,8 @@ export default {
   data () {
     return {
       childComponent: ListBuildings,
-      elements: []
+      elements: [],
+      keys: ['roundName', 'name', 'adres', 'manual']
     }
   },
   methods: {
@@ -34,7 +35,6 @@ export default {
             await RequestHandler.handle(BuildingService.getBuildingById(building)).then(async resultBuilding => building = resultBuilding)
           }
         }
-        console.log(this.elements)
     })
   }
 }

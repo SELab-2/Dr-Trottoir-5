@@ -40,7 +40,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
-              v-for="property in ['title'].concat(Object.keys(elements[0].buildings[0]))"
+              v-for="property in this.keys"
               :key="property"
               :value="property"
               @click="changeKey(property)"
@@ -57,6 +57,11 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 <script>
 import NormalButton from '@/components/NormalButton'
 import { capitalize } from 'vue'
+import Building from "@/api/models/Building";
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+
+// TODO: fix search
 
 export default {
   name: 'SearchDropdown',
@@ -77,9 +82,9 @@ export default {
       required: false,
       default: 'Search ...'
     },
-    keyValue: {
-      type: String,
-      default: '',
+    keys: {
+      type: Array,
+      default: () => [],
       required: true
     }
   },
@@ -92,8 +97,9 @@ export default {
       selected: '',
       optionsShown: false,
       searchFilter: '',
-      key: this.keyValue,
-      isSmallScreen: false
+      key: this.keys[0],
+      isSmallScreen: false,
+      buildings: []
     }
   },
   created () {
@@ -104,16 +110,17 @@ export default {
     filteredOptions () {
       const filtered = []
       const regex = new RegExp(this.searchFilter, 'ig')
-      for (const option of this.elements) {
-        if (this.key !== 'name') {
-          for (const el of option.buildings) {
-            const value = el[this.key].toString()
-            if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
-              filtered.push(value)
-            }
+      if (this.key !== 'roundName') {
+        for (const el of this.buildings) {
+          console.log(el)
+          const value = el[this.key].toString()
+          if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
+            filtered.push(value)
           }
-        } else {
-          const value = option[this.key].toString()
+        }
+      } else {
+        for (const option of this.elements) {
+          const value = option['name'].toString()
           if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
             filtered.push(value)
           }
@@ -155,6 +162,14 @@ export default {
         } else {
           this.exit()
         }
+      }
+    }
+  },
+  updated() {
+    console.log(this.elements)
+    for (const round of this.elements) {
+      for (const id of round.buildings) {
+        RequestHandler.handle(BuildingService.getBuildingById(id)).then(async result => this.buildings.push(result))
       }
     }
   }

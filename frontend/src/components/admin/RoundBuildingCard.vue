@@ -54,6 +54,7 @@ import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
 import Building from "@/api/models/Building";
+import router from "@/router";
 /**
  * RoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String
@@ -70,13 +71,7 @@ export default {
     }
   },
   data: () => ({
-    status: '',
-    documentStatus: [
-      { title: 'Klaar' },
-      { title: 'Update nodig' },
-      { title: 'Bezig' },
-      { title: 'Geüpdatet' }
-    ] // TODO + updaten in database
+    status: ''
   }),
   methods: {
     deletePost: function () {
@@ -93,7 +88,7 @@ export default {
       // TODO opslaan in database
     },
     goToBuildingPage: function () {
-      // TODO
+      router.push({ path: 'building/' + this.data.id })
     }
   },
   async mounted () {

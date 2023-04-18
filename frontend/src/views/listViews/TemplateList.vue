@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" key-value="name"/>
+  <ListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" :keys="keys"/>
 </template>
 
 <script>
@@ -17,7 +17,8 @@ export default {
     return {
       childComponent: TemplateMailCard,
       headComponent: TemplateMailCardHeader,
-      elements: []
+      elements: [],
+      keys: ['name']
     }
   },
   methods: {

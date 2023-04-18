@@ -26,7 +26,6 @@ export default defineComponent({
     const router = useRouter();
 
     router.beforeEach( async (to, from, next) => {
-      console.log(to.name)
       const needsLogin = !noLogin.includes(to.name.toString());
       // Authorize session
       await this.$store.dispatch("session/fetch", {

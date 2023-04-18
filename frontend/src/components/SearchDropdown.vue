@@ -40,7 +40,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
-              v-for="property in Object.keys(elements[0])"
+              v-for="property in this.keys"
               :key="property"
               :value="property"
               @click="changeKey(property)"
@@ -72,15 +72,15 @@ export default {
       default: () => [],
       required: true
     },
+    keys: {
+      type: Array,
+      default: () => ['default'],
+      required: true
+    },
     placeholder: {
       type: String,
       required: false,
       default: 'Search ...'
-    },
-    keyValue: {
-      type: String,
-      required: true,
-      default: 'name'
     }
   },
   setup () {
@@ -93,7 +93,7 @@ export default {
       optionsShown: false,
       searchFilter: '',
       isSmallScreen: false,
-      key: this.keyValue
+      key: this.keys[0]
     }
   },
   created () {
