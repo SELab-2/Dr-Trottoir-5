@@ -77,7 +77,7 @@ def make_dag_planning(data):
     for _ in ronde.buildings.all():
         InfoPerBuilding(dagPlanning=dag_planning, date=datetime.datetime.now()).save()
         dag_planning.status.append('NS')
-    print(data["students"])
+
     dag_planning.students.set(data["students"])
     dag_planning.save()
     return dag_planning

@@ -56,12 +56,11 @@ export default {
           id: 'deleteRound',
           style: 'SNACKBAR'
       })
-      this.$emit('round_removed')
       if (response["new_id"] !== undefined) {
         const new_id = response["new_id"]
         this.$emit('copy', new_id)
-        await router.replace({path: `/studenttemplates/${new_id}`})
       }
+      this.$emit('round_removed')
     }
   }
 }

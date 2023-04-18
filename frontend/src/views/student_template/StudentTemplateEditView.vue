@@ -191,6 +191,7 @@ export default {
       if (index > -1) {
         this.rondes.splice(index, 1);
       }
+
     }
   }
 }

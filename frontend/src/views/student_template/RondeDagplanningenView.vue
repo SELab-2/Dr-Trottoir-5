@@ -7,8 +7,7 @@
         Terug
     </v-btn>
   </v-row>
-
-  <DagPlanningCard v-for="dagplanning in dagplanningen" :data="{
+  <DagPlanningCard @remove="remove_dagplanning" v-for="dagplanning in dagplanningen" :data="{
     template_id: this.template_id,
     ronde_id: this.ronde_id,
     status: this.status,
@@ -18,17 +17,25 @@
     start_hour: dagplanning.time.start_hour,
     end_hour: dagplanning.time.end_hour
   }"></DagPlanningCard>
+  <v-row class=" align-center justify-center pb-15">
+    <v-col cols="12" sm="3" md="3">
+      <NormalButton text="Nieuwe dagplanning aanmaken" :to="`/studenttemplates/${this.template_id}/ronde/${this.ronde_id}/add`" block></NormalButton>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import DagPlanningCard from "@/components/admin/student_template/DagPlanningCard.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
+import NormalButton from "@/components/NormalButton.vue";
+import router from "@/router";
 
 export default {
   name: "RondeDagplanningenView",
   components: {
-    DagPlanningCard
+    DagPlanningCard,
+    NormalButton
   },
   data: () => ({
     template_id: 0,
@@ -59,6 +66,18 @@ export default {
       id: 'getDagplanningenError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
+  },
+  methods: {
+    async remove_dagplanning(new_template_id) {
+      if(new_template_id === undefined) new_template_id = this.template_id
+
+      this.template_id = new_template_id
+      this.dagplanningen = await RequestHandler.handle(StudentTemplateService.getDagPlanningen(this.template_id, this.ronde_id), {
+        id: 'getDagplanningenError',
+        style: 'SNACKBAR'
+      }).then(result => result).catch(() => []);
+      return await router.replace({path: `/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`})
+    }
   }
 }
 </script>

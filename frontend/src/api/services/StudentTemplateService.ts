@@ -59,6 +59,14 @@ class StudentTemplateService extends EchoService {
               @Path('dag_id') dag_id: number, @Body() body: {}): EchoPromise<any> {
     return {} as EchoPromise<any>
   }
+
+  @DELETE('/studenttemplates/{template_id}/dagplanningen/{dag_id}/')
+  deleteDagPlanning(@Path('template_id') template_id: number,
+              @Path('dag_id') dag_id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+
   @PATCH('/studenttemplates/{template_id}/dagplanningen/{dag_id}/eenmalig/')
   editDagPlanningEenmalig(@Path('template_id') template_id: number,
               @Path('dag_id') dag_id: number, @Body() body: {}): EchoPromise<any> {

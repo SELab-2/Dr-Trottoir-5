@@ -73,8 +73,12 @@ export default {
         }
         return day_mapping[day]
     },
-    remove_dagplanning() {
-
+    async remove_dagplanning() {
+      const response = await RequestHandler.handle(StudentTemplateService.deleteDagPlanning(this.data.template_id, this.data.dag_id), {
+        id: "deleteDagplanningError",
+        style: "SNACKBAR"
+      }).then(res => res).catch(() => {})
+      this.$emit('remove', response["new_id"])
     }
   }
 }
