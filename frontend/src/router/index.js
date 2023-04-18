@@ -25,6 +25,7 @@ import StudentTemplateEditView from "@/views/student_template/StudentTemplateEdi
 import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
 import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
 import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
+import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
 
 const routes = [
   {
@@ -172,6 +173,11 @@ const routes = [
     path: '/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
     name: 'dagplanning_edit',
     component: DagplanningEditView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id/add',
+    name: 'dagplanning_add',
+    component: DagplanningAddView
   }
 ]
 

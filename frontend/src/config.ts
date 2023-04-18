@@ -20,11 +20,11 @@ export default {
     SY: ['syndicus_home', 'account', 'unauthorized', 'home'],
     SU: [
       'admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round',
-      'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit'
+      'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit', 'dagplanning_add'
     ],
     AD: [
       'admin_home', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round',
-      'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit'
+      'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit', 'dagplanning_add'
     ]
   }
 };

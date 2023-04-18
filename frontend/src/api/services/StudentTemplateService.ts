@@ -48,6 +48,13 @@ class StudentTemplateService extends EchoService {
     return {} as EchoPromise<DayPlanning[]>
   }
 
+  @POST('/studenttemplates/{template_id}/rondes/{ronde_id}/dagplanningen/')
+  addDagPlanningen(@Path('template_id') template_id: number,
+              @Path('ronde_id') ronde_id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+
   @GET('/studenttemplates/{template_id}/dagplanningen/{dag_id}/')
   getDagPlanning(@Path('template_id') template_id: number,
               @Path('dag_id') dag_id: number): EchoPromise<DayPlanning> {

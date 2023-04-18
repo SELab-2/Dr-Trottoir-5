@@ -19,7 +19,7 @@
   }"></DagPlanningCard>
   <v-row class=" align-center justify-center pb-15">
     <v-col cols="12" sm="3" md="3">
-      <NormalButton text="Nieuwe dagplanning aanmaken" :to="`/studenttemplates/${this.template_id}/ronde/${this.ronde_id}/add`" block></NormalButton>
+      <NormalButton v-if="this.status !== 'Vervangen'" text="Nieuwe dagplanning aanmaken" :to="`/studenttemplates/${this.template_id}/rondes/${this.ronde_id}/add`" block></NormalButton>
     </v-col>
   </v-row>
 </template>
