@@ -20,6 +20,7 @@ import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import DashboardView from "@/views/admin/DashboardView.vue";
 
 const routes = [
   {
@@ -40,7 +41,7 @@ const routes = [
   {
     path: '/admin_home',
     name: 'admin_home',
-    component: RegisterDone
+    component: DashboardView
   },
   {
     path: '/resident_home',
