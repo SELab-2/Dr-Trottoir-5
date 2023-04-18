@@ -69,7 +69,7 @@ def make_dag_planning(data):
         end_hour=data["end_hour"]
     )
     ronde = Ronde.objects.get(id=data["ronde"])
-    dag_planning, _ = DagPlanning.objects.get_or_create(
+    dag_planning = DagPlanning.objects.create(
         ronde_id=data["ronde"],
         time=pickup_day
     )
@@ -77,7 +77,7 @@ def make_dag_planning(data):
     for _ in ronde.buildings.all():
         InfoPerBuilding(dagPlanning=dag_planning, date=datetime.datetime.now()).save()
         dag_planning.status.append('NS')
-
+    print(data["students"])
     dag_planning.students.set(data["students"])
     dag_planning.save()
     return dag_planning

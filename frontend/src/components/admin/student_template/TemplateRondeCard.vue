@@ -2,6 +2,7 @@
 <v-card
     class="mx-auto w-75 my-10"
     variant="outlined"
+    :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`"
   >
     <v-card-item>
       <div>
@@ -22,7 +23,7 @@
       <v-btn variant="outlined" :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`">
         Dagplanningen
       </v-btn>
-      <v-btn @click="on_delete" variant="outlined">
+      <v-btn v-if="this.data.status !== 'Vervangen'" @click.prevent="on_delete" variant="outlined">
         Verwijderen
       </v-btn>
     </v-card-actions>
@@ -43,6 +44,7 @@ export default {
       default: () => ({
         template_id: 0,
         ronde_id: 0,
+        status: "Actief",
         name: 'Template Rondes Gent',
         location: 'Gent'
       })

@@ -23,7 +23,7 @@
       </div>
     </v-card-item>
 
-    <v-card-actions class="px-3 my-1 justify-space-between">
+    <v-card-actions v-if="this.data.status !== 'Vervangen'" class="px-3 my-1 justify-space-between">
       <v-btn variant="outlined" :to="`/studenttemplates/${data.template_id}`">
         Aanpassen
       </v-btn>
@@ -31,6 +31,7 @@
         Verwijderen
       </v-btn>
     </v-card-actions>
+    <div v-if="this.data.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst de eenmalige aanpassingen ongedaan worden.</div>
   </v-card>
 
 </template>
@@ -49,17 +50,17 @@ export default {
         name: 'Template Rondes Gent',
         location: 'Gent',
         even: true,
-        status: 'actief'
+        status: 'Actief'
       })
     }
   },
   methods: {
     async delete_template() {
       await RequestHandler.handle(StudentTemplateService.deleteStudentTemplate(this.data.template_id), {
-          id: 'deleteRound',
+          id: 'deleteStudentTemplate',
           style: 'SNACKBAR'
       })
-      this.$emit('removed', this.data.template_id)
+      this.$emit('removed')
     }
   }
 }

@@ -369,7 +369,7 @@ def rondes_view(request, template_id):
         dag_planningen = []
 
         data["start_hour"] = template.start_hour
-        data["end_hour"] = template.start_hour
+        data["end_hour"] = template.end_hour
         data["students"] = []
         for day in WeekDayEnum:
             data["day"] = day
@@ -443,7 +443,7 @@ def dagplanningen_view(request, template_id, ronde_id):
         validate_dag_planning_data(data)
         new_dag_planning = make_dag_planning(data)
 
-        update(
+        response = update(
             template,
             "dag_planningen",
             None,
@@ -452,11 +452,11 @@ def dagplanningen_view(request, template_id, ronde_id):
             get_current_week_planning().student_templates,
             copy_template=make_copy
         )
+        response["message"] = "Success"
+        return Response(response)
 
-        return Response({"message": "Success"})
 
-
-@api_view(["DELETE", "PATCH"])
+@api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
 
@@ -465,12 +465,19 @@ def dagplanning_view(request, template_id, dag_id, permanent):
     dag_planning = DagPlanning.objects.get(id=dag_id)
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
+    if request.method == "GET":
+        """
+        Geeft een dagplanning terug
+        """
+        data = DagPlanningSerializer(dag_planning).data
+        return Response(data)
+
     if request.method == "DELETE":
         """
         Verwijder een DagPlanning van de template
         """
 
-        update(
+        response = update(
             template,
             "dag_planningen",
             dag_planning,
@@ -479,7 +486,8 @@ def dagplanning_view(request, template_id, dag_id, permanent):
             get_current_week_planning().student_templates,
             copy_template=make_copy
         )
-        return Response({"message": "Success"})
+        response["message"] = "Success"
+        return Response(response)
 
     if request.method == "PATCH":
         """
@@ -499,7 +507,7 @@ def dagplanning_view(request, template_id, dag_id, permanent):
 
         new_dag_planning = make_dag_planning(data)
 
-        update(
+        response = update(
             template,
             "dag_planningen",
             dag_planning,
@@ -508,4 +516,5 @@ def dagplanning_view(request, template_id, dag_id, permanent):
             get_current_week_planning().student_templates,
             copy_template=make_copy
         )
-        return Response({"message": "Success"})
+        response["message"] = "Success"
+        return Response(response)

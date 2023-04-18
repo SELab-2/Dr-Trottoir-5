@@ -2,13 +2,13 @@
 <v-card
     class="mx-auto w-75 my-10"
     variant="outlined"
-    :to="`/studenttemplates/${data.template_id}`"
+    :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}/dagplanningen/${data.dag_id}`"
   >
     <v-card-item>
       <div>
         <v-row class="px-3 my-1 justify-space-between">
            <div class="text-h6">
-            {{ data.students === [] ? data.students.join(", ") : 'Er zijn geen studenten aangewezen'}}
+            {{ data.students.length > 0 ? data.students.map(student => student.first_name).join(", ") : 'Er zijn geen studenten aangewezen'}}
           </div>
            <div class="text-overline">
             {{ format_day(data.day) }}
@@ -25,14 +25,15 @@
       </div>
     </v-card-item>
 
-    <v-card-actions class="px-3 my-1 justify-space-between">
-      <v-btn variant="outlined" to="/unauthorized">
+    <v-card-actions v-if="this.data.status !== 'Vervangen'" class="px-3 my-1 justify-space-between">
+      <v-btn variant="outlined" :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}/dagplanningen/${data.dag_id}`">
         Dagplanning aanpassen
       </v-btn>
-      <v-btn variant="outlined">
+      <v-btn @click.prevent="remove_dagplanning" variant="outlined">
         Verwijderen
       </v-btn>
     </v-card-actions>
+    <div v-if="this.data.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst de eenmalige aanpassingen ongedaan worden.</div>
   </v-card>
 
 </template>
@@ -50,7 +51,9 @@ export default {
       default: () => ({
         template_id: 0,
         ronde_id: 0,
-        students: ['Tom', 'Bart'],
+        status: "Actief",
+        dag_id: 0,
+        students: [],
         day: 'MO',
         start_hour: '17:00',
         end_hour: '20:00'
@@ -69,6 +72,9 @@ export default {
           "SU": "Zondag",
         }
         return day_mapping[day]
+    },
+    remove_dagplanning() {
+
     }
   }
 }

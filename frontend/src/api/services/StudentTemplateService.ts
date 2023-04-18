@@ -44,9 +44,27 @@ class StudentTemplateService extends EchoService {
 
   @GET('/studenttemplates/{template_id}/rondes/{ronde_id}/dagplanningen/')
   getDagPlanningen(@Path('template_id') template_id: number,
-              @Path('ronde_id') ronde_id: number): EchoPromise<DayPlanning> {
+              @Path('ronde_id') ronde_id: number): EchoPromise<DayPlanning[]> {
+    return {} as EchoPromise<DayPlanning[]>
+  }
+
+  @GET('/studenttemplates/{template_id}/dagplanningen/{dag_id}/')
+  getDagPlanning(@Path('template_id') template_id: number,
+              @Path('dag_id') dag_id: number): EchoPromise<DayPlanning> {
     return {} as EchoPromise<DayPlanning>
   }
+
+  @PATCH('/studenttemplates/{template_id}/dagplanningen/{dag_id}/')
+  editDagPlanning(@Path('template_id') template_id: number,
+              @Path('dag_id') dag_id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+  @PATCH('/studenttemplates/{template_id}/dagplanningen/{dag_id}/eenmalig/')
+  editDagPlanningEenmalig(@Path('template_id') template_id: number,
+              @Path('dag_id') dag_id: number, @Body() body: {}): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
 }
 
 export default new EchoServiceBuilder()

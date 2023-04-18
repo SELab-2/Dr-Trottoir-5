@@ -40,8 +40,11 @@ export default {
       }).then(templates => templates).catch(() => []);
   },
   methods: {
-    remove_template(template_id) {
-      this.templates = this.templates.filter(template => template.id !== template_id)
+    async remove_template() {
+      this.templates = await RequestHandler.handle(StudentTemplateService.getStudentTemplates(), {
+        id: "getStudentTemplatesError",
+        style: "SNACKBAR"
+      }).then(templates => templates).catch(() => []);
     }
   }
 

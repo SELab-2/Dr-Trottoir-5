@@ -1,5 +1,13 @@
 <template>
-<v-card class="my-10 py-5 mx-auto w-75">
+  <v-row class="justify-space-around align-center py-5">
+    <div class="text-h4 text-md-h2 text-lg-h1">
+      Template
+    </div>
+    <v-btn :to="'/studenttemplates/'" variant="outlined" >
+        Terug
+    </v-btn>
+  </v-row>
+  <v-card class="my-10 py-5 mx-auto w-75">
     <v-form fast-fail @submit.prevent>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' sm='6' md='6'>
@@ -30,7 +38,7 @@
           <v-text-field v-model='end_hour' label='Standaard Einduur' :readonly="!edit" required></v-text-field>
         </v-col>
       </v-row>
-      <v-row class="px-5 justify-center mx-auto">
+      <v-row v-if="this.status !== 'Vervangen'" class="px-5 justify-center mx-auto">
         <v-col v-if="!edit" class="d-flex justify-center ml-auto mx-auto" cols="12" sm="3" md="3">
           <NormalButton text="Pas aan" v-bind:parent-function="() => {edit = !edit}" block></NormalButton>
         </v-col>
@@ -39,30 +47,34 @@
           <NormalButton text="Sla op" v-bind:parent-function="save_edit" block></NormalButton>
         </v-col>
       </v-row>
+      <div v-if="this.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst de eenmalige aanpassingen ongedaan worden.</div>
     </v-form>
   </v-card>
-  <v-row class="justify-center">
-    <div class="text-h3">
-        Rondes
-    </div>
-  </v-row>
-  <v-row class="px-5  justify-center align-end mx-auto">
-    <v-col class="d-flex" cols='12' sm='6' md='6'>
-      <v-autocomplete
-        label="Rondes"
-        :items="all_rondes"
-        item-title="name"
-        item-value="id"
-        v-model="add_id"
-      ></v-autocomplete>
-      <v-btn @click="add_round()" class="mx-5">Voeg nieuwe ronde toe</v-btn>
-    </v-col>
-  </v-row>
+  <div  v-if="this.status !== 'Vervangen'" >
+    <v-row class="justify-center">
+      <div class="text-h3">
+          Rondes
+      </div>
+    </v-row>
+    <v-row class="px-5  justify-center align-end mx-auto">
+      <v-col class="d-flex" cols='12' sm='6' md='6'>
+        <v-autocomplete
+          label="Rondes"
+          :items="all_rondes"
+          item-title="name"
+          item-value="id"
+          v-model="add_id"
+        ></v-autocomplete>
+        <v-btn @click="add_round()" class="mx-5">Voeg nieuwe ronde toe</v-btn>
+      </v-col>
+    </v-row>
+  </div>
   <TemplateRondeCard @copy="(new_id) => copy_taken(new_id)" @round_removed="() => remove_ronde(ronde.id)" v-for="ronde in rondes" :data="{
       template_id: this.template_id,
       ronde_id: ronde.id,
+      status: this.status,
       name: ronde.name,
-      location: ronde.location.name,
+      location: ronde.location.name
     }"></TemplateRondeCard>
 </template>
 
