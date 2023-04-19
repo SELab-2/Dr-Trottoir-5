@@ -31,6 +31,7 @@ import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddV
 import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
 import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
 import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
+import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
 
 const routes = [
   {
@@ -184,7 +185,7 @@ const routes = [
     name: 'dagplanning_add',
     component: DagplanningAddView
   },
-  { 
+  {
     path: '/buildings',
     name: 'buildings',
     component: BuildingList
@@ -208,6 +209,53 @@ const routes = [
     path: '/mailtemplates',
     name: 'mailtemplates',
     component: TemplateList
+  },
+  {
+    path: '/trashtemplates',
+    name: 'trashtemplates',
+    component: TrashContainerTemplateList
+  },
+  {
+    path: '/trashtemplates/edit',
+    name: 'editTrashtemplates',
+    component: TrashContainerTemplateList, // TODO SWITCH TO EDIT PAGE
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/containers',
+    name: 'trashtemplateContainers',
+    component: TrashContainerTemplateList, // TODO SWITCH TO CONTAINERS LIST PAGE
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/containers/create',
+    name: 'createTrashtemplateContainers',
+    component: TrashContainerTemplateList, // TODO SWITCH TO CONTAINERS LIST PAGE
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/containers/edit',
+    name: 'editTrashtemplateContainers',
+    component: TrashContainerTemplateList, // TODO SWITCH TO CONTAINERS LIST PAGE
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/buildings',
+    name: 'trashtemplateBuildings',
+    component: TrashContainerTemplateList, // TODO SWITCH TO BUILDINGS LIST PAGE
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/buildings/create',
+    name: 'createTrashtemplateBuildings',
+    component: TrashContainerTemplateList, // TODO SWITCH TO BUILDINGS LIST PAGE
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/buildings/edit',
+    name: 'editTrashtemplateBuildings',
+    component: TrashContainerTemplateList, // TODO SWITCH TO BUILDINGS LIST PAGE
+    props: true
   }
 ]
 

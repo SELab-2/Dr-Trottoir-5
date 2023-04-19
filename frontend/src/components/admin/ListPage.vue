@@ -61,12 +61,12 @@ export default {
       required: true
     },
     headComponent: {
-      type: [String],
+      type: Object,
       default: 'div',
       required: false
     },
     childComponent: {
-      type: String,
+      type: Object,
       default: 'div',
       required: true
     },
