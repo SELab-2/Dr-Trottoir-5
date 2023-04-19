@@ -66,6 +66,7 @@ export default {
       id: 'getDagplanningenError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
+    this.sort_dagplanning()
   },
   methods: {
     async remove_dagplanning(new_template_id) {
@@ -76,7 +77,19 @@ export default {
         id: 'getDagplanningenError',
         style: 'SNACKBAR'
       }).then(result => result).catch(() => []);
+      this.sort_dagplanning()
       return await router.replace({path: `/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`})
+    },
+    sort_dagplanning() {
+      const sorted_dagplanningen = []
+      for (const day of ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']) {
+        for (const dagplanning of this.dagplanningen) {
+          if (dagplanning.time.day === day) {
+            sorted_dagplanningen.push(dagplanning)
+          }
+        }
+      }
+      this.dagplanningen = sorted_dagplanningen
     }
   }
 }
