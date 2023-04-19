@@ -9,7 +9,7 @@
                    value="dashboard"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-calendar-blank" title="Nieuwe planning"
                    value="nieuwe planning"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-bike" title="Rondes" value="rondes" to="/rounds"></v-list-item>
+      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-bike" title="Rondes" value="rondes" to="/rounds/"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-office-building" title="Gebouwen" to="/buildings/"
                    value="gebouwen"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-account" title="Studenten" to="/students/"
