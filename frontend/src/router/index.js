@@ -167,7 +167,7 @@ const routes = [
   },
   {
     path: '/admin/gebruiker/registreer',
-    name: 'amdin_user_register',
+    name: 'admin_user_register',
     component: RegisterUserList
   },
   {

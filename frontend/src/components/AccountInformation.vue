@@ -126,27 +126,18 @@ export default {
   },
   async beforeMount() {
     this.data = await this.get_data()
-    RequestHandler.handle(UserService.get(), {
-      id: 'getInloggedUserRole',
-      style: 'SNACKBAR',
-      customMessages: [{
-        code: '500',
-        message: 'Kon de rol van de ingelogde user niet ophalen.',
-        description: 'Kon de rol van de ingelogde user niet ophalen.'
-      }]
-    }).then(user => {
-      if (!this.not_admin) {
-        const currentUserRole = user.role
-        if (currentUserRole === 'SU') {
-          if (this.data.role === 'AD') {
-            this.can_edit_permission = false
-          } else {
-            this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
-              {name: 'Superstudent', value: 'SU'}]
-          }
+    const currentUser = await this.$store.getters['session/currentUser']
+    if (!this.not_admin) {
+      const currentUserRole = currentUser.role
+      if (currentUserRole === 'SU') {
+        if (this.data.role === 'AD') {
+          this.can_edit_permission = false
+        } else {
+          this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
+            {name: 'Superstudent', value: 'SU'}]
         }
       }
-    })
+    }
   },
   beforeUnmount() {
     if (typeof window !== 'undefined') {

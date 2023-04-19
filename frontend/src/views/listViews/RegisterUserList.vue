@@ -22,7 +22,6 @@ export default {
   async beforeMount() {
     RequestHandler.handle(UserService.getUsers(), {id: 'getUsersError', style: 'SNACKBAR'})
       .then(async result => {
-        console.log(result)
         for (const user of result) {
           if (user.role === 'AA') {
             this.elements.push(user)
