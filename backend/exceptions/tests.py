@@ -40,7 +40,7 @@ class ExceptionHandlerTest(TestCase):
     def test_enum_value_success(self):
         handler = ExceptionHandler()
         self.assertTrue(handler.check_enum_value("MO", "name",
-                                                 PickUpDay.WeekDayEnum.values))
+                                                 WeekDayEnum.values))
 
     def test_enum_value_required_success(self):
         handler = ExceptionHandler()
