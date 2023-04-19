@@ -4,13 +4,13 @@
       <v-col cols="9">
         <v-row>
           <v-col>
-            <p>{{ data.firstName }}</p>
+            <p>{{ data.first_name }}</p>
           </v-col>
           <v-col>
-            <p>{{ data.secondName }}</p>
+            <p>{{ data.last_name }}</p>
           </v-col>
           <v-col>
-            <p>{{ data.mobileNumber }}</p>
+            <p>{{ data.phone_nr }}</p>
           </v-col>
           <v-col>
             <p>{{ data.location }}</p>
@@ -40,6 +40,7 @@
 <script>
 import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
+import User from "@/api/models/User";
 
 /**
  * SyndicusCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
@@ -55,8 +56,7 @@ export default {
   name: 'SyndicusCard',
   props: {
     data: {
-      type: Object,
-      default: () => ({ firstName: 'Empty', secondName: 'Empty', mobileNumber: '0123456789', location: 'Empty', email: 'Empty', buildings: 'Empty' })
+      type: User,
     }
   },
   methods: {

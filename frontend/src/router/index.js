@@ -8,6 +8,11 @@ import CreateBuildingView from '@/views/admin/CreateBuildingView'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import BuildingList from "@/views/listViews/BuildingList";
+import RoundList from "@/views/listViews/RoundList";
+import StudentList from "@/views/listViews/StudentList";
+import SyndicusList from "@/views/listViews/SyndicusList";
+import TemplateList from "@/views/listViews/TemplateList";
 import CreateRoundView from "@/views/CreateRoundView.vue";
 import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
 import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
@@ -142,7 +147,32 @@ const routes = [
     path: '/account',
     name: 'account',
     component: AccountView
-  }
+  },
+  {
+    path: '/buildings',
+    name: 'buildings',
+    component: BuildingList
+  },
+  {
+    path: '/rounds',
+    name: 'rounds',
+    component: RoundList
+  },
+  {
+    path: '/students',
+    name: 'students',
+    component: StudentList
+  },
+  {
+    path: '/syndicusen',
+    name: 'syndicusen',
+    component: SyndicusList
+  },
+  {
+    path: '/mailtemplates',
+    name: 'mailtemplates',
+    component: TemplateList
+  },
 ]
 
 const router = createRouter({
