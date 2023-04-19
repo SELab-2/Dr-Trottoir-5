@@ -183,8 +183,8 @@ export default {
     },
     remove_ronde(ronde_id) {
       let index = -1;
-      for (let i = 0; i < this.all_rondes.length; i++) {
-        if (this.all_rondes[i].id === ronde_id) {
+      for (let i = 0; i < this.rondes.length; i++) {
+        if (this.rondes[i].id === ronde_id) {
           index = i
         }
       }

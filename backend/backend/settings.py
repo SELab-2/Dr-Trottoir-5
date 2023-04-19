@@ -145,7 +145,7 @@ USE_I18N = True  # TODO CHANGE TO FALSE?
 USE_TZ = True
 
 # Actual directory user files go to
-MEDIA_ROOT = '/var/www/html/media'
+MEDIA_ROOT = 'backend/media'
 
 # URL used to access the media
 MEDIA_URL = '/api/media/'
