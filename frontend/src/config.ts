@@ -18,7 +18,7 @@ export default {
       'student_post_view', 'building_info', 'building_student'
     ],
     SY: ['syndicus_home', 'account', 'unauthorized', 'home'],
-    SU: ['admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round', 'adjust_user'],
-    AD: ['admin_home', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round', 'adjust_user']
+    SU: ['admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round', 'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'adjust_user'],
+    AD: ['admin_home', 'account', 'unauthorized', 'home', 'create_building', 'admin_building', 'create_location', 'create_round', 'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'adjust_user']
   }
 };
