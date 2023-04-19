@@ -76,11 +76,10 @@ class Building(models.Model):
     """
     name = models.TextField()
     adres = models.TextField()
-    syndicus = models.ForeignKey(
+    syndicus = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.DO_NOTHING
-    ),
-    owners = models.ManyToManyField(settings.AUTH_USER_MODEL),
+        blank=True
+    )
     ivago_klantnr = models.IntegerField()
     manual = models.ForeignKey(
         Manual,

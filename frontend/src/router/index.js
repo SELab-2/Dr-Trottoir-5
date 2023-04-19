@@ -25,6 +25,8 @@ import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import CreateSyndicusView from "@/views/admin/CreateSyndicusView";
+import AdjustSyndicusView from "@/views/admin/AdjustSyndicusView";
 
 const routes = [
   {
@@ -142,6 +144,16 @@ const routes = [
     name: 'admin_building',
     props: true,
     component: AdminBuildingView
+  },
+  {
+    path: '/syndicus/create',
+    name: 'syndicus_create',
+    component: CreateSyndicusView
+  },
+  {
+    path: '/syndicus/adjust',
+    name: 'syndicus_adjust',
+    component: AdjustSyndicusView
   },
   {
     path: '/account',
