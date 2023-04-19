@@ -9,21 +9,21 @@ import ListPage from '@/components/admin/ListPage.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
-import RoundBuildingCard from "@/components/admin/RoundBuildingCard.vue";
-import BuildingHeader from "@/components/admin/BuildingHeader.vue";
+import TrashTemplateBuildingHeader from "@/components/containerTemplates/buildings/TrashTemplateBuildingHeader.vue";
+import TrashTemplateBuildingCard from "@/components/containerTemplates/buildings/TrashTemplateBuildingCard.vue";
 
 export default {
   name: "TrashTemplateBuildingsList",
-  components: {ListPage, RoundBuildingCard, BuildingHeader},
+  components: {ListPage, TrashTemplateBuildingHeader, TrashTemplateBuildingCard},
   props: {
     id: Number
   },
   data() {
     return {
-      childComponent: RoundBuildingCard,
+      childComponent: TrashTemplateBuildingCard,
       elements: [],
-      headComponent: BuildingHeader,
-      keys: ['name', 'adres', 'manual']
+      headComponent: TrashTemplateBuildingHeader,
+      keys: ['name', 'address', 'manual']
     }
   },
   methods: {

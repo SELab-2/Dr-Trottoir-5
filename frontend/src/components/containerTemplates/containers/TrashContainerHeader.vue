@@ -2,24 +2,15 @@
   <v-container class="border">
     <v-row align="center" justify="center">
       <v-col cols="2" class="col">
-        <p title="Naam"> Naam </p>
+        <p title="Dag"> Dag </p>
       </v-col>
-      <v-col cols="1" class="col">
-        <p title="Vuilnisbakken"> Vuilnisbakken </p>
+      <v-col cols="2" class="col">
+        <p title="Uren"> Uren </p>
       </v-col>
-      <v-col cols="1" class="col">
-        <p  title="Gebouwen"> Gebouwen </p>
+      <v-col cols="2" class="col">
+        <p  title="Type"> Type </p>
       </v-col>
-      <v-col cols="1" class="col">
-        <p title="Jaar"> Jaar </p>
-      </v-col>
-      <v-col cols="1" class="col">
-        <p title="Week"> Week </p>
-      </v-col>
-      <v-col cols="1" class="col">
-        <p title="Locatie"> Locatie </p>
-      </v-col>
-      <v-col cols="1" class="col"/>
+      <v-col cols="2" class="col"/>
       <v-col cols="4" class="text-right">
         Acties
       </v-col>
@@ -29,7 +20,7 @@
 
 <script>
 export default {
-  name: 'TrashContainerTemplateHeader',
+  name: 'TrashContainerHeader',
   props: {
     round: { type: Boolean, default: false }
   }

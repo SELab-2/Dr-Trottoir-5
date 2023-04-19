@@ -23,12 +23,12 @@ export default {
       childComponent: TrashContainerCard,
       elements: [],
       headComponent: TrashContainerHeader,
-      keys: ['name', 'year', 'week', 'location'] //TODO
+      keys: ['dag', 'type']
     }
   },
   methods: {
     addTrashContainerTemplate: function () {
-      router.push({ path: '/trashtemplates/' + this.id + '/containers/create' });
+      router.push({ path: '/trashtemplates/' + this.id + '/containers/create' });//TODO router
     }
   },
   async beforeMount() {

@@ -2,31 +2,22 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p class="text-style-title">{{ this.data.name }}</p>
+        <p class="text-style-title">{{ this.data.day }}</p>
       </v-col>
-      <v-col cols="1">
-        <p @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
+      <v-col cols="2">
+        <p>{{ this.data.start_hour + ' - ' + this.data.end_hour }}</p>
       </v-col>
-      <v-col cols="1">
-        <p @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
+      <v-col cols="2">
+        <p>{{ this.data.type }}</p>
       </v-col>
-      <v-col cols="1">
-        {{ this.data.year }}
-      </v-col>
-      <v-col cols="1">
-        {{ this.data.week }}
-      </v-col>
-      <v-col cols="1">
-        {{ this.locations.filter(loc => loc.id === this.data.location_id)[0].name }}
-      </v-col>
-      <v-col cols="1"/>
+      <v-col cols="2"/>
       <v-col class="text-right" cols="2">
-        <v-btn class="button-style" icon v-on:click="editTemplate">
+        <v-btn class="button-style" icon v-on:click="editContainer">
           <EditIcon/>
         </v-btn>
       </v-col>
       <v-col class="text-right" cols="2">
-        <v-btn class="button-style" icon v-on:click="deleteTemplate">
+        <v-btn class="button-style" icon v-on:click="deleteContainer">
           <DeleteIcon/>
         </v-btn>
       </v-col>
@@ -35,34 +26,31 @@
 </template>
 
 <script lang="ts">
-import TrashTemplate from '@/api/models/TrashTemplate'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import router from '@/router'
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
+import Container from "@/api/models/Container";
 
 export default {
-  name: 'TrashContainerTemplateCard',
+  name: 'TrashContainerCard',
   components: {EditIcon, DeleteIcon},
   props: {
     data: {
-      type: TrashTemplate,
-      default: () => (new TrashTemplate())
+      type: Container,
+      default: () => (new Container())
     }
   },
   data: () => ({
-    locations: []
   }),
   methods: {
-    editTemplate: function () {
+    editContainer: function () {
       router.push({
-        path: '/trashtemplates/edit', params: {
+        path: '/trashtemplates/' + this.data.id + '/containers/edit', params: {//TODO add to router
           toEdit: this.data // TODO deze pagina maken
         }
       });
     },
-    deleteTemplate: function () {
+    deleteContainer: function () {
       //todo
     },
     goToTrashTemplateBuildingsPage: function () {
@@ -81,13 +69,7 @@ export default {
     }
   },
   async beforeMount() {
-    await RequestHandler.handle(LocationService.getLocations(), {
-      id: 'getLocationsError',
-      style: 'SNACKBAR'
-    }).then(result => {
-        this.locations = result
-      }
-    )
+
   }
 }
 </script>
