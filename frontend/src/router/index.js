@@ -25,6 +25,7 @@ import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import SyndicusHomeView from "@/views/SyndicusHomeView.vue";
 
 const routes = [
   {
@@ -40,7 +41,7 @@ const routes = [
   {
     path: '/syndicus_home',
     name: 'syndicus_home',
-    component: RegisterDone
+    component: SyndicusHomeView
   },
   {
     path: '/admin_home',
