@@ -61,8 +61,8 @@ class TestApi(TestCase):
         request = factory.get(
             f'/api/ronde/locatie/{response["succes"]["id"]}/')
         force_authenticate(request, user=self.user)
-        response = LocatieEnumRetrieveDestroyView.as_view()(request, pk=
-        response["succes"]["id"]).data
+        response = LocatieEnumRetrieveDestroyView.as_view() \
+            (request, pk=response["succes"]["id"]).data
         self.assertEqual(response["name"], "Oostende")
 
     def testGetRondes(self):

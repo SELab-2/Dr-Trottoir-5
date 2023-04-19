@@ -1,15 +1,11 @@
 from django.test import TestCase
-
 from django.utils.datastructures import MultiValueDict
-
+from model_bakery import baker
 from rest_framework.serializers import ValidationError
 
-from pickupdays.models import PickUpDay
+from pickupdays.models import WeekDayEnum
 from planning.models import WeekPlanning
 from .exceptionHandler import ExceptionHandler
-from model_bakery import baker
-
-from pickupdays.models import WeekDayEnum
 
 
 class ExceptionHandlerTest(TestCase):
