@@ -50,9 +50,7 @@ export default defineComponent({
     isAdminOrSu: false
   }),
   async beforeCreate() {
-    this.isAdminOrSu = await this.$store.getters['session/currentUser']
-      .then(u => u.role === UserRole.AD || u.role === UserRole.SU)
-      .catch(() => false);
+    this.isAdminOrSu = await this.$store.getters['session/isAdmin'];
   },
   setup() {
     const drawer = ref(false)
