@@ -22,6 +22,8 @@ export default {
           message: 'Kon data van gebruiker niet ophalen',
           description: 'Kon data van gebruiker niet ophalen'
         }]
+      }).catch(err => {
+        // GO TO list of users
       });
     },
     update(data) {

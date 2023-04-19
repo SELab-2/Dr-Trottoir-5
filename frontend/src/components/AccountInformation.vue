@@ -59,6 +59,7 @@
           <v-checkbox :model-value="data.rondes && ronde in data.rondes" readonly :label="ronde"></v-checkbox>
         </template>
       </v-col>
+      <div v-if="can_edit_permission">
       <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
         <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
       </v-col>
@@ -66,7 +67,8 @@
         <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
         <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
       </v-col>
-      <v-col v-if="!not_admin" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
+      </div>
+      <v-col v-if="!not_admin && can_edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
         <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
       </v-col>
     </v-row>
@@ -78,6 +80,8 @@
 <script>
 import NormalButton from '@/components/NormalButton'
 import ConfirmDialog from '@/components/util/ConfirmDialog'
+import {RequestHandler} from "@/api/RequestHandler";
+import UserService from "@/api/services/UserService";
 
 export default {
   name: 'AccountInformation',
@@ -114,11 +118,33 @@ export default {
       roles: [
         {name: 'Student', value: 'ST'}, {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'}],
       edit: false,
-      smallScreen: false
+      smallScreen: false,
+      can_edit_permission: true
     }
   },
-  async created() {
+  async beforeMount() {
     this.data = await this.get_data()
+    RequestHandler.handle(UserService.get(), {
+      id: 'getInloggedUserRole',
+      style: 'SNACKBAR',
+      customMessages: [{
+        code: '500',
+        message: 'Kon de rol van de ingelogde user niet ophalen.',
+        description: 'Kon de rol van de ingelogde user niet ophalen.'
+      }]
+    }).then(user => {
+      if (!this.not_admin) {
+        const currentUserRole = user.role
+        console.log(currentUserRole)
+        if (currentUserRole === 'SU') {
+          if (this.data.role === 'AD') {
+            this.can_edit_permission = false
+          } else {
+            this.roles = [{name: 'Student', value: 'ST'}, {name: 'Superstudent', value: 'SU'}]
+          }
+        }
+      }
+    })
   },
   beforeUnmount() {
     if (typeof window !== 'undefined') {
@@ -128,16 +154,19 @@ export default {
   mounted() {
     this.onResize()
     window.addEventListener('resize', this.onResize, {passive: true})
-  },
+  }
+  ,
   methods: {
     async cancel_save() {
       this.edit = !this.edit
       this.data = await this.get_data()
-    },
+    }
+    ,
     async save() {
       this.edit = !this.edit
       await this.save_data(this.data)
-    },
+    }
+    ,
     onResize() {
       this.smallScreen = window.innerWidth < 500
     }
