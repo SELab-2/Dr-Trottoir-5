@@ -88,12 +88,12 @@ const routes = [
     component: CreateBuildingView
   },
   {
-    path: '/mail-template/create',
+    path: '/mailtemplate/create',
     name: 'create_mail-template',
     component: CreateMailTemplateView
   },
   {
-    path: '/mail-template/:id',
+    path: '/mailtemplate/edit/:id',
     name: 'mail-template',
     component: AdminMailTemplateView
   },

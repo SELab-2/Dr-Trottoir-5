@@ -95,7 +95,6 @@ export default {
       if (this.key !== 'key'){
         const regex = new RegExp(this.searched, 'ig')
           for (const el of this.elements) {
-            console.log(el)
             if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
               filtered.push(el)
             }

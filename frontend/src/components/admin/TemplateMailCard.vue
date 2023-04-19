@@ -5,7 +5,7 @@
         <p>{{ data.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ data.argsCount }}</p>
+        <p>{{ this.argsCount }}</p>
       </v-col>
       <v-col/>
       <v-col cols="3" class="d-flex align-center justify-end">
@@ -42,9 +42,12 @@ export default {
       required: true
     }
   },
+  data: () => ({
+    argsCount: 0
+  }),
   methods: {
     goToEditPage: function () {
-      // TODO
+      router.push({path: '/mailtemplate/edit/' + this.data.id})
     },
     deletePost: function () {
       RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
@@ -54,6 +57,12 @@ export default {
   components: {
     EditIcon,
     DeleteIcon
+  },
+  mounted() {
+    const count = this.data.content.match(/#([^#]*)#/g)
+    if (count !== null) {
+      this.argsCount = count.length
+    }
   }
 }
 </script>
