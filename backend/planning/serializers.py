@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from ronde.serializers import RondeRelatedField
 from pickupdays.serializers import PickUpDayRelatedField
+from users.serializers import UserRelatedField
 
 
 class DagPlanningSerializer(serializers.ModelSerializer):
@@ -14,6 +15,7 @@ class DagPlanningSerializer(serializers.ModelSerializer):
 
 class DagPlanningSerializerFull(DagPlanningSerializer):
     ronde = RondeRelatedField(read_only=True)
+    students = UserRelatedField(read_only=True, many=True)
 
 
 class StudentTemplateSerializer(serializers.ModelSerializer):
