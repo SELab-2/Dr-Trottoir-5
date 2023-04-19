@@ -20,6 +20,7 @@ class ExceptionHandler:
     blank_error = "Veld kan niet leeg zijn."
     integer_error = "Veld moet een positief getal zijn."
     boolean_error = "Veld moet een Boolse waarde zijn."
+
     def __init__(self):
         self.errors = []
         self.checked = False
