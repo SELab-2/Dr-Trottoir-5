@@ -275,6 +275,34 @@ class ExceptionHandlerTest(TestCase):
         self.assertFalse(handler.check_integer_required("no integer", "name"))
         self.assertRaises(ValidationError, handler.check)
 
+    def test_boolean_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_integer(False, "name"))
+
+    def test_boolean_required_success(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_integer_required(True, "name"))
+
+    def test_boolean_success_none(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_integer(None, "name"))
+
+    def test_boolean_required_fail_none(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_integer_required(None, "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_boolean_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_integer("no integer", "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_boolean_required_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_integer_required("no integer", "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+
     def test_not_blank_success(self):
         handler = ExceptionHandler()
         self.assertTrue(handler.check_not_blank("not blank", "name"))
