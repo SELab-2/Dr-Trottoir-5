@@ -9,6 +9,8 @@ from planning.models import WeekPlanning
 from .exceptionHandler import ExceptionHandler
 from model_bakery import baker
 
+from pickupdays.models import WeekDayEnum
+
 
 class ExceptionHandlerTest(TestCase):
 
@@ -43,29 +45,29 @@ class ExceptionHandlerTest(TestCase):
     def test_enum_value_required_success(self):
         handler = ExceptionHandler()
         self.assertTrue(handler.check_enum_value_required("MO", "name",
-                                                          PickUpDay.WeekDayEnum.values))
+                                                          WeekDayEnum.values))
 
     def test_enum_value_success_none(self):
         handler = ExceptionHandler()
         self.assertTrue(handler.check_enum_value(None, "name",
-                                                 PickUpDay.WeekDayEnum.values))
+                                                 WeekDayEnum.values))
 
     def test_enum_value_required_fail_none(self):
         handler = ExceptionHandler()
         self.assertFalse(handler.check_enum_value_required(None, "name",
-                                                           PickUpDay.WeekDayEnum.values))
+                                                           WeekDayEnum.values))
         self.assertRaises(ValidationError, handler.check)
 
     def test_enum_value_fail_bad_value(self):
         handler = ExceptionHandler()
-        self.assertFalse(handler.check_enum_value("Bad Value", "name",
-                                                  PickUpDay.WeekDayEnum.values))
+        self.assertFalse(
+            handler.check_enum_value("Bad Value", "name", WeekDayEnum.values))
         self.assertRaises(ValidationError, handler.check)
 
     def test_enum_value_required_fail_bad_value(self):
         handler = ExceptionHandler()
         self.assertFalse(handler.check_enum_value_required("Bad Value", "name",
-                                                           PickUpDay.WeekDayEnum.values))
+                                                           WeekDayEnum.values))
         self.assertRaises(ValidationError, handler.check)
 
     def test_time_value_success(self):
@@ -301,7 +303,6 @@ class ExceptionHandlerTest(TestCase):
         handler = ExceptionHandler()
         self.assertFalse(handler.check_integer_required("no integer", "name"))
         self.assertRaises(ValidationError, handler.check)
-
 
     def test_not_blank_success(self):
         handler = ExceptionHandler()
