@@ -1,5 +1,5 @@
 import {
-  Body,
+  Body, DELETE,
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
@@ -9,6 +9,7 @@ import {
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import Building from "@/api/models/Building";
+import Round from "@/api/models/Round";
 import {RoundWrapper} from "@/api/wrappers/RoundWrapper";
 
 class RoundService extends EchoService {
@@ -42,6 +43,22 @@ class RoundService extends EchoService {
   @POST("/ronde/")
   createRound(@Body() body: RoundWrapper): EchoPromise<any> {
     return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Get a list of all the rows
+   */
+  @GET("/ronde/")
+  getRounds() : EchoPromise<Array<Round>> {
+    return {} as EchoPromise<Array<Round>>
+  }
+
+  /**
+   * Delete round
+   */
+  @DELETE('/ronde/{id}')
+  deleteRoundById(@Path('id') id: number): EchoPromise<void> {
+    return {} as EchoPromise<void>
   }
 
 }

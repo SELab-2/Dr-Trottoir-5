@@ -83,6 +83,14 @@ class BuildingService extends EchoService {
   }
 
   /**
+   * Get list of buildings
+   */
+  @GET('/ronde/building/')
+  getBuildings() : EchoPromise<Array<Building>> {
+    return {} as EchoPromise<Array<Building>>
+  }
+
+  /**
    * Delete building
    */
   @DELETE('/ronde/building/{id}')
