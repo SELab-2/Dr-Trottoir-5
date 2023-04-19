@@ -8,7 +8,6 @@ from users.permissions import StudentReadOnly, AdminPermission, SuperstudentPerm
 
 from .models import LocatieEnum, Manual, Building, Ronde
 from .serializers import *
-from rest_framework.permissions import AllowAny
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -153,7 +152,7 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class RondeListCreateView(generics.ListCreateAPIView):
     queryset = Ronde.objects.all()
     serializer_class = RondeSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def get_serializer_class(self):
         if self.request.method == "GET":
