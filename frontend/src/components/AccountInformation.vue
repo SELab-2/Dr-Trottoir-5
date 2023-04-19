@@ -60,15 +60,16 @@
         </template>
       </v-col>
       <div v-if="can_edit_permission">
-      <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
-        <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
-      </v-col>
-      <v-col v-else class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
-        <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
-        <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
-      </v-col>
+        <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
+          <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
+        </v-col>
+        <v-col v-else class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
+          <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
+          <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
+        </v-col>
       </div>
-      <v-col v-if="!not_admin && can_edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
+      <v-col v-if="!not_admin && can_edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12"
+             md="12" lg="12">
         <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
       </v-col>
     </v-row>
@@ -116,7 +117,8 @@ export default {
         })
       },
       roles: [
-        {name: 'Student', value: 'ST'}, {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'}],
+        {name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
+        {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'}],
       edit: false,
       smallScreen: false,
       can_edit_permission: true
@@ -135,12 +137,12 @@ export default {
     }).then(user => {
       if (!this.not_admin) {
         const currentUserRole = user.role
-        console.log(currentUserRole)
         if (currentUserRole === 'SU') {
           if (this.data.role === 'AD') {
             this.can_edit_permission = false
           } else {
-            this.roles = [{name: 'Student', value: 'ST'}, {name: 'Superstudent', value: 'SU'}]
+            this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
+              {name: 'Superstudent', value: 'SU'}]
           }
         }
       }
