@@ -26,6 +26,7 @@ import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
 import AdminStudentChangeUser from "@/views/AdminStudentChangeUser";
+import RegisterUserList from "@/views/listViews/RegisterUserList";
 
 const routes = [
   {
@@ -165,6 +166,11 @@ const routes = [
     component: StudentList
   },
   {
+    path: '/admin/gebruiker/registreer',
+    name: 'amdin_user_register',
+    component: RegisterUserList
+  },
+  {
     path: '/syndicusen',
     name: 'syndicusen',
     component: SyndicusList
@@ -175,7 +181,7 @@ const routes = [
     component: TemplateList
   },
   {
-    path: '/gebruiker/:id',
+    path: '/admin/gebruiker/:id',
     name: 'adjust_user',
     props: true,
     component: AdminStudentChangeUser
