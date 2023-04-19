@@ -1,5 +1,5 @@
 import {
-  Body,
+  Body, DELETE,
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
@@ -51,6 +51,14 @@ class RoundService extends EchoService {
   @GET("/ronde/")
   getRounds() : EchoPromise<Array<Round>> {
     return {} as EchoPromise<Array<Round>>
+  }
+
+  /**
+   * Delete round
+   */
+  @DELETE('/ronde/{id}')
+  deleteRoundById(@Path('id') id: number): EchoPromise<void> {
+    return {} as EchoPromise<void>
   }
 
 }

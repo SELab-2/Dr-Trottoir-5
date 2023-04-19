@@ -44,6 +44,10 @@
 import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import InfoIcon from '@/components/icons/InfoIcon.vue'
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+import router from "@/router";
+import UserService from "@/api/services/UserService";
 
 /**
  * StudentCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
@@ -68,7 +72,8 @@ export default {
       // TODO
     },
     deletePost: function () {
-      // TODO
+      RequestHandler.handle(UserService.delete(this.data.id))
+        .then(async result => router.go(0))
     },
     goToInfoPage: function () {
       // TODO

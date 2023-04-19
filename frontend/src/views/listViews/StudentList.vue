@@ -7,7 +7,6 @@ import ListPage from '@/components/admin/ListPage'
 import PersonHeader from '@/components/admin/PersonHeader'
 import StudentCard from '@/components/admin/StudentCard'
 import {RequestHandler} from "@/api/RequestHandler";
-import EmailTemplateService from "@/api/services/EmailTemplateService";
 import UserService from "@/api/services/UserService";
 
 export default {

@@ -7,7 +7,6 @@ import RoundListPage from '@/components/admin/RoundListPage'
 import ListPage from '@/components/admin/ListPage'
 import ListBuildings from '@/components/admin/ListBuildings'
 import {RequestHandler} from "@/api/RequestHandler";
-import UserService from "@/api/services/UserService";
 import RoundService from "@/api/services/RoundService";
 import BuildingService from "@/api/services/BuildingService";
 import router from "@/router";

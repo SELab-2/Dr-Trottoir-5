@@ -7,7 +7,6 @@ import ListPage from '@/components/admin/ListPage'
 import SyndicusCard from '@/components/admin/SyndicusCard'
 import PersonHeader from '@/components/admin/PersonHeader'
 import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
 import UserService from "@/api/services/UserService";
 
 export default {
@@ -26,7 +25,7 @@ export default {
     await RequestHandler.handle(UserService.getUsers(), {id: 'getUsers', style: 'SNACKBAR'})
       .then(async result => {
         for (const user of result) {
-          if (user.role === "AD"){
+          if (user.role === "SY"){
             console.log(user)
             this.elements.push(user)
           }

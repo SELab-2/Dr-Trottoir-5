@@ -24,6 +24,9 @@
 import EditIcon from '../icons/EditIcon.vue'
 import DeleteIcon from '../icons/DeleteIcon.vue'
 import MailTemplate from "@/api/models/MailTemplate";
+import {RequestHandler} from "@/api/RequestHandler";
+import router from "@/router";
+import EmailTemplateService from "@/api/services/EmailTemplateService";
 
 /**
  * TemplateMailCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -44,7 +47,8 @@ export default {
       // TODO
     },
     deletePost: function () {
-      // TODO
+      RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
+        .then(async result => router.go(0))
     }
   },
   components: {

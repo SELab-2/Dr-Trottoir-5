@@ -38,6 +38,8 @@ import BuildingHeader from '@/components/admin/BuildingHeader'
 import Round from "@/api/models/Round";
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
+import router from "@/router";
+import RoundService from "@/api/services/RoundService";
 
 export default {
   name: 'BuildingList',
@@ -54,7 +56,8 @@ export default {
   },
   methods: {
     deleteRound () {
-      // TODO
+      RequestHandler.handle(RoundService.deleteRoundById(this.data.id))
+        .then(async result => router.go(0))
     },
     editRound () {
       // TODO
