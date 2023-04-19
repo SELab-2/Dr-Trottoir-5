@@ -1,11 +1,7 @@
 <template>
   <v-card v-if="!edit" color="white" class="mx-auto my-16 w-75">
     <v-row>
-      <v-col md="12" lg="12" class="d-flex justify-lg-space-between pl-5 pr-5 pt-5">
-        <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
-        <v-btn @click="edit = true" icon="mdi-pencil"></v-btn>
-      </v-col>
-      <v-col lg="12" md="12" class="d-flex align-center justify-center">
+      <v-col lg="12" md="12" class="d-flex align-center justify-center pt-10">
         <h2>Gebouw: {{ name }}</h2>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
@@ -50,12 +46,15 @@
       <v-col md="6" lg="6" class="d-flex align-center justify-start">
         <v-text-field class="text_field" v-model:model-value="ivago_klantnr" variant="solo"></v-text-field>
       </v-col>
+      <!---
+        TODO For milestone 3
+          <h2>Geschatte tijd in minuten</h2>
       <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <h2>Geschatte tijd in minuten</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start">
         <v-text-field class="text_field" v-model:model-value="time" variant="solo"></v-text-field>
       </v-col>
+      --->
       <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
         <h2>Handleiding status</h2>
       </v-col>
@@ -79,7 +78,8 @@
       </v-col>
     </v-row>
   </v-card>
-  <ConfirmDialog ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?" :confirm_function="deleteBuilding"></ConfirmDialog>
+  <ConfirmDialog ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?"
+                 :confirm_function="deleteBuilding"></ConfirmDialog>
 </template>
 
 <script>
@@ -92,17 +92,15 @@ import ConfirmDialog from "@/components/util/ConfirmDialog"
 export default {
   name: "AdminBuildingView",
   components: {ConfirmDialog, NormalButton},
-  props: ['id'],
+  props: {edit: Boolean},
   data: () => {
     return {
       name: '',
       adres: '',
       manual: {file: '', fileType: '', manualStatus: ''},
       ivago_klantnr: 0,
-      time: 0,
+      // time: 0,  TODO <- milestone 3
       planningen: [],
-      dialog: false,
-      edit: false,
       new_manual: null
     }
   },
@@ -133,9 +131,8 @@ export default {
             color: "error"
           })
         }
-      }).catch(() => {
-        // TODO Go to list of buildings page
-        // router.push({name: 'home'})
+      }).catch(async () => {
+        await router.push({name: 'buildings'})
       })
     },
     getManual() {
@@ -155,11 +152,9 @@ export default {
         id: 'deleteBuildingError',
         style: "SNACKBAR"
       })
-      // TODO Go to list of buildings page
-      await router.push({name: 'home'})
+      await router.push({name: 'buildings'})
     },
     async save() {
-      this.edit = false
       let body_building = {
         name: this.name,
         adres: this.adres,
@@ -185,10 +180,10 @@ export default {
         id: 'updateBuildingError',
         style: 'SNACKBAR'
       })
+      await router.push({name: 'buildings'})
     },
-    cancel_save() {
-      this.edit = false
-      this.getBuildingInformation()
+    async cancel_save() {
+      await router.push({name: 'buildings'})
     }
   }
 }

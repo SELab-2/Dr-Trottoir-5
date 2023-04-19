@@ -19,6 +19,6 @@ export default {
     ],
     SY: ['syndicus_home', 'account', 'unauthorized', 'home'],
     SU: ['admin_home', 'dagplanning', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round', 'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates'],
-    AD: ['admin_home', 'account', 'unauthorized', 'home', 'create_building', 'admin_building', 'create_location', 'create_round', 'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates']
+    AD: ['admin_home', 'account', 'unauthorized', 'home', 'create_building', 'admin_building', 'create_location', 'create_round', 'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'admin_info_building', 'admin_edit_building']
   }
 };
