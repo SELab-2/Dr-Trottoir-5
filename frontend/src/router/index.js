@@ -25,8 +25,9 @@ import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
-import AdminStudentChangeUser from "@/views/AdminStudentChangeUser";
+import AdminStudentInfoUser from "@/views/admin/AdminStudentInfoUser";
 import RegisterUserList from "@/views/listViews/RegisterUserList";
+import AdminStudentInfoUserEdit from "@/views/admin/AdminStudentInfoUserEdit";
 
 const routes = [
   {
@@ -182,9 +183,15 @@ const routes = [
   },
   {
     path: '/admin/gebruiker/:id',
-    name: 'adjust_user',
+    name: 'admin_info_user',
     props: true,
-    component: AdminStudentChangeUser
+    component: AdminStudentInfoUser
+  },
+  {
+    path: '/admin/gebruiker/:id/edit',
+    name: 'admin_edit_user',
+    props: true,
+    component: AdminStudentInfoUserEdit
   }
 ]
 

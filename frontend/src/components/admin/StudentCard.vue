@@ -64,12 +64,12 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({id: '0', first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
+      default: () => ({id: 0, first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
     }
   },
   methods: {
     goToEditPage: async function () {
-      await this.$router.push({name: 'adjust_user', params: {id: this.data.id}})
+      await this.$router.push({name: 'admin_edit_user', params: {id: this.data.id}})
     },
     deletePost: function () {
       RequestHandler.handle(UserService.deleteUserById(this.data.id), {
@@ -81,9 +81,10 @@ export default {
           description: 'Kon gebruiker niet verwijderen'
         }]
       })
+      location.reload()
     },
     goToInfoPage: async function () {
-      await this.$router.push({name: 'adjust_user', params: {id: this.data.id}})
+      await this.$router.push({name: 'admin_info_user', params: {id: this.data.id}})
     }
   },
   components: {

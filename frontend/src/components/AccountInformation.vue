@@ -101,7 +101,8 @@ export default {
 
       }
     },
-    not_admin: {type: Boolean, default: true}
+    not_admin: {type: Boolean, default: true},
+    can_edit_permission: {type: Boolean, default: true}
   },
   data: () => {
     return {

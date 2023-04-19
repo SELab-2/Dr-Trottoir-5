@@ -1,5 +1,7 @@
 <template>
-  <ListPage :child-component="childComponent" :elements="elements" title="Registreer gebruikers" :keys="keys"
+  <ListPage :refresh="true" :refresh_function="get_data" :child-component="childComponent" :elements="elements"
+            title="Registreer gebruikers"
+            :keys="keys"
             :add-function="() => {}"></ListPage>
 </template>
 
@@ -20,14 +22,24 @@ export default {
     }
   },
   async beforeMount() {
-    RequestHandler.handle(UserService.getUsers(), {id: 'getUsersError', style: 'SNACKBAR'})
-      .then(async result => {
-        for (const user of result) {
-          if (user.role === 'AA') {
-            this.elements.push(user)
-          }
-        }
+    await this.get_data()
+  },
+  methods: {
+    async get_data() {
+      this.elements = await RequestHandler.handle(UserService.getUsers(), {
+        id: 'RegisterUserListgetUsersError',
+        style: 'SNACKBAR'
       })
+        .then(async result => {
+          let temp = []
+          for (const user of result) {
+            if (user.role === 'AA') {
+              temp.push(user)
+            }
+          }
+          return temp
+        })
+    }
   }
 }
 </script>
