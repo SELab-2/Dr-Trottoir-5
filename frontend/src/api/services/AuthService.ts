@@ -91,6 +91,14 @@ class AuthService extends EchoService {
         });
       });
   }
+
+  /**
+   * Change the role of a user
+   */
+  @POST('/role/')
+  updateRoleOfUser(@Body() body : {}) : EchoPromise<string> {
+    return {} as EchoPromise<string>
+  }
 }
 
 export default new EchoServiceBuilder()
