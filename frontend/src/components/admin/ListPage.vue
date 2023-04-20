@@ -16,7 +16,7 @@ Heeft als nodige argumenten nodig:
         <v-row class="pa-5">
           <h1>{{ this.title }}</h1>
           <v-row></v-row>
-          <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+          <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
             <NormalButton text="+" v-bind:parent-function="addFunction"/>
           </div>
           <div v-else-if="refresh">
