@@ -1,6 +1,8 @@
 from django.test import TestCase
+from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APIRequestFactory, force_authenticate
-from .views import LocatieEnumListCreateView, RondeListCreateView, ManualListCreateView, LocatieEnumRetrieveDestroyView
+from .views import LocatieEnumListCreateView, RondeListCreateView, \
+    ManualListCreateView, LocatieEnumRetrieveDestroyView
 from .models import LocatieEnum, Ronde
 from users.models import User
 from io import BytesIO
@@ -11,7 +13,8 @@ class TestApi(TestCase):
     def setUp(self):
         self.user = User.objects.create(role="SU")
         LocatieEnum.objects.create(name="Gent")
-        Ronde.objects.create(name="TestRonde", location=LocatieEnum.objects.get(name="Gent"))
+        Ronde.objects.create(name="TestRonde",
+                             location=LocatieEnum.objects.get(name="Gent"))
 
     def testAddLocation(self):
         """
@@ -21,16 +24,22 @@ class TestApi(TestCase):
         request = factory.post('/api/ronde/locatie/', {})
         force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
-        self.assertEqual(response["error"][0], "Er is geen veld 'name' meegegeven")
+
+        # returns an error
+        self.assertIn("errors", response)
+        self.assertEqual(response["errors"][0]["field"], ErrorDetail(
+            string="name", code="invalid"))
 
         request = factory.post('/api/ronde/locatie/', {"name": ""})
         force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
-        self.assertEqual(response["error"], "Het veld 'name' is leeg")
+
+        self.assertIn("errors", response)
 
         request = factory.post('/api/ronde/locatie/', {'name': 'Oostende'})
         force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
+
         self.assertEqual(response["succes"]["name"], "Oostende")
 
     def testGetLocations(self):
@@ -49,9 +58,11 @@ class TestApi(TestCase):
         force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
 
-        request = factory.get(f'/api/ronde/locatie/{response["succes"]["id"]}/')
+        request = factory.get(
+            f'/api/ronde/locatie/{response["succes"]["id"]}/')
         force_authenticate(request, user=self.user)
-        response = LocatieEnumRetrieveDestroyView.as_view()(request, pk=response["succes"]["id"]).data
+        response = LocatieEnumRetrieveDestroyView\
+            .as_view()(request, pk=response["succes"]["id"]).data
         self.assertEqual(response["name"], "Oostende")
 
     def testGetRondes(self):
@@ -74,25 +85,32 @@ class TestApi(TestCase):
         file.seek(0)
 
         # Test normal upload
-        request = factory.post('/api/building/manual/', {"manualStatus": "Klaar", "fileType": "PDF", "file": file})
+        request = factory.post('/api/building/manual/',
+                               {"manualStatus": "Klaar", "fileType": "PDF",
+                                "file": file})
         force_authenticate(request, user=self.user)
         response = ManualListCreateView.as_view()(request).data
         self.assertEqual(response["succes"]["manualStatus"], "Klaar")
 
         # Test upload with missing argument
-        request = factory.post('/api/building/manual/', {"manualStatus": "Klaar", "file": file})
+        request = factory.post('/api/building/manual/',
+                               {"manualStatus": "Klaar", "file": file})
         force_authenticate(request, user=self.user)
         response = ManualListCreateView.as_view()(request).data
-        self.assertIn("error", response)
+        self.assertIn("errors", response)
 
         # Test upload with empty argument
-        request = factory.post('/api/building/manual/', {"manualStatus": "Klaar", "fileType": "", "file": file})
+        request = factory.post('/api/building/manual/',
+                               {"manualStatus": "Klaar", "fileType": "",
+                                "file": file})
         force_authenticate(request, user=self.user)
         response = ManualListCreateView.as_view()(request).data
-        self.assertIn("error", response)
+        self.assertIn("errors", response)
 
         # Test upload with wrong argument
-        request = factory.post('/api/building/manual/', {"manualStatus": "Done", "fileType": "PDF", "file": file})
+        request = factory.post('/api/building/manual/',
+                               {"manualStatus": "Done", "fileType": "PDF",
+                                "file": file})
         force_authenticate(request, user=self.user)
         response = ManualListCreateView.as_view()(request).data
-        self.assertIn("error", response)
+        self.assertIn("errors", response)
