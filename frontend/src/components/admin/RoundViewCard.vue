@@ -13,12 +13,14 @@ it displays the information of one round so that a list of round views can easil
           <p class="text-subtitle-1 font-weight-bold">{{data.date}}</p>
         </v-col>
         <v-col align="left" md="3" xs="10">
-          <v-progress-linear color="green" :model-value="percentage" :height="20" class="my-4 mx-2" rounded="xl"
+          <v-progress-linear color="green" :model-value="data.round.status.filter(s => s === 'FI').length / data.round.ronde.buildings.length * 100"
+                             :height="20" class="my-4 mx-2" rounded="xl"
           style="width: 35vw; max-width: 100%;">
           </v-progress-linear>
         </v-col>
         <v-col align="left" md="1" xs="1" class="my-3 ml-4">
-          <v-icon v-if="percentage === 100" icon="mdi-check" color="green" size="x-large"></v-icon>
+          <v-icon v-if="data.round.status.filter(s => s === 'FI').length === data.round.ronde.buildings.length"
+                  icon="mdi-check" color="green" size="x-large"></v-icon>
         </v-col>
         <v-col align="center" md="2" xs="6" class="ml-3">
           <v-list>
@@ -48,7 +50,7 @@ export default {
     percentage: 100,
     users: []
   }),
-  created() {
+  computed() {
     this.percentage = this.data.round.status.filter(s => s === 'FI').length / this.data.round.ronde.buildings.length * 100;
   },
   props: {
