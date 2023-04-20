@@ -178,9 +178,7 @@ class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
     # TODO: only the user that created an InfoPerBuilding should be able to update it
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def week_planning_view(request, year, week):
+def get_student_templates(year, week):
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     if year > current_year or (current_year == year and week > current_week):
@@ -197,6 +195,13 @@ def week_planning_view(request, year, week):
         )
         student_templates = week_planning.student_templates.all()
 
+    return student_templates
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def week_planning_view(request, year, week):
+    student_templates = get_student_templates(year, week)
     data = StudentTemplateSerializer(student_templates, many=True).data
     return Response(data)
 
@@ -210,7 +215,7 @@ def student_templates_rondes_view(request, year, week, day, location):
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
 
-        templates = StudentTemplate.objects.filter(year=year, week=week, location=location)
+        templates = get_student_templates(year, week).filter(location=location)
         planned = []
         for template in templates:
             dag_planningen = template.dag_planningen.all()
