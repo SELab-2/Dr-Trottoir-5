@@ -19,15 +19,12 @@ Heeft als nodige argumenten nodig:
           <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
             <NormalButton text="+" v-bind:parent-function="addFunction"/>
           </div>
-            <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
-              <NormalButton text="+" v-bind:parent-function="addFunction"/>
-            </div>
-            <div v-else-if="refresh">
-              <v-btn icon="mdi-refresh" @click="refresh_function"></v-btn>
-            </div>
+          <div v-else-if="refresh">
+            <v-btn icon="mdi-refresh" @click="refresh_function"></v-btn>
+          </div>
         </v-row>
       </v-col>
-      <v-col cols="12" v-if="this.search">
+      <v-col v-if="this.search" cols="12">
         <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..."
                         v-on:keyChange="onKeyChange" v-on:selected="onSearch"/>
       </v-col>
@@ -88,13 +85,14 @@ export default {
       default: () => ['default'],
       required: true
     },
-    refresh : {
+    refresh: {
       type: Boolean,
       default: false
     },
-    refresh_function : {
+    refresh_function: {
       type: Function,
-      default: () => {}
+      default: () => {
+      }
     },
     search: {
       type: Boolean,
