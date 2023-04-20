@@ -145,7 +145,7 @@ export default {
       window.open(this.manual.file)
     },
     addPlanning() {
-      // TODO Add planning for building
+      router.push({'name': 'trashtemplates'})
     },
     async deleteBuilding() {
       if (this.manual.file !== '') {
