@@ -40,7 +40,7 @@ class TrashContainerTemplateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrashContainerTemplate
-        fields = ['id', 'name', 'even', 'status', 'location']
+        fields = ['id', 'name', 'even', 'status', 'location', 'year', 'week']
 
 
 class TrashContainerTemplateSerializerFull(serializers.ModelSerializer):

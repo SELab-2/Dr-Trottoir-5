@@ -8,8 +8,8 @@ class LocationService extends EchoService {
    * Get locations
    */
   @GET('/ronde/locatie/')
-  getLocations() : EchoPromise<Location> {
-    return {} as EchoPromise<Location>
+  getLocations() : EchoPromise<Location[]> {
+    return {} as EchoPromise<Location[]>
   }
 
   /**

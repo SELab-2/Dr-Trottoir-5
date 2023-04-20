@@ -1,10 +1,6 @@
-import PickupDay from "@/api/models/PickupDay";
+import TrashContainer from "@/api/models/TrashContainer";
 
 export default class Container {
-  id: number;
-  building: number;
-  type: string;
-  special_actions: string;
-  collection_days: [number];
-  collection_days_detail: [PickupDay];
+  extra_id: number;
+  trash_container: TrashContainer;
 }

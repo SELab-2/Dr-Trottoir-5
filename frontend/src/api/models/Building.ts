@@ -1,6 +1,7 @@
 import BuildingManual from "@/api/models/BuildingManual";
 
 export default class Building {
+  name: string;
   id: number;
   adres: string;
   ivago_klantnr: number;
