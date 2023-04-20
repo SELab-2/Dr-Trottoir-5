@@ -69,7 +69,7 @@ export default {
 
       RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',
-        style: 'SNACKBAR'
+        style: 'NONE'
       }).then(rounds => {
         this.rounds = rounds;
         this.show = rounds;

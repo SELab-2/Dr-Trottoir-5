@@ -267,11 +267,14 @@ def get_student_templates(year, week):
         student_templates = student_templates.filter(even=even)
     else:
         # weekplanning is al voorbij of bezig
-        week_planning = WeekPlanning.objects.get(
-            week=week,
-            year=year
-        )
-        student_templates = week_planning.student_templates.all()
+        try:
+            week_planning = WeekPlanning.objects.get(
+                week=week,
+                year=year
+            )
+            student_templates = week_planning.student_templates.all()
+        except WeekPlanning.DoesNotExist:
+            student_templates = None
 
     return student_templates
 
@@ -280,6 +283,8 @@ def get_student_templates(year, week):
 @permission_classes([AllowAny])
 def week_planning_view(request, year, week):
     student_templates = get_student_templates(year, week)
+    if student_templates is None:
+        return Response(status=404)
     data = StudentTemplateSerializer(student_templates, many=True).data
     return Response(data)
 
@@ -292,7 +297,10 @@ def student_templates_rondes_view(request, year, week, day, location):
             return Response(status=400)
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
-        templates = get_student_templates(year, week).filter(location=location)
+        templates = get_student_templates(year, week)
+        if templates is None:
+            return Response(status=404)
+        templates = templates.filter(location=location)
         planned = []
         for template in templates:
             dag_planningen = template.dag_planningen.all()

@@ -28,8 +28,8 @@ it displays the information of one round so that a list of round views can easil
                              v-bind="props"
                 ><p class="text-wrap">Student(en)</p></v-list-item>
               </template>
-              <v-list-item v-for="(student, i) in users" :key="i"
-              ><p class="text-wrap">{{student}}</p></v-list-item>
+              <v-list-item v-for="(student, i) in data.round.students" :key="i"
+              ><p class="text-wrap">{{student.first_name}} {{student.last_name}}</p></v-list-item>
             </v-list-group>
           </v-list>
         </v-col>
@@ -50,7 +50,6 @@ export default {
   }),
   created() {
     this.percentage = this.data.round.status.filter(s => s === 'FI') / this.data.round.ronde.buildings.length;
-    this.users = this.data.round.students.map(s => `${s.first_name} ${s.last_name}`);
   },
   props: {
     data: {
