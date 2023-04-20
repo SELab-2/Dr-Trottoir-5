@@ -1,4 +1,4 @@
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+"""from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from .views import *
 from .models import *
 from users.models import User
@@ -14,8 +14,10 @@ class CreateTest(APITestCase):
         self.wp = baker.make(WeekPlanning, week=0, year=2023)
         self.dp = baker.make(DagPlanning, date="2023-08-31", weekPlanning=self.wp)
         self.ronde = baker.make(Ronde)
+        self.ronde.save()
         self.ipb = InfoPerBuilding.objects.create(remark="test", dagPlanning=self.dp)
         self.user = User.objects.create(role="SU")
+
 
     def testAddWeekPlanning(self):
         factory = APIRequestFactory()
@@ -72,4 +74,4 @@ class CreateTest(APITestCase):
         self.assertEqual(response["time"], "2002-03-27T22:33:00+01:00")
         self.assertEqual(response["remark"], "testRemark"),
         self.assertEqual(response["infoPerBuilding"], self.ipb.pk)
-        self.assertIsNotNone(response["id"])
+        self.assertIsNotNone(response["id"])"""

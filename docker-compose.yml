@@ -1,0 +1,50 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=dr-trottoir
+    ports:
+      - "5432:5432"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+  backend:
+    env_file:
+      - backend/backend/.env
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: ./startupscript.sh
+    volumes:
+      - ./backend:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  frontend:
+    env_file:
+      - frontend/.env.production
+      - frontend/.env.production.local #indien bestaat overschrijf met deze waarden
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: -s dist -l 8080
+    volumes:
+      - ./frontend:/code
+    ports:
+      - "8080:8080"
+
+  docs:
+    build:
+      context: .
+      dockerfile: ./docs/Dockerfile
+    environment:
+      - GIT_CONFIG_NOSYSTEM=true
+    ports:
+      - "1313:8080"
