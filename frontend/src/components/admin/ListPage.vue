@@ -119,8 +119,9 @@ export default {
           if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
             filtered.push(el)
           }
+        }
+        return filtered
       }
-      return filtered
     }
   },
   data() {

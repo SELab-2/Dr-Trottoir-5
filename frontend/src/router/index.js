@@ -284,12 +284,6 @@ const routes = [
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
     props: true
-  },
-  {
-    path: '/trashtemplates/:id/buildings/edit',
-    name: 'editTrashtemplateBuildings',
-    component: TrashContainerTemplateList, // TODO SWITCH TO BUILDINGS EDIT PAGE
-    props: true
   }
 ]
 
