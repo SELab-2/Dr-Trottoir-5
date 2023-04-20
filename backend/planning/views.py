@@ -214,7 +214,6 @@ def student_templates_rondes_view(request, year, week, day, location):
             return Response(status=400)
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
-
         templates = get_student_templates(year, week).filter(location=location)
         planned = []
         for template in templates:
