@@ -76,7 +76,7 @@ class BuildingSerializerFull(BuildingSerializer):
 
 class RondeRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return RondeRelatedFieldSerializer(value).data
+        return RondeSerializerFull(value).data
 
     def to_internal_value(self, data):
         return data

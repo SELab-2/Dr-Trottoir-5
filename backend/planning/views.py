@@ -37,6 +37,12 @@ def student_dayplan(request, year, week, day):
         return Response(data)
 
 
+class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = DagPlanning.objects.all()
+    serializer_class = DagPlanningSerializerFull
+    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+
+
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer
