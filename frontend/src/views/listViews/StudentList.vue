@@ -24,7 +24,7 @@ export default {
     (await RequestHandler.handle(UserService.getUsers(), {id: 'getUsersError', style: 'SNACKBAR'})
       .then(async result => {
         for (const user of result){
-          if (user.role === 'ST'){
+          if (user.role === 'ST' || user.role === 'SU'){
             this.elements.push(user)
           }
         }

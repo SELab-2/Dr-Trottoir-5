@@ -23,8 +23,12 @@ import StudentCreatePost from "@/views/StudentCreatePost";
 import StudentPostView from "@/views/StudentPostView";
 import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
-import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import AdminStudentInfoUser from "@/views/admin/AdminStudentInfoUser";
+import RegisterUserList from "@/views/listViews/RegisterUserList";
+import AdminStudentInfoUserEdit from "@/views/admin/AdminStudentInfoUserEdit";
+import AdminBuildingInfoEditView from "@/views/admin/AdminBuildingInfoEditView";
+import AdminBuildingInfoView from "@/views/admin/AdminBuildingInfoView";
 import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
 import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
 import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
@@ -145,9 +149,15 @@ const routes = [
   },
   {
     path: '/building/:id',
-    name: 'admin_building',
+    name: 'admin_info_building',
     props: true,
-    component: AdminBuildingView
+    component: AdminBuildingInfoView
+  },
+  {
+    path: '/building/:id/edit',
+    name: 'admin_edit_building',
+    props: true,
+    component: AdminBuildingInfoEditView
   },
   {
     path: '/account',
@@ -184,7 +194,7 @@ const routes = [
     name: 'dagplanning_add',
     component: DagplanningAddView
   },
-  { 
+  {
     path: '/buildings',
     name: 'buildings',
     component: BuildingList
@@ -200,6 +210,11 @@ const routes = [
     component: StudentList
   },
   {
+    path: '/admin/gebruiker/registreer',
+    name: 'admin_user_register',
+    component: RegisterUserList
+  },
+  {
     path: '/syndicusen',
     name: 'syndicusen',
     component: SyndicusList
@@ -208,6 +223,18 @@ const routes = [
     path: '/mailtemplates',
     name: 'mailtemplates',
     component: TemplateList
+  },
+  {
+    path: '/admin/gebruiker/:id',
+    name: 'admin_info_user',
+    props: true,
+    component: AdminStudentInfoUser
+  },
+  {
+    path: '/admin/gebruiker/:id/edit',
+    name: 'admin_edit_user',
+    props: true,
+    component: AdminStudentInfoUserEdit
   }
 ]
 
