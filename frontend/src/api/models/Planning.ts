@@ -1,10 +1,10 @@
 import Round from "@/api/models/Round";
+import PickupDay from "@/api/models/PickupDay";
 
 export default class DayPlanning {
   id: number;
-  student: number;
-  date: string;
+  students: [number];
+  time: PickupDay;
   ronde: Round;
-  weekPlanning: number;
   status: [string];
 }
