@@ -15,7 +15,6 @@ from .models import LocatieEnum, Manual, Building, Ronde
 from .serializers import *
 
 
-
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
     queryset = LocatieEnum.objects.all()
     serializer_class = LocatieEnumSerializer
@@ -128,7 +127,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 
 class ManualRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -273,7 +272,6 @@ class RondeListCreateView(generics.ListCreateAPIView):
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
-
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
@@ -289,8 +287,6 @@ class RondeListCreateView(generics.ListCreateAPIView):
             return RondeRelatedFieldSerializer
         else:
             return RondeSerializer
-
-
 
 
 class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
