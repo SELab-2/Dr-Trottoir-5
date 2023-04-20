@@ -12,9 +12,9 @@ def make_new_tc_id_wrapper(data, extra_id):
     """
     # maak nieuwe pickupday met de aangepaste data
     new_pickup_day, _ = PickUpDay.objects.get_or_create(
-        day=data["day"],
-        start_hour=data["start_hour"],
-        end_hour=data["end_hour"]
+        day=data["collection_day"]["day"],
+        start_hour=data["collection_day"]["start_hour"],
+        end_hour=data["collection_day"]["end_hour"]
     )
 
     # maak nieuwe container met de net gemaakte pickupday

@@ -14,18 +14,19 @@ Heeft als nodige argumenten nodig:
     <v-row class="text-center">
       <v-col cols="12">
         <v-row class="pa-5">
-            <h1>{{ this.title }}</h1>
+          <h1>{{ this.title }}</h1>
           <v-row></v-row>
-            <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
-              <NormalButton text="+" v-bind:parent-function="addFunction"/>
-            </div>
-            <div v-else-if="refresh">
-              <v-btn icon="mdi-refresh" @click="refresh_function"></v-btn>
-            </div>
+          <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+            <NormalButton text="+" v-bind:parent-function="addFunction"/>
+          </div>
+          <div v-else-if="refresh">
+            <v-btn icon="mdi-refresh" @click="refresh_function"></v-btn>
+          </div>
         </v-row>
       </v-col>
-      <v-col cols="12">
-        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:keyChange="onKeyChange" :elements="elements" :keys="keys"/>
+      <v-col v-if="this.search" cols="12">
+        <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..."
+                        v-on:keyChange="onKeyChange" v-on:selected="onSearch"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -49,6 +50,7 @@ Heeft als nodige argumenten nodig:
 <script>
 import NormalButton from '@/components/NormalButton'
 import SearchDropdown from '@/components/SearchDropdown'
+
 export default {
   name: 'ListPage',
   components: { SearchDropdown, NormalButton },
@@ -64,12 +66,12 @@ export default {
       required: true
     },
     headComponent: {
-      type: [String],
+      type: Object,
       default: 'div',
       required: false
     },
     childComponent: {
-      type: String,
+      type: Object,
       default: 'div',
       required: true
     },
@@ -83,38 +85,44 @@ export default {
       default: () => ['default'],
       required: true
     },
-    refresh : {
+    refresh: {
       type: Boolean,
       default: false
     },
-    refresh_function : {
+    refresh_function: {
       type: Function,
-      default: () => {}
+      default: () => {
+      }
+    },
+    search: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   methods: {
-    onSearch (newValue) {
+    onSearch(newValue) {
       this.searched = newValue
     },
-    onKeyChange (newValue) {
+    onKeyChange(newValue) {
       this.key = newValue
     }
   },
   computed: {
-    filteredOptions () {
+    filteredOptions() {
       const filtered = []
-      if (this.key !== 'key'){
+      if (this.key !== 'key') {
         const regex = new RegExp(this.searched, 'ig')
-          for (const el of this.elements) {
-            if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
-              filtered.push(el)
-            }
+        for (const el of this.elements) {
+          if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
+            filtered.push(el)
+          }
         }
+        return filtered
       }
-      return filtered
     }
   },
-  data () {
+  data() {
     return {
       searched: '',
       key: this.keys[0]
@@ -124,5 +132,7 @@ export default {
 </script>
 
 <style scoped>
-  ul { list-style-type: none; }
+ul {
+  list-style-type: none;
+}
 </style>

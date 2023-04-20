@@ -36,6 +36,13 @@ import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddV
 import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
 import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
 import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
+import TrashTemplateBuildingsList from '@/components/containerTemplates/buildings/TrashTemplateBuildingsList.vue'
+import TrashTemplateContainersList from '@/components/containerTemplates/containers/TrashTemplateContainersList.vue'
+import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
+import TrashContainerCreate from '@/components/containerTemplates/containers/TrashContainerCreate.vue'
+import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
+import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
+import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 
 const routes = [
   {
@@ -236,6 +243,47 @@ const routes = [
     name: 'admin_edit_user',
     props: true,
     component: AdminStudentInfoUserEdit
+  },
+  {
+    path: '/trashtemplates',
+    name: 'trashtemplates',
+    component: TrashContainerTemplateList
+  },
+  {
+    path: '/trashtemplates/:id/edit',
+    name: 'editTrashtemplates',
+    component: TrashContainerTemplateEdit,
+    props: true
+  },
+  {
+    path: '/trashtemplates/create',
+    name: 'createTrashtemplates',
+    component: TrashContainerTemplateCreate,
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/containers',
+    name: 'trashtemplateContainers',
+    component: TrashTemplateContainersList,
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/containers/create',
+    name: 'createTrashtemplateContainers',
+    component: TrashContainerCreate,
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/containers/:containerId/edit',
+    name: 'editTrashtemplateContainers',
+    component: TrashContainerEdit,
+    props: true
+  },
+  {
+    path: '/trashtemplates/:id/buildings',
+    name: 'trashtemplateBuildings',
+    component: TrashTemplateBuildingsList,
+    props: true
   }
 ]
 
