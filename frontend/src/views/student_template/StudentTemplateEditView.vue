@@ -130,7 +130,7 @@ export default {
     }).then(result => result).catch(() => []);
 
     // get all rounds
-    this.all_rondes = await RequestHandler.handle(RoundService.getRondes(), {
+    this.all_rondes = await RequestHandler.handle(RoundService.getRounds(), {
       id: 'getRondesError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);

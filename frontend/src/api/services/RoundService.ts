@@ -45,11 +45,13 @@ class RoundService extends EchoService {
     return {} as EchoPromise<any>;
   }
 
+  /**
+   * Get a list of all the rounds
+   */
   @GET("/ronde/")
-  getRondes(): EchoPromise<Round> {
-    return {} as EchoPromise<Round>;
+  getRounds() : EchoPromise<Array<Round>> {
+    return {} as EchoPromise<Array<Round>>
   }
-
 }
 
 export default new EchoServiceBuilder()
