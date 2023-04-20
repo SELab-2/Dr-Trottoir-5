@@ -88,7 +88,7 @@ export default {
     },
     filter() {
       this.show = this.rounds.filter(r => (
-        (this.toggle.includes('0') && r.students.length > 0) || (this.toggle.includes('1') && r.students.length === 0)
+        ((this.toggle.includes('0') && r.students.length > 0) || (this.toggle.includes('1') && r.students.length === 0))
         &&
         r.ronde.name.toLowerCase().includes(this.search.toLowerCase())
       ));
