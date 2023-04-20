@@ -23,8 +23,9 @@ import StudentCreatePost from "@/views/StudentCreatePost";
 import StudentPostView from "@/views/StudentPostView";
 import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
-import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import AdminBuildingInfoEditView from "@/views/admin/AdminBuildingInfoEditView";
+import AdminBuildingInfoView from "@/views/admin/AdminBuildingInfoView";
 import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
 import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
 import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
@@ -145,9 +146,15 @@ const routes = [
   },
   {
     path: '/building/:id',
-    name: 'admin_building',
+    name: 'admin_info_building',
     props: true,
-    component: AdminBuildingView
+    component: AdminBuildingInfoView
+  },
+  {
+    path: '/building/:id/edit',
+    name: 'admin_edit_building',
+    props: true,
+    component: AdminBuildingInfoEditView
   },
   {
     path: '/account',
@@ -184,7 +191,7 @@ const routes = [
     name: 'dagplanning_add',
     component: DagplanningAddView
   },
-  { 
+  {
     path: '/buildings',
     name: 'buildings',
     component: BuildingList
