@@ -46,7 +46,7 @@ class RoundService extends EchoService {
   }
 
   /**
-   * Get a list of all the rows
+   * Get a list of all the rounds
    */
   @GET("/ronde/")
   getRounds() : EchoPromise<Array<Round>> {

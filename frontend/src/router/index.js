@@ -28,6 +28,12 @@ import HomeView from "@/views/HomeView.vue";
 import AdminStudentInfoUser from "@/views/admin/AdminStudentInfoUser";
 import RegisterUserList from "@/views/listViews/RegisterUserList";
 import AdminStudentInfoUserEdit from "@/views/admin/AdminStudentInfoUserEdit";
+import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
+import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
+import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
+import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
+import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
+import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
 
 const routes = [
   {
@@ -150,6 +156,36 @@ const routes = [
     path: '/account',
     name: 'account',
     component: AccountView
+  },
+  {
+    path: '/studenttemplates',
+    name: 'studenttemplates',
+    component: StudentTemplateView
+  },
+    {
+    path: '/studenttemplates/add',
+    name: 'add_studenttemplate',
+    component: StudentTemplateAddView
+  },
+  {
+    path: '/studenttemplates/:id',
+    name: 'studenttemplate',
+    component: StudentTemplateEditView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id',
+    name: 'ronde_dagplanningen',
+    component: RondeDagplanningenView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
+    name: 'dagplanning_edit',
+    component: DagplanningEditView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id/add',
+    name: 'dagplanning_add',
+    component: DagplanningAddView
   },
   {
     path: '/buildings',

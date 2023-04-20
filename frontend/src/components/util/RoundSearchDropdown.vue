@@ -36,7 +36,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
             </ul>
           </transition>
         </div>
-        <NormalButton :text="capitalize(this.key)" id="menu-activator" class="button"/>
+        <NormalButton :text="capitalize(this.key)" :dropdown="true" id="menu-activator" class="button"/>
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
