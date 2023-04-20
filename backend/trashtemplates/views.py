@@ -40,7 +40,7 @@ def trash_templates_view(request):
 
         add_if_match(get_current_week_planning().trash_templates, new_template, current_week)
 
-        return Response({"message": "Success"})
+        return Response({"id": new_template.id})
 
 
 @api_view(["GET", "DELETE", "PATCH"])

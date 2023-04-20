@@ -2,7 +2,7 @@
   <v-container align="center">
     <v-card max-width="750px">
       <v-card-title class="mt-2">
-        <h1 class="text-wrap">{{building.location.name}}</h1>
+        <h1 class="text-wrap">{{building.name}}</h1>
         <v-row align="center" class="my-4">
           <v-btn prepend-icon="mdi-map-marker" class="mx-auto my-2" color="secondary"
                  :href="'https://www.google.com/maps/search/?api=1&query='+ encodeURIComponent(building.adres)" target="_blank">
@@ -65,20 +65,17 @@ export default defineComponent({
     NormalButton
   },
   async created() {
-    if ('date' in this.$route.query) this.date = this.$route.query.date;
+    if ('planning' in this.$route.query) this.planning = this.$route.query.planning;
+    if ('year' in this.$route.query) this.year = this.$route.query.year;
+    if ('week' in this.$route.query) this.week = this.$route.query.week;
     if ('building' in this.$route.query) {
-      const user = this.$store.getters['session/currentUser'];
-      const id = await user.then(user => user.id).catch(() => null);
-      if (!id) return;
-
-      const planning = await RequestHandler.handle(PlanningService.get(id, this.date), {
+      const planning = await RequestHandler.handle(PlanningService.getPlanning(this.planning), {
         id: "getDayplanningError",
         style: "NONE"
       }).then(planning => planning).catch(() => null);
       if (!planning) return;
-      this.planning = planning.id;
 
-      const building_index = planning.ronde.buildings.findIndex(b => b.id == this.$route.query.building);
+      const building_index = planning.ronde.buildings.findIndex(b => String(b.id) === this.$route.query.building);
       this.building = planning.ronde.buildings[building_index];
       const infos = await RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
@@ -92,7 +89,7 @@ export default defineComponent({
         style: "NONE"
       }).then(picture => this.pictures = picture.map(p => p.pictureType)).catch(() => null);
 
-      const containers = await RequestHandler.handle(ContainerService.get(this.building.id), {
+      const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
         id: "getContainersError",
         style: "NONE"
       }).then(c => c).catch(() => null);
@@ -100,8 +97,7 @@ export default defineComponent({
 
       const weekDays = ['SU','MO','TU','WE','TH','FR','SA'];
       const day = weekDays[new Date(this.date).getDay()];
-      this.containers = containers.filter(c => c.collection_days_detail.map(d => d.day).includes(day));
-      // this.containers = containers.filter(c => c.collection_day === day);
+      this.containers = containers.filter(c => c.collection_day.day === day);
     }
   },
   data: () => ({
@@ -111,7 +107,9 @@ export default defineComponent({
     containers: [],
     pictures: [],
     info: '',
-    planning: ''
+    planning: '',
+    year: null,
+    week: null
   }),
   methods: {
     clickArrival() {

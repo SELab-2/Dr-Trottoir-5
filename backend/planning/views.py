@@ -14,6 +14,36 @@ from users.permissions import StudentReadOnly, AdminPermission, \
 from .util import *
 
 
+@api_view(["GET"])
+@permission_classes([StudentPermission])
+def student_dayplan(request, year, week, day):
+    if request.method == "GET":
+        if day < 0 or day > 6:
+            return Response(status=400)
+        days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+        day_name = days[day]
+
+        templates = StudentTemplate.objects.filter(year=year, week=week)
+        dayplan = None
+        for template in templates:
+            for plan in template.dag_planningen.all():
+                if plan.time.day == day_name and request.user in plan.students.all():
+                    dayplan = plan
+                    break
+
+        if dayplan is None:
+            return Response(status=404)
+
+        data = DagPlanningSerializerFull(dayplan).data
+        return Response(data)
+
+
+class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = DagPlanning.objects.all()
+    serializer_class = DagPlanningSerializerFull
+    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+
+
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializer

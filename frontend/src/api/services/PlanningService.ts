@@ -18,16 +18,17 @@ class PlanningService extends EchoService {
   /**
    * Get a day planning
    */
-  @GET("/planning/dagplanning/")
-  get(@Query('student') student: string,
-      @Query('date') date: string): EchoPromise<DayPlanning> {
+  @GET("/dagplanning/{year}/{week}/{day}")
+  get(@Path('year') year: number,
+      @Path('week') week: number,
+      @Path('day') day: number): EchoPromise<DayPlanning> {
     return {} as EchoPromise<DayPlanning>;
   }
 
   /**
    * Get a day planning by id
    */
-  @GET("/planning/dagplanning/{id}/")
+  @GET("/dagplanning/{id}/")
   getPlanning(@Path('id') id: number): EchoPromise<DayPlanning> {
     return {} as EchoPromise<DayPlanning>;
   }
@@ -43,7 +44,7 @@ class PlanningService extends EchoService {
   /**
    * Get building info for a day planning
    */
-  @GET("/planning/infoperbuilding/")
+  @GET("/infoperbuilding/")
   getInfo(@Query('dagPlanning') dagPlanning: number): EchoPromise<BuildingInfo> {
     return {} as EchoPromise<BuildingInfo>;
   }
@@ -51,7 +52,7 @@ class PlanningService extends EchoService {
   /**
    * Get student images for building info
    */
-  @GET("/planning/buildingpicture/")
+  @GET("/buildingpicture/")
   getPictures(@Query('infoPerBuilding') infoPerBuilding: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
@@ -59,7 +60,7 @@ class PlanningService extends EchoService {
   /**
    * Get student image by id
    */
-  @GET("/planning/buildingpicture/{id}/")
+  @GET("/buildingpicture/{id}/")
   getPicture(@Path('id') id: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
@@ -67,7 +68,7 @@ class PlanningService extends EchoService {
   /**
    * Delete a building picture
    */
-  @DELETE("/planning/buildingpicture/{id}/")
+  @DELETE("/buildingpicture/{id}/")
   deletePicture(@Path('id') id: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
@@ -75,7 +76,7 @@ class PlanningService extends EchoService {
   /**
    * Post building picture
    */
-  @POST("/planning/buildingpicture/")
+  @POST("/buildingpicture/")
   @FormMultipart()
   uploadPicture(
     @FormField("image") image: File,
@@ -90,7 +91,7 @@ class PlanningService extends EchoService {
   /**
    * Update building picture
    */
-  @PUT("/planning/buildingpicture/{id}/")
+  @PUT("/buildingpicture/{id}/")
   @FormMultipart()
   updatePicture(
     @Path('id') id: number,
@@ -106,7 +107,7 @@ class PlanningService extends EchoService {
   /**
    * Partly update building picture
    */
-  @PATCH("/planning/buildingpicture/{id}/")
+  @PATCH("/buildingpicture/{id}/")
   @FormMultipart()
   patchPicture(
     @Path('id') id: number,
@@ -121,7 +122,7 @@ class PlanningService extends EchoService {
   /**
    * Update planning status
    */
-  @PATCH("/planning/dagplanning/{id}/")
+  @PATCH("/dagplanning/{id}/")
   updatePlanningStatus(@Path('id') id: number, @Body() body: PlanningStatusWrapper) {
     return {} as EchoPromise<any>;
   }

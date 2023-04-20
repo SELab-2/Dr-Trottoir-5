@@ -36,7 +36,7 @@ export default defineComponent({
       if (!building) return;
 
       this.data = {
-        images: images, type: this.$route.query.type, buildingName: building.location.name, info: this.$route.query.info,
+        images: images, type: this.$route.query.type, buildingName: building.name, info: this.$route.query.info,
         planning: this.$route.query.planning, building_id: building.id
       };
     }
