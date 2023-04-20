@@ -45,12 +45,13 @@
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pt-10">
         <h1>Rol</h1>
       </v-col>
-      <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center">
+      <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pb-10">
         <v-select variant="outlined" :items="roles" item-title="name" item-value="value" v-model:model-value="data.role"
                   :readonly="!edit || not_admin"
                   style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-select>
       </v-col>
+      <!-- TODO Milestone 3
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pt-10">
         <h1>Rondes</h1>
       </v-col>
@@ -59,6 +60,7 @@
           <v-checkbox :model-value="data.rondes && ronde in data.rondes" readonly :label="ronde"></v-checkbox>
         </template>
       </v-col>
+      ---->
       <div v-if="can_edit_permission">
         <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
           <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
@@ -81,8 +83,6 @@
 <script>
 import NormalButton from '@/components/NormalButton'
 import ConfirmDialog from '@/components/util/ConfirmDialog'
-import {RequestHandler} from "@/api/RequestHandler";
-import UserService from "@/api/services/UserService";
 
 export default {
   name: 'AccountInformation',
