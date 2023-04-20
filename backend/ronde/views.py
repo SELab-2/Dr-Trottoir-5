@@ -213,7 +213,7 @@ class BuildingListCreateView(generics.ListCreateAPIView):
 
 
 class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = BuildingSerializer
+    serializer_class = BuildingSerializerFull
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
