@@ -65,7 +65,7 @@ export const session = {
      * @param state
      */
     isAuthenticated(state: any): boolean {
-      return state.currentUser && state.currentUser.isSuccess();
+      return state.currentUser.then(() => true).catch(() => false);
     },
 
     /**
@@ -73,14 +73,10 @@ export const session = {
      *
      * @param state
      */
-    isAdmin(state: any): boolean {
-      return (
-        state.currentUser && state.currentUser.isSuccess() &&
-        (
-          state.currentUser.requireData().role == UserRole.AD ||
-          state.currentUser.requireData().role == UserRole.SU
-        )
-      );
+    isAdmin(state: any): Promise<boolean> {
+      return state.currentUser
+      .then(u => u.role === UserRole.AD || u.role === UserRole.SU)
+      .catch(() => false);
     },
   },
 };
