@@ -11,7 +11,6 @@ import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import Building from "@/api/models/Building";
 import Round from "@/api/models/Round";
 import {RoundWrapper} from "@/api/wrappers/RoundWrapper";
-import Round from "@/api/models/Round";
 
 class RoundService extends EchoService {
   /**
