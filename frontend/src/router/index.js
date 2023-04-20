@@ -221,7 +221,7 @@ const routes = [
     component: TrashContainerTemplateList
   },
   {
-    path: '/trashtemplates/edit',
+    path: '/trashtemplates/:id/edit',
     name: 'editTrashtemplates',
     component: TrashContainerTemplateEdit,
     props: true

@@ -59,7 +59,7 @@ export default {
   methods: {
     editTemplate: function () {
       router.push({
-        path: '/trashtemplates/edit'
+        path: '/trashtemplates/'+ this.data.id +'/edit'
       });
     },
     deleteTemplate: function () {
