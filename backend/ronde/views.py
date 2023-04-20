@@ -127,7 +127,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 
 class ManualRetrieveUpdateDestroyAPIView(
-    generics.RetrieveUpdateDestroyAPIView):
+        generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
