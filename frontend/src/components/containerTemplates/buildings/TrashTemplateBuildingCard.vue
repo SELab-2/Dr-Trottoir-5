@@ -2,18 +2,18 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col class="d-flex align-center" cols="2">
-        <p class="text-style-building" @click="goToBuildingPage">{{ this.data.name }}</p>
+        <p class="text-style-building" @click="goToBuildingPage">{{ this.building.name }}</p>
       </v-col>
       <v-col class="d-flex align-center" cols="2">
-        <p>{{ this.data.adres }}</p>
+        <p>{{ this.building.adres }}</p>
       </v-col>
       <v-col class="d-flex align-center" cols="1">
         <p :style="{
     color:
-      this.data.efficiency < 50 ? '#FF1F00' :
-      this.data.efficiency < 75 ? '#E88E4D' :
+      this.building.efficiency < 50 ? '#FF1F00' :
+      this.building.efficiency < 75 ? '#E88E4D' :
       '#39AE68'
-  }">{{ this.data.efficiency }}%</p>
+  }">{{ this.building.efficiency }}%</p>
       </v-col>
       <v-col class="d-flex align-center" cols="1">
         <v-menu>
@@ -59,11 +59,19 @@ export default {
   components: {},
   props: {
     data: {
-      type: Building
+      /**
+       * Object of type:
+       * {
+       *   building: Building,
+       *   trash_ids: Number[]
+       * }
+       * **/
+      type: Object //TODO MAKE OBJECT FOR THIS
     }
   },
   data: () => ({
-    status: ''
+    status: '',
+    building: null
   }),
   methods: {
     downloadDocument: function () {
@@ -73,10 +81,11 @@ export default {
       router.push({ path: '/building/' + this.data.id });
     }
   },
-  async mounted() {
-    this.status = this.data.status
+  mounted() {
+    this.status = this.building.status
   },
   async beforeMount() {
+    this.building = this.data.building
     await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(
       async result => this.status = result.manualStatus)
   }
