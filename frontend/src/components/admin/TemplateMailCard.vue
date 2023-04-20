@@ -51,7 +51,7 @@ export default {
     },
     deletePost: function () {
       RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
-        .then(async result => router.go(0))
+        .then( () => window.location.reload())
     }
   },
   components: {
