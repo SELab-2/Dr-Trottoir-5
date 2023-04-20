@@ -20,10 +20,18 @@ it displays the information of one round so that a list of round views can easil
         <v-col align="left" md="1" xs="1" class="my-3 ml-4">
           <v-icon v-if="percentage === 100" icon="mdi-check" color="green" size="x-large"></v-icon>
         </v-col>
-        <v-col align="center" md="2" xs="6" class="my-3 ml-4">
-          <v-list-item v-for="user in data.round.students" :key="user.id" :title="user.first_name + ' ' + user.last_name">
-
-          </v-list-item>
+        <v-col align="center" md="2" xs="6" class="ml-3">
+          <v-list>
+            <v-list-group value="Student(en)">
+              <template v-slot:activator="{ props }">
+                <v-list-item rounded
+                             v-bind="props"
+                ><p class="text-wrap">Student(en)</p></v-list-item>
+              </template>
+              <v-list-item v-for="(student, i) in users" :key="i"
+              ><p class="text-wrap">{{student}}</p></v-list-item>
+            </v-list-group>
+          </v-list>
         </v-col>
         <v-col align="right" md="1" xs="2" class="my-3 mx-2">
           <v-icon icon="mdi-information-outline" size="x-large" @click="info"></v-icon>
@@ -41,7 +49,6 @@ export default {
     users: []
   }),
   created() {
-    console.log(this.data.round)
     this.percentage = this.data.round.status.filter(s => s === 'FI') / this.data.round.ronde.buildings.length;
     this.users = this.data.round.students.map(s => `${s.first_name} ${s.last_name}`);
   },
@@ -56,7 +63,7 @@ export default {
   },
   methods: {
     info() {
-
+      // TODO
     }
   }
 }
