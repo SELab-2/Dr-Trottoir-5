@@ -37,14 +37,6 @@ class UserPublicSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserRelatedField(UserPublicSerializer):
-    def to_representation(self, value):
-        return UserPublicSerializer(value).data
-
-    def to_internal_value(self, data):
-        return data
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
