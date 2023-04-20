@@ -253,7 +253,7 @@ def student_templates_view(request):
         )
 
         add_if_match(get_current_week_planning().student_templates, new_template, current_week)
-        return Response({"message": "Success"})
+        return Response({"message": "Success", "new_id": new_template.id})
 
 
 @api_view(["GET", "DELETE", "PATCH"])
@@ -303,7 +303,6 @@ def student_template_view(request, template_id):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         data = request.data
-        permanent = data["permanent"]
 
         if "name" not in data:
             data["name"] = template.name
@@ -318,23 +317,30 @@ def student_template_view(request, template_id):
 
         if "start_hour" not in data:
             data["start_hour"] = template.start_hour
+        else:
+            start_hour = [int(t) for t in data["start_hour"].split(":")]
+            data["start_hour"] = datetime.time(start_hour[0], start_hour[1])
 
         if "end_hour" not in data:
             data["end_hour"] = template.end_hour
+        else:
+            end_hour = [int(t) for t in data["end_hour"].split(":")]
+            data["end_hour"] = datetime.time(end_hour[0], end_hour[1])
 
         validate_student_template_data(data)
 
         planning = get_current_week_planning()
 
-        if no_copy(template, permanent, current_year, current_week):
+        response = {"message": "Success"}
+        if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
             template.even = data["even"]
             template.location = data["location"]
-            template.start_hour = data["start_hour"],
-            template.end_hour = data["end_hour"],
+            # template.start_hour = data["start_hour"]
+            # template.end_hour = data["end_hour"],
             template.save()
             add_if_match(planning.student_templates, template, current_week)
-            return Response({"message": "Success"})
+            return Response(response)
 
         new_template = StudentTemplate.objects.create(
             name=data["name"],
@@ -352,8 +358,8 @@ def student_template_view(request, template_id):
         template.status = Status.INACTIEF
         template.save()
         remove_if_match(planning.student_templates, template, current_week)
-
-        return Response({"message": "Success"})
+        response["new_id"] = new_template.id
+        return Response(response)
 
 
 @api_view(["GET", "POST"])
@@ -380,13 +386,14 @@ def rondes_view(request, template_id):
         dag_planningen = []
 
         data["start_hour"] = template.start_hour
-        data["end_hour"] = template.start_hour
+        data["end_hour"] = template.end_hour
         data["students"] = []
         for day in WeekDayEnum:
             data["day"] = day
             dag_planning = make_dag_planning(data)
             dag_planningen.append(dag_planning)
 
+        response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.rondes.add(ronde)
             template.dag_planningen.add(*dag_planningen)
@@ -396,7 +403,9 @@ def rondes_view(request, template_id):
             copy.dag_planningen.add(*dag_planningen)
             remove_if_match(get_current_week_planning().student_templates, template, current_week)
             add_if_match(get_current_week_planning().student_templates, copy, current_week)
-        return Response({"message": "Success"})
+            response["new_id"] = copy.id
+
+        return Response(response)
 
 
 @api_view(["DELETE"])
@@ -413,6 +422,7 @@ def ronde_view(request, template_id, ronde_id):
         """
         to_remove = template.dag_planningen.filter(ronde=ronde)
 
+        response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.dag_planningen.remove(*to_remove)
             template.rondes.remove(ronde)
@@ -422,7 +432,8 @@ def ronde_view(request, template_id, ronde_id):
             copy.rondes.remove(ronde)
             remove_if_match(get_current_week_planning().student_templates, template, current_week)
             add_if_match(get_current_week_planning().student_templates, copy, current_week)
-        return Response({"message": "Success"})
+            response["new_id"] = copy.id
+        return Response(response)
 
 
 @api_view(["GET", "POST"])
@@ -449,7 +460,7 @@ def dagplanningen_view(request, template_id, ronde_id):
         validate_dag_planning_data(data)
         new_dag_planning = make_dag_planning(data)
 
-        update(
+        response = update(
             template,
             "dag_planningen",
             None,
@@ -458,11 +469,11 @@ def dagplanningen_view(request, template_id, ronde_id):
             get_current_week_planning().student_templates,
             copy_template=make_copy
         )
+        response["message"] = "Success"
+        return Response(response)
 
-        return Response({"message": "Success"})
 
-
-@api_view(["DELETE", "PATCH"])
+@api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
 
@@ -471,12 +482,19 @@ def dagplanning_view(request, template_id, dag_id, permanent):
     dag_planning = DagPlanning.objects.get(id=dag_id)
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
+    if request.method == "GET":
+        """
+        Geeft een dagplanning terug
+        """
+        data = DagPlanningSerializer(dag_planning).data
+        return Response(data)
+
     if request.method == "DELETE":
         """
         Verwijder een DagPlanning van de template
         """
 
-        update(
+        response = update(
             template,
             "dag_planningen",
             dag_planning,
@@ -485,7 +503,8 @@ def dagplanning_view(request, template_id, dag_id, permanent):
             get_current_week_planning().student_templates,
             copy_template=make_copy
         )
-        return Response({"message": "Success"})
+        response["message"] = "Success"
+        return Response(response)
 
     if request.method == "PATCH":
         """
@@ -505,7 +524,7 @@ def dagplanning_view(request, template_id, dag_id, permanent):
 
         new_dag_planning = make_dag_planning(data)
 
-        update(
+        response = update(
             template,
             "dag_planningen",
             dag_planning,
@@ -514,4 +533,5 @@ def dagplanning_view(request, template_id, dag_id, permanent):
             get_current_week_planning().student_templates,
             copy_template=make_copy
         )
-        return Response({"message": "Success"})
+        response["message"] = "Success"
+        return Response(response)

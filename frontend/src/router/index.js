@@ -8,6 +8,11 @@ import CreateBuildingView from '@/views/admin/CreateBuildingView'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
 import DayPlanView from "@/views/DayPlanView";
+import BuildingList from "@/views/listViews/BuildingList";
+import RoundList from "@/views/listViews/RoundList";
+import StudentList from "@/views/listViews/StudentList";
+import SyndicusList from "@/views/listViews/SyndicusList";
+import TemplateList from "@/views/listViews/TemplateList";
 import CreateRoundView from "@/views/CreateRoundView.vue";
 import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
 import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
@@ -21,6 +26,12 @@ import CreateLocationView from "@/views/admin/CreateLocationView";
 import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
 import DashboardView from "@/views/admin/DashboardView.vue";
+import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
+import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
+import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
+import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
+import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
+import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
 
 const routes = [
   {
@@ -143,6 +154,61 @@ const routes = [
     path: '/account',
     name: 'account',
     component: AccountView
+  },
+  {
+    path: '/studenttemplates',
+    name: 'studenttemplates',
+    component: StudentTemplateView
+  },
+    {
+    path: '/studenttemplates/add',
+    name: 'add_studenttemplate',
+    component: StudentTemplateAddView
+  },
+  {
+    path: '/studenttemplates/:id',
+    name: 'studenttemplate',
+    component: StudentTemplateEditView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id',
+    name: 'ronde_dagplanningen',
+    component: RondeDagplanningenView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
+    name: 'dagplanning_edit',
+    component: DagplanningEditView
+  },
+  {
+    path: '/studenttemplates/:template_id/rondes/:ronde_id/add',
+    name: 'dagplanning_add',
+    component: DagplanningAddView
+  },
+  { 
+    path: '/buildings',
+    name: 'buildings',
+    component: BuildingList
+  },
+  {
+    path: '/rounds',
+    name: 'rounds',
+    component: RoundList
+  },
+  {
+    path: '/students',
+    name: 'students',
+    component: StudentList
+  },
+  {
+    path: '/syndicusen',
+    name: 'syndicusen',
+    component: SyndicusList
+  },
+  {
+    path: '/mailtemplates',
+    name: 'mailtemplates',
+    component: TemplateList
   }
 ]
 

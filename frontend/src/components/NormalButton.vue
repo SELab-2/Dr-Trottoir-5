@@ -23,6 +23,9 @@ In following example inc is a function defined in methods.
     >
       <p >{{ text }}</p>
     </div>
+    <div v-if="this.dropdown">
+      <v-icon right color="secondary">mdi-menu-down</v-icon>
+    </div>
   </v-btn>
 </template>
 
@@ -33,6 +36,7 @@ export default defineComponent({
   name: 'NormalButton',
   props: {
     text: { type: String },
+    dropdown: { type: Boolean, default: false },
     parentFunction: { type: Function, default: () => {} }
   }
 })

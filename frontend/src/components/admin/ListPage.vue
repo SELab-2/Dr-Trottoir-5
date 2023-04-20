@@ -14,13 +14,15 @@ Heeft als nodige argumenten nodig:
     <v-row class="text-center">
       <v-col cols="12">
         <v-row class="pa-5">
-            <h1>{{ title }}</h1>
+            <h1>{{ this.title }}</h1>
           <v-row></v-row>
-            <NormalButton text="+" v-bind:parent-function="addFunction"/>
+            <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+              <NormalButton text="+" v-bind:parent-function="addFunction"/>
+            </div>
         </v-row>
       </v-col>
       <v-col cols="12">
-        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements"/>
+        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:keyChange="onKeyChange" :elements="elements" :keys="keys"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -72,6 +74,11 @@ export default {
       type: Array,
       default: () => [],
       required: true
+    },
+    keys: {
+      type: Array,
+      default: () => ['default'],
+      required: true
     }
   },
   methods: {
@@ -85,10 +92,13 @@ export default {
   computed: {
     filteredOptions () {
       const filtered = []
-      const regex = new RegExp(this.searched, 'ig')
-      for (const el of this.elements) {
-        if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
-          filtered.push(el)
+      if (this.key !== 'key'){
+        const regex = new RegExp(this.searched, 'ig')
+          for (const el of this.elements) {
+            console.log(el)
+            if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
+              filtered.push(el)
+            }
         }
       }
       return filtered
@@ -97,7 +107,7 @@ export default {
   data () {
     return {
       searched: '',
-      key: Object.keys(this.elements[0])[0]
+      key: this.keys[0]
     }
   }
 }

@@ -36,7 +36,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
             </ul>
           </transition>
         </div>
-        <NormalButton :text="capitalize(key)" :dropdown="true" id="menu-activator" class="button"/>
+        <NormalButton :text="capitalize(this.key)" :dropdown="true" id="menu-activator" class="button"/>
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
@@ -57,6 +57,11 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 <script>
 import NormalButton from '@/components/NormalButton'
 import { capitalize } from 'vue'
+import Building from "@/api/models/Building";
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+
+// TODO: fix search
 
 export default {
   name: 'SearchDropdown',
@@ -72,15 +77,15 @@ export default {
       default: () => [],
       required: true
     },
-    keys: {
-      type: Array,
-      default: () => ['default'],
-      required: true
-    },
     placeholder: {
       type: String,
       required: false,
       default: 'Search ...'
+    },
+    keys: {
+      type: Array,
+      default: () => [],
+      required: true
     }
   },
   setup () {
@@ -92,8 +97,9 @@ export default {
       selected: '',
       optionsShown: false,
       searchFilter: '',
+      key: this.keys[0],
       isSmallScreen: false,
-      key: this.keys[0]
+      buildings: []
     }
   },
   created () {
@@ -103,10 +109,18 @@ export default {
   computed: {
     filteredOptions () {
       const filtered = []
-      if (this.key !== ''){
-        const regex = new RegExp(this.searchFilter, 'ig')
+      const regex = new RegExp(this.searchFilter, 'ig')
+      if (this.key !== 'roundName') {
+        for (const el of this.buildings) {
+          console.log(el)
+          const value = el[this.key].toString()
+          if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
+            filtered.push(value)
+          }
+        }
+      } else {
         for (const option of this.elements) {
-          const value = option[this.key].toString()
+          const value = option['name'].toString()
           if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
             filtered.push(value)
           }
@@ -123,7 +137,7 @@ export default {
       this.key = key
       this.selected = ''
       this.searchFilter = ''
-      this.$emit('keyChange', this.key)
+      this.$emit('key', this.key)
       this.$emit('selected', this.selected)
     },
     selectOption (option) {
@@ -148,6 +162,14 @@ export default {
         } else {
           this.exit()
         }
+      }
+    }
+  },
+  updated() {
+    console.log(this.elements)
+    for (const round of this.elements) {
+      for (const id of round.buildings) {
+        RequestHandler.handle(BuildingService.getBuildingById(id)).then(async result => this.buildings.push(result))
       }
     }
   }
