@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     addMethod: function () {
-      router.push({ path: '/mail-template/create' })
+      router.push({ path: '/mailtemplate/create' })
     }
   },
   async beforeMount() {
