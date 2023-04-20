@@ -28,7 +28,7 @@
       </v-row>
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="editContainer()">Aanmaken</v-btn>
+          <v-btn class="overflow-hidden" @click="editContainer()">Aanpassen</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -48,10 +48,11 @@ export default {
   components: {NormalButton},
   props: {
     id: Number,
-    toEdit: Container
+    containerId: Number
   },
   data: () => {
     return {
+      id: null,
       type: '',
       day: '',
       start_hour: '',
@@ -75,16 +76,25 @@ export default {
       ]
     }
   },
-  async beforeMount() {
-    this.type = this.toEdit.type
-    this.day = this.toEdit.day
-    this.start_hour = this.toEdit.start_hour
-    this.end_hour = this.toEdit.end_hour
+  beforeMount() {
+    this.id = this.$route.params.id
+    RequestHandler.handle(
+      TrashTemplateService.getTrashContainersOfTemplateByExtraId(this.id, this.$route.params.containerId),
+      {
+        id: 'getContainerforeditError',
+        style: 'SNACKBAR'
+      }
+    ).then(result => {
+      this.type = result.trash_container.type
+      this.day = result.trash_container.collection_day.day
+      this.start_hour = result.trash_container.collection_day.start_hour
+      this.end_hour = result.trash_container.collection_day.end_hour
+    })
   },
   methods: {
     editContainer() {
       RequestHandler.handle(
-        TrashTemplateService.updateContainerTemplate(this.id, this.toEdit.id, {
+        TrashTemplateService.updateContainerTemplate(this.id, this.$route.params.containerId, {
           type: this.type,
           collection_day: {
             day: this.day,

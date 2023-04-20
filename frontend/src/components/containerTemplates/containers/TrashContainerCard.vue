@@ -36,40 +36,24 @@ export default {
   components: {EditIcon, DeleteIcon},
   props: {
     data: {
-      type: Container,
-      default: () => (new Container())
-    }
+      default: Object(),
+    },
   },
   data: () => ({
+    id: null
   }),
   methods: {
     editContainer: function () {
       router.push({
-        path: '/trashtemplates/' + this.data.id + '/containers/edit', params: {//TODO add to router
-          toEdit: this.data // TODO deze pagina maken
-        }
+        path: '/trashtemplates/' + this.id + '/containers/' + this.data.extra_id + '/edit'
       });
     },
     deleteContainer: function () {
       //todo
     },
-    goToTrashTemplateBuildingsPage: function () {
-      router.push({
-        path: '/trashtemplates/' + this.data.id + '/buildings', params: {
-          trashTemplate: this.data // TODO deze pagina maken
-        }
-      });
-    },
-    goToTrashTemplateContainersPage: function () {
-      router.push({
-        path: '/trashtemplates/' + this.data.id + '/containers', params: {
-          trashTemplate: this.data // TODO deze pagina maken
-        }
-      })
-    }
   },
   async beforeMount() {
-
+    this.id = this.$route.params.id
   }
 }
 </script>

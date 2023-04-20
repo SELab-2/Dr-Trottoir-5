@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     addTrashContainerTemplate: function () {
-      router.push({ path: '/trashtemplates/' + this.id + '/containers/create' });//TODO router
+      router.push({ path: '/trashtemplates/' + this.id + '/containers/create' });
     }
   },
   async beforeMount() {

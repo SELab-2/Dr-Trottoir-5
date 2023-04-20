@@ -49,7 +49,7 @@ export default {
   components: {EditIcon, DeleteIcon},
   props: {
     data: {
-      type: TrashTemplate,
+      type: Object,
     }
   },
   data: () => ({
@@ -59,9 +59,7 @@ export default {
   methods: {
     editTemplate: function () {
       router.push({
-        path: '/trashtemplates/edit', params: {
-          toEdit: this.data
-        }
+        path: '/trashtemplates/edit'
       });
     },
     deleteTemplate: function () {
@@ -69,16 +67,12 @@ export default {
     },
     goToTrashTemplateBuildingsPage: function () {
       router.push({
-        path: '/trashtemplates/' + this.data.id + '/buildings', params: {
-          trashTemplate: this.data
-        }
+        path: '/trashtemplates/' + this.data.id + '/buildings'
       });
     },
     goToTrashTemplateContainersPage: function () {
       router.push({
-        path: '/trashtemplates/' + this.data.id + '/containers', params: {
-          trashTemplate: this.data // TODO deze pagina maken
-        }
+        path: '/trashtemplates/' + this.data.id + '/containers'
       })
     }
   },

@@ -1,3 +1,4 @@
+import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import StudentHomeView from '../views/StudentHomeView.vue'
 import AccountView from '../views/AccountView'
@@ -244,9 +245,9 @@ const routes = [
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers/edit',
+    path: '/trashtemplates/:id/containers/:containerId/edit',
     name: 'editTrashtemplateContainers',
-    component: TrashContainerTemplateList, // TODO SWITCH TO CONTAINERS EDIT PAGE
+    component: TrashContainerEdit,
     props: true
   },
   {

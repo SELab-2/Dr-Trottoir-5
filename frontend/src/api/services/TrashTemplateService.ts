@@ -36,8 +36,8 @@ class TrashTemplateService extends EchoService {
   }
 
   @GET("/trashtemplates/{id}/trashcontainers/{extraId}/")
-  getTrashContainersEOfTemplateByExtraId(@Path('id') id: number, @Path('extraId') extraId: number): EchoPromise<Container[]> {
-    return {} as EchoPromise<Container[]>;
+  getTrashContainersOfTemplateByExtraId(@Path('id') id: number, @Path('extraId') extraId: number): EchoPromise<Container> {
+    return {} as EchoPromise<Container>;
   }
 
   @GET("/trashtemplates/{id}/buildings/")
