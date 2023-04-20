@@ -1,17 +1,17 @@
 <template>
   <v-container class="border">
     <v-row align="center" justify="center">
-      <v-col cols="2" class="col">
+      <v-col class="col" cols="2">
         <p title="Dag"> Dag </p>
       </v-col>
-      <v-col cols="2" class="col">
+      <v-col class="col" cols="2">
         <p title="Uren"> Uren </p>
       </v-col>
-      <v-col cols="2" class="col">
-        <p  title="Type"> Type </p>
+      <v-col class="col" cols="2">
+        <p title="Type"> Type </p>
       </v-col>
-      <v-col cols="4" class="col"/>
-      <v-col cols="2" class="text-right">
+      <v-col class="col" cols="4"/>
+      <v-col class="text-right" cols="2">
         Acties
       </v-col>
     </v-row>
@@ -34,9 +34,11 @@ export default {
   overflow: hidden;
   white-space: nowrap;
 }
+
 .col:hover {
   white-space: normal;
 }
+
 .border {
   border: 1px solid #E3e3e3;
 }

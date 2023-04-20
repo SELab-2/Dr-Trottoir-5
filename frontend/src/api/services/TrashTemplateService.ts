@@ -78,7 +78,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @POST("/trashtemplates/{id}/buildings/")
-  newBuildingToTemplate(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  newBuildingToTemplate(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

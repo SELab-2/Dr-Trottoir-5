@@ -41,7 +41,6 @@ import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import {ContainerType} from "@/api/models/ContainerType";
 import {Weekday} from "@/api/models/Weekday";
-import Container from "@/api/models/Container";
 
 export default {
   name: 'CreateTrashContainerView',

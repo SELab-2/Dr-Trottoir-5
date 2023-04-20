@@ -49,7 +49,7 @@ export default {
   components: {EditIcon, DeleteIcon},
   props: {
     data: {
-      type: Object,
+      type: TrashTemplate,
     }
   },
   data: () => ({

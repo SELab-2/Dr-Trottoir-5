@@ -1,6 +1,7 @@
 <template>
   <ListPage :add-function="addTrashContainerBuilding" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
+            :search="false"
             :keys="keys" title="Gebouwen voor deze vuilnis planning"/>
 </template>
 
@@ -28,7 +29,7 @@ export default {
   },
   methods: {
     addTrashContainerBuilding: function () {
-      router.push({ path: '/building/create'});
+      router.push({path: '/building/create'});
     }
   },
   async beforeMount() {

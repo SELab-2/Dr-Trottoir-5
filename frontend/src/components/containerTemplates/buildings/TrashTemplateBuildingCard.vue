@@ -1,13 +1,13 @@
 <template>
   <v-container class="container-border">
     <v-row align="center" justify="center">
-      <v-col cols="2" class="d-flex align-center">
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.name }}</p>
+      <v-col class="d-flex align-center" cols="2">
+        <p class="text-style-building" @click="goToBuildingPage">{{ this.data.name }}</p>
       </v-col>
-      <v-col cols="2" class="d-flex align-center">
+      <v-col class="d-flex align-center" cols="2">
         <p>{{ this.data.adres }}</p>
       </v-col>
-      <v-col cols="1" class="d-flex align-center">
+      <v-col class="d-flex align-center" cols="1">
         <p :style="{
     color:
       this.data.efficiency < 50 ? '#FF1F00' :
@@ -15,7 +15,7 @@
       '#39AE68'
   }">{{ this.data.efficiency }}%</p>
       </v-col>
-      <v-col cols="1" class="d-flex align-center">
+      <v-col class="d-flex align-center" cols="1">
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
@@ -34,7 +34,7 @@
         </v-menu>
       </v-col>
       <v-col cols="1"/>
-      <v-col cols="2" class="d-flex align-center">
+      <v-col class="d-flex align-center" cols="2">
         <v-menu>
           <template v-slot:activator="{ props }">
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
@@ -48,12 +48,10 @@
 </template>
 
 <script>
-import EditIcon from '@/components/icons/EditIcon.vue'
 import Building from "@/api/models/Building";
 import BuildingService from "@/api/services/BuildingService";
-import {RequestHandler} from "@/api/RequestHandler";
+import { RequestHandler } from "@/api/RequestHandler";
 import router from "@/router";
-import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 
 
 export default {
@@ -65,21 +63,22 @@ export default {
     }
   },
   data: () => ({
-    status: '',
+    status: ''
   }),
   methods: {
     downloadDocument: function () {
       // TODO
     },
     goToBuildingPage: function () {
-      router.push({ path: '/building/' + this.data.id});
+      router.push({ path: '/building/' + this.data.id });
     }
   },
-  async mounted () {
+  async mounted() {
     this.status = this.data.status
   },
-  async beforeMount () {
-    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => this.status = result.manualStatus)
+  async beforeMount() {
+    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(
+      async result => this.status = result.manualStatus)
   }
 }
 </script>

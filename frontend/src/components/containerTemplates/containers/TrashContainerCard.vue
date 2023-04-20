@@ -5,7 +5,9 @@
         <p class="text-style-title">{{ this.data.trash_container.collection_day.day }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ this.data.trash_container.collection_day.start_hour + ' - ' + this.data.trash_container.collection_day.end_hour }}</p>
+        <p>{{
+            this.data.trash_container.collection_day.start_hour + ' - ' + this.data.trash_container.collection_day.end_hour
+          }}</p>
       </v-col>
       <v-col cols="2">
         <p>{{ this.data.trash_container.type.toString() }}</p>
@@ -29,7 +31,6 @@
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import router from '@/router'
-import Container from "@/api/models/Container";
 
 export default {
   name: 'TrashContainerCard',

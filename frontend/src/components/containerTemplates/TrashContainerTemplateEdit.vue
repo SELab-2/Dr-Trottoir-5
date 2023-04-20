@@ -22,6 +22,17 @@
             label="Locatie"
           ></v-select>
         </v-col>
+        <v-col cols='12' md='6' sm='6'>
+          <v-select
+            v-model="buildings"
+            :items="building_choices"
+            item-title="name"
+            item-value="id"
+            label="Kies gebowen"
+            multiple="true"
+            chips="true"
+          ></v-select>
+        </v-col>
       </v-row>
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
@@ -40,6 +51,7 @@ import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 import TrashTemplate from "@/api/models/TrashTemplate";
+import buildingService from "@/api/services/BuildingService";
 
 export default {
   name: "TrashContainerTemplateEditView",
@@ -47,25 +59,32 @@ export default {
     NormalButton
   },
   props: {
-    data: {
-      toEdit: TrashTemplate
-    }
   },
   data: () => ({
     name: '',
     even: true,
     location: null,
     locations: [],
+    buildings: null,
+    building_choices: []
   }),
   async mounted() {
     this.name = this.toEdit.name
     this.even = this.toEdit.even
-    this.location =  this.toEdit.location
+    this.location = this.toEdit.location
+    this.buildings = this.
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
+    // get all possible buildings
+    this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
+      id: 'getbuildingsError',
+      style: 'SNACKBAR'
+    }).then(result => result).catch(() => []);
+
+
 
   },
   methods: {
@@ -75,7 +94,7 @@ export default {
         even: this.even,
         location: this.location
       }
-      const response = await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.toEdit.id, body),{
+      const response = await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.toEdit.id, body), {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => result);
