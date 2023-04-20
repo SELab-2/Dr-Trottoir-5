@@ -16,10 +16,19 @@ class RoleAssignmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return UserPublicSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
+
+
 class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = [
+            'id',
             'email',
             'first_name',
             'last_name',
