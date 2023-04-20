@@ -28,11 +28,7 @@
           <v-list>
             <v-list-item value="download" @click="downloadDocument">
               <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
-              PDF
-            </v-list-item>
-            <v-list-item value="upload" @click="uploadDocument">
-              <v-icon color="#FFE600" icon="mdi-file-upload-outline"></v-icon>
-              Upload
+              Handleiding
             </v-list-item>
           </v-list>
         </v-menu>
@@ -48,7 +44,7 @@
         </v-menu>
       </v-col>
       <v-col cols="3" class="d-flex align-center justify-end">
-        <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
+        <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditBuilding">
           <EditIcon/>
         </v-btn>
         <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
@@ -77,43 +73,49 @@ import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 
 export default {
   name: 'BuildingCard',
-  components: {DeleteIcon, EditIcon },
+  components: {DeleteIcon, EditIcon},
   props: {
     data: {
       type: Building
     }
   },
   data: () => ({
+    manual: '',
     status: '',
-    documentStatus: ['Klaar'] // TODO + updaten in database
   }),
   methods: {
-    editPost: function () {
-      // TODO
-    },
-    deletePost: function () {
-      RequestHandler.handle(BuildingService.deleteBuildingById(this.data.id))
-        .then(async result => router.go(0))
-    },
-    uploadDocument: function () {
-      // TODO
-    },
     downloadDocument: function () {
-      // TODO
+      window.open(this.manual)
     },
-    updateStatus: function (newStatus) {
-      this.status = newStatus
-      // TODO opslaan in database
+    goToEditBuilding: function () {
+      router.push({name: 'admin_edit_building', params: {id: this.data.id}})
+    },
+    deletePost: async function () {
+      await RequestHandler.handle(BuildingService.deleteBuildingById(this.data.id), {
+        id: 'BuildingCardDeleteBuilding',
+        style: 'SNACKBAR',
+        customMessages: [
+          {
+            code: '500',
+            message: 'Kon gebouw niet verwijderen.',
+            description: 'Kon gebouw niet verwijderen.'
+          }
+        ]
+      }).then(() => location.reload())
+        .catch(() => location.reload())
     },
     goToBuildingPage: function () {
-      router.push({ path: '/building/' + this.data.id});
-    }
+      router.push({name: 'admin_info_building', params: {id: this.data.id}});
+    },
   },
-  async mounted () {
-    this.status = this.data.status
-  },
-  async beforeMount () {
-    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => this.status = result.manualStatus)
+  async beforeMount() {
+    await RequestHandler.handle(BuildingService.getManualById(this.data.id), {
+      id: 'BuildingCardGetManual',
+      style: 'SNACKBAR'
+    }).then(async result => {
+      this.status = result.manualStatus
+      this.manual = result.file.substring(result.file.indexOf('/api/'))
+    })
   }
 }
 </script>
