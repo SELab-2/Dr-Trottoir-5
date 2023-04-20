@@ -168,7 +168,7 @@ const routes = [
     component: CreateSyndicusView
   },
   {
-    path: '/syndicus/adjust',
+    path: '/syndicus/edit',
     name: 'syndicus_adjust',
     component: AdjustSyndicusView
   },
