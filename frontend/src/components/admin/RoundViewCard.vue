@@ -49,7 +49,7 @@ export default {
     users: []
   }),
   created() {
-    this.percentage = this.data.round.status.filter(s => s === 'FI') / this.data.round.ronde.buildings.length;
+    this.percentage = this.data.round.status.filter(s => s === 'FI').length / this.data.round.ronde.buildings.length * 100;
   },
   props: {
     data: {
