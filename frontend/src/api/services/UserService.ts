@@ -42,6 +42,7 @@ class UserService extends EchoService {
 
   /**
    * Get the logged in user.
+   * Get all users.
    */
   @GET("/users/")
   getUsers(): EchoPromise<User[]> {

@@ -36,6 +36,8 @@ import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddV
 import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
 import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
 import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
+import CreateSyndicusView from "@/views/admin/CreateSyndicusView";
+import AdjustSyndicusView from "@/views/admin/AdjustSyndicusView";
 
 const routes = [
   {
@@ -159,6 +161,16 @@ const routes = [
     name: 'admin_edit_building',
     props: true,
     component: AdminBuildingInfoEditView
+  },
+  {
+    path: '/syndicus/create',
+    name: 'syndicus_create',
+    component: CreateSyndicusView
+  },
+  {
+    path: '/syndicus/adjust',
+    name: 'syndicus_adjust',
+    component: AdjustSyndicusView
   },
   {
     path: '/account',
