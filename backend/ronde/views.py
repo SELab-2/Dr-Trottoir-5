@@ -11,8 +11,9 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission
 
 from .models import LocatieEnum, Manual, Building, Ronde
-from .serializers import LocatieEnumSerializer, ManualSerializer, \
-    BuildingSerializer, RondeSerializer
+
+from .serializers import *
+
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -272,6 +273,7 @@ class RondeListCreateView(generics.ListCreateAPIView):
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
+
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
@@ -282,6 +284,14 @@ class RondeListCreateView(generics.ListCreateAPIView):
                                                  "buildings", Building)
         handler.check()
         return super().post(request, *args, **kwargs)
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return RondeRelatedFieldSerializer
+        else:
+            return RondeSerializer
+
+
 
 
 class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):

@@ -22,6 +22,8 @@ class DagPlanning(models.Model):
     ronde : models.ForeignKey
         The round that the students will do this day
 
+    status : ArrayField
+        Student status per building, according to building order
     """
     students = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
@@ -83,9 +85,6 @@ class StudentTemplate(models.Model):
 
     dag_planningen : models.ManyToManyField
         Al de dagplanningen van deze rondes.
-
-    status : ArrayField
-        Student status per building, according to building order
 
     """
 
