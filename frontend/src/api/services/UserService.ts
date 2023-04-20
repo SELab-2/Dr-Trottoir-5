@@ -1,4 +1,4 @@
-import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, POST} from "echofetch";
+import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, Path, POST} from "echofetch";
 import User from "../models/User";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
@@ -14,6 +14,31 @@ class UserService extends EchoService {
   get(): EchoPromise<User> {
     return {} as EchoPromise<User>;
   }
+
+  /**
+   * Get user by id
+   */
+  @GET("/user/{id}/")
+  getUserById(@Path('id') id: number): EchoPromise<User> {
+    return {} as EchoPromise<User>
+  }
+
+  /**
+   * Patch user by id
+   */
+  @PATCH("/user/{id}/")
+  updateUserById(@Path('id') id: number, @Body() body: {}): EchoPromise<User> {
+    return {} as EchoPromise<User>
+  }
+
+  /**
+   * Delete user by id
+   */
+  @DELETE("/user/{id}/")
+  deleteUserById(@Path('id') id: number): EchoPromise<void> {
+    return {} as EchoPromise<void>
+  }
+
 
   /**
    * Get the logged in user.

@@ -41,6 +41,8 @@
         <v-file-input v-model="file" prepend-icon="mdi-file-upload-outline" class="text_field"
                       variant="outlined"></v-file-input>
       </v-col>
+      <!---
+      TODO Milestone 3
       <v-col col="12" lg="6" class="d-flex justify-end align-center pt-10">
         <h2>Geschatte tijd</h2>
       </v-col>
@@ -48,6 +50,7 @@
         <v-text-field placeholder="In minuten" class="text_field" variant="outlined"
                       v-model:model-value="time"></v-text-field>
       </v-col>
+      ---->
       <v-col col="12" lg="12" class="d-flex justify-center align-center">
         <normal-button text="Maak gebouw aan" :parent-function="createBuilding"></normal-button>
       </v-col>
@@ -62,6 +65,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
 import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
 import LocationService from "@/api/services/LocationService";
+import router from "@/router";
 
 export default {
   name: 'CreateBuildingView',
@@ -72,7 +76,7 @@ export default {
       adres: '',
       klant_nr: null,
       file: null,
-      time: null,
+      // time: null, TODO Milestone 3
       smallScreen: false,
       locations: [],
       selectedLocation: ''
@@ -88,11 +92,8 @@ export default {
     )
   },
   methods: {
-    addDropFile(e) {
-      this.file = e.dataTransfer.files[0];
-    },
     createBuilding() {
-      // TODO Add geschatte tijd
+      // TODO Milestone 3 Add geschatte tijd
       this.createManual().then(result =>
         RequestHandler.handle(
           BuildingService.createBuilding({
@@ -105,11 +106,13 @@ export default {
             id: 'createBuildingError',
             style: 'SNACKBAR'
           }
-        ).then(() =>
+        ).then(() => {
           this.$store.dispatch("snackbar/open", {
             message: "Het gebouw is toegevoegd",
             color: "success"
-          }))
+          })
+          router.push({name: 'buildings'})
+        })
       )
     },
     async createManual() {

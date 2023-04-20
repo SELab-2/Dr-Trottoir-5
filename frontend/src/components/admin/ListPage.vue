@@ -16,8 +16,11 @@ Heeft als nodige argumenten nodig:
         <v-row class="pa-5">
             <h1>{{ this.title }}</h1>
           <v-row></v-row>
-            <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+            <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
               <NormalButton text="+" v-bind:parent-function="addFunction"/>
+            </div>
+            <div v-else-if="refresh">
+              <v-btn icon="mdi-refresh" @click="refresh_function"></v-btn>
             </div>
         </v-row>
       </v-col>
@@ -79,6 +82,14 @@ export default {
       type: Array,
       default: () => ['default'],
       required: true
+    },
+    refresh : {
+      type: Boolean,
+      default: false
+    },
+    refresh_function : {
+      type: Function,
+      default: () => {}
     }
   },
   methods: {
@@ -95,7 +106,6 @@ export default {
       if (this.key !== 'key'){
         const regex = new RegExp(this.searched, 'ig')
           for (const el of this.elements) {
-            console.log(el)
             if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
               filtered.push(el)
             }
