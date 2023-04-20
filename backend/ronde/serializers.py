@@ -76,7 +76,7 @@ class BuildingSerializerFull(BuildingSerializer):
 
 class RondeRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return RondeSerializerFull(value).data
+        return RondeRelatedFieldSerializer(value).data
 
     def to_internal_value(self, data):
         return data
@@ -88,5 +88,14 @@ class RondeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class RondeRelatedFieldSerializer(serializers.ModelSerializer):
+    location = LocatieRelatedField(read_only=True)
+
+    class Meta:
+        model = Ronde
+        fields = '__all__'
+
+
 class RondeSerializerFull(RondeSerializer):
+    location = LocatieRelatedField(read_only=True)
     buildings = BuildingRelatedField(read_only=True, many=True)

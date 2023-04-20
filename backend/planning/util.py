@@ -69,7 +69,7 @@ def make_dag_planning(data):
         end_hour=data["end_hour"]
     )
     ronde = Ronde.objects.get(id=data["ronde"])
-    dag_planning, _ = DagPlanning.objects.get_or_create(
+    dag_planning = DagPlanning.objects.create(
         ronde_id=data["ronde"],
         time=pickup_day
     )
