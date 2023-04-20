@@ -10,6 +10,7 @@ from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
+
 from .util import *
 
 
@@ -284,9 +285,7 @@ class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
         return super().patch(request, *args, **kwargs)
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def week_planning_view(request, year, week):
+def get_student_templates(year, week):
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     if year > current_year or (current_year == year and week > current_week):
@@ -298,14 +297,47 @@ def week_planning_view(request, year, week):
         student_templates = student_templates.filter(even=even)
     else:
         # weekplanning is al voorbij of bezig
-        week_planning = WeekPlanning.objects.get(
-            week=week,
-            year=year
-        )
-        student_templates = week_planning.student_templates.all()
+        try:
+            week_planning = WeekPlanning.objects.get(
+                week=week,
+                year=year
+            )
+            student_templates = week_planning.student_templates.all()
+        except WeekPlanning.DoesNotExist:
+            student_templates = None
 
+    return student_templates
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def week_planning_view(request, year, week):
+    student_templates = get_student_templates(year, week)
+    if student_templates is None:
+        return Response(status=404)
     data = StudentTemplateSerializer(student_templates, many=True).data
     return Response(data)
+
+
+@api_view(["GET"])
+@permission_classes([AdminPermission | SuperstudentPermission | AllowAny])
+def student_templates_rondes_view(request, year, week, day, location):
+    if request.method == "GET":
+        if day < 0 or day > 6:
+            return Response(status=400)
+        days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+        day_name = days[day]
+        templates = get_student_templates(year, week)
+        if templates is None:
+            return Response(status=404)
+        templates = templates.filter(location=location)
+        planned = []
+        for template in templates:
+            dag_planningen = template.dag_planningen.all()
+            planned += [x for x in dag_planningen if x.time.day == day_name]
+        planned = list(dict.fromkeys(planned))
+        planned = DagPlanningSerializerFull(planned, many=True).data
+        return Response(planned)
 
 
 @api_view(["GET", "POST"])

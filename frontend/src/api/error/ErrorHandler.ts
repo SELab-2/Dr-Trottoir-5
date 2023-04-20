@@ -65,7 +65,7 @@ export class ErrorHandler {
     options: CustomErrorOptions,
     fields: InputFields = {}
   ) {
-    let errors = error.json ? await error.json() : null;
+    let errors = error.json ? await error.json().catch(() => null) : null;
 
     // Handle field errors.
     this.handleInputFields(error, fields)
