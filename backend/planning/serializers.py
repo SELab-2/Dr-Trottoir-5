@@ -16,6 +16,7 @@ class DagPlanningSerializer(serializers.ModelSerializer):
 
 class DagPlanningSerializerFull(DagPlanningSerializer):
     ronde = RondeRelatedField(read_only=True)
+    students = UserRelatedField(read_only=True, many=True)
 
 
 class StudentTemplateSerializer(serializers.ModelSerializer):

@@ -72,6 +72,7 @@ import MailTemplateService from "@/api/services/MailTemplateService";
  */
 
 import NormalButton from "@/components/NormalButton.vue";
+import router from "@/router";
 
 export default {
   name: 'CreateEditMailTemplate',
@@ -100,7 +101,7 @@ export default {
         return
       }
 
-      return RequestHandler.handle(
+      RequestHandler.handle(
 
         MailTemplateService.createMailTemplate(
           {
@@ -111,11 +112,13 @@ export default {
         {
         id: 'createMailTemplateError',
         style: "SNACKBAR",
-      }).then(() =>
+      }).then(() => {
           this.$store.dispatch("snackbar/open", {
             message: "Mail template toegevoegd",
             color: "success"
-          }))
+          })
+      router.push({ path: '/mailtemplates' })
+      })
     },
     editTemplate: function () {
     if (this.template.name === '' || this.template.text === '') {
@@ -126,7 +129,7 @@ export default {
         return
       }
 
-      return RequestHandler.handle(
+      RequestHandler.handle(
         MailTemplateService.updateMailTemplate(
           this.$route.params.id,
           {
@@ -137,11 +140,13 @@ export default {
         {
           id: 'editMailTemplateError',
           style: "SNACKBAR",
-        }).then(() =>
-          this.$store.dispatch("snackbar/open", {
-            message: "Mail template aangepast",
-            color: "success"
-          }))
+        }).then(() => {
+        this.$store.dispatch("snackbar/open", {
+          message: "Mail template aangepast",
+          color: "success"
+        })
+        router.push({ path: '/mailtemplates' })
+      })
     },
     closeDialog: function () {
       this.showDialog = false

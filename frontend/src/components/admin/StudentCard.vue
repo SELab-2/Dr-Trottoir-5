@@ -64,19 +64,27 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({ first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
+      default: () => ({id: 0, first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
     }
   },
   methods: {
-    goToEditPage: function () {
-      // TODO
+    goToEditPage: async function () {
+      await this.$router.push({name: 'admin_edit_user', params: {id: this.data.id}})
     },
     deletePost: function () {
-      RequestHandler.handle(UserService.delete(this.data.id))
-        .then(async result => router.go(0))
+      RequestHandler.handle(UserService.deleteUserById(this.data.id), {
+        id:'deleteUserByIdError',
+        style: 'SNACKBAR',
+        customMessages: [{
+          code:'500',
+          message: 'Kon gebruiker niet verwijderen',
+          description: 'Kon gebruiker niet verwijderen'
+        }]
+      })
+      location.reload()
     },
-    goToInfoPage: function () {
-      // TODO
+    goToInfoPage: async function () {
+      await this.$router.push({name: 'admin_info_user', params: {id: this.data.id}})
     }
   },
   components: {

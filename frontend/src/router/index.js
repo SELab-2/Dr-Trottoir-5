@@ -1,4 +1,3 @@
-import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import StudentHomeView from '../views/StudentHomeView.vue'
 import AccountView from '../views/AccountView'
@@ -24,8 +23,13 @@ import StudentCreatePost from "@/views/StudentCreatePost";
 import StudentPostView from "@/views/StudentPostView";
 import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
-import AdminBuildingView from "@/views/admin/AdminBuildingView";
 import HomeView from "@/views/HomeView.vue";
+import DashboardView from "@/views/admin/DashboardView.vue";
+import AdminStudentInfoUser from "@/views/admin/AdminStudentInfoUser";
+import RegisterUserList from "@/views/listViews/RegisterUserList";
+import AdminStudentInfoUserEdit from "@/views/admin/AdminStudentInfoUserEdit";
+import AdminBuildingInfoEditView from "@/views/admin/AdminBuildingInfoEditView";
+import AdminBuildingInfoView from "@/views/admin/AdminBuildingInfoView";
 import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
 import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
 import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
@@ -38,6 +42,8 @@ import TrashContainerTemplateList from '@/components/containerTemplates/TrashCon
 import TrashContainerCreate from '@/components/containerTemplates/containers/TrashContainerCreate.vue'
 import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
 import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
+import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
+
 const routes = [
   {
     path: '/',
@@ -57,7 +63,7 @@ const routes = [
   {
     path: '/admin_home',
     name: 'admin_home',
-    component: RegisterDone
+    component: DashboardView
   },
   {
     path: '/resident_home',
@@ -100,12 +106,12 @@ const routes = [
     component: CreateBuildingView
   },
   {
-    path: '/mail-template/create',
+    path: '/mailtemplate/create',
     name: 'create_mail-template',
     component: CreateMailTemplateView
   },
   {
-    path: '/mail-template/:id',
+    path: '/mailtemplate/edit/:id',
     name: 'mail-template',
     component: AdminMailTemplateView
   },
@@ -151,9 +157,15 @@ const routes = [
   },
   {
     path: '/building/:id',
-    name: 'admin_building',
+    name: 'admin_info_building',
     props: true,
-    component: AdminBuildingView
+    component: AdminBuildingInfoView
+  },
+  {
+    path: '/building/:id/edit',
+    name: 'admin_edit_building',
+    props: true,
+    component: AdminBuildingInfoEditView
   },
   {
     path: '/account',
@@ -206,6 +218,11 @@ const routes = [
     component: StudentList
   },
   {
+    path: '/admin/gebruiker/registreer',
+    name: 'admin_user_register',
+    component: RegisterUserList
+  },
+  {
     path: '/syndicusen',
     name: 'syndicusen',
     component: SyndicusList
@@ -214,6 +231,18 @@ const routes = [
     path: '/mailtemplates',
     name: 'mailtemplates',
     component: TemplateList
+  },
+  {
+    path: '/admin/gebruiker/:id',
+    name: 'admin_info_user',
+    props: true,
+    component: AdminStudentInfoUser
+  },
+  {
+    path: '/admin/gebruiker/:id/edit',
+    name: 'admin_edit_user',
+    props: true,
+    component: AdminStudentInfoUserEdit
   },
   {
     path: '/trashtemplates',

@@ -19,6 +19,12 @@ Heeft als nodige argumenten nodig:
           <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
             <NormalButton text="+" v-bind:parent-function="addFunction"/>
           </div>
+            <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+              <NormalButton text="+" v-bind:parent-function="addFunction"/>
+            </div>
+            <div v-else-if="refresh">
+              <v-btn icon="mdi-refresh" @click="refresh_function"></v-btn>
+            </div>
         </v-row>
       </v-col>
       <v-col cols="12" v-if="this.search">
@@ -80,7 +86,15 @@ export default {
     keys: {
       type: Array,
       default: () => ['default'],
-      required: false
+      required: true
+    },
+    refresh : {
+      type: Boolean,
+      default: false
+    },
+    refresh_function : {
+      type: Function,
+      default: () => {}
     },
     search: {
       type: Boolean,
@@ -102,11 +116,9 @@ export default {
       if (this.key !== 'key') {
         const regex = new RegExp(this.searched, 'ig')
         for (const el of this.elements) {
-          console.log(el)
           if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
             filtered.push(el)
           }
-        }
       }
       return filtered
     }

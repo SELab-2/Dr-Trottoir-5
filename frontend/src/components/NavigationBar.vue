@@ -3,21 +3,22 @@
                        touchless>
     <v-spacer></v-spacer>
     <v-list density="compact" nav>
-      <v-list-item v-if="!this.isAdminOrSu()" prepend-icon="mdi-home-account" title="Home" to="/"
+      <v-list-item v-if="!this.isAdminOrSu" prepend-icon="mdi-home-account" title="Home" to="/"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-view-dashboard" title="Dashboard" to="/"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" to="/admin_home"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-calendar-blank" title="Nieuwe planning"
-                   value="nieuwe planning"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-bike" title="Rondes" value="rondes" to="/rounds/"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-office-building" title="Gebouwen" to="/buildings/"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" to="/studenttemplates"
+                   value="studenten templates"></v-list-item>
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-bike" title="Rondes" to="/rounds"
+                   value="rondes"></v-list-item>
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-office-building" title="Gebouwen" to="/buildings"
                    value="gebouwen"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-account" title="Studenten" to="/students/"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" to="/students"
                    value="studenten"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-account-key" title="Syndicussen" to="/syndicusen/"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" to="/syndicusen"
                    value="syndicussen"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu()" prepend-icon="mdi-email-outline" title="Templates" to="/mailtemplates/"
-                   value="templates"></v-list-item>
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" to="/mailtemplates"
+                   value="email templates"></v-list-item>
       <v-list-item prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
       <v-list-item prepend-icon="mdi-logout" @click="this.logout()" title="Logout" value="logout"></v-list-item>
     </v-list>
@@ -42,14 +43,15 @@
 import { onMounted, onBeforeUnmount, ref, defineComponent } from 'vue'
 import router from '@/router'
 import AuthService from "@/api/services/AuthService";
+import { UserRole } from '@/api/models/UserRole';
 
 export default defineComponent({
   name: 'NavigationBar',
-  methods: {
-    async isAdminOrSu(): Promise<Boolean> {
-      const user = this.$store.getters['session/currentUser'];
-      return user.then(() => this.$store.getters['session/isAdmin']).catch(() => false);
-    }
+  data: () => ({
+    isAdminOrSu: false
+  }),
+  async beforeCreate() {
+    this.isAdminOrSu = await this.$store.getters['session/isAdmin'];
   },
   setup() {
     const drawer = ref(false)

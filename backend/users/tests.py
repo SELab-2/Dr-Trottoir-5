@@ -1,4 +1,5 @@
 from django.contrib.sessions.middleware import SessionMiddleware
+from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from .views import registration_view, logout_view, UserListAPIView, forgot_password, reset_password, \
     role_assignment_view, login_view
@@ -11,7 +12,8 @@ class UserTestCase(APITestCase):
     """
 
     def setUp(self):
-        self.register = {"email": "test@test.com", "first_name": "First", "last_name": "Last", "password": "Pass", "phone_nr": ""}
+        self.register = {"email": "test@test.com", "first_name": "First",
+                         "last_name": "Last", "password": "Pass", "phone_nr": "0"}
         self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
         self.su = User.objects.create(role="SU", username="su")
@@ -28,7 +30,10 @@ class UserTestCase(APITestCase):
         del self.register["email"]
         request = factory.post("/api/register/", self.register)
         response = registration_view(request).data
-        self.assertEqual(response["email"][0], "This field is required.")
+
+        self.assertTrue(len(response) > 0)
+        self.assertEqual(response["errors"][0]["field"], ErrorDetail(
+            string='email', code='invalid'))
         self.assertNotIn("token", response)
 
     def testUserLogin(self):

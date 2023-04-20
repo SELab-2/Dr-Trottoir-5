@@ -87,6 +87,7 @@ class StudentTemplate(models.Model):
         Al de dagplanningen van deze rondes.
 
     """
+
     def __getitem__(self, item):
         if item == "dag_planningen":
             return self.dag_planningen
@@ -126,6 +127,7 @@ class WeekPlanning(models.Model):
         The student templates for this week
 
     """
+
     def __getitem__(self, item):
         if item == "trash_templates":
             return self.trash_templates
@@ -136,7 +138,8 @@ class WeekPlanning(models.Model):
 
     year = models.IntegerField()
 
-    trash_templates = models.ManyToManyField(TrashContainerTemplate, blank=True)
+    trash_templates = models.ManyToManyField(TrashContainerTemplate,
+                                             blank=True)
     student_templates = models.ManyToManyField(StudentTemplate, blank=True)
 
 
@@ -178,6 +181,10 @@ class BuildingPicture(models.Model):
 
     remark : models.TextField
         The remarks about the picture
+    pictureType: models.CharField
+        type of picture. Choices from PictureEnum
+    infoPerBuilding: models.ForeignKey
+        Reference to the InfoPerBuilding object of which it is an image
     """
 
     class PictureEnum(models.TextChoices):
@@ -200,4 +207,5 @@ class BuildingPicture(models.Model):
 
     remark = models.TextField(default="")
 
-    infoPerBuilding = models.ForeignKey(InfoPerBuilding, on_delete=models.CASCADE)
+    infoPerBuilding = models.ForeignKey(InfoPerBuilding,
+                                        on_delete=models.CASCADE)

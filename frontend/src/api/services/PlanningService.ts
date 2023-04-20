@@ -12,6 +12,7 @@ import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import DayPlanning from "@/api/models/Planning";
 import BuildingInfo from "@/api/models/BuildingInfo";
 import {PlanningStatusWrapper} from "@/api/wrappers/PlanningWrappers";
+import Round from "@/api/models/Round";
 
 class PlanningService extends EchoService {
   /**
@@ -29,6 +30,14 @@ class PlanningService extends EchoService {
   @GET("/planning/dagplanning/{id}/")
   getPlanning(@Path('id') id: number): EchoPromise<DayPlanning> {
     return {} as EchoPromise<DayPlanning>;
+  }
+
+  @GET("/studenttemplates/rondes/{year}/{week}/{day}/{location}/")
+  getRounds(@Path('year') year: number,
+            @Path('week') week: number,
+            @Path('day') day: number,
+            @Path('location') location: number): EchoPromise<[Round]> {
+    return {} as EchoPromise<[Round]>;
   }
 
   /**
