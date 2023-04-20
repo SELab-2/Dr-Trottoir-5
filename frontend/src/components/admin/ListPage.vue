@@ -14,15 +14,16 @@ Heeft als nodige argumenten nodig:
     <v-row class="text-center">
       <v-col cols="12">
         <v-row class="pa-5">
-            <h1>{{ this.title }}</h1>
+          <h1>{{ this.title }}</h1>
           <v-row></v-row>
-            <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
-              <NormalButton text="+" v-bind:parent-function="addFunction"/>
-            </div>
+          <div v-if="this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+            <NormalButton text="+" v-bind:parent-function="addFunction"/>
+          </div>
         </v-row>
       </v-col>
-      <v-col cols="12">
-        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:keyChange="onKeyChange" :elements="elements" :keys="keys"/>
+      <v-col cols="12" v-if="this.search">
+        <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..."
+                        v-on:keyChange="onKeyChange" v-on:selected="onSearch"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -46,6 +47,7 @@ Heeft als nodige argumenten nodig:
 <script>
 import NormalButton from '@/components/NormalButton'
 import SearchDropdown from '@/components/SearchDropdown'
+
 export default {
   name: 'ListPage',
   components: { SearchDropdown, NormalButton },
@@ -78,33 +80,38 @@ export default {
     keys: {
       type: Array,
       default: () => ['default'],
-      required: true
+      required: false
+    },
+    search: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   methods: {
-    onSearch (newValue) {
+    onSearch(newValue) {
       this.searched = newValue
     },
-    onKeyChange (newValue) {
+    onKeyChange(newValue) {
       this.key = newValue
     }
   },
   computed: {
-    filteredOptions () {
+    filteredOptions() {
       const filtered = []
-      if (this.key !== 'key'){
+      if (this.key !== 'key') {
         const regex = new RegExp(this.searched, 'ig')
-          for (const el of this.elements) {
-            console.log(el)
-            if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
-              filtered.push(el)
-            }
+        for (const el of this.elements) {
+          console.log(el)
+          if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
+            filtered.push(el)
+          }
         }
       }
       return filtered
     }
   },
-  data () {
+  data() {
     return {
       searched: '',
       key: this.keys[0]
@@ -114,5 +121,7 @@ export default {
 </script>
 
 <style scoped>
-  ul { list-style-type: none; }
+ul {
+  list-style-type: none;
+}
 </style>

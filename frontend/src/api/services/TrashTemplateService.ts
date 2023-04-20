@@ -5,6 +5,7 @@ import TrashTemplate from "@/api/models/TrashTemplate";
 import Container from "@/api/models/Container";
 import Building from "@/api/models/Building";
 import {TrashTemplateWrapper} from "@/api/wrappers/TrashTemplateWrapper";
+import ContainerWrapper from "@/api/wrappers/ContainerWrapper";
 
 class TrashTemplateService extends EchoService {
 
@@ -67,7 +68,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @POST("/trashtemplates/{id}/trashcontainers/")
-  newContainerToTemplate(@Path('id') id: number, @Body() body: Container): EchoPromise<any> {
+  newContainerToTemplate(@Path('id') id: number, @Body() body: ContainerWrapper): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -94,7 +95,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @PATCH("/trashtemplates/{id}/trashcontainers/{containerId}/")
-  updateContainerTemplate(@Path('id') id: number, @Path('containerId') containerId: number, @Body() body: Container): EchoPromise<any> {
+  updateContainerTemplate(@Path('id') id: number, @Path('containerId') containerId: number, @Body() body: ContainerWrapper): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

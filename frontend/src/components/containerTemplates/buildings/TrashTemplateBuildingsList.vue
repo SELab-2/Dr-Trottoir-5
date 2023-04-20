@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
+  <ListPage :add-function="addTrashContainerBuilding" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
             :keys="keys" title="Gebouwen voor deze vuilnis planning"/>
 </template>
@@ -27,8 +27,8 @@ export default {
     }
   },
   methods: {
-    addTrashContainerTemplate: function () {
-      router.push({path: '/trashtemplates/' + this.id + '/buildings/create'});
+    addTrashContainerBuilding: function () {
+      router.push({ path: '/building/create'});
     }
   },
   async beforeMount() {

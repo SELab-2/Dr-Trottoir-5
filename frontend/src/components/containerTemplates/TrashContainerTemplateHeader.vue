@@ -4,10 +4,10 @@
       <v-col cols="2" class="col">
         <p title="Naam"> Naam </p>
       </v-col>
-      <v-col cols="1" class="col">
+      <v-col cols="2" class="col">
         <p title="Vuilnisbakken"> Vuilnisbakken </p>
       </v-col>
-      <v-col cols="1" class="col">
+      <v-col cols="2" class="col">
         <p  title="Gebouwen"> Gebouwen </p>
       </v-col>
       <v-col cols="1" class="col">
@@ -19,8 +19,10 @@
       <v-col cols="1" class="col">
         <p title="Locatie"> Locatie </p>
       </v-col>
-      <v-col cols="1" class="col"/>
-      <v-col cols="4" class="text-right">
+      <v-col cols="1" class="col">
+        <p title="Even"> Even </p>
+      </v-col>
+      <v-col cols="2" class="text-right">
         Acties
       </v-col>
     </v-row>

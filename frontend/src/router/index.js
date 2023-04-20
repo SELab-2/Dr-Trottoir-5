@@ -32,10 +32,11 @@ import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenV
 import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
 import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
 import TrashTemplateBuildingsList from '@/components/containerTemplates/buildings/TrashTemplateBuildingsList.vue'
-import TrashTemplateCreateBuilding from '@/components/containerTemplates/buildings/TrashTemplateCreateBuilding.vue'
 import TrashTemplateContainersList from '@/components/containerTemplates/containers/TrashTemplateContainersList.vue'
 import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
-
+import TrashContainerCreate from '@/components/containerTemplates/containers/TrashContainerCreate.vue'
+import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
+import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 const routes = [
   {
     path: '/',
@@ -221,19 +222,25 @@ const routes = [
   {
     path: '/trashtemplates/edit',
     name: 'editTrashtemplates',
-    component: TrashContainerTemplateList, // TODO SWITCH TO EDIT PAGE
+    component: TrashContainerTemplateEdit,
+    props: true
+  },
+  {
+    path: '/trashtemplates/create',
+    name: 'createTrashtemplates',
+    component: TrashContainerTemplateCreate,
     props: true
   },
   {
     path: '/trashtemplates/:id/containers',
     name: 'trashtemplateContainers',
-    component: TrashTemplateContainersList, // TODO SWITCH TO CONTAINERS LIST PAGE
+    component: TrashTemplateContainersList,
     props: true
   },
   {
     path: '/trashtemplates/:id/containers/create',
     name: 'createTrashtemplateContainers',
-    component: TrashContainerTemplateList, // TODO SWITCH TO CONTAINERS CREATE PAGE
+    component: TrashContainerCreate,
     props: true
   },
   {
@@ -246,12 +253,6 @@ const routes = [
     path: '/trashtemplates/:id/buildings',
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
-    props: true
-  },
-  {
-    path: '/trashtemplates/:id/buildings/create',
-    name: 'createTrashtemplateBuildings',
-    component: TrashTemplateCreateBuilding,
     props: true
   },
   {

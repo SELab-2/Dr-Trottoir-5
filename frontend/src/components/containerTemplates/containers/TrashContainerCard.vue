@@ -2,21 +2,21 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p class="text-style-title">{{ this.data.day }}</p>
+        <p class="text-style-title">{{ this.data.trash_container.collection_day.day }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ this.data.start_hour + ' - ' + this.data.end_hour }}</p>
+        <p>{{ this.data.trash_container.collection_day.start_hour + ' - ' + this.data.trash_container.collection_day.end_hour }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ this.data.type }}</p>
+        <p>{{ this.data.trash_container.type.toString() }}</p>
       </v-col>
-      <v-col cols="2"/>
-      <v-col class="text-right" cols="2">
+      <v-col cols="4"/>
+      <v-col class="text-right" cols="1">
         <v-btn class="button-style" icon v-on:click="editContainer">
           <EditIcon/>
         </v-btn>
       </v-col>
-      <v-col class="text-right" cols="2">
+      <v-col class="text-right" cols="1">
         <v-btn class="button-style" icon v-on:click="deleteContainer">
           <DeleteIcon/>
         </v-btn>

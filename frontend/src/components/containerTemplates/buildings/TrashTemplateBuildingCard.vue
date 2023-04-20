@@ -30,10 +30,6 @@
               <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
               PDF
             </v-list-item>
-            <v-list-item value="upload" @click="uploadDocument">
-              <v-icon color="#FFE600" icon="mdi-file-upload-outline"></v-icon>
-              Upload
-            </v-list-item>
           </v-list>
         </v-menu>
       </v-col>
@@ -47,14 +43,6 @@
           </template>
         </v-menu>
       </v-col>
-      <v-col cols="3" class="d-flex align-center justify-end">
-        <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditPage">
-          <EditIcon/>
-        </v-btn>
-        <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
-          <DeleteIcon/>
-        </v-btn>
-      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -67,17 +55,10 @@ import {RequestHandler} from "@/api/RequestHandler";
 import router from "@/router";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 
-/**
- * BuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
- * gebouw: String
- * adres: String
- * status: String
- * efficiency: Number
- */
 
 export default {
   name: 'TrashTemplateBuildingCard',
-  components: {DeleteIcon, EditIcon },
+  components: {},
   props: {
     data: {
       type: Building
@@ -85,25 +66,10 @@ export default {
   },
   data: () => ({
     status: '',
-    documentStatus: ['Klaar'] // TODO + updaten in database
   }),
   methods: {
-    editPost: function () {
-      // TODO
-    },
-    deletePost: function () {
-      RequestHandler.handle(BuildingService.deleteBuildingById(this.data.id))
-        .then(async result => router.go(0))
-    },
-    uploadDocument: function () {
-      // TODO
-    },
     downloadDocument: function () {
       // TODO
-    },
-    updateStatus: function (newStatus) {
-      this.status = newStatus
-      // TODO opslaan in database
     },
     goToBuildingPage: function () {
       router.push({ path: '/building/' + this.data.id});

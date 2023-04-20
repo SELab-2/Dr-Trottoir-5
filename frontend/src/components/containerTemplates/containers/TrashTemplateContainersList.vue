@@ -1,7 +1,8 @@
 <template>
   <ListPage :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
-            :keys="keys" title="Containers voor deze vuilnis planning"/>
+            :search="false"
+            title="Containers voor deze vuilnis planning"/>
 </template>
 
 <script lang="ts">
@@ -22,8 +23,7 @@ export default {
     return {
       childComponent: TrashContainerCard,
       elements: [],
-      headComponent: TrashContainerHeader,
-      keys: ['dag', 'type']
+      headComponent: TrashContainerHeader
     }
   },
   methods: {

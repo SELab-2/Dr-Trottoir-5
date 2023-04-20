@@ -7,5 +7,5 @@ export default class TrashTemplate {
   status: TrashTemplateStatus = TrashTemplateStatus.inactief;
   year: number = 2000;
   week: number = 1;
-  location_id: number = 0;
+  location: number = 0;
 }

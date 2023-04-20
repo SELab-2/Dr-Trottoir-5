@@ -2,13 +2,13 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p class="text-style-title">{{ this.data.name }}</p>
+        <p>{{ this.data.name }}</p>
       </v-col>
-      <v-col cols="1">
-        <p @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
+      <v-col cols="2">
+        <p class="text-style-url" @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
       </v-col>
-      <v-col cols="1">
-        <p @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
+      <v-col cols="2">
+        <p class="text-style-url" @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
       </v-col>
       <v-col cols="1">
         {{ this.data.year }}
@@ -17,15 +17,17 @@
         {{ this.data.week }}
       </v-col>
       <v-col cols="1">
-        {{ this.locations.filter(loc => loc.id === this.data.location_id)[0].name }}
+        {{ this.locatie }}
       </v-col>
-      <v-col cols="1"/>
-      <v-col class="text-right" cols="2">
+      <v-col cols="1">
+        {{ this.data.even }}
+      </v-col>
+      <v-col class="text-right" cols="1">
         <v-btn class="button-style" icon v-on:click="editTemplate">
           <EditIcon/>
         </v-btn>
       </v-col>
-      <v-col class="text-right" cols="2">
+      <v-col class="text-right" cols="1">
         <v-btn class="button-style" icon v-on:click="deleteTemplate">
           <DeleteIcon/>
         </v-btn>
@@ -48,17 +50,17 @@ export default {
   props: {
     data: {
       type: TrashTemplate,
-      default: () => (new TrashTemplate())
     }
   },
   data: () => ({
-    locations: []
+    locations: [],
+    locatie: ""
   }),
   methods: {
     editTemplate: function () {
       router.push({
         path: '/trashtemplates/edit', params: {
-          toEdit: this.data // TODO deze pagina maken
+          toEdit: this.data
         }
       });
     },
@@ -68,7 +70,7 @@ export default {
     goToTrashTemplateBuildingsPage: function () {
       router.push({
         path: '/trashtemplates/' + this.data.id + '/buildings', params: {
-          trashTemplate: this.data // TODO deze pagina maken
+          trashTemplate: this.data
         }
       });
     },
@@ -85,7 +87,7 @@ export default {
       id: 'getLocationsError',
       style: 'SNACKBAR'
     }).then(result => {
-        this.locations = result
+        this.locatie = result.filter(loc => loc.id === this.data.location)[0].name
       }
     )
   }
@@ -93,7 +95,7 @@ export default {
 </script>
 
 <style scoped>
-.text-style-title {
+.text-style-url {
   text-decoration-line: underline;
   cursor: pointer;
 }

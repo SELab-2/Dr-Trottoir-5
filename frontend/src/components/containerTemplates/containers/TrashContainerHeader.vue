@@ -10,8 +10,8 @@
       <v-col cols="2" class="col">
         <p  title="Type"> Type </p>
       </v-col>
-      <v-col cols="2" class="col"/>
-      <v-col cols="4" class="text-right">
+      <v-col cols="4" class="col"/>
+      <v-col cols="2" class="text-right">
         Acties
       </v-col>
     </v-row>
