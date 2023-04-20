@@ -24,6 +24,7 @@ import StudentPostView from "@/views/StudentPostView";
 import StudentEditPost from "@/views/StudentEditPost";
 import CreateLocationView from "@/views/admin/CreateLocationView";
 import HomeView from "@/views/HomeView.vue";
+import DashboardView from "@/views/admin/DashboardView.vue";
 import AdminStudentInfoUser from "@/views/admin/AdminStudentInfoUser";
 import RegisterUserList from "@/views/listViews/RegisterUserList";
 import AdminStudentInfoUserEdit from "@/views/admin/AdminStudentInfoUserEdit";
@@ -55,7 +56,7 @@ const routes = [
   {
     path: '/admin_home',
     name: 'admin_home',
-    component: RegisterDone
+    component: DashboardView
   },
   {
     path: '/resident_home',
