@@ -1,7 +1,10 @@
 <template>
   <v-card v-if="!edit" color="white" class="mx-auto my-16 w-75">
     <v-row>
-      <v-col lg="12" md="12" class="d-flex align-center justify-center pt-10">
+      <v-col md="12" lg="12" class="d-flex justify-end pl-5 pr-5 pt-5">
+        <v-btn @click="goEditPage" icon="mdi-pencil"></v-btn>
+      </v-col>
+      <v-col lg="12" md="12" class="d-flex align-center justify-center">
         <h2>Gebouw: {{ name }}</h2>
       </v-col>
       <v-col md="12" lg="12" class="d-flex align-center justify-center">
@@ -108,6 +111,9 @@ export default {
     this.getBuildingInformation()
   },
   methods: {
+    goEditPage() {
+      router.push({name: 'admin_edit_building', params: {id: this.$route.params.id}})
+    },
     getBuildingInformation() {
       RequestHandler.handle(BuildingService.getBuildingById(this.$route.params.id), {
         id: 'getBuildingError',
