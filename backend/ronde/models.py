@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
 import uuid
@@ -52,6 +53,8 @@ class Building(models.Model):
             Building database model.
             Attributes
             ----------
+            name : models.Textfield
+                The name of a building
             adres : models.Textfield
                 The adres of a building
             syndicus : models.TextField
@@ -66,25 +69,35 @@ class Building(models.Model):
                 The trash containers a building has.
             locatie : LocatieEnum
                 The location of a building.
+            special_actions : models.TextField
+                The possible special actions that need to be taken
             buildingID: UUID
                 unique identifier of a building to add people
     """
+    name = models.TextField()
     adres = models.TextField()
-    syndicus = models.ForeignKey(
+    syndicus = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.DO_NOTHING
-    ),
-    owners = models.ManyToManyField(settings.AUTH_USER_MODEL),
+        blank=True
+    )
     ivago_klantnr = models.IntegerField()
     manual = models.ForeignKey(
         Manual,
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True
     )
     location = models.ForeignKey(
         LocatieEnum,
         on_delete=models.DO_NOTHING
     )
+    remarks = ArrayField(
+        models.TextField(), default=list
+    )
 
+    special_actions = models.TextField(
+        default="",
+        blank=True
+    )
     # default uuid.uuid4 is callable en genereerd uuid
     buildingID = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
@@ -108,4 +121,4 @@ class Ronde(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name="Locatie"
     )
-    buildings = models.ManyToManyField(Building)
+    buildings = models.ManyToManyField(Building, blank=True)

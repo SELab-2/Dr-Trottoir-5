@@ -20,7 +20,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col cols="12">
-        <SearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements"/>
+        <RoundSearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements" :keys="this.keys"/>
       </v-col>
       <v-col/>
       <v-col cols="12">
@@ -31,7 +31,7 @@ Heeft als nodige argumenten nodig:
         <ul>
           <li v-for="(el) in filteredOptions" :key="el">
             <v-col cols="12">
-              <component :is="childComponent" v-bind:data="el"/>
+              <component :is="childComponent" v-bind:data="el" v-bind:keyValue="this.key" v-bind:searched="this.searched"/>
             </v-col>
           </li>
         </ul>
@@ -43,10 +43,10 @@ Heeft als nodige argumenten nodig:
 
 <script>
 import NormalButton from '@/components/NormalButton'
-import SearchDropdown from '@/components/SearchDropdown'
+import RoundSearchDropdown from "@/components/util/RoundSearchDropdown";
 export default {
   name: 'ListPage',
-  components: { SearchDropdown, NormalButton },
+  components: { RoundSearchDropdown, NormalButton },
   props: {
     title: {
       type: String,
@@ -72,6 +72,11 @@ export default {
       type: Array,
       default: () => [],
       required: true
+    },
+    keys: {
+      type: Array,
+      default: () => ['default'],
+      required: true
     }
   },
   methods: {
@@ -86,10 +91,14 @@ export default {
     filteredOptions () {
       const filtered = []
       const regex = new RegExp(this.searched, 'ig')
-      for (const el of this.elements) {
-        if (this.searched.length < 1 || el[this.key].toString().match(regex)) {
-          filtered.push(el)
+      if (this.key === 'roundName') {
+        for (const el of this.elements) {
+          if (this.searched.length < 1 || el['name'].toString().match(regex)) {
+            filtered.push(el)
+          }
         }
+      } else {
+          return this.elements
       }
       return filtered
     }
@@ -97,9 +106,9 @@ export default {
   data () {
     return {
       searched: '',
-      key: Object.keys(this.elements[0])[0]
+      key: this.keys[0]
     }
-  }
+  },
 }
 </script>
 

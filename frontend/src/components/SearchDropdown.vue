@@ -36,16 +36,16 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
             </ul>
           </transition>
         </div>
-        <NormalButton :text="this.key" id="menu-activator" class="button"/>
+        <NormalButton :text="capitalize(key)" :dropdown="true" id="menu-activator" class="button"/>
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
-              v-for="property in Object.keys(elements[0])"
+              v-for="property in this.keys"
               :key="property"
               :value="property"
               @click="changeKey(property)"
             >
-              <v-list-item-title>{{ property }}</v-list-item-title>
+              <v-list-item-title>{{ capitalize(property) }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -56,6 +56,7 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 
 <script>
 import NormalButton from '@/components/NormalButton'
+import { capitalize } from 'vue'
 
 export default {
   name: 'SearchDropdown',
@@ -71,11 +72,19 @@ export default {
       default: () => [],
       required: true
     },
+    keys: {
+      type: Array,
+      default: () => ['default'],
+      required: true
+    },
     placeholder: {
       type: String,
       required: false,
       default: 'Search ...'
     }
+  },
+  setup () {
+    return { capitalize }
   },
   data () {
     return {
@@ -83,8 +92,8 @@ export default {
       selected: '',
       optionsShown: false,
       searchFilter: '',
-      key: Object.keys(this.elements[0])[0],
-      isSmallScreen: false
+      isSmallScreen: false,
+      key: this.keys[0]
     }
   },
   created () {
@@ -94,10 +103,13 @@ export default {
   computed: {
     filteredOptions () {
       const filtered = []
-      const regex = new RegExp(this.searchFilter, 'ig')
-      for (const option of this.elements) {
-        if (this.searchFilter.length < 1 || option[this.key].toString().match(regex)) {
-          filtered.push(option[this.key].toString())
+      if (this.key !== ''){
+        const regex = new RegExp(this.searchFilter, 'ig')
+        for (const option of this.elements) {
+          const value = option[this.key].toString()
+          if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
+            filtered.push(value)
+          }
         }
       }
       return filtered
@@ -111,7 +123,7 @@ export default {
       this.key = key
       this.selected = ''
       this.searchFilter = ''
-      this.$emit('key', this.key)
+      this.$emit('keyChange', this.key)
       this.$emit('selected', this.selected)
     },
     selectOption (option) {

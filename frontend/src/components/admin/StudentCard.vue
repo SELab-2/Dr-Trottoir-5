@@ -4,13 +4,13 @@
       <v-col cols="9">
         <v-row>
           <v-col>
-            <p>{{ data.firstName }}</p>
+            <p>{{ data.first_name }}</p>
           </v-col>
           <v-col>
-            <p>{{ data.secondName }}</p>
+            <p>{{ data.last_name }}</p>
           </v-col>
           <v-col>
-            <p>{{ data.mobileNumber }}</p>
+            <p>{{ data.phone_nr }}</p>
           </v-col>
           <v-col>
             <p>{{ data.location }}</p>
@@ -44,6 +44,10 @@
 import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import InfoIcon from '@/components/icons/InfoIcon.vue'
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+import router from "@/router";
+import UserService from "@/api/services/UserService";
 
 /**
  * StudentCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
@@ -60,18 +64,27 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({ firstName: 'Empty', secondName: 'Empty', mobileNumber: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
+      default: () => ({id: 0, first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
     }
   },
   methods: {
-    goToEditPage: function () {
-      // TODO
+    goToEditPage: async function () {
+      await this.$router.push({name: 'admin_edit_user', params: {id: this.data.id}})
     },
     deletePost: function () {
-      // TODO
+      RequestHandler.handle(UserService.deleteUserById(this.data.id), {
+        id:'deleteUserByIdError',
+        style: 'SNACKBAR',
+        customMessages: [{
+          code:'500',
+          message: 'Kon gebruiker niet verwijderen',
+          description: 'Kon gebruiker niet verwijderen'
+        }]
+      })
+      location.reload()
     },
-    goToInfoPage: function () {
-      // TODO
+    goToInfoPage: async function () {
+      await this.$router.push({name: 'admin_info_user', params: {id: this.data.id}})
     }
   },
   components: {

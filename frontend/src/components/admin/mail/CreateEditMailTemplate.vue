@@ -14,7 +14,7 @@
         v-model="tab"
       >
         <v-tab value="one">Pas aan</v-tab>
-        <v-tab value="two">Previeuw</v-tab>
+        <v-tab value="two">Preview</v-tab>
       </v-tabs>
 
       <v-card-text>
@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import {RequestHandler} from "@/api/RequestHandler";
+import MailTemplateService from "@/api/services/MailTemplateService";
 
 /**
  * CreateEditMailTemplate component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -70,6 +72,7 @@
  */
 
 import NormalButton from "@/components/NormalButton.vue";
+import router from "@/router";
 
 export default {
   name: 'CreateEditMailTemplate',
@@ -89,27 +92,82 @@ export default {
     tab: null
   }),
   methods: {
-    createTemplate: function () {
-      // TODO object aanpassen in de backend + error handling
-      console.log(this.template)
+    async createTemplate () {
+      if (this.template.name === '' || this.template.text === '') {
+        this.$store.dispatch("snackbar/open", {
+          message: "Vul alle velden in",
+          color: "error"
+        })
+        return
+      }
+
+      RequestHandler.handle(
+
+        MailTemplateService.createMailTemplate(
+          {
+            name: this.template.name,
+            content: this.template.text
+          }
+        ),
+        {
+        id: 'createMailTemplateError',
+        style: "SNACKBAR",
+      }).then(() => {
+          this.$store.dispatch("snackbar/open", {
+            message: "Mail template toegevoegd",
+            color: "success"
+          })
+      router.push({ path: '/mailtemplates' })
+      })
     },
     editTemplate: function () {
-      // TODO object aanpassen in de backend + error handling
-      console.log(this.template)
+    if (this.template.name === '' || this.template.text === '') {
+        this.$store.dispatch("snackbar/open", {
+          message: "Vul alle velden in",
+          color: "error"
+        })
+        return
+      }
+
+      RequestHandler.handle(
+        MailTemplateService.updateMailTemplate(
+          this.$route.params.id,
+          {
+            name: this.template.name,
+            content: this.template.text
+          }
+        ),
+        {
+          id: 'editMailTemplateError',
+          style: "SNACKBAR",
+        }).then(() => {
+        this.$store.dispatch("snackbar/open", {
+          message: "Mail template aangepast",
+          color: "success"
+        })
+        router.push({ path: '/mailtemplates' })
+      })
     },
     closeDialog: function () {
       this.showDialog = false
     }
+
   }, computed: {
     formattedText() {
       return this.template.text.replace(/#([^#]*)#/g, '<b>$1</b>');
     }
   },
-  mounted() {
+  async mounted() {
     if (this.edit) {
-      // TODO data halen van de template die aangepast moet worden
-      this.template.name = 'TODO data uitlezen van de backend'
-      this.template.text = 'TODO data #uitlezen# van de backend'
+      await RequestHandler.handle(
+        MailTemplateService.getMailTemplate(this.$route.params.id),
+        {
+          id: 'getMailTemplateError',
+          style: "SNACKBAR",
+        }).then((response) => {
+          this.template.name = response.name
+          this.template.text = response.content
+        })
     }
   }
 }

@@ -1,9 +1,14 @@
 from rest_framework import serializers
-from .models import DagPlanning, BuildingPicture, InfoPerBuilding, WeekPlanning
-from ronde.serializers import RondeRelatedField
+from .models import *
+from ronde.serializers import RondeRelatedField, LocatieRelatedField
+from pickupdays.serializers import PickUpDayRelatedField
+from users.serializers import UserRelatedField
 
 
 class DagPlanningSerializer(serializers.ModelSerializer):
+    time = PickUpDayRelatedField(read_only=True)
+    students = UserRelatedField(many=True, read_only=True)
+
     class Meta:
         model = DagPlanning
         fields = '__all__'
@@ -11,6 +16,16 @@ class DagPlanningSerializer(serializers.ModelSerializer):
 
 class DagPlanningSerializerFull(DagPlanningSerializer):
     ronde = RondeRelatedField(read_only=True)
+    students = UserRelatedField(read_only=True, many=True)
+
+
+class StudentTemplateSerializer(serializers.ModelSerializer):
+    location = LocatieRelatedField(read_only=True)
+    rondes = RondeRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = StudentTemplate
+        fields = '__all__'
 
 
 class BuildingPictureSerializer(serializers.ModelSerializer):

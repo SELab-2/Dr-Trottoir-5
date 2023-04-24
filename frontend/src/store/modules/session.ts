@@ -28,12 +28,24 @@ export const session = {
      * Open a new modal.
      *
      * @param context
+     * @param args
      */
-    fetch(context: any) {
-      context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
-        id: "getUserError",
-        style: "SNACKBAR"
-      }).catch(() => {}));
+    fetch(context: any, args: {needsLogin}) {
+      if (context.state.currentUser === null) {
+        const style = args && args.needsLogin && args.needsLogin === true ? "SNACKBAR" : "NONE";
+        context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
+          id: "getUserError",
+          style: style
+        }).catch(() => {}));
+      }
+    },
+
+    /**
+     * Clear the currently stored user
+     * @param context
+     */
+    clear(context: any) {
+      if (context.state.currentUser !== null) context.state.currentUser = null;
     }
   },
 
@@ -53,7 +65,7 @@ export const session = {
      * @param state
      */
     isAuthenticated(state: any): boolean {
-      return state.currentUser && state.currentUser.isSuccess();
+      return state.currentUser.then(() => true).catch(() => false);
     },
 
     /**
@@ -61,14 +73,10 @@ export const session = {
      *
      * @param state
      */
-    isAdmin(state: any): boolean {
-      return (
-        state.currentUser && state.currentUser.isSuccess() &&
-        (
-          state.currentUser.requireData().role == UserRole.AD ||
-          state.currentUser.requireData().role == UserRole.SU
-        )
-      );
+    isAdmin(state: any): Promise<boolean> {
+      return state.currentUser
+      .then(u => u.role === UserRole.AD || u.role === UserRole.SU)
+      .catch(() => false);
     },
   },
 };

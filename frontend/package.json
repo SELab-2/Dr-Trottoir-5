@@ -11,12 +11,12 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
-    "axios-cache-adapter": "^2.7.3",
     "core-js": "^3.8.3",
     "echofetch": "file:src/api/EchoFetch",
     "register-service-worker": "^1.7.2",
     "roboto-fontface": "*",
     "tiny-emitter": "^2.1.0",
+    "v-calendar": "^3.0.3",
     "vue": "^3.2.13",
     "vue-cookies": "^1.8.3",
     "vue-router": "^4.0.3",
@@ -25,6 +25,7 @@
     "webfontloader": "^1.0.0",
     "workbox-cacheable-response": "^6.5.4",
     "workbox-expiration": "^6.5.4",
+    "workbox-precaching": "^6.5.4",
     "workbox-routing": "^6.5.4",
     "workbox-strategies": "^6.5.4"
   },

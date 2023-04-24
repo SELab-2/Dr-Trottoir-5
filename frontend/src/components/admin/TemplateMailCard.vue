@@ -5,7 +5,7 @@
         <p>{{ data.name }}</p>
       </v-col>
       <v-col cols="3" class="d-flex align-center">
-        <p>{{ data.argsCount }}</p>
+        <p>{{ this.argsCount }}</p>
       </v-col>
       <v-col/>
       <v-col cols="3" class="d-flex align-center justify-end">
@@ -23,6 +23,10 @@
 <script>
 import EditIcon from '../icons/EditIcon.vue'
 import DeleteIcon from '../icons/DeleteIcon.vue'
+import MailTemplate from "@/api/models/MailTemplate";
+import {RequestHandler} from "@/api/RequestHandler";
+import router from "@/router";
+import EmailTemplateService from "@/api/services/EmailTemplateService";
 
 /**
  * TemplateMailCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -34,21 +38,31 @@ export default {
   name: 'TemplateMailCard',
   props: {
     data: {
-      type: Object,
-      default: () => ({ name: 'Empty', argsCount: 0 })
+      type: MailTemplate,
+      required: true
     }
   },
+  data: () => ({
+    argsCount: 0
+  }),
   methods: {
     goToEditPage: function () {
-      // TODO
+      router.push({path: '/mailtemplate/edit/' + this.data.id})
     },
     deletePost: function () {
-      // TODO
+      RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
+        .then( () => window.location.reload())
     }
   },
   components: {
     EditIcon,
     DeleteIcon
+  },
+  mounted() {
+    const count = this.data.content.match(/#([^#]*)#/g)
+    if (count !== null) {
+      this.argsCount = count.length
+    }
   }
 }
 </script>

@@ -30,7 +30,15 @@ class LocatieEnumSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"errors": str(e)})
 
 
-class ManaulSerializer(serializers.ModelSerializer):
+class ManualRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return ManualSerializer(value).data
+
+    def to_internal_value(self, data):
+        return data
+
+
+class ManualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manual
         fields = '__all__'
@@ -63,6 +71,7 @@ class BuildingSerializer(serializers.ModelSerializer):
 
 class BuildingSerializerFull(BuildingSerializer):
     location = LocatieRelatedField(read_only=True)
+    manual = ManualRelatedField(read_only=True)
 
 
 class RondeRelatedField(serializers.RelatedField):
@@ -79,5 +88,14 @@ class RondeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class RondeRelatedFieldSerializer(serializers.ModelSerializer):
+    location = LocatieRelatedField(read_only=True)
+
+    class Meta:
+        model = Ronde
+        fields = '__all__'
+
+
 class RondeSerializerFull(RondeSerializer):
+    location = LocatieRelatedField(read_only=True)
     buildings = BuildingRelatedField(read_only=True, many=True)

@@ -2,7 +2,7 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.gebouw }}</p>
+        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.name }}</p>
       </v-col>
       <v-col cols="3">
         <p>{{ this.data.adres }}</p>
@@ -33,26 +33,10 @@
       <v-col cols="2">
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-            >
-              <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
-                  status
-                }}</span>
-
-              <v-icon right>mdi-menu-down</v-icon>
-            </v-btn>
+            <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
+                status
+              }}</span>
           </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in documentStatus"
-              :key="index"
-              :value="index"
-              @click="updateStatus(item.title)"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
         </v-menu>
       </v-col>
       <v-col cols="1"/>
@@ -67,6 +51,10 @@
 
 <script>
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
+import {RequestHandler} from "@/api/RequestHandler";
+import BuildingService from "@/api/services/BuildingService";
+import Building from "@/api/models/Building";
+import router from "@/router";
 /**
  * RoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String
@@ -79,18 +67,11 @@ export default {
   components: { DeleteIcon },
   props: {
     data: {
-      type: Object,
-      default: () => ({ gebouw: 'Empty', adres: 'Empty', status: '' })
+      type: Building
     }
   },
   data: () => ({
-    status: '',
-    documentStatus: [
-      { title: 'Klaar' },
-      { title: 'Update nodig' },
-      { title: 'Bezig' },
-      { title: 'Geüpdatet' }
-    ] // TODO + updaten in database
+    status: ''
   }),
   methods: {
     deletePost: function () {
@@ -107,11 +88,14 @@ export default {
       // TODO opslaan in database
     },
     goToBuildingPage: function () {
-      // TODO
+      router.push({ path: '/building/' + this.data.id })
     }
   },
   async mounted () {
     this.status = this.data.status
+  },
+  async beforeMount () {
+    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => this.status = result.manualStatus)
   }
 }
 </script>
