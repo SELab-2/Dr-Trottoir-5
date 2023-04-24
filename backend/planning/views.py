@@ -23,7 +23,9 @@ def student_dayplan(request, year, week, day):
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
 
-        templates = StudentTemplate.objects.filter(year=year, week=week)
+        templates = get_student_templates(year, week)
+        if templates is None:
+            return Response(status=404)
         dayplan = None
         for template in templates:
             for plan in template.dag_planningen.all():

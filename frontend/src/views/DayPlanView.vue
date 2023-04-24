@@ -2,8 +2,8 @@
   <v-container align="center">
     <v-card max-width="750px" class="py-3">
       <h1>{{ time }}</h1>
-      <h2>{{ ronde }}</h2>
-      <normal-button text="Terug" v-bind:parent-function="goBack" block class="mt-2" v-if="buildings.length === 0"></normal-button>
+      <h2 class="mx-1">{{ ronde }}</h2>
+      <normal-button text="Terug" v-bind:parent-function="goBack" class="mt-2" style="width: 90%;" v-if="buildings.length === 0"></normal-button>
       <DayPlanBuilding v-for="building in buildings" :data="{building: building, planning: planning, year: year, week: week}" :date="date" />
     </v-card>
   </v-container>
@@ -39,7 +39,7 @@ export default defineComponent({
       for (let index in planning.status) buildings[index].status = statusMap[planning.status[index]];
 
       this.buildings = buildings;
-      this.ronde = planning.ronde.name;
+      this.ronde = `Ronde ${planning.ronde.name}`;
       this.planning = planning.id;
     }).catch(() => {});
   },
