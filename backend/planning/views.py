@@ -205,7 +205,7 @@ class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
                                                  "infoPerBuilding",
                                                  InfoPerBuilding)
         handler.check()
-        super().put(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
         data = request.data
@@ -216,7 +216,7 @@ class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_primary_key(data.get("infoPerBuilding"),
                                   "infoPerBuilding", InfoPerBuilding)
         handler.check()
-        super().patch(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
 
 class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):

@@ -74,7 +74,10 @@ export default {
         this.rounds = rounds;
         this.show = rounds;
         this.filter();
-      }).catch(() => null);
+      }).catch(() => {
+        this.rounds = [];
+        this.show = [];
+      });
     },
     getWeek(d) {
       const date = new Date(d);
