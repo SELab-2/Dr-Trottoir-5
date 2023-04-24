@@ -23,7 +23,6 @@ jobs:
       - name: Setup EchoFetch
         run: |
           npm install
-          npm install -g install-peerdeps
           npm run build
         working-directory: ./frontend/src/api/EchoFetch
       - name: Install Dependencies
