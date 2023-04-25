@@ -1,10 +1,9 @@
-from django.contrib.postgres.fields import ArrayField
-from django.db import models
 from django.conf import settings
-from ronde.models import Ronde
-from trashtemplates.models import TrashContainerTemplate, Status
+from django.db import models
 from pickupdays.models import PickUpDay
 from ronde.models import LocatieEnum
+from ronde.models import Ronde
+from trashtemplates.models import TrashContainerTemplate, Status
 
 
 class DagPlanning(models.Model):
