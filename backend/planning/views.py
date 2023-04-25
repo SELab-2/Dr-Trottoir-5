@@ -15,7 +15,7 @@ from .util import *
 
 
 @api_view(["GET"])
-@permission_classes([StudentPermission])
+@permission_classes([StudentPermission | SuperstudentPermission])
 def student_dayplan(request, year, week, day):
     if request.method == "GET":
         if day < 0 or day > 6:
@@ -26,18 +26,40 @@ def student_dayplan(request, year, week, day):
         templates = get_student_templates(year, week)
         if templates is None:
             return Response(status=404)
-        dayplan = None
+
+        dayplans = []
         for template in templates:
             for plan in template.dag_planningen.all():
                 if plan.time.day == day_name and request.user in plan.students.all():
-                    dayplan = plan
-                    break
+                    dayplans.append(plan)
 
-        if dayplan is None:
+        data = DagPlanningSerializerFull(dayplans, many=True).data
+        return Response(data)
+
+
+@api_view(["GET"])
+@permission_classes([StudentPermission | AdminPermission | SuperstudentPermission])
+def planning_status(request, year, week, pk):
+    if request.method == "GET":
+        try:
+            dayplan = DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
             return Response(status=404)
 
-        data = DagPlanningSerializerFull(dayplan).data
-        return Response(data)
+        buildings = [building.id for building in dayplan.ronde.buildings.all()]
+        infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
+        status = {}
+        for index, info in enumerate(infos):
+            pictures = BuildingPicture.objects.filter(infoPerBuilding=info.id,
+                                                      time__year=year,
+                                                      time__week=week)
+            if buildings[index] not in status:
+                status[buildings[index]] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
+
+            for picture in pictures:
+                status[buildings[index]][picture.pictureType] += 1
+
+        return Response(status)
 
 
 class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -155,12 +177,19 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         infoPerBuilding = request.query_params[
             'infoPerBuilding'] if 'infoPerBuilding' in request.query_params else None
+        year = request.query_params[
+            'year'] if 'year' in request.query_params else None
+        week = request.query_params[
+            'week'] if 'week' in request.query_params else None
 
-        if infoPerBuilding is not None:
+        if infoPerBuilding is not None and year is not None and week is not None:
             try:
                 InfoPerBuilding.objects.get(pk=infoPerBuilding)
                 self.queryset = BuildingPicture.objects.filter(
-                    infoPerBuilding=infoPerBuilding)
+                    infoPerBuilding=infoPerBuilding,
+                    time__year=year,
+                    time__week=week
+                )
             except Exception:
                 raise serializers.ValidationError(
                     {

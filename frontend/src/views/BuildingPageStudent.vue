@@ -38,13 +38,13 @@
       </v-card-text>
       <v-card-text>
         <normal-button text="Aankomst" v-bind:parent-function="clickArrival" block class="mb-3"
-                       v-bind:append-icon="this.pictures.includes('AR') ? 'mdi-check' : ''">
+                       v-bind:append-icon="this.statuses.AR > 0 ? 'mdi-check' : ''">
         </normal-button>
         <normal-button text="Berging" v-bind:parent-function="clickStorage" block class="mb-3"
-                       v-bind:append-icon="this.pictures.includes('ST') ? 'mdi-check' : ''">
+                       v-bind:append-icon="this.statuses.ST ? 'mdi-check' : ''">
         </normal-button>
         <normal-button text="Vertrek" v-bind:parent-function="clickDeparture" block class="mb-3"
-                       v-bind:append-icon="this.pictures.includes('DE') ? 'mdi-check' : ''">
+                       v-bind:append-icon="this.statuses.DE ? 'mdi-check' : ''">
         </normal-button>
       </v-card-text>
     </v-card>
@@ -75,19 +75,19 @@ export default defineComponent({
       }).then(planning => planning).catch(() => null);
       if (!planning) return;
 
+      RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
+        id: `getStatus${planning.id}Error`,
+        style: "NONE"
+      }).then(statuses => {
+        this.statuses = statuses[this.$route.query.building];
+      }).catch(() => null);
+
       const building_index = planning.ronde.buildings.findIndex(b => String(b.id) === this.$route.query.building);
       this.building = planning.ronde.buildings[building_index];
-      const infos = await RequestHandler.handle(PlanningService.getInfo(planning.id), {
+      RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
         style: "NONE"
-      }).then(info => info).catch(() => null);
-      if (!infos) return;
-      this.info = infos[building_index].id;
-
-      RequestHandler.handle(PlanningService.getPictures(this.info), {
-        id: "getPicturesError",
-        style: "NONE"
-      }).then(picture => this.pictures = picture.map(p => p.pictureType)).catch(() => null);
+      }).then(infos => this.info = infos[building_index].id).catch(() => null);
 
       const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
         id: "getContainersError",
@@ -105,7 +105,7 @@ export default defineComponent({
     building: {location: {name: ''}, adres: '', id: ''},
     trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
     containers: [],
-    pictures: [],
+    statuses: {ST: 0, DE: 0, AR: 0},
     info: '',
     planning: '',
     year: null,
@@ -113,13 +113,16 @@ export default defineComponent({
   }),
   methods: {
     clickArrival() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning}});
+      router.push({path: '/student_post_view', query:
+          {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year, week: this.week}});
     },
     clickStorage() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning}});
+      router.push({path: '/student_post_view', query:
+          {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year, week: this.week}});
     },
     clickDeparture() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning}});
+      router.push({path: '/student_post_view', query:
+          {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year, week: this.week}});
     },
     buildingInfo() {
       router.push({path: '/building_info', query: {building: this.building.id}});
