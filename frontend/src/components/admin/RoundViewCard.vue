@@ -22,18 +22,16 @@ it displays the information of one round so that a list of round views can easil
           <v-icon v-if="this.percentage === 100"
                   icon="mdi-check" color="green" size="x-large"></v-icon>
         </v-col>
-        <v-col align="center" md="2" xs="6" class="ml-3">
-          <v-list>
-            <v-list-group value="Student(en)">
-              <template v-slot:activator="{ props }">
-                <v-list-item rounded
-                             v-bind="props"
-                ><p class="text-wrap">Student(en)</p></v-list-item>
-              </template>
-              <v-list-item v-for="(student, i) in data.round.students" :key="i"
-              ><p class="text-wrap">{{student.first_name}} {{student.last_name}}</p></v-list-item>
-            </v-list-group>
-          </v-list>
+        <v-col align="center" md="2" xs="6" class="ml-3 my-1">
+          <v-expansion-panels style="width: 90%;">
+            <v-expansion-panel :title="data.round.students.length + ` student${data.round.students.length === 1 ? '' : 'en'}`"
+                               :disabled="data.round.students.length === 0">
+              <v-expansion-panel-text v-if="data.round.students.length > 0">
+                <p style="word-wrap: break-word;" v-for="s in data.round.students"><a :href="'/admin/gebruiker/'+s.id">
+                  {{ s.first_name }} {{ s.last_name }}</a></p>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-col>
         <v-col align="right" md="1" xs="2" class="my-3 mx-2">
           <v-icon icon="mdi-information-outline" size="x-large" @click="info"></v-icon>
@@ -46,6 +44,7 @@ it displays the information of one round so that a list of round views can easil
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
+import router from "@/router";
 
 export default {
   name: "RoundViewCard",
@@ -73,8 +72,11 @@ export default {
     }
   },
   methods: {
+    router() {
+      return router
+    },
     info() {
-      // TODO
+      router.push({path: '/admin/round', query: {planning: this.data.round.id, date: this.data.date}});
     },
     getWeek(d) {
       const date = new Date(d);

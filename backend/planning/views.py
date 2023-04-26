@@ -62,6 +62,30 @@ def planning_status(request, year, week, pk):
         return Response(status)
 
 
+@api_view(["GET"])
+@permission_classes([AdminPermission | SuperstudentPermission])
+def planning_pictures(request, year, week, pk):
+    if request.method == "GET":
+        try:
+            dayplan = DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
+            return Response(status=404)
+
+        buildings = [building.id for building in dayplan.ronde.buildings.all()]
+        infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
+        pictures = {}
+        for index, info in enumerate(infos):
+            if buildings[index] not in pictures:
+                pictures[buildings[index]] = []
+            pictures[buildings[index]] += BuildingPicture.objects.filter(infoPerBuilding=info.id,
+                                                                         time__year=year,
+                                                                         time__week=week)
+        for k, v in pictures.items():
+            pictures[k] = BuildingPictureSerializer(v, many=True).data
+
+        return Response(pictures)
+
+
 class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull

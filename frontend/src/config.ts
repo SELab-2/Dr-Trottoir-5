@@ -24,7 +24,7 @@ export default {
       'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'trashtemplates', 'editTrashtemplates',
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
       'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template',
-      'admin_info_user', 'admin_edit_user', 'admin_user_register'
+      'admin_info_user', 'admin_edit_user', 'admin_user_register', 'adminRoundView'
     ],
     AD: [
       'admin_home', 'account', 'unauthorized', 'home', 'create_building', 'create_location', 'create_round',
@@ -32,7 +32,8 @@ export default {
       'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'trashtemplates', 'editTrashtemplates',
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
       'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template', 'admin_info_building',
-      'admin_edit_building', 'admin_info_user', 'admin_edit_user', 'admin_user_register', 'syndicus_create', 'syndicus_adjust'
+      'admin_edit_building', 'admin_info_user', 'admin_edit_user', 'admin_user_register', 'syndicus_create', 'syndicus_adjust',
+      'adminRoundView'
     ]
   }
 };

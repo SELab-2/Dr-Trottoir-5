@@ -10,6 +10,7 @@ urlpatterns = [
     path("dagplanning/<int:year>/<int:week>/<int:day>/", views.student_dayplan),
     path("dagplanning/<int:pk>/", views.DagPlanningRetrieveUpdateAPIView.as_view()),
     path("dagplanning/<int:year>/<int:week>/<int:pk>/status/", views.planning_status),
+    path("dagplanning/<int:year>/<int:week>/<int:pk>/pictures/", views.planning_pictures),
     path("studenttemplates/rondes/<int:year>/<int:week>/<int:day>/<int:location>/", views.student_templates_rondes_view),
     path("studenttemplates/", views.student_templates_view),
     path("studenttemplates/<int:template_id>/", views.student_template_view),

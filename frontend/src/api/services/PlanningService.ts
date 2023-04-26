@@ -36,6 +36,16 @@ class PlanningService extends EchoService {
   }
 
   /**
+   * Get the pictures for a planning
+   */
+  @GET("/dagplanning/{year}/{week}/{id}/pictures/")
+  getStatusPictures(@Path('year') year: number,
+                    @Path('week') week: number,
+                    @Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
    * Get a day planning by id
    */
   @GET("/dagplanning/{id}/")
