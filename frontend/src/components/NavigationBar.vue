@@ -7,7 +7,7 @@
                    value="dashboard"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{name: 'admin_home'}"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" to="/studenttemplates"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" :to="{name: 'studenttemplates'}"
                    value="studenten templates"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-bike" title="Rondes" to="/rounds"
                    value="rondes"></v-list-item>

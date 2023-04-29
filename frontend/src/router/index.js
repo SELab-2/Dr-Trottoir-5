@@ -186,32 +186,32 @@ const routes = [
     component: AccountView
   },
   {
-    path: '/studenttemplates',
+    path: '/admin/studenttemplates',
     name: 'studenttemplates',
     component: StudentTemplateView
   },
     {
-    path: '/studenttemplates/add',
+    path: '/admin/studenttemplates/aanmaken',
     name: 'add_studenttemplate',
     component: StudentTemplateAddView
   },
   {
-    path: '/studenttemplates/:id',
+    path: '/admin/studenttemplates/:id',
     name: 'studenttemplate',
     component: StudentTemplateEditView
   },
   {
-    path: '/studenttemplates/:template_id/rondes/:ronde_id',
+    path: '/admin/studenttemplates/:template_id/rondes/:ronde_id',
     name: 'ronde_dagplanningen',
     component: RondeDagplanningenView
   },
   {
-    path: '/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
+    path: '/admin/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
     name: 'dagplanning_edit',
     component: DagplanningEditView
   },
   {
-    path: '/studenttemplates/:template_id/rondes/:ronde_id/add',
+    path: '/admin/studenttemplates/:template_id/rondes/:ronde_id/aanmaken',
     name: 'dagplanning_add',
     component: DagplanningAddView
   },
