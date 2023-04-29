@@ -252,7 +252,7 @@ const routes = [
     component: AdminStudentInfoUser
   },
   {
-    path: '/admin/gebruiker/:id/edit',
+    path: '/admin/gebruiker/:id/aanpassen',
     name: 'admin_edit_user',
     props: true,
     component: AdminStudentInfoUserEdit
