@@ -201,17 +201,17 @@ const routes = [
     component: StudentTemplateEditView
   },
   {
-    path: '/admin/studenttemplates/:template_id/rondes/:ronde_id',
+    path: '/admin/studenttemplates/:template_id/ronde/:ronde_id',
     name: 'ronde_dagplanningen',
     component: RondeDagplanningenView
   },
   {
-    path: '/admin/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
+    path: '/admin/studenttemplates/:template_id/ronde/:ronde_id/dagplanning/:dag_id',
     name: 'dagplanning_edit',
     component: DagplanningEditView
   },
   {
-    path: '/admin/studenttemplates/:template_id/rondes/:ronde_id/aanmaken',
+    path: '/admin/studenttemplates/:template_id/ronde/:ronde_id/dagplanning/aanmaken',
     name: 'dagplanning_add',
     component: DagplanningAddView
   },
