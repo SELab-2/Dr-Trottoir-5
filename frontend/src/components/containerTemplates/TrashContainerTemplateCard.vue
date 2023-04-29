@@ -59,20 +59,23 @@ export default {
   methods: {
     editTemplate: function () {
       router.push({
-        path: '/trashtemplates/'+ this.data.id +'/edit'
-      });
+        name: 'editTrashtemplates',
+        params: {id: this.data.id}
+        });
     },
     deleteTemplate: function () {
       //todo
     },
     goToTrashTemplateBuildingsPage: function () {
       router.push({
-        path: '/trashtemplates/' + this.data.id + '/buildings'
+        name: 'trashtemplateBuildings',
+        params: {id: this.data.id}
       });
     },
     goToTrashTemplateContainersPage: function () {
       router.push({
-        path: '/trashtemplates/' + this.data.id + '/containers'
+        name: 'trashtemplateContainers',
+        params: {id: this.data.id}
       })
     }
   },

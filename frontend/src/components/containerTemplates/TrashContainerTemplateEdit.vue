@@ -146,8 +146,7 @@ export default {
         })
         return result
       });
-
-      return await router.push({path: `/trashtemplates`})
+      return await router.push({name: 'trashtemplates'})
     }
   }
 }

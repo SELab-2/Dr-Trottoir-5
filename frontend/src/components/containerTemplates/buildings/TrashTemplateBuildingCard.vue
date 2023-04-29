@@ -87,7 +87,6 @@ export default {
   },
   async beforeMount() {
     this.building = this.data.building
-    console.log(this.building)
     await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(
       async result => this.status = result.manualStatus)
   }

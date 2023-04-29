@@ -258,42 +258,42 @@ const routes = [
     component: AdminStudentInfoUserEdit
   },
   {
-    path: '/trashtemplates',
+    path: '/admin/afvaltemplates',
     name: 'trashtemplates',
     component: TrashContainerTemplateList
   },
   {
-    path: '/trashtemplates/:id/edit',
+    path: '/admin/afvaltemplate/:id/aanpassen',
     name: 'editTrashtemplates',
     component: TrashContainerTemplateEdit,
     props: true
   },
   {
-    path: '/trashtemplates/create',
+    path: '/admin/afvaltemplate/aanmaken',
     name: 'createTrashtemplates',
     component: TrashContainerTemplateCreate,
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers',
+    path: '/admin/afvaltemplate/:id/containers',
     name: 'trashtemplateContainers',
     component: TrashTemplateContainersList,
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers/create',
+    path: '/admin/afvaltemplate/:id/container/aanmaken',
     name: 'createTrashtemplateContainers',
     component: TrashContainerCreate,
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers/:containerId/edit',
+    path: '/admin/afvaltemplate/:id/container/:containerId/aanpassen',
     name: 'editTrashtemplateContainers',
     component: TrashContainerEdit,
     props: true
   },
   {
-    path: '/trashtemplates/:id/buildings',
+    path: '/admin/afvaltemplate/:id/gebouwen',
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
     props: true
