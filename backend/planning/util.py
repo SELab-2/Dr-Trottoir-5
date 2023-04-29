@@ -18,6 +18,7 @@ def is_past(year, week):
         return year < current_year
     return week < current_week
 
+
 def filter_templates(templates):
     """
     Filter een lijst van templates.
