@@ -13,7 +13,7 @@ import RoundList from "@/views/listViews/RoundList";
 import StudentList from "@/views/listViews/StudentList";
 import SyndicusList from "@/views/listViews/SyndicusList";
 import TemplateList from "@/views/listViews/TemplateList";
-import CreateRoundView from "@/views/CreateRoundView.vue";
+import CreateRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
 import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
 import Unauthorized from "@/views/Unauthorized";
@@ -125,6 +125,12 @@ const routes = [
   {
     path: '/create_round',
     name: 'create_round',
+    component: CreateRoundView
+  },
+  {
+    path: '/ronde/:id/bewerk',
+    name: 'edit_round',
+    props: true,
     component: CreateRoundView
   },
   {
