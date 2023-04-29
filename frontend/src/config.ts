@@ -23,7 +23,7 @@ export default {
       'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit', 'dagplanning_add',
       'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'trashtemplates', 'editTrashtemplates',
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
-      'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template',
+      'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template-edit',
       'admin_info_user', 'admin_edit_user', 'admin_user_register'
     ],
     AD: [
@@ -31,7 +31,7 @@ export default {
       'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit', 'dagplanning_add',
       'create_mail-template', 'buildings', 'rounds', 'students', 'syndicusen', 'mailtemplates', 'trashtemplates', 'editTrashtemplates',
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
-      'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template', 'admin_info_building',
+      'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template-edit', 'admin_info_building',
       'admin_edit_building', 'admin_info_user', 'admin_edit_user', 'admin_user_register', 'syndicus_create', 'syndicus_adjust'
     ]
   }

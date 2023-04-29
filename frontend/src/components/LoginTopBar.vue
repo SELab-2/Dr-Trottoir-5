@@ -6,7 +6,7 @@
       </v-app-bar-title>
     </template>
     <template v-slot:append>
-      <v-btn :to="login ? '/register' : '/login'" class="bg-secondary mx-3 mx-lg-6">{{login ? 'Aanmelden' : 'Login'}}</v-btn>
+      <v-btn :to="login ? {name: 'register'} : {name: 'login'}" class="bg-secondary mx-3 mx-lg-6">{{login ? 'Aanmelden' : 'Login'}}</v-btn>
     </template>
   </v-app-bar>
 </template>

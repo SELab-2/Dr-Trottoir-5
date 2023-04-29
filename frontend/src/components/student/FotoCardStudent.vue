@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     goToEditPage() {
-      router.push({path: '/student_post_edit', query: {building: this.buildingName, type: this.type, info: this.info, id: this.data.id}});
+      router.push({name: 'student_post_edit', query: {building: this.buildingName, type: this.type, info: this.info, id: this.data.id}});
     },
     deletePost() {
       RequestHandler.handle(PlanningService.deletePicture(this.data.id), {

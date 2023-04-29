@@ -53,32 +53,32 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/student_home',
+    path: '/student',
     name: 'student_home',
     component: StudentHomeView
   },
   {
-    path: '/syndicus_home',
+    path: '/syndicus',
     name: 'syndicus_home',
     component: RegisterDone
   },
   {
-    path: '/admin_home',
+    path: '/admin',
     name: 'admin_home',
     component: DashboardView
   },
   {
-    path: '/resident_home',
+    path: '/resident',
     name: 'resident_home',
     component: RegisterDone
   },
   {
-    path: '/register',
+    path: '/registreer',
     name: 'register',
     component: RegisterView
   },
   {
-    path: '/register_done',
+    path: '/verstuurd',
     name: 'register_done',
     component: RegisterDone
   },
@@ -93,89 +93,90 @@ const routes = [
     component: ForgotView
   },
   {
+    // TODO verwijderen
     path: '/users',
     name: 'users',
     component: UsersView
   },
   {
-    path: '/location/create',
+    path: '/admin/locatie/aanmaken',
     name: 'create_location',
     component: CreateLocationView
   },
   {
-    path: '/building/create',
+    path: '/admin/gebouw/aanmaken',
     name: 'create_building',
     component: CreateBuildingView
   },
   {
-    path: '/mailtemplate/create',
+    path: '/admin/mailtemplate/aanmaken',
     name: 'create_mail-template',
     component: CreateMailTemplateView
   },
   {
-    path: '/mailtemplate/edit/:id',
-    name: 'mail-template',
+    path: '/admin/mailtemplate/:id/aanpassen',
+    name: 'mail-template-edit',
     component: AdminMailTemplateView
   },
   {
-    path: '/dagplanning',
+    path: '/student/dagplanning',
     name: 'dagplanning',
     component: DayPlanView
   },
   {
-    path: '/create_round',
+    path: '/admin/ronde/aanmaken',
     name: 'create_round',
     component: CreateRoundView
   },
   {
-    path: '/unauthorized',
+    path: '/verboden',
     name: 'unauthorized',
     component: Unauthorized
   },
   {
-    path: '/building_student',
+    path: '/student/gebouw',
     name: 'building_student',
     component: BuildingPageStudent
   },
   {
-    path: '/building_info',
+    path: '/student/gebouw/info',
     name: 'building_info',
     component: InfoScreenBuilding
   },
   {
-    path: '/student_post_view',
+    path: '/student/gebouw/taak',
     name: 'student_post_view',
     component: StudentPostView
   },
   {
-    path: '/student_post',
+    path: '/student/gebouw/taak/post',
     name: 'student_post',
     component: StudentCreatePost
   },
   {
-    path: '/student_post_edit',
+    path: '/student/gebouw/taak/aanpassen',
     name: 'student_post_edit',
     component: StudentEditPost
   },
   {
-    path: '/building/:id',
+    path: '/admin/gebouw/:id',
     name: 'admin_info_building',
     props: true,
     component: AdminBuildingInfoView
   },
   {
-    path: '/building/:id/edit',
+    path: '/admin/gebouw/:id/aanpassen',
     name: 'admin_edit_building',
     props: true,
     component: AdminBuildingInfoEditView
   },
   {
-    path: '/syndicus/create',
+    path: '/admin/syndicus/aanmaken',
     name: 'syndicus_create',
     component: CreateSyndicusView
   },
   {
-    path: '/syndicus/edit',
+    path: '/admin/syndicus/aanpassen',
     name: 'syndicus_adjust',
     component: AdjustSyndicusView
   },

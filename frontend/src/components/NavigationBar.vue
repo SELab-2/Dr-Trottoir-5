@@ -5,7 +5,7 @@
     <v-list density="compact" nav>
       <v-list-item v-if="!this.isAdminOrSu" prepend-icon="mdi-home-account" title="Home" to="/"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" to="/admin_home"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{name: 'admin_home'}"
                    value="dashboard"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" to="/studenttemplates"
                    value="studenten templates"></v-list-item>
