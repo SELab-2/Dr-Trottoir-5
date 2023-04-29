@@ -81,7 +81,7 @@ export default defineComponent({
           message: `Ronde ${b.name} is aangemaakt.`,
           color: "success"
         });
-        router.push({ path: '/' }); // TODO: change to list of rounds
+        router.push({ name: 'rounds' });
       }).catch(() => null);
     },
     async validate () {
