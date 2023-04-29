@@ -6,6 +6,18 @@ import datetime
 from ronde.models import Ronde
 
 
+def get_current_time():
+    current_year = datetime.datetime.utcnow().strftime("%Y")
+    current_week = datetime.datetime.utcnow().strftime("%U")
+    return current_year, current_week
+
+
+def is_past(year, week):
+    current_year, current_week = get_current_time()
+    if year != current_year:
+        return year < current_year
+    return week < current_week
+
 def filter_templates(templates):
     """
     Filter een lijst van templates.
@@ -14,16 +26,14 @@ def filter_templates(templates):
 
     Hierna blijven dus alleen maar de templates over die actief zijn of in de huidige week eenmalig of vervangen zijn.
     """
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     for template in templates:
-        is_current = template.week == current_week or template.year == current_year
         # template was tijdelijk veranderd maar de week is voorbij dus nu geldt deze weer
-        if template.status == Status.VERVANGEN and not is_current:
+        if template.status == Status.VERVANGEN and is_past(template.year, template.week):
             template.status = Status.ACTIEF
             template.save()
         # template was tijdelijk maar de week is voorbij dus nu geldt deze niet meer
-        elif template.status == Status.EENMALIG and not is_current:
+        elif template.status == Status.EENMALIG and is_past(template.year, template.week):
             template.status = Status.INACTIEF
             template.save()
 
@@ -38,7 +48,7 @@ def get_current_week_planning():
     Anders maak je die aan door al de actieve templates toe te voegen en alleen de
     even/oneven bij te houden.
     """
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     planning, created = WeekPlanning.objects.get_or_create(
         week=current_week,
@@ -86,7 +96,12 @@ def make_dag_planning(data):
 def make_copy(template, permanent, current_year, current_week):
     """
         Neemt een copy van een StudentTemplate zodat de geschiedenis behouden wordt
+        Als er een oneven template wordt aangepast in een even week zijn deze aanpassingen pas voor
+        de volgende week.
     """
+    week = current_week
+    if (current_week % 2 == 0) != template.even:
+        week += 1
 
     copy = StudentTemplate.objects.create(
         name=template.name,
@@ -96,14 +111,14 @@ def make_copy(template, permanent, current_year, current_week):
         end_hour=template.end_hour,
         location=template.location,
         year=current_year,
-        week=current_week
+        week=week
     )
     copy.rondes.set(template.rondes.all())
     copy.dag_planningen.set(template.dag_planningen.all())
 
     # verander de status van de nu oude template
     template.status = Status.INACTIEF if permanent else Status.VERVANGEN
-    template.week = current_week
+    template.week = week
     template.save()
 
     return copy

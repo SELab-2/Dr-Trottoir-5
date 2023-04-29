@@ -47,7 +47,12 @@ def make_new_building_list(building_id, selection):
 def make_copy(template, permanent, current_year, current_week):
     """
         Neemt een copy van een template zodat de geschiedenis behouden wordt
+        Als er een oneven template wordt aangepast in een even week zijn deze aanpassingen pas voor
+        de volgende week.
     """
+    week = current_week
+    if (current_week % 2 == 0) != template.even:
+        week += 1
 
     copy = TrashContainerTemplate.objects.create(
         name=template.name,
@@ -55,14 +60,14 @@ def make_copy(template, permanent, current_year, current_week):
         status=Status.ACTIEF if permanent else Status.EENMALIG,
         location=template.location,
         year=current_year,
-        week=current_week
+        week=week
     )
     copy.buildings.set(template.buildings.all())
     copy.trash_containers.set(template.trash_containers.all())
 
     # verander de status van de nu oude template
     template.status = Status.INACTIEF if permanent else Status.VERVANGEN
-    template.week = current_week
+    template.week = week
     template.save()
 
     return copy

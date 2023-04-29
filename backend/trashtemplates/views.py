@@ -1,9 +1,8 @@
 from .util import *
-from planning.util import filter_templates, get_current_week_planning
+from planning.util import filter_templates, get_current_week_planning, get_current_time
 from ronde.models import Building, LocatieEnum
 from .serializers import *
 from rest_framework.response import Response
-import datetime
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
@@ -26,7 +25,7 @@ def trash_templates_view(request):
         TODO checks
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         location = LocatieEnum.objects.get(id=data["location"])
 
         new_template = TrashContainerTemplate.objects.create(
@@ -47,7 +46,7 @@ def trash_templates_view(request):
 @permission_classes([AllowAny])
 def trash_template_view(request, template_id):
     template = TrashContainerTemplate.objects.get(id=template_id)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
     planning = get_current_week_planning()
 
     if request.method == "GET":
@@ -154,8 +153,6 @@ def trash_containers_view(request, template_id, permanent):
         Voegt de nieuwe TrashContainer toe aan de template adhv een TrashContainerIdWrapper.
         """
         data = request.data
-
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         extra_id = ExtraId.objects.create()
         new_tc_id_wrapper = make_new_tc_id_wrapper(data, extra_id)
