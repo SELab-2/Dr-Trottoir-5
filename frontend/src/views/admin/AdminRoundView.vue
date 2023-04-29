@@ -10,7 +10,8 @@
           <v-btn class="my-2" color="primary"><v-icon color="secondary" icon="mdi-pencil"></v-icon></v-btn>
         </v-col>
       </v-row>
-      <h2 v-for="student in planning.students">{{student.first_name}} {{student.last_name}}</h2>
+      <h2 v-for="student in planning.students"><a :href="'/admin/gebruiker/'+student.id" style="text-decoration: none;">
+        {{student.first_name}} {{student.last_name}}</a></h2>
       <v-card class="mt-4 py-4" style="max-width: 95%;">
         <v-row>
           <v-col cols="2"><h5 class="text-h5">Gebouw</h5></v-col>
@@ -24,6 +25,15 @@
                                  v-if="pictures !== null"
                                  :data="{building: building, pictures: pictures[building.id], optimalDuration: 15 * 60}">
       </FollowUpRoundBuildingCard>
+      <v-card class="mt-8 py-4" style="max-width: 95%;">
+        <v-row>
+          <v-col cols="2"><h5 class="text-h5 font-weight-bold">Totaal</h5></v-col>
+          <v-col cols="2"><h5 class="text-h5">{{status}}</h5></v-col>
+          <v-col cols="2"><h5 class="text-h5" v-if="pictures !== null">
+            {{Object.keys(pictures).filter(p => pictures[p].remark !== '').length}} opmerkingen</h5></v-col>
+          <v-col cols="1"><h5 class="text-h5" v-if="duration !== null">{{duration}}</h5></v-col>
+        </v-row>
+      </v-card>
     </v-card>
   </v-container>
 </template>
@@ -41,7 +51,9 @@ export default {
     date: null,
     dateString: "",
     planning: null,
-    pictures: null
+    pictures: null,
+    duration: null,
+    status: "Niet voltooid"
   }),
   methods: {
     getWeek(d) {
@@ -68,7 +80,20 @@ export default {
         this.getWeek(this.date), this.$route.query.planning), {
         id: `getPicturesError`,
         style: "SNACKBAR"
-      }).then(pictures => this.pictures = pictures).catch(() => null);
+      }).then(pictures => {
+        this.pictures = pictures;
+        const times = Object.keys(pictures).map(p => pictures[p].map(t => new Date(t.time)))
+                .flat().sort((p1, p2) => p1 < p2 ? -1 : 1);
+        if (times.length > 0) {
+          const secs = (times[times.length - 1].getTime() - times[0].getTime()) / 1000;
+          const minutes = Math.floor(secs / 60);
+          const seconds = Math.round(secs - minutes * 60);
+          this.duration = `${minutes}min ${seconds}s`;
+        } else this.duration = '-';
+
+        if (Object.keys(pictures).every(p => pictures[p].some(pic => pic.pictureType === 'DE'))) this.status = 'Voltooid';
+        else if (Object.keys(pictures).some(p => pictures[p].length > 0)) this.status = 'bezig';
+      }).catch(() => null);
     }
   }
 }

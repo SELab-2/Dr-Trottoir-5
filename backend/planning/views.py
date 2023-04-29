@@ -64,6 +64,16 @@ def planning_status(request, year, week, pk):
 
 @api_view(["GET"])
 @permission_classes([AdminPermission | SuperstudentPermission])
+def template_for_planning(request, pk):
+    if request.method == "GET":
+        try:
+            dayplan = DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
+            return Response(status=404)
+
+
+@api_view(["GET"])
+@permission_classes([AdminPermission | SuperstudentPermission])
 def planning_pictures(request, year, week, pk):
     if request.method == "GET":
         try:

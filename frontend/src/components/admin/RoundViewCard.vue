@@ -27,14 +27,16 @@ it displays the information of one round so that a list of round views can easil
             <v-expansion-panel :title="data.round.students.length + ` student${data.round.students.length === 1 ? '' : 'en'}`"
                                :disabled="data.round.students.length === 0">
               <v-expansion-panel-text v-if="data.round.students.length > 0">
-                <p style="word-wrap: break-word;" v-for="s in data.round.students"><a :href="'/admin/gebruiker/'+s.id">
+                <p style="word-wrap: break-word;" v-for="s in data.round.students" class="mt-2">
+                  <a :href="'/admin/gebruiker/'+s.id" style="text-decoration: none;">
                   {{ s.first_name }} {{ s.last_name }}</a></p>
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
         <v-col align="right" md="1" xs="2" class="my-3 mx-2">
-          <v-icon icon="mdi-information-outline" size="x-large" @click="info"></v-icon>
+          <v-icon icon="mdi-information-outline" size="x-large" @click="info" v-if="data.round.students.length > 0"></v-icon>
+          <v-icon v-else icon="mdi-plus-circle" size="x-large" @click="plan"></v-icon>
         </v-col>
       </v-row>
     </v-card>
@@ -76,7 +78,10 @@ export default {
       return router
     },
     info() {
-      router.push({path: '/admin/round', query: {planning: this.data.round.id, date: this.data.date}});
+      router.push({name: 'adminRoundView', query: {planning: this.data.round.id, date: this.data.date}});
+    },
+    plan() {
+      router.push({name: 'studenttemplates'});
     },
     getWeek(d) {
       const date = new Date(d);
