@@ -66,10 +66,14 @@ def planning_status(request, year, week, pk):
 @permission_classes([AdminPermission | SuperstudentPermission])
 def template_for_planning(request, pk):
     if request.method == "GET":
+        """ TODO: get template for planning?
         try:
             dayplan = DagPlanning.objects.get(pk=pk)
         except DagPlanning.DoesNotExist:
             return Response(status=404)
+        """
+
+        return Response()
 
 
 @api_view(["GET"])
