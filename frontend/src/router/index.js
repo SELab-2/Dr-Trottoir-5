@@ -68,7 +68,7 @@ const routes = [
     component: DashboardView
   },
   {
-    path: '/resident',
+    path: '/bewoner',
     name: 'resident_home',
     component: RegisterDone
   },
