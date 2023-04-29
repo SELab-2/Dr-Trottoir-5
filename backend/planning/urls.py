@@ -4,11 +4,16 @@ from . import views
 urlpatterns = [
     path("buildingpicture/", views.BuildingPictureCreateAndListAPIView.as_view()),
     path("buildingpicture/<int:pk>/", views.BuildingPictureRUDAPIView.as_view()),
+
     path("infoperbuilding/", views.InfoPerBuildingCLAPIView.as_view()),
     path("infoperbuilding/<int:pk>/", views.InfoPerBuildingRUDAPIView.as_view()),
-    path("weekplanning/<int:year>/<int:week>/", views.week_planning_view),
+
+    path("weekplanning/<int:year>/<int:week>/", views.WeekplanningView.as_view()),
+    # path("weekplanning/<int:year>/<int:week>/", views.week_planning_view),
+
     path("dagplanning/<int:year>/<int:week>/<int:day>/", views.student_dayplan),
     path("dagplanning/<int:pk>/", views.DagPlanningRetrieveUpdateAPIView.as_view()),
+
     path("studenttemplates/rondes/<int:year>/<int:week>/<int:day>/<int:location>/", views.student_templates_rondes_view),
     path("studenttemplates/", views.student_templates_view),
     path("studenttemplates/<int:template_id>/", views.student_template_view),

@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.http import HttpResponseNotFound
 from rest_framework import generics
+from rest_framework.serializers import ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -19,7 +21,11 @@ from .util import *
 def student_dayplan(request, year, week, day):
     if request.method == "GET":
         if day < 0 or day > 6:
-            return Response(status=400)
+            return ValidationError({
+                "errors": [
+                    {"message": "bad day"}
+                ]
+            }, code='invalid')
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
 
@@ -32,7 +38,7 @@ def student_dayplan(request, year, week, day):
                     break
 
         if dayplan is None:
-            return Response(status=404)
+            return HttpResponseNotFound()
 
         data = DagPlanningSerializerFull(dayplan).data
         return Response(data)
@@ -41,7 +47,8 @@ def student_dayplan(request, year, week, day):
 class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
-    permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
+    permission_classes = [
+        StudentPermission | AdminPermission | SuperstudentPermission]
 
 
 class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
@@ -62,7 +69,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                                                       date=date)
                 return Response(DagPlanningSerializerFull(dagPlanning).data)
             except DagPlanning.DoesNotExist:
-                raise serializers.ValidationError(
+                raise ValidationError(
                     {
                         "errors": [
                             {
@@ -76,7 +83,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
                 dagPlanning = DagPlanning.objects.get(student=student)
                 return Response(DagPlanningSerializerFull(dagPlanning).data)
             except DagPlanning.DoesNotExist:
-                raise serializers.ValidationError(
+                raise ValidationError(
                     {
                         "errors": [
                             {
@@ -309,15 +316,16 @@ def get_student_templates(year, week):
     return student_templates
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def week_planning_view(request, year, week):
-    student_templates = get_student_templates(year, week)
-    if student_templates is None:
-        return Response(status=404)
-    data = StudentTemplateSerializer(student_templates, many=True).data
-    return Response(data)
+class WeekplanningView(generics.RetrieveAPIView):
 
+    def get(self, request, *args, **kwargs):
+        year = kwargs["year"]
+        week = kwargs["week"]
+        student_templates = get_student_templates(year, week)
+        if student_templates is None:
+            return HttpResponseNotFound()
+        data = StudentTemplateSerializer(student_templates, many=True).data
+        return Response(data)
 
 @api_view(["GET"])
 @permission_classes([AdminPermission | SuperstudentPermission | AllowAny])
@@ -329,7 +337,7 @@ def student_templates_rondes_view(request, year, week, day, location):
         day_name = days[day]
         templates = get_student_templates(year, week)
         if templates is None:
-            return Response(status=404)
+            return HttpResponseNotFound()
         templates = templates.filter(location=location)
         planned = []
         for template in templates:
@@ -381,7 +389,8 @@ def student_templates_view(request):
             week=current_week
         )
 
-        add_if_match(get_current_week_planning().student_templates, new_template, current_week)
+        add_if_match(get_current_week_planning().student_templates,
+                     new_template, current_week)
         return Response({"message": "Success", "new_id": new_template.id})
 
 
@@ -533,8 +542,10 @@ def rondes_view(request, template_id):
             copy = make_copy(template, True, current_year, current_week)
             copy.rondes.add(ronde)
             copy.dag_planningen.add(*dag_planningen)
-            remove_if_match(get_current_week_planning().student_templates, template, current_week)
-            add_if_match(get_current_week_planning().student_templates, copy, current_week)
+            remove_if_match(get_current_week_planning().student_templates,
+                            template, current_week)
+            add_if_match(get_current_week_planning().student_templates, copy,
+                         current_week)
             response["new_id"] = copy.id
 
         return Response(response)
@@ -562,8 +573,10 @@ def ronde_view(request, template_id, ronde_id):
             copy = make_copy(template, True, current_year, current_week)
             copy.dag_planningen.remove(*to_remove)
             copy.rondes.remove(ronde)
-            remove_if_match(get_current_week_planning().student_templates, template, current_week)
-            add_if_match(get_current_week_planning().student_templates, copy, current_week)
+            remove_if_match(get_current_week_planning().student_templates,
+                            template, current_week)
+            add_if_match(get_current_week_planning().student_templates, copy,
+                         current_week)
             response["new_id"] = copy.id
         return Response(response)
 
