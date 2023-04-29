@@ -216,32 +216,32 @@ const routes = [
     component: DagplanningAddView
   },
   {
-    path: '/buildings',
+    path: '/admin/gebouwen',
     name: 'buildings',
     component: BuildingList
   },
   {
-    path: '/rounds',
+    path: '/admin/rondes',
     name: 'rounds',
     component: RoundList
   },
   {
-    path: '/students',
+    path: '/admin/studenten',
     name: 'students',
     component: StudentList
   },
   {
-    path: '/admin/gebruiker/registreer',
+    path: '/admin/studenten/registreer',
     name: 'admin_user_register',
     component: RegisterUserList
   },
   {
-    path: '/syndicusen',
-    name: 'syndicusen',
+    path: '/admin/syndici',
+    name: 'syndici',
     component: SyndicusList
   },
   {
-    path: '/mailtemplates',
+    path: '/admin/mailtemplates',
     name: 'mailtemplates',
     component: TemplateList
   },

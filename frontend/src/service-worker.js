@@ -85,7 +85,7 @@ registerRoute(
 );
 
 registerRoute(
-  ({ url }) => url.pathname.startsWith(`${config.BACKEND.URL}/mailtemplates`),
+  ({ url }) => url.pathname.startsWith(`${config.BACKEND.URL}/admin/mailtemplates`),
   new CacheFirst({
     cacheName: 'mailtemplates',
     plugins: [
