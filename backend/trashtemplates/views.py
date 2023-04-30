@@ -45,7 +45,7 @@ def trash_templates_view(request):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def trash_template_view(request, template_id):
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
     current_year, current_week = get_current_time()
     planning = get_current_week_planning()
 
@@ -139,7 +139,7 @@ def trash_template_view(request, template_id):
 @api_view(["POST", "GET"])
 @permission_classes([AllowAny])
 def trash_containers_view(request, template_id, permanent):
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
 
     if request.method == "GET":
         """
@@ -173,7 +173,7 @@ def trash_containers_view(request, template_id, permanent):
 @permission_classes([AllowAny])
 def trash_container_view(request, template_id, extra_id, permanent):
 
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
     tc_id_wrapper = template.trash_containers.get(extra_id=extra_id)
 
     if request.method == "GET":
@@ -237,7 +237,7 @@ def trash_container_view(request, template_id, extra_id, permanent):
 def buildings_view(request, template_id, permanent):
     data = request.data
 
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
 
     if request.method == "GET":
         """
@@ -272,7 +272,7 @@ def buildings_view(request, template_id, permanent):
 @permission_classes([AllowAny])
 def building_view(request, template_id, building_id, permanent):
 
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
     building_list = template.buildings.get(building=building_id)
 
     if request.method == "GET":

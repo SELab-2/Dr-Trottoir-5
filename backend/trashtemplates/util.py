@@ -3,6 +3,17 @@ from .serializers import *
 from trashcontainers.models import TrashContainer
 from ronde.models import Building
 from planning.util import get_current_time
+from exceptions.exceptionHandler import ExceptionHandler
+
+
+def get_trash_template(template_id):
+    handler = ExceptionHandler()
+    handler.check_primary_key(template_id, "template_id", TrashContainerTemplate)
+    handler.check()
+    template = TrashContainerTemplate.objects.get(id=template_id)
+    handler.check_not_inactive(template, "template")
+    handler.check()
+    return template
 
 
 def make_new_tc_id_wrapper(data, extra_id):
