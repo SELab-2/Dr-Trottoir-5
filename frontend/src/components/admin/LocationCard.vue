@@ -6,14 +6,10 @@
 <template>
   <v-container class="container-border" resizable="true">
     <v-row>
-      <v-col cols="9">
-        <v-row>
-          <v-col>
-            <p>{{ data.name }}</p>
-          </v-col>
-        </v-row>
+      <v-col cols="2" class="d-flex align-center justify-center">
+        <p>{{ data.name }}</p>
       </v-col>
-      <v-col cols="3" class="d-flex align-center justify-end">
+      <v-col cols="10" class="d-flex align-center justify-end">
         <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deleteLocation">
           <DeleteIcon/>
         </v-btn>
@@ -43,7 +39,18 @@ export default {
       RequestHandler.handle(LocationService.deleteLocationById(this.data.id), {
         id: 'locationCardDeleteError',
         style: 'SNACKBAR',
-      })
+        customMessages: [
+          {
+            code: '500',
+            message: 'De locatie is nog verbonden aan student, gebouwn ...',
+            description: 'Key error'
+          }
+        ]
+      }).catch(() =>
+        this.$store.dispatch("snackbar/open", {
+          message: "De locatie is nog verbonden aan student, gebouwn ...'",
+          color: "error"
+        }))
       this.$emit('removed')
     }
   }

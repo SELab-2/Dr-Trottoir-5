@@ -1,7 +1,12 @@
+<!--
+  The header of the Location list page. It only shows the name of the location.
+    Name: String
+-->
+
 <template>
   <v-container class="border">
-    <v-row align="center" justify="center">
-      <v-col cols="2" class="col">
+    <v-row align="center" justify="start">
+      <v-col cols="2" class="col pl-10">
         <p title="Name"> Naam </p>
       </v-col>
     </v-row>
