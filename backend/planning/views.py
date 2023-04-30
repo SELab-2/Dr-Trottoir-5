@@ -21,7 +21,7 @@ from .util import *
 def student_dayplan(request, year, week, day):
     if request.method == "GET":
         if day < 0 or day > 6:
-            return ValidationError({
+            raise ValidationError({
                 "errors": [
                     {"message": "bad day"}
                 ]
@@ -118,7 +118,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [
@@ -317,6 +317,8 @@ def get_student_templates(year, week):
 
 
 class WeekplanningView(generics.RetrieveAPIView):
+    permission_classes = [StudentReadOnly, AdminPermission,
+                          SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         year = kwargs["year"]
@@ -327,12 +329,15 @@ class WeekplanningView(generics.RetrieveAPIView):
         data = StudentTemplateSerializer(student_templates, many=True).data
         return Response(data)
 
-@api_view(["GET"])
-@permission_classes([AdminPermission | SuperstudentPermission | AllowAny])
-def student_templates_rondes_view(request, year, week, day, location):
-    if request.method == "GET":
+
+class StudentTemplateRondeView(generics.RetrieveAPIView):
+    permission_classes = [AdminPermission, SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        year, week, day, location = kwargs["year"], kwargs["week"], kwargs[
+            "day"], kwargs["location"]
         if day < 0 or day > 6:
-            return Response(status=400)
+            raise ValidationError("bad day")
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
         templates = get_student_templates(year, week)
@@ -348,10 +353,10 @@ def student_templates_rondes_view(request, year, week, day, location):
         return Response(planned)
 
 
-@api_view(["GET", "POST"])
-@permission_classes([AllowAny])
-def student_templates_view(request):
-    if request.method == "GET":
+class StudentTemplateView(generics.RetrieveAPIView, generics.CreateAPIView):
+    permission_classes = [AdminPermission, SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
         """
         Geeft alle templates die niet inactief zijn terug.
         """
@@ -360,7 +365,7 @@ def student_templates_view(request):
         data = StudentTemplateSerializer(result, many=True).data
         return Response(data)
 
-    if request.method == "POST":
+    def post(self, request, *args, **kwargs):
         """
         Maakt een nieuwe StudentTemplate aan.
         TODO checks
@@ -394,23 +399,22 @@ def student_templates_view(request):
         return Response({"message": "Success", "new_id": new_template.id})
 
 
-@api_view(["GET", "DELETE", "PATCH"])
-@permission_classes([AllowAny])
-def student_template_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
-    if request.method == "GET":
+class StudentTemplateView(generics.RetrieveUpdateDestroyAPIView):
+
+    def get(self, request, *args, **kwargs):
         """
         Geeft de StudentTemplate terug.
         """
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
         return Response(StudentTemplateSerializer(template).data)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
-    if request.method == "DELETE":
+    def delete(self, request, *args, **kwargs):
         """
         Verwijderd de StudentTemplate.
         Als deze eenmalig was mag deze volledig uit de database verwijderd worden en moet degene die vervangen
         was terug actief gezet worden.
         """
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
         planning = get_current_week_planning()
 
         if template.status == Status.EENMALIG:
@@ -435,11 +439,13 @@ def student_template_view(request, template_id):
 
         return Response({"message": "Success"})
 
-    if request.method == "PATCH":
+    def patch(self, request, *args, **kwargs):
         """
         Past de StudentTemplate aan.
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         data = request.data
 
         if "name" not in data:
@@ -499,23 +505,24 @@ def student_template_view(request, template_id):
         response["new_id"] = new_template.id
         return Response(response)
 
+    def put(self, request, *args, **kwargs):
+        raise ValidationError("no PUT allowed")
 
-@api_view(["GET", "POST"])
-@permission_classes([AllowAny])
-def rondes_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
 
-    if request.method == "GET":
+class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
+    def get(self, request, *args, **kwargs):
         """
         Geeft alle rondes van deze template terug.
         """
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
         data = RondeSerializer(template.rondes.all(), many=True).data
         return Response(data)
 
-    if request.method == "POST":
+    def post(self, request, *args, **kwargs):
         """
         Voegt een nieuwe Ronde toe aan de template.
         """
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
         data = request.data
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         handler = ExceptionHandler()
@@ -551,18 +558,14 @@ def rondes_view(request, template_id):
         return Response(response)
 
 
-@api_view(["DELETE"])
-@permission_classes([AllowAny])
-def ronde_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
-    ronde = Ronde.objects.get(id=ronde_id)
-
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-    if request.method == "DELETE":
+class RondeView(generics.DestroyAPIView):
+    def delete(self, request, *args, **kwargs):
         """
         Verwijderd een ronde en al zijn dagplanningen uit de template.
         """
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        ronde = Ronde.objects.get(id=kwargs["ronde_id"])
+        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         to_remove = template.dag_planningen.filter(ronde=ronde)
 
         response = {"message": "Success"}
@@ -575,30 +578,31 @@ def ronde_view(request, template_id, ronde_id):
             copy.rondes.remove(ronde)
             remove_if_match(get_current_week_planning().student_templates,
                             template, current_week)
-            add_if_match(get_current_week_planning().student_templates, copy,
+            add_if_match(get_current_week_planning().student_templates,
+                         copy,
                          current_week)
             response["new_id"] = copy.id
         return Response(response)
 
 
-@api_view(["GET", "POST"])
-@permission_classes([AllowAny])
-def dagplanningen_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
-
-    if request.method == "GET":
+class DagPlanningenView(generics.RetrieveAPIView, generics.CreateAPIView):
+    def get(self, request, *args, **kwargs):
         """
         Geeft alle dagplanningen van een ronde terug.
         """
-        dag_planningen = template.dag_planningen.filter(ronde=ronde_id)
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        dag_planningen = template.dag_planningen.filter(ronde=kwargs[
+            "ronde_id"])
         data = DagPlanningSerializer(dag_planningen, many=True).data
         return Response(data)
 
-    if request.method == "POST":
+    def post(self, request, *args, **kwargs):
         """
         Maakt een nieuwe DagPlanning aan.
         """
         data = request.data
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        ronde_id = kwargs["ronde_id"]
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         data["ronde"] = ronde_id
@@ -618,26 +622,23 @@ def dagplanningen_view(request, template_id, ronde_id):
         return Response(response)
 
 
-@api_view(["GET", "DELETE", "PATCH"])
-@permission_classes([AllowAny])
-def dagplanning_view(request, template_id, dag_id, permanent):
-    template = StudentTemplate.objects.get(id=template_id)
-
-    dag_planning = DagPlanning.objects.get(id=dag_id)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
-
-    if request.method == "GET":
+class DagPlanningView(generics.RetrieveUpdateDestroyAPIView):
+    def get(self, request, *args, **kwargs):
         """
         Geeft een dagplanning terug
         """
+        dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
         data = DagPlanningSerializer(dag_planning).data
         return Response(data)
 
-    if request.method == "DELETE":
+    def delete(self, request, *args, **kwargs):
         """
-        Verwijder een DagPlanning van de template
+        Verwijdert een DagPlanning van de template
         """
 
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
+        permanent = kwargs["permanent"]
         response = update(
             template,
             "dag_planningen",
@@ -650,12 +651,14 @@ def dagplanning_view(request, template_id, dag_id, permanent):
         response["message"] = "Success"
         return Response(response)
 
-    if request.method == "PATCH":
-        """
-        Verander de studenten voor een DagPlanning
-        """
-        data = request.data
+    def put(self, request, *args, **kwargs):
+        raise ValidationError("no PUT allowed")
 
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
+        permanent = kwargs["permanent"]
         data["day"] = dag_planning.time.day
         if "start_hour" not in data:
             data["start_hour"] = dag_planning.time.start_hour
