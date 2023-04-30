@@ -2,6 +2,7 @@ from .serializers import *
 from trashtemplates.models import Status, TrashContainerTemplate
 from pickupdays.models import PickUpDay
 import datetime
+from exceptions.exceptionHandler import ExceptionHandler
 
 from ronde.models import Ronde
 
@@ -41,6 +42,16 @@ def filter_templates(templates):
     result = templates.filter(status=Status.ACTIEF) | templates.filter(status=Status.EENMALIG) | templates.filter(
         status=Status.VERVANGEN)
     return result
+
+
+def get_student_template(template_id):
+    handler = ExceptionHandler()
+    handler.check_primary_key(template_id, "template_id", StudentTemplate)
+    handler.check()
+    template = StudentTemplate.objects.get(id=template_id)
+    handler.check_not_inactive(template, "template")
+    handler.check()
+    return template
 
 
 def get_current_week_planning():

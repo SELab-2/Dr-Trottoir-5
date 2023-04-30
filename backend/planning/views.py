@@ -393,7 +393,7 @@ def student_templates_view(request):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def student_template_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
     if request.method == "GET":
         """
         Geeft de StudentTemplate terug.
@@ -499,7 +499,7 @@ def student_template_view(request, template_id):
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def rondes_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     if request.method == "GET":
         """
@@ -548,7 +548,7 @@ def rondes_view(request, template_id):
 @api_view(["DELETE"])
 @permission_classes([AllowAny])
 def ronde_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
     ronde = Ronde.objects.get(id=ronde_id)
 
     current_year, current_week = get_current_time()
@@ -576,7 +576,7 @@ def ronde_view(request, template_id, ronde_id):
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def dagplanningen_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     if request.method == "GET":
         """
@@ -612,7 +612,7 @@ def dagplanningen_view(request, template_id, ronde_id):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     dag_planning = DagPlanning.objects.get(id=dag_id)
 

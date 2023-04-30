@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from rest_framework import serializers
-
+from trashtemplates.models import Status
 from django.db import models
 
 
@@ -20,6 +20,7 @@ class ExceptionHandler:
     blank_error = "Veld kan niet leeg zijn."
     integer_error = "Veld moet een positief getal zijn."
     boolean_error = "Veld moet een Boolse waarde zijn."
+    inactive_error = "Object is verwijderd."
 
     def __init__(self):
         self.errors = []
@@ -209,3 +210,15 @@ class ExceptionHandler:
         if not self.check_required(value, fieldname):
             return False
         return self.check_not_blank(value, fieldname)
+
+    def check_not_inactive(self, template, fieldname):
+        self.checked = False
+        if template is None:
+            return True
+
+        if template.status == Status.INACTIEF:
+            self.errors.append({
+                "message": ExceptionHandler.inactive_error,
+                "field": fieldname
+            })
+            return False
