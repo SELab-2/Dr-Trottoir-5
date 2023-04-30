@@ -9,7 +9,7 @@ from ronde.models import Ronde
 def get_current_time():
     current_year = datetime.datetime.utcnow().strftime("%Y")
     current_week = datetime.datetime.utcnow().strftime("%U")
-    return current_year, current_week
+    return int(current_year), int(current_week)
 
 
 def is_past(year, week):
