@@ -4,6 +4,7 @@ from trashcontainers.models import TrashContainer
 from ronde.models import Building
 from planning.util import get_current_time
 
+
 def make_new_tc_id_wrapper(data, extra_id):
     """
         Maakt nieuwe TrashContainerIdWrapper aan.
