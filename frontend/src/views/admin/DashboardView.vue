@@ -63,18 +63,17 @@ export default {
     }).catch(() => null);
   },
   methods: {
-    changed() {
+    async changed() {
       const date = new Date(this.date);
       const week = this.getWeek(this.date);
 
-      RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
+      const rounds = await RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',
         style: 'NONE'
-      }).then(rounds => {
-        this.rounds = rounds;
-        this.show = rounds;
-        this.filter();
-      }).catch(() => null);
+      }).then(rounds => rounds).catch(() => []);
+      this.rounds = rounds;
+      this.show = rounds;
+      this.filter();
     },
     getWeek(d) {
       const date = new Date(d);

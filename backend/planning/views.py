@@ -301,6 +301,7 @@ def get_student_templates(year, week):
         student_templates = student_templates.filter(even=even)
     else:
         # weekplanning is al voorbij of bezig
+        get_current_week_planning()  # nodig voor moest de weekplanning nog niet gemaakt zijn
         try:
             week_planning = WeekPlanning.objects.get(
                 week=week,
