@@ -27,6 +27,7 @@
 <script>
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/dist/style.css';
+
 export default {
   name: "SyndicusHome",
   components: {DatePicker},
