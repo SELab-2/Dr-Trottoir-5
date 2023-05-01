@@ -9,7 +9,7 @@
           </v-col>
           <v-col sm="6" align="left" class="text-wrap">
             <h4 class="text-h4">
-              Opmerkingen voor ?? op {{new Date(date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'})}}
+              Opmerkingen voor {{}} op {{new Date(date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'})}}
             </h4>
             <v-autocomplete
               label="Gebouw" :items="buildings" class="mt-4" style="width: 50%;"
