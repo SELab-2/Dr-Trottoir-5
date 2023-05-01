@@ -66,14 +66,16 @@ def planning_status(request, year, week, pk):
 @permission_classes([AdminPermission | SuperstudentPermission])
 def template_for_planning(request, pk):
     if request.method == "GET":
-        """ TODO: get template for planning?
         try:
-            dayplan = DagPlanning.objects.get(pk=pk)
+            DagPlanning.objects.get(pk=pk)
         except DagPlanning.DoesNotExist:
             return Response(status=404)
-        """
 
-        return Response()
+        student_templates = StudentTemplate.objects.filter(dag_planningen__in=[pk])
+        if len(student_templates) == 0:
+            return Response(status=404)
+
+        return Response({"template_id": student_templates[0].id})
 
 
 @api_view(["GET"])

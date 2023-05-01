@@ -4,10 +4,12 @@
       <v-row>
         <v-col cols="4"></v-col>
         <v-col cols="4">
-          <h1>Ronde {{ planning.ronde.name }} op {{ dateString }} door</h1>
+          <h1>Ronde {{ planning.ronde.name }} op {{ dateString }}{{ planning.students.length > 0 ? ' door' : '' }}</h1>
         </v-col>
         <v-col cols="2">
-          <v-btn class="my-2" color="primary"><v-icon color="secondary" icon="mdi-pencil"></v-icon></v-btn>
+          <v-btn v-if="template !== null"
+                 :to="`/studenttemplates/${template}/rondes/${planning.ronde.id}/dagplanningen/${planning.id}`"
+                 class="my-2" color="primary"><v-icon color="secondary" icon="mdi-pencil"></v-icon></v-btn>
         </v-col>
       </v-row>
       <h2 v-for="student in planning.students"><a :href="'/admin/gebruiker/'+student.id" style="text-decoration: none;">
@@ -53,6 +55,7 @@ export default {
     planning: null,
     pictures: null,
     duration: null,
+    template: null,
     status: "Niet voltooid"
   }),
   methods: {
@@ -75,6 +78,11 @@ export default {
         id: `getPlanningError`,
         style: "SNACKBAR"
       }).then(planning => this.planning = planning).catch(() => null);
+
+      RequestHandler.handle(PlanningService.findTemplate(this.$route.query.planning), {
+        id: 'findTemplateError',
+        style: "NONE"
+      }).then(t => this.template = t.template_id).catch(() => null);
 
       RequestHandler.handle(PlanningService.getStatusPictures(this.date.getFullYear(),
         this.getWeek(this.date), this.$route.query.planning), {

@@ -46,6 +46,14 @@ class PlanningService extends EchoService {
   }
 
   /**
+   * Find the student template for a planning
+   */
+  @GET("/studenttemplates/find/planning/{id}/")
+  findTemplate(@Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
    * Get a day planning by id
    */
   @GET("/dagplanning/{id}/")
