@@ -45,6 +45,7 @@ import TrashContainerCreate from '@/components/containerTemplates/containers/Tra
 import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
 import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
+import SyndicusHome from "@/views/syndicus/SyndicusHome.vue";
 
 const routes = [
   {
@@ -60,7 +61,7 @@ const routes = [
   {
     path: '/syndicus',
     name: 'syndicus_home',
-    component: RegisterDone
+    component: SyndicusHome
   },
   {
     path: '/admin',
