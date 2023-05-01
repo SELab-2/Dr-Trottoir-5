@@ -304,7 +304,7 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_not_blank_required(data.get("name"), "name")
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
-        #handler.check_primary_key_value_required(data.get("buildings"),
+        # handler.check_primary_key_value_required(data.get("buildings"),
         #                                         "buildings", Building)
         handler.check()
         return super().put(request, *args, **kwargs)
