@@ -4,7 +4,7 @@
       <v-col cols="6">
         <v-card flat>
           <DatePicker v-model.string="date" color="yellow" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                      :first-day-of-week="1" v-on:dayclick="changed" :masks="masks"/>
+                      :first-day-of-week="1" v-on:dayclick="changed" :masks="masks" class="datepicker"/>
         </v-card>
       </v-col>
       <v-col cols="4" align-self="center">
@@ -12,6 +12,7 @@
           clearable
           outlined
           rounded
+          :menu-props:="{rounded: 'xl'}"
           :items="this.buildings"
           item-title="name"
           item-value="content"
@@ -85,5 +86,9 @@ export default {
 </script>
 
 <style scoped>
+
+.datepicker{
+  width: 150px !important;
+}
 
 </style>

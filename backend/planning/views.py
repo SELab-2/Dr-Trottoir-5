@@ -103,8 +103,8 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         ronde = Ronde.objects.get(pk=request.data["ronde"])
         response = super().post(request=request, args=args, kwargs=kwargs)
         dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
-        for _ in ronde.buildings.all():
-            InfoPerBuilding(dagPlanning=dagPlanning).save()
+        for building in ronde.buildings.all():
+            InfoPerBuilding(dagPlanning=dagPlanning, building=building).save()
             dagPlanning.status.append('NS')
         dagPlanning.save()
         return response
