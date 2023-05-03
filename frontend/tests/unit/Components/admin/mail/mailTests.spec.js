@@ -1,14 +1,23 @@
 import {mount} from '@vue/test-utils'
 import CreateEditMailTemplate from '@/components/admin/mail/CreateEditMailTemplate.vue'
 import MailTemplateService from "@/api/services/MailTemplateService";
+import {RequestHandler} from "@/api/RequestHandler";
 
+jest.mock('@/api/services/MailTemplateService');
+jest.mock("@/api/RequestHandler");
 describe('CreateEditMailTemplate.vue', () => {
 
   let wrapper;
 
+
   beforeEach(() => {
     wrapper = mount(CreateEditMailTemplate);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
+
 
   it('renders the component', () => {
     expect(wrapper.exists()).toBe(true);
@@ -45,36 +54,31 @@ describe('CreateEditMailTemplate.vue', () => {
     expect(wrapper.vm.showDialog).toBe(true);
   });
 
-/*it('creates a template when the create button is clicked', async () => {
-  // In your test file, create a mock implementation of the MailTemplateService
-  const mockMailTemplateService = {
-    createMailTemplate: jest.fn().mockResolvedValue(),
-  };
 
-  // Replace the original implementation of the MailTemplateService with the mock implementation
-  jest.mock("@/api/services/MailTemplateService", () => {
-    return jest.fn().mockImplementation(() => {
-      return mockMailTemplateService;
-    });
-  });
+  it('calls createMailTemplate with the correct parameters', async () => {
+    const wrapper = mount(CreateEditMailTemplate, {
+      propsData: {
+        edit: false
+      }
+    })
 
-  const createButton = wrapper.find('[data-test="create-button"]');
-  const name = 'Test template';
-  const text = 'Test template text';
-  wrapper.vm.template.name = name;
-  wrapper.vm.template.text = text;
-  createButton.trigger('click');
-  await wrapper.vm.$nextTick();
+    wrapper.setData({
+      template: {
+        name: 'Test template',
+        text: 'Hello #name#, this is a test email for #purpose#.'
+      }
+    })
+    RequestHandler.handle.mockResolvedValue(Promise.resolve());
 
-  console.log(mockMailTemplateService.createMailTemplate)
+    const createButton = wrapper.find('[data-test="create-button"]');
+    await wrapper.vm.$nextTick();
+    createButton.trigger('click');
 
-  // Assert that createMailTemplate was called with the correct parameters
-  /*expect(mockMailTemplateService.createMailTemplate).toHaveBeenCalledWith({
-    name,
-    content: text,
-  });*/
-//});
-
+    expect(MailTemplateService.createMailTemplate).toHaveBeenCalledWith({
+      name: 'Test template',
+      content: 'Hello #name#, this is a test email for #purpose#.'
+    })
+  })
 
 
 })
