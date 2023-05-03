@@ -32,8 +32,8 @@
     </v-card>
   </v-container>
   <v-container align="center">
-    <NormalButton v-if="!edit" text="Maak template aan" :parent-function="createTemplate"/>
-    <NormalButton v-else text="Pas template aan" :parent-function="editTemplate"/>
+    <NormalButton data-test="create-button" v-if="!edit" text="Maak template aan" :parent-function="createTemplate"/>
+    <NormalButton data-test="edit-button" v-else text="Pas template aan" :parent-function="editTemplate"/>
   </v-container>
 
   <v-dialog v-model="showDialog">
