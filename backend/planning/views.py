@@ -108,104 +108,6 @@ class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [StudentPermission | AdminPermission | SuperstudentPermission]
 
 
-class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
-    queryset = DagPlanning.objects.all()
-    serializer_class = DagPlanningSerializer
-    permission_classes = [
-        StudentReadOnly | AdminPermission | SuperstudentPermission]
-
-    def get(self, request, *args, **kwargs):
-        student = request.query_params[
-            'student'] if 'student' in request.query_params else None
-        date = request.query_params[
-            'date'] if 'date' in request.query_params else None
-
-        if student is not None and date is not None:
-            try:
-                dagPlanning = DagPlanning.objects.get(student=student,
-                                                      date=date)
-                return Response(DagPlanningSerializerFull(dagPlanning).data)
-            except DagPlanning.DoesNotExist:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [
-                            {
-                                "message": "referenced pk not in db",
-                                "field": "dagPlanning"
-                            }
-                        ]
-                    }, code='invalid')
-        elif student is not None:
-            try:
-                dagPlanning = DagPlanning.objects.get(student=student)
-                return Response(DagPlanningSerializerFull(dagPlanning).data)
-            except DagPlanning.DoesNotExist:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [
-                            {
-                                "message": "referenced pk not in db",
-                                "field": "dagPlanning"
-                            }
-                        ]
-                    }, code='invalid')
-        return super().get(request=request, args=args, kwargs=kwargs)
-
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        handler = ExceptionHandler()
-        handler.check_primary_key_value_required(data.get("weekPlanning"),
-                                                 "weekPlanning",
-                                                 WeekPlanning)
-        handler.check_date_value_required(data.get("date"), "date")
-        handler.check_primary_key_value_required(data.get("student"),
-                                                 "student", get_user_model())
-        handler.check_primary_key_value_required(data.get("ronde"), "ronde",
-                                                 Ronde)
-        handler.check()
-        WeekPlanning.objects.get(pk=request.data["weekPlanning"])
-        ronde = Ronde.objects.get(pk=request.data["ronde"])
-        response = super().post(request=request, args=args, kwargs=kwargs)
-        dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
-        for _ in ronde.buildings.all():
-            InfoPerBuilding(dagPlanning=dagPlanning).save()
-            dagPlanning.status.append('NS')
-        dagPlanning.save()
-        return response
-
-
-class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
-    queryset = DagPlanning.objects.all()
-    serializer_class = DagPlanningSerializerFull
-    permission_classes = [
-        StudentPermission | AdminPermission | SuperstudentPermission]
-
-    def put(self, request, *args, **kwargs):
-        data = request.data
-        handler = ExceptionHandler()
-        handler.check_primary_key_value_required(data.get("weekPlanning"),
-                                                 "weekPlanning",
-                                                 WeekPlanning)
-        handler.check_date_value_required(data.get("date"), "date")
-        handler.check_primary_key_value_required(data.get("student"),
-                                                 "student", get_user_model())
-        handler.check_primary_key_value_required(data.get("ronde"), "ronde",
-                                                 Ronde)
-        handler.check()
-        return super().put(request, *args, **kwargs)
-
-    def patch(self, request, *args, **kwargs):
-        data = request.data
-        handler = ExceptionHandler()
-        handler.check_primary_key(data.get("weekPlanning"), "weekPlanning",
-                                  WeekPlanning)
-        handler.check_date_value(data.get("date"), "date")
-        handler.check_primary_key(data.get("ronde"), "ronde", Ronde)
-        handler.check()
-        return super().patch(request, *args, **kwargs)
-
-
 class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
@@ -391,7 +293,7 @@ def week_planning_view(request, year, week):
 
 
 @api_view(["GET"])
-@permission_classes([AdminPermission | SuperstudentPermission | AllowAny])
+@permission_classes([AdminPermission | SuperstudentPermission])
 def student_templates_rondes_view(request, year, week, day, location):
     if request.method == "GET":
         if day < 0 or day > 6:
@@ -401,6 +303,7 @@ def student_templates_rondes_view(request, year, week, day, location):
         templates = get_student_templates(year, week)
         if templates is None:
             return Response(status=404)
+
         templates = templates.filter(location=location)
         planned = []
         for template in templates:
@@ -502,7 +405,7 @@ def student_template_view(request, template_id):
         Past de StudentTemplate aan.
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
-        data = request.data
+        data = request.data.copy()
 
         if "name" not in data:
             data["name"] = template.name

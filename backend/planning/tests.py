@@ -71,12 +71,54 @@ class CreateTest(APITestCase):
         response = dagplanning_view(request, template_id, today["id"], True).data
         self.assertEqual(response["message"], "Success")
 
+        request = factory.get(f'/api/weekplanning/{date.year}/{date.week}/')
+        force_authenticate(request, user=self.user)
+        response = week_planning_view(request, date.year, date.week)
+        self.assertEqual(response.status_code, 200)
+
         # Find the dayplan for a certain time
         request = factory.get(f'/api/dagplanning/{date.year}/{date.week}/{date.weekday}/')
         force_authenticate(request, user=self.student)
         response = student_dayplan(request, date.year, date.week, date.weekday).data
         self.assertIn("id", response)
         self.assertEqual(student_dayplan(request, date.year, date.week, 8).status_code, 400)
+
+        request = factory.get(f'studenttemplates/rondes/{date.year}/{date.week}/{date.weekday}/6/')
+        force_authenticate(request, user=self.user)
+        student_templates_rondes_view(request, date.year, date.week, date.weekday, 6)
+
+        request = factory.patch(f'/api/studenttemplates/{template_id}/dagplanningen/{today["id"]}/eenmalig/', {
+            "students": []
+        })
+        force_authenticate(request, user=self.user)
+        dagplanning_view(request, template_id, today["id"], False)
+
+        request = factory.get('/api/studenttemplates/')
+        force_authenticate(request, user=self.user)
+        templates = student_templates_view(request).data
+        for template in templates:
+            request = factory.patch(f'/api/studenttemplates/{template["id"]}/', {
+                "start_hour": "11:00",
+                "end_hour": "14:00"
+            })
+            force_authenticate(request, user=self.user)
+            student_template_view(request, template["id"])
+
+        request = factory.get('/api/studenttemplates/')
+        force_authenticate(request, user=self.user)
+        templates = student_templates_view(request).data
+        for template in templates:
+            request = factory.delete(f'/api/studenttemplates/{template["id"]}/')
+            force_authenticate(request, user=self.user)
+            student_template_view(request, template["id"])
+
+    def testInfoPerBuilding(self):
+        # An error should be returned if an invalid dayplanning query is given
+        factory = APIRequestFactory()
+        request = factory.get('/api/infoperbuilding?dagPlanning=9')
+        force_authenticate(request, user=self.user)
+        response = InfoPerBuildingCLAPIView.as_view()(request).data
+        self.assertIn("errors", response)
 
     def testAddBuildingPicture(self):
         file = BytesIO()
@@ -101,3 +143,40 @@ class CreateTest(APITestCase):
         self.assertEqual(response["remark"], "testRemark"),
         self.assertEqual(response["infoPerBuilding"], self.ipb.pk)
         self.assertIsNotNone(response["id"])
+        picture_id = response["id"]
+
+        # Fetch the uploaded picture
+        request = factory.get('/api/buildingpicture/')
+        force_authenticate(request, user=self.user)
+        response = BuildingPictureCreateAndListAPIView.as_view()(request).data
+        self.assertIn("id", response[0])
+        request = factory.get(f'/api/buildingpicture?infoPerBuilding=9')
+        force_authenticate(request, user=self.user)
+        response = BuildingPictureCreateAndListAPIView.as_view()(request).data
+        self.assertIn("errors", response)
+
+        # Patch the uploaded picture
+        request = factory.patch(f'/api/buildingpicture/{picture_id}/', {
+            "remark": "testRemark 2",
+        })
+        force_authenticate(request, user=self.user)
+        response = BuildingPictureRUDAPIView.as_view()(request, pk=picture_id).data
+        self.assertIn("id", response)
+
+        # Put the uploaded picture
+        file = BytesIO()
+        image = Image.new('RGBA', size=(10, 10), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'test.png'
+        file.seek(0)
+        request = factory.put(f'/api/buildingpicture/{picture_id}/', {
+            "pictureType": "ST",
+            "image": file,
+            "time": "2002-03-27 22:33",
+            "remark": "testRemark 2",
+            "infoPerBuilding": self.ipb.pk
+        })
+        force_authenticate(request, user=self.user)
+        response = BuildingPictureRUDAPIView.as_view()(request, pk=picture_id).data
+        self.assertIn("id", response)
+
