@@ -1,5 +1,4 @@
 module.exports = {
-  ignorePatterns: ['**/node_modules/**'],
   root: true,
   env: {
     node: true

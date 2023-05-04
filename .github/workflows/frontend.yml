@@ -2,7 +2,7 @@ name: frontend-tests
 run-name: frontend-tests
 on: [push]
 jobs:
-  Frontend-linter-and-tests:
+  Frontend-tests:
     runs-on: self-hosted
     environment: vue tests
     strategy:
@@ -32,6 +32,23 @@ jobs:
       - name: Run Tests
         run: |
           npm run test:unit
+        working-directory: ./frontend
+
+  Frontend-linter:
+    runs-on: self-hosted
+    environment: vue tests
+    strategy:
+      max-parallel: 4
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - name: Install Dependencies
+        run: |
+          npm install
         working-directory: ./frontend
       - name: Run Linter
         run: |
