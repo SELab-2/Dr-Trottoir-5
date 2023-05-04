@@ -78,7 +78,6 @@ class CreateTest(APITestCase):
         self.assertIn("id", response)
         self.assertEqual(student_dayplan(request, date.year, date.week, 8).status_code, 400)
 
-
     def testAddBuildingPicture(self):
         file = BytesIO()
         image = Image.new('RGBA', size=(100, 100), color=(155, 0, 0))
