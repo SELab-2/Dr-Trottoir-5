@@ -100,7 +100,7 @@ export default defineComponent({
         this.$store.dispatch("session/clear");
         await this.$store.dispatch("session/fetch");
 
-        await router.push({ path: '/' });
+        await router.push({ name: 'home' });
       });
     },
     async validate () {

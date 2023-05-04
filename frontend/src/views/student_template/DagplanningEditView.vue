@@ -3,7 +3,7 @@
     <v-form fast-fail @submit.prevent>
       <v-row class="justify-space-between mx-5">
         <div class="text-h3 mx-5 mb-5">{{ format_day(this.day) }}</div>
-        <v-btn :to="`/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`" variant="outlined" >
+        <v-btn :to="{name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}}" variant="outlined" >
             Terug
         </v-btn>
       </v-row>
@@ -120,7 +120,7 @@ export default {
     },
     async copy_taken(new_id) {
       this.template_id = new_id
-      return await router.replace({path: `/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`})
+      return await router.push({name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}})
     },
     async save_edit_permanent() {
 

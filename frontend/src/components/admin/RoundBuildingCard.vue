@@ -88,7 +88,7 @@ export default {
       // TODO opslaan in database
     },
     goToBuildingPage: function () {
-      router.push({ path: '/building/' + this.data.id })
+      router.push({name: 'admin_info_building', params : {id: this.data.id}})
     }
   },
   async mounted () {

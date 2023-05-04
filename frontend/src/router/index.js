@@ -54,32 +54,32 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/student_home',
+    path: '/student',
     name: 'student_home',
     component: StudentHomeView
   },
   {
-    path: '/syndicus_home',
+    path: '/syndicus',
     name: 'syndicus_home',
     component: RegisterDone
   },
   {
-    path: '/admin_home',
+    path: '/admin',
     name: 'admin_home',
     component: DashboardView
   },
   {
-    path: '/resident_home',
+    path: '/bewoner',
     name: 'resident_home',
     component: RegisterDone
   },
   {
-    path: '/register',
+    path: '/registreer',
     name: 'register',
     component: RegisterView
   },
   {
-    path: '/register_done',
+    path: '/verstuurd',
     name: 'register_done',
     component: RegisterDone
   },
@@ -94,89 +94,90 @@ const routes = [
     component: ForgotView
   },
   {
+    // TODO verwijderen
     path: '/users',
     name: 'users',
     component: UsersView
   },
   {
-    path: '/location/create',
+    path: '/admin/locatie/aanmaken',
     name: 'create_location',
     component: CreateLocationView
   },
   {
-    path: '/building/create',
+    path: '/admin/gebouw/aanmaken',
     name: 'create_building',
     component: CreateBuildingView
   },
   {
-    path: '/mailtemplate/create',
+    path: '/admin/mailtemplate/aanmaken',
     name: 'create_mail-template',
     component: CreateMailTemplateView
   },
   {
-    path: '/mailtemplate/edit/:id',
-    name: 'mail-template',
+    path: '/admin/mailtemplate/:id/aanpassen',
+    name: 'mail-template-edit',
     component: AdminMailTemplateView
   },
   {
-    path: '/dagplanning',
+    path: '/student/dagplanning',
     name: 'dagplanning',
     component: DayPlanView
   },
   {
-    path: '/create_round',
+    path: '/admin/ronde/aanmaken',
     name: 'create_round',
     component: CreateRoundView
   },
   {
-    path: '/unauthorized',
+    path: '/verboden',
     name: 'unauthorized',
     component: Unauthorized
   },
   {
-    path: '/building_student',
+    path: '/student/gebouw',
     name: 'building_student',
     component: BuildingPageStudent
   },
   {
-    path: '/building_info',
+    path: '/student/gebouw/info',
     name: 'building_info',
     component: InfoScreenBuilding
   },
   {
-    path: '/student_post_view',
+    path: '/student/gebouw/taak',
     name: 'student_post_view',
     component: StudentPostView
   },
   {
-    path: '/student_post',
+    path: '/student/gebouw/taak/post',
     name: 'student_post',
     component: StudentCreatePost
   },
   {
-    path: '/student_post_edit',
+    path: '/student/gebouw/taak/aanpassen',
     name: 'student_post_edit',
     component: StudentEditPost
   },
   {
-    path: '/building/:id',
+    path: '/admin/gebouw/:id',
     name: 'admin_info_building',
     props: true,
     component: AdminBuildingInfoView
   },
   {
-    path: '/building/:id/edit',
+    path: '/admin/gebouw/:id/aanpassen',
     name: 'admin_edit_building',
     props: true,
     component: AdminBuildingInfoEditView
   },
   {
-    path: '/syndicus/create',
+    path: '/admin/syndicus/aanmaken',
     name: 'syndicus_create',
     component: CreateSyndicusView
   },
   {
-    path: '/syndicus/edit',
+    path: '/admin/syndicus/aanpassen',
     name: 'syndicus_adjust',
     component: AdjustSyndicusView
   },
@@ -186,62 +187,62 @@ const routes = [
     component: AccountView
   },
   {
-    path: '/studenttemplates',
+    path: '/admin/studenttemplates',
     name: 'studenttemplates',
     component: StudentTemplateView
   },
     {
-    path: '/studenttemplates/add',
+    path: '/admin/studenttemplate/aanmaken',
     name: 'add_studenttemplate',
     component: StudentTemplateAddView
   },
   {
-    path: '/studenttemplates/:id',
+    path: '/admin/studenttemplate/:id',
     name: 'studenttemplate',
     component: StudentTemplateEditView
   },
   {
-    path: '/studenttemplates/:template_id/rondes/:ronde_id',
+    path: '/admin/studenttemplate/:template_id/ronde/:ronde_id',
     name: 'ronde_dagplanningen',
     component: RondeDagplanningenView
   },
   {
-    path: '/studenttemplates/:template_id/rondes/:ronde_id/dagplanningen/:dag_id',
+    path: '/admin/studenttemplate/:template_id/ronde/:ronde_id/dagplanning/:dag_id',
     name: 'dagplanning_edit',
     component: DagplanningEditView
   },
   {
-    path: '/studenttemplates/:template_id/rondes/:ronde_id/add',
+    path: '/admin/studenttemplate/:template_id/ronde/:ronde_id/dagplanning/aanmaken',
     name: 'dagplanning_add',
     component: DagplanningAddView
   },
   {
-    path: '/buildings',
+    path: '/admin/gebouwen',
     name: 'buildings',
     component: BuildingList
   },
   {
-    path: '/rounds',
+    path: '/admin/rondes',
     name: 'rounds',
     component: RoundList
   },
   {
-    path: '/students',
+    path: '/admin/studenten',
     name: 'students',
     component: StudentList
   },
   {
-    path: '/admin/gebruiker/registreer',
+    path: '/admin/studenten/registreer',
     name: 'admin_user_register',
     component: RegisterUserList
   },
   {
-    path: '/syndicusen',
-    name: 'syndicusen',
+    path: '/admin/syndici',
+    name: 'syndici',
     component: SyndicusList
   },
   {
-    path: '/mailtemplates',
+    path: '/admin/mailtemplates',
     name: 'mailtemplates',
     component: TemplateList
   },
@@ -252,48 +253,48 @@ const routes = [
     component: AdminStudentInfoUser
   },
   {
-    path: '/admin/gebruiker/:id/edit',
+    path: '/admin/gebruiker/:id/aanpassen',
     name: 'admin_edit_user',
     props: true,
     component: AdminStudentInfoUserEdit
   },
   {
-    path: '/trashtemplates',
+    path: '/admin/afvaltemplates',
     name: 'trashtemplates',
     component: TrashContainerTemplateList
   },
   {
-    path: '/trashtemplates/:id/edit',
+    path: '/admin/afvaltemplate/:id/aanpassen',
     name: 'editTrashtemplates',
     component: TrashContainerTemplateEdit,
     props: true
   },
   {
-    path: '/trashtemplates/create',
+    path: '/admin/afvaltemplate/aanmaken',
     name: 'createTrashtemplates',
     component: TrashContainerTemplateCreate,
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers',
+    path: '/admin/afvaltemplate/:id/containers',
     name: 'trashtemplateContainers',
     component: TrashTemplateContainersList,
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers/create',
+    path: '/admin/afvaltemplate/:id/container/aanmaken',
     name: 'createTrashtemplateContainers',
     component: TrashContainerCreate,
     props: true
   },
   {
-    path: '/trashtemplates/:id/containers/:containerId/edit',
+    path: '/admin/afvaltemplate/:id/container/:containerId/aanpassen',
     name: 'editTrashtemplateContainers',
     component: TrashContainerEdit,
     props: true
   },
   {
-    path: '/trashtemplates/:id/buildings',
+    path: '/admin/afvaltemplate/:id/gebouwen',
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
     props: true

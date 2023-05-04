@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     addBuilding : function () {
-      router.push({ path: '/building/create'});
+      router.push({name: 'create_building'})
     }
   },
   async beforeMount() {
