@@ -11,7 +11,7 @@
             v-model="day"
           ></v-select>
         </v-col>
-        <v-btn :to="`/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`" variant="outlined" >
+        <v-btn :to="{name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}}" variant="outlined" >
             Terug
         </v-btn>
       </v-row>
@@ -111,7 +111,7 @@ export default {
       if (response["new_id"] !== undefined) {
         this.template_id = response["new_id"]
       }
-      return await router.push({path: `/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`})
+      return await router.push({name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}})
     }
   }
 }

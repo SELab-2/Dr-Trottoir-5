@@ -30,7 +30,7 @@ export default defineComponent({
   },
   methods: {
     selectDay() {
-      router.push({ path: '/dagplanning', query: { date: this.date } });
+      router.push({ name: 'dagplanning', query: { date: this.date } });
     }
   },
   data: () => {

@@ -119,7 +119,8 @@ export default {
       },
       roles: [
         {name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
-        {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'}],
+        {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'},
+        {name: 'Syndicus', value: 'SY'}],
       edit: false,
       smallScreen: false,
       can_edit_permission: true

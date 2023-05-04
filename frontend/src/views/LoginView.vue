@@ -23,7 +23,7 @@
       </v-form>
       <v-row class="mx-auto justify-center">
         <div class="mx-2">Geen account?</div>
-        <router-link to="/register">Maak nieuw account</router-link>
+        <router-link :to="{name: 'register'}">Maak nieuw account</router-link>
       </v-row>
     </v-col>
   </v-card>
@@ -86,7 +86,7 @@ export default defineComponent({
             await this.$store.dispatch("session/clear");
             await this.$store.dispatch("session/fetch");
 
-            await router.push({ path: '/' });
+            await router.push({ name: 'home' });
           }
         ).catch((error) => {
           ErrorHandler.handle(

@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     addMethod: function () {
-      router.push({ path: '/create_round'});
+      router.push({name: 'create_round'})
     }
   },
   async beforeMount () {

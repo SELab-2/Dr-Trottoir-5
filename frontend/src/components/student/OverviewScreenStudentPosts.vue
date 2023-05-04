@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     goToPhotoPage() {
-      router.push({path: '/student_post', query: {
+      router.push({name: 'student_post', query: {
         building: this.data.buildingName, type: this.data.type, info: this.data.info, planning: this.data.planning,
         building_id: this.data.building_id
       }});
