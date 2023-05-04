@@ -13,7 +13,7 @@ class PickUpSerializer(serializers.ModelSerializer):
         return pickup
 
     def validate(self, data):
-        if data['start_hour'] > data['end_hour']:
+        if data.get('start_hour', 0) > data.get('end_hour', 0):
             raise serializers.ValidationError({'start_hour': 'Starttijd mag niet later zijn dan eindtijd'})
         return data
 
