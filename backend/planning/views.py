@@ -507,7 +507,7 @@ def rondes_view(request, template_id):
         """
         Voegt een nieuwe Ronde toe aan de template.
         """
-        data = request.data
+        data = request.data.copy()
         current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
         handler = ExceptionHandler()
         handler.check_primary_key_value_required(data.get("ronde"), "ronde",
@@ -641,7 +641,7 @@ def dagplanning_view(request, template_id, dag_id, permanent):
         """
         Verander de studenten voor een DagPlanning
         """
-        data = request.data
+        data = request.data.copy()
 
         data["day"] = dag_planning.time.day
         if "start_hour" not in data:
