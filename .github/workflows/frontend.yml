@@ -35,5 +35,5 @@ jobs:
         working-directory: ./frontend
       - name: Run Linter
         run: |
-          npm run lint
+          npm run lint --no-fix
         working-directory: ./frontend
