@@ -150,7 +150,7 @@ class CreateTest(APITestCase):
         force_authenticate(request, user=self.user)
         response = BuildingPictureCreateAndListAPIView.as_view()(request).data
         self.assertIn("id", response[0])
-        request = factory.get(f'/api/buildingpicture?infoPerBuilding=9')
+        request = factory.get('/api/buildingpicture?infoPerBuilding=9')
         force_authenticate(request, user=self.user)
         response = BuildingPictureCreateAndListAPIView.as_view()(request).data
         self.assertIn("errors", response)
@@ -179,4 +179,3 @@ class CreateTest(APITestCase):
         force_authenticate(request, user=self.user)
         response = BuildingPictureRUDAPIView.as_view()(request, pk=picture_id).data
         self.assertIn("id", response)
-
