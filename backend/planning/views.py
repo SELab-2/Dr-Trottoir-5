@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -8,7 +7,7 @@ from exceptions.exceptionHandler import ExceptionHandler
 from pickupdays.models import WeekDayEnum
 from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
-from users.permissions import StudentReadOnly, AdminPermission, \
+from users.permissions import AdminPermission, \
     SuperstudentPermission, StudentPermission
 
 from .util import *
