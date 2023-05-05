@@ -190,10 +190,10 @@ def reset_password(request):
         Reset the password with the otp that is received via email.
     """
     data = request.data
-    email = data["email"]
-    otp = data["otp"]
-    password = data["password"]
-    password2 = data["password2"]
+    email = data.get("email")
+    otp = data.get("otp")
+    password = data.get("password")
+    password2 = data.get("password2")
 
     handler = ExceptionHandler()
     handler.check_not_blank_required(email, "email")
