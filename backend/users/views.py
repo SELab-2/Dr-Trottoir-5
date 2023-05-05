@@ -13,7 +13,7 @@ from .models import User
 from exceptions.exceptionHandler import ExceptionHandler
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, \
     StudentPermission
-from .serializers import RegistrationSerializer, RoleAssignmentSerializer, \
+from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
 
 
@@ -107,54 +107,52 @@ def registration_view(request):
     if request.method == "POST":
         response = Response()
         data = request.data
-        serializer = RegistrationSerializer(data=data)
 
         handler = ExceptionHandler()
         handler.check_not_blank_required(data.get("email"), "email")
-        handler.check_not_blank_required(data.get("first_name"), "first_name")
-        handler.check_not_blank_required(data.get("last_name"), "last_name")
+        handler.check_not_blank_required(data.get("first_name"), "firstname")
+        handler.check_not_blank_required(data.get("last_name"), "lastname")
         handler.check_not_blank_required(data.get("password"), "password")
+        handler.check_not_blank_required(data.get("password2"), "password2")
         handler.check_integer_required(data.get("phone_nr"), "phone_nr")
+        handler.check_equal(data.get("password"), data.get("password2"), "password2")
         handler.check()
-        if serializer.is_valid(raise_exception=True):
-            if get_user_model().objects.filter(
-                    email=data["email"]).exists():
-                raise serializers.ValidationError({
-                    "errors": [
-                        {
-                            "message": "email address already in use"
-                        }
-                    ]
-                })
-            user = get_user_model().objects.create_user(
-                request.data['email'],
-                request.data['first_name'],
-                request.data['last_name'],
-                request.data['phone_nr'],
-                request.data['password']
-            )
-            refresh = RefreshToken.for_user(user)
-            response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
-                value=str(refresh.access_token),
-                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-            )
-            response.set_cookie(
-                key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
-                value=str(refresh),
-                expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-            )
-            response.data = UserSerializer(user).data
-        else:
-            response.data = serializer.errors
+
+        if get_user_model().objects.filter(email=data["email"]).exists():
+            raise serializers.ValidationError({
+                "errors": [{
+                    "message": "Dit email adres is al in gebruik.",
+                    "field": "email"
+                }]})
+
+        user = get_user_model().objects.create_user(
+            request.data['email'],
+            request.data['first_name'],
+            request.data['last_name'],
+            request.data['phone_nr'],
+            request.data['password']
+        )
+        refresh = RefreshToken.for_user(user)
+        response.set_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+            value=str(refresh.access_token),
+            expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+        )
+        response.set_cookie(
+            key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
+            value=str(refresh),
+            expires=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+            samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+        )
+        response.data = UserSerializer(user).data
+
         return response
 
 
