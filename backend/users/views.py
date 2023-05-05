@@ -183,7 +183,6 @@ def forgot_password(request):
     return Response({'message': 'Email is verstuurd'})
 
 
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def reset_password(request):
