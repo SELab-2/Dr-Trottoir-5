@@ -9,11 +9,11 @@
         <v-text-field
           v-model="email"
           label="e-mail"
-          :error-messages="check_errors('email')"
+          :error-messages="check_errors(this.errors, 'email')"
         ></v-text-field>
         <v-text-field
           v-model="password"
-          :error-messages="check_errors('password')"
+          :error-messages="check_errors(this.errors, 'password')"
           :append-inner-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append-inner="() => (value = !value)"
           :type="value ? 'password' : 'text'"
@@ -36,7 +36,7 @@ import router from '@/router'
 import { defineComponent } from 'vue'
 import NormalButton from '@/components/NormalButton'
 import LoginTopBar from "@/components/LoginTopBar.vue";
-
+import {check_errors, get_errors} from "@/error_handling";
 
 export default defineComponent({
   name: 'LoginView',
@@ -70,15 +70,7 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-    check_errors(fieldname) {
-      if (this.errors === null) return "";
-      for (const error of this.errors) {
-        if (error.field === fieldname) {
-          return error.message;
-        }
-      }
-      return "";
-    },
+    check_errors,
     login() {
       AuthService.login({ email: this.email, password: this.password })
        .then(
@@ -97,7 +89,7 @@ export default defineComponent({
            await router.push({ name: 'home' });
          }
        ).catch(async (error) => {
-        this.errors = error.json ? await error.json().then(res => res.errors).catch(() => null) : null;
+        this.errors = await get_errors(error)
      })
    },
    onResize() {

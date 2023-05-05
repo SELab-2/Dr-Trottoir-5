@@ -21,6 +21,7 @@ class ExceptionHandler:
     integer_error = "Veld moet een positief getal zijn."
     boolean_error = "Veld moet een Boolse waarde zijn."
     wrong_email_error = "Verkeerd email adres."
+    not_equal_error = "Waarde komt niet overeen."
 
     def __init__(self):
         self.errors = []
@@ -224,3 +225,14 @@ class ExceptionHandler:
                 "field": "email"
             })
             return False
+
+    def check_equal(self, value1, value2, fieldname):
+        self.checked = False
+
+        if value1 != value2:
+            self.errors.append({
+                "message": ExceptionHandler.not_equal_error,
+                "field": fieldname
+            })
+            return False
+        return True

@@ -164,29 +164,26 @@ def forgot_password(request):
     """
         Send an email with an otp when forgot password is used.
     """
-    if request.data.get("email") is None:
-        raise serializers.ValidationError({
-            "errors": [
-                {
-                    "message": "email address already in use",
-                    "field": "email"
-                }
-            ]
-        })
-    email = request.data['email']
-    if get_user_model().objects.filter(email=email).exists():
-        user = get_user_model().objects.get(email=email)
-        send_mail(
-            subject='Nieuw wachtwoord voor Dr Trottoir.',
-            message=f'{user.otp}',  # TODO  email text schrijven
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            auth_user=settings.DEFAULT_FROM_EMAIL,
-            auth_password=settings.EMAIL_HOST_PASSWORD
-        )
-        return Response({'message': 'Email is verstuurd'})
-    else:
-        return Response({'message': 'Dit email adres bestaat niet.'})
+
+    data = request.data
+    email = data["email"]
+
+    handler = ExceptionHandler()
+    handler.check_not_blank_required(email, "email")
+    handler.check_email(email, User)
+    handler.check()
+
+    user = get_user_model().objects.get(email=email)
+    send_mail(
+        subject='Nieuw wachtwoord voor Dr Trottoir.',
+        message=f'{user.otp}',  # TODO  email text schrijven
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        auth_user=settings.DEFAULT_FROM_EMAIL,
+        auth_password=settings.EMAIL_HOST_PASSWORD
+    )
+    return Response({'message': 'Email is verstuurd'})
+
 
 
 @api_view(['POST'])
@@ -196,34 +193,28 @@ def reset_password(request):
         Reset the password with the otp that is received via email.
     """
     data = request.data
-    try:
-        user = get_user_model().objects.get(email=data['email'])
-    except Exception:
-        raise serializers.ValidationError(
-            {"errors": [
-                {
-                    "message": "There is no user with this email",
-                    "field": "email"
-                }
-            ]
-            }, code='invalid')
-    else:
-        if data['otp'] == user.otp:
-            if data['new_password'] != '':
-                user.set_password(data['new_password'])
-                user.save()  # Will automatically create new otp
-                return Response({'message': 'New password is created'})
-            else:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [{"message": "Password can't be empty",
-                                    "field": "new_password"}]
-                    }, code='invalid')
-        else:
-            raise serializers.ValidationError(
-                {
-                    "errors": [{"message": "OTP didn't match", "field": "otp"}]
-                }, code='invalid')
+    email = data["email"]
+    otp = data["otp"]
+    password = data["password"]
+    password2 = data["password2"]
+
+    handler = ExceptionHandler()
+    handler.check_not_blank_required(email, "email")
+    handler.check_not_blank_required(otp, "otp")
+    handler.check_not_blank_required(password, "password")
+    handler.check_not_blank_required(password2, "password2")
+    handler.check_email(email, User)
+    handler.check()
+
+    user = get_user_model().objects.get(email=data['email'])
+
+    handler.check_equal(password, password2, "password2")
+    handler.check_equal(otp, user.otp, "otp")
+    handler.check()
+
+    user.set_password(password)
+    user.save()  # Will automatically create new otp
+    return Response({'message': 'New password is created'})
 
 
 @api_view(['POST', 'GET'])

@@ -28,12 +28,14 @@ export class AuthForgotWrapper {
 
 export class AuthResetWrapper {
   public email: string;
-  public new_password: string;
+  public password: string;
+  public password2: string;
   public otp: string;
 
-  constructor(email: string, new_password: string, otp: string) {
+  constructor(email: string, password: string, password2: string, otp: string) {
     this.email = email
-    this.new_password = new_password
+    this.password = password
+    this.password2 = password2
     this.otp = otp
   }
 }
