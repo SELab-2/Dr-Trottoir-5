@@ -372,7 +372,6 @@ def student_templates_view(request):
         handler.check_boolean_required(data.get("even"), "even")
         handler.check()
 
-
         location = LocatieEnum.objects.get(id=data["location"])
 
         new_template = StudentTemplate.objects.create(

@@ -8,22 +8,22 @@
       <v-card-text>
         <v-form ref='form' v-model='valid'>
           <v-col cols='12' sm='6' md='6'>
-            <v-text-field v-model='name' :rules='[rules.required]' label='Naam' required variant="outlined"></v-text-field>
+            <v-text-field v-model='name' :error-messages="check_errors(this.errors, 'name')" label='Naam' required variant="outlined"></v-text-field>
           </v-col>
           <v-col cols='12' sm='6' md='6'>
             <v-autocomplete
-              label="Locatie" :items="locations" :rules="[rules.required]" item-title="name" v-model="location"
+              label="Locatie" :items="locations" :error-messages="check_errors(this.errors, 'location')" item-title="name" v-model="location"
               item-value="id" variant="outlined"
             ></v-autocomplete>
           </v-col>
           <v-col cols='12' sm='6' md='6'>
             <v-autocomplete
-              label="Gebouwen" :items="buildings" :rules="[rules.required]" multiple item-title="name" item-value="id"
+              label="Gebouwen" :items="buildings" :error-messages="check_errors(this.errors, 'buildings')" multiple item-title="name" item-value="id"
               v-model="selected" variant="outlined"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" sm="6" md="6">
-            <normal-button text="Aanmaken" v-bind:parent-function="validate"></normal-button>
+            <normal-button text="Aanmaken" v-bind:parent-function="createRound"></normal-button>
           </v-col>
         </v-form>
       </v-card-text>
@@ -37,6 +37,7 @@ import RoundService from "@/api/services/RoundService";
 import {RequestHandler} from "@/api/RequestHandler";
 import NormalButton from "@/components/NormalButton.vue";
 import router from "@/router";
+import {check_errors, get_errors} from "@/error_handling";
 
 export default defineComponent({
   name: "CreateRoundView",
@@ -48,9 +49,7 @@ export default defineComponent({
     location: null,
     selected: null,
     name: '',
-    rules: {
-      required: value => !!value || 'Dit veld is verplicht.'
-    }
+    errors: null
   }),
   async beforeCreate() {
     RequestHandler.handle(RoundService.getLocations(), {
@@ -68,28 +67,19 @@ export default defineComponent({
     }).catch(() => null);
   },
   methods: {
+    check_errors,
     async createRound() {
-      RequestHandler.handle(RoundService.createRound({
+      RoundService.createRound({
         name: this.name,
         location: this.location,
         buildings: this.selected
-      }), {
-        id: 'createRoundError',
-        style: 'none'
       }).then(b => {
         this.$store.dispatch("snackbar/open", {
           message: `Ronde ${b.name} is aangemaakt.`,
           color: "success"
         });
         router.push({ name: 'rounds' });
-      }).catch(() => null);
-    },
-    async validate () {
-      const { valid } = await this.$refs.form.validate();
-
-      if (valid) {
-        await this.createRound();
-      }
+      }).catch(async (error) => this.errors = await get_errors(error));
     }
   }
 });

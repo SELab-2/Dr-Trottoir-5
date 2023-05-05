@@ -275,9 +275,10 @@ class RondeListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.check_required(data.get("name"), "name")
+        handler.check_not_blank_required(data.get("name"), "name")
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
+        handler.check_not_blank_required(data.get("buildings"), "buildings")
         # TODO fix building list check
         handler.check()
         return super().post(request, *args, **kwargs)
