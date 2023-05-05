@@ -9,15 +9,16 @@
         <v-text-field
           v-model="email"
           label="e-mail"
+          :error-messages="check_errors('email')"
         ></v-text-field>
         <v-text-field
           v-model="password"
+          :error-messages="check_errors('password')"
           :append-inner-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append-inner="() => (value = !value)"
           :type="value ? 'password' : 'text'"
           label="Wachtwoord"
         ></v-text-field>
-        <div v-if="error !== ''" class="text-red">{{ error.message }}</div>
         <router-link to="/forgot">Wachtwoord vergeten?</router-link>
         <normal-button text="Login" v-bind:parent-function="login" block class="mt-2"></normal-button>
       </v-form>
@@ -30,14 +31,12 @@
 </template>
 
 <script>
-import { ErrorHandler } from '@/api/error/ErrorHandler'
 import AuthService from '@/api/services/AuthService'
 import router from '@/router'
 import { defineComponent } from 'vue'
 import NormalButton from '@/components/NormalButton'
 import LoginTopBar from "@/components/LoginTopBar.vue";
 
-// TODO input error handling
 
 export default defineComponent({
   name: 'LoginView',
@@ -45,9 +44,9 @@ export default defineComponent({
     email: '',
     value: 'password',
     password: '',
-    error: '',
     prevRoute: '/',
-    smallScreen: false
+    smallScreen: false,
+    errors: null
   }),
   components: {
     NormalButton,
@@ -71,37 +70,39 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-     login() {
-       AuthService.login({ email: this.email, password: this.password })
-        .then(
-          async () => {
-
-            // Send confirmation message.
-            this.$store.dispatch("snackbar/open", {
-              message: "U bent ingelogd",
-              color: "success"
-            });
-
-            // Update the current user inside the store.
-            await this.$store.dispatch("session/clear");
-            await this.$store.dispatch("session/fetch");
-
-            await router.push({ name: 'home' });
-          }
-        ).catch((error) => {
-          ErrorHandler.handle(
-            error,
-            {
-              id: "login",
-              style: "SNACKBAR"
-            },
-            this.fields
-          );
-      })
+    check_errors(fieldname) {
+      if (this.errors === null) return "";
+      for (const error of this.errors) {
+        if (error.field === fieldname) {
+          return error.message;
+        }
+      }
+      return "";
     },
-    onResize() {
-      this.smallScreen = window.innerWidth < 600
-    }
-  }
+    login() {
+      AuthService.login({ email: this.email, password: this.password })
+       .then(
+         async () => {
+
+           // Send confirmation message.
+           this.$store.dispatch("snackbar/open", {
+             message: "U bent ingelogd",
+             color: "success"
+           });
+
+           // Update the current user inside the store.
+           await this.$store.dispatch("session/clear");
+           await this.$store.dispatch("session/fetch");
+
+           await router.push({ name: 'home' });
+         }
+       ).catch(async (error) => {
+        this.errors = error.json ? await error.json().then(res => res.errors).catch(() => null) : null;
+     })
+   },
+   onResize() {
+     this.smallScreen = window.innerWidth < 600
+   }
+ }
 })
 </script>

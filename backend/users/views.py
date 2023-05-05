@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from .models import User
 from exceptions.exceptionHandler import ExceptionHandler
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, \
     StudentPermission
@@ -48,9 +48,16 @@ def user_view(request):
 def login_view(request):
     data = request.data
     response = Response()
-    username = data.get('email', None)
+    email = data.get('email', None)
     password = data.get('password', None)
-    user = authenticate(username=username, password=password)
+
+    handler = ExceptionHandler()
+    handler.check_not_blank_required(email, "email")
+    handler.check_not_blank_required(password, "password")
+    handler.check_email(email, User)
+    handler.check()
+
+    user = authenticate(username=email, password=password)
     if user is not None:
         if user.is_active:
             login(request, user)
@@ -80,8 +87,8 @@ def login_view(request):
             return Response({"No active": "This account is not active!!"},
                             status=status.HTTP_404_NOT_FOUND)
     else:
-        return Response({"Invalid": "Invalid username or password!!"},
-                        status=status.HTTP_404_NOT_FOUND)
+        return Response({"errors": [{"message": "Verkeerd wachtwoord.", "field": "password"}]},
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
