@@ -7,8 +7,6 @@ describe('CreateEditMailTemplate.vue', () => {
   let wrapper;
 
   beforeEach(() => {
-    CreateEditMailTemplate.methods.createTemplate = jest.fn()
-    CreateEditMailTemplate.methods.editTemplate = jest.fn()
     wrapper = mount(CreateEditMailTemplate)
   })
 
@@ -48,6 +46,8 @@ describe('CreateEditMailTemplate.vue', () => {
   });
 
   it('test if createTemplate is called when the create button is clicked', async () => {
+    CreateEditMailTemplate.methods.createTemplate = jest.fn()
+    const wrapper = mount(CreateEditMailTemplate)
     await wrapper.setData({template: {name: 'test', text: 'Dit is een test mail template #test#'}})
     await wrapper.vm.$nextTick();
 
@@ -60,6 +60,8 @@ describe('CreateEditMailTemplate.vue', () => {
   });
 
   it('test if editTemplate is called when the edit button is clicked', async () => {
+    CreateEditMailTemplate.methods.editTemplate = jest.fn()
+    const wrapper = mount(CreateEditMailTemplate)
     await wrapper.setProps({edit: true})
     await wrapper.setData({template: {name: 'test', text: 'Dit is een test mail template #test#'}})
     await wrapper.vm.$nextTick();
