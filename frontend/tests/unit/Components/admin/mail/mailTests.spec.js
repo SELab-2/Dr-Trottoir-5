@@ -1,25 +1,16 @@
-import {EchoPromise} from "@/api/EchoFetch";
-
-const nock = require('nock')
 import {mount} from '@vue/test-utils'
 import CreateEditMailTemplate from '@/components/admin/mail/CreateEditMailTemplate.vue'
-import MailTemplateService from "@/api/services/MailTemplateService";
 
-const MOCK_SERVER_URL = "http://localhost:8000/api";
 
 describe('CreateEditMailTemplate.vue', () => {
 
   let wrapper;
 
-
   beforeEach(() => {
-    wrapper = mount(CreateEditMailTemplate);
-  });
-
-  afterEach(() => {
-  nock.cleanAll();
-});
-
+    CreateEditMailTemplate.methods.createTemplate = jest.fn()
+    CreateEditMailTemplate.methods.editTemplate = jest.fn()
+    wrapper = mount(CreateEditMailTemplate)
+  })
 
   it('renders the component', () => {
     expect(wrapper.exists()).toBe(true);
@@ -30,7 +21,7 @@ describe('CreateEditMailTemplate.vue', () => {
   })
 
   it('Render title edit', async () => {
-    wrapper.setProps({edit: true})
+    await wrapper.setProps({edit: true})
     await wrapper.vm.$nextTick()
     expect(wrapper.find('h1').text()).toMatch('Mail template aanpassen')
   })
@@ -56,24 +47,30 @@ describe('CreateEditMailTemplate.vue', () => {
     expect(wrapper.vm.showDialog).toBe(true);
   });
 
+  it('test if createTemplate is called when the create button is clicked', async () => {
+    await wrapper.setData({template: {name: 'test', text: 'Dit is een test mail template #test#'}})
+    await wrapper.vm.$nextTick();
 
-  it('calls createMailTemplate with the correct parameters', async () => {
-    const scope = nock(MOCK_SERVER_URL)
-    .post('/mailtemplates/')
-    .reply(200, { success: true });
-  wrapper.setData({
-    template: {
-      name: 'Test template',
-      text: 'Hello #name#, this is a test email for #purpose#.'
-    }
-  })
+    const saveButton = wrapper.find('[data-test="create-button"]');
+    await saveButton.trigger('click');
+    await wrapper.vm.$nextTick();
 
-  const createButton = wrapper.find('[data-test="create-button"]');
-  await wrapper.vm.$nextTick();
-  createButton.trigger('click');
 
-  expect(scope.isDone()).toBe(true);
-})
+    expect(CreateEditMailTemplate.methods.createTemplate).toHaveBeenCalled();
+  });
+
+  it('test if editTemplate is called when the edit button is clicked', async () => {
+    await wrapper.setProps({edit: true})
+    await wrapper.setData({template: {name: 'test', text: 'Dit is een test mail template #test#'}})
+    await wrapper.vm.$nextTick();
+
+    const saveButton = wrapper.find('[data-test="edit-button"]');
+    await saveButton.trigger('click');
+    await wrapper.vm.$nextTick();
+
+
+    expect(CreateEditMailTemplate.methods.editTemplate).toHaveBeenCalled();
+  });
 
 
 })
