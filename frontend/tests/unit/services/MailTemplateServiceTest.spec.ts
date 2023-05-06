@@ -1,6 +1,7 @@
 import nock from "nock";
 import MailTemplateService from "@/api/services/MailTemplateService";
 import MailTemplate from "@/api/models/MailTemplate";
+import {InputFields} from "@/types/fields/InputFields";
 
 const MOCK_SERVER_URL = "http://localhost:8000/api";
 
@@ -24,7 +25,7 @@ describe('MailTemplateService', () => {
       .reply(200, expectedResponse);
 
     const service = MailTemplateService;
-    const response = await service.createMailTemplate(template);
+    const response = await service.createMailTemplate("name");
 
     expect(response).toEqual(expectedResponse);
     expect(scope.isDone()).toBeTruthy();
