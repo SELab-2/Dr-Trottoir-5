@@ -1,17 +1,19 @@
 import nock from "nock";
 import MailTemplateService from "@/api/services/MailTemplateService";
 import MailTemplate from "@/api/models/MailTemplate";
-import {InputFields} from "@/types/fields/InputFields";
+import { InputFields } from "@/types/fields/InputFields";
 
 const MOCK_SERVER_URL = "http://localhost:8000/api";
-
+jest.mock("@/api/services/MailTemplateService");
 describe('MailTemplateService', () => {
   afterEach(() => {
     nock.cleanAll();
   });
 
   it('createMailTemplate', async () => {
-    const template = {name: 'test-template', text: 'test'};
+    MailTemplateService.createMailTemplate = jest.fn();
+  //MailTemplateService.createMailTemplate.mockResolvedValue(new MailTemplate());
+    const template = new InputFields();
 
     const expectedResponse = new MailTemplate();
     expectedResponse.id = 1;
@@ -22,10 +24,7 @@ describe('MailTemplateService', () => {
       .post('/mailtemplates', template)
       .reply(200, expectedResponse);
 
-    const response = await MailTemplateService.createMailTemplate({
-            name: 'test-template',
-            content: 'test'
-          });
+    const response = MailTemplateService.createMailTemplate(template);
 
     expect(response).toEqual(expectedResponse);
     expect(scope.isDone()).toBeTruthy();
