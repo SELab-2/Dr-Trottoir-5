@@ -24,17 +24,19 @@ describe('CreateEditMailTemplate.vue', () => {
     expect(wrapper.find('h1').text()).toMatch('Mail template aanpassen')
   })
 
-  it('sets the v-model of v-text-field for the name of the mail template', () => {
+  it('sets the v-model of v-text-field for the name of the mail template', async () => {
     const textField = wrapper.find('v-text-field')
     textField.element.value = 'test';
     textField.trigger('input');
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.template.name).toBe('test');
   })
 
-  it('sets the v-model of v-textarea for the text of the mail template', () => {
+  it('sets the v-model of v-textarea for the text of the mail template', async () => {
     const textArea = wrapper.find('v-textarea')
     textArea.element.value = 'Dit is een test mail template #test#';
     textArea.trigger('input');
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.template.text).toBe('Dit is een test mail template #test#');
   })
 
