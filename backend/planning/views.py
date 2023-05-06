@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotFound
 from rest_framework import generics
-from rest_framework.serializers import ValidationError
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 
 from exceptions.exceptionHandler import ExceptionHandler
 from pickupdays.models import WeekDayEnum
@@ -12,14 +11,15 @@ from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
-
 from .util import *
 
 
-@api_view(["GET"])
-@permission_classes([StudentPermission])
-def student_dayplan(request, year, week, day):
-    if request.method == "GET":
+class StudentDayPlan(generics.RetrieveAPIView):
+    permission_classes = [StudentPermission]
+    def get(self, request, *args, **kwargs):
+        year = kwargs["year"]
+        week = kwargs["week"]
+        day = kwargs["day"]
         if day < 0 or day > 6:
             raise ValidationError({
                 "errors": [
@@ -42,6 +42,7 @@ def student_dayplan(request, year, week, day):
 
         data = DagPlanningSerializerFull(dayplan).data
         return Response(data)
+
 
 
 class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):

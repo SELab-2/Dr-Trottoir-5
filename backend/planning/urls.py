@@ -9,9 +9,9 @@ urlpatterns = [
     path("infoperbuilding/<int:pk>/", views.InfoPerBuildingRUDAPIView.as_view()),
 
     path("weekplanning/<int:year>/<int:week>/", views.WeekplanningView.as_view()),
-    # path("weekplanning/<int:year>/<int:week>/", views.week_planning_view),
 
-    path("dagplanning/<int:year>/<int:week>/<int:day>/", views.student_dayplan),
+    path("dagplanning/<int:year>/<int:week>/<int:day>/",
+         views.StudentDayPlan.as_view()),
     path("dagplanning/<int:pk>/", views.DagPlanningRetrieveUpdateAPIView.as_view()),
 
     path("studenttemplates/rondes/<int:year>/<int:week>/<int:day>/<int"
@@ -28,5 +28,4 @@ urlpatterns = [
     path("studenttemplates/<int:template_id>/dagplanningen/<int:dag_id"
          ">/eenmalig/", views.DagPlanningView.as_view(),
          {'permanent': False})
-
 ]
