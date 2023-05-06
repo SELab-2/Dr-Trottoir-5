@@ -117,7 +117,7 @@ export default {
             message: "Mail template toegevoegd",
             color: "success"
           })
-      router.push({name: 'mailtemplates'})
+      router.push({name: 'mailtemplates'});
       })
     },
     editTemplate: function () {
@@ -145,7 +145,7 @@ export default {
           message: "Mail template aangepast",
           color: "success"
         })
-        router.push({name: 'mailtemplates' })
+        router.push({name: 'mailtemplates' });
       })
     },
     closeDialog: function () {
