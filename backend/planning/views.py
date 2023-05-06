@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotFound
 from rest_framework import generics
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
@@ -119,7 +118,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-    generics.RetrieveUpdateDestroyAPIView):
+        generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [
@@ -400,7 +399,7 @@ class StudentTemplateView(generics.RetrieveAPIView, generics.CreateAPIView):
         return Response({"message": "Success", "new_id": new_template.id})
 
 
-class StudentTemplateView(generics.RetrieveUpdateDestroyAPIView):
+class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get(self, request, *args, **kwargs):
         """
