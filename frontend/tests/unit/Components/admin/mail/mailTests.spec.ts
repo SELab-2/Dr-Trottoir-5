@@ -1,10 +1,12 @@
+import {EchoPromise} from "@/api/EchoFetch";
+
+const nock = require('nock')
 import {mount} from '@vue/test-utils'
 import CreateEditMailTemplate from '@/components/admin/mail/CreateEditMailTemplate.vue'
 import MailTemplateService from "@/api/services/MailTemplateService";
-import {RequestHandler} from "@/api/RequestHandler";
 
-jest.mock('@/api/services/MailTemplateService');
-jest.mock("@/api/RequestHandler");
+const MOCK_SERVER_URL = "http://localhost:8000/api";
+
 describe('CreateEditMailTemplate.vue', () => {
 
   let wrapper;
@@ -15,8 +17,8 @@ describe('CreateEditMailTemplate.vue', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks()
-  })
+  nock.cleanAll();
+});
 
 
   it('renders the component', () => {
@@ -56,29 +58,22 @@ describe('CreateEditMailTemplate.vue', () => {
 
 
   it('calls createMailTemplate with the correct parameters', async () => {
-    const wrapper = mount(CreateEditMailTemplate, {
-      propsData: {
-        edit: false
-      }
-    })
-
-    wrapper.setData({
-      template: {
-        name: 'Test template',
-        text: 'Hello #name#, this is a test email for #purpose#.'
-      }
-    })
-    RequestHandler.handle.mockResolvedValue(Promise.resolve());
-
-    const createButton = wrapper.find('[data-test="create-button"]');
-    await wrapper.vm.$nextTick();
-    createButton.trigger('click');
-
-    expect(MailTemplateService.createMailTemplate).toHaveBeenCalledWith({
+    const scope = nock(MOCK_SERVER_URL)
+    .post('/mailtemplates/')
+    .reply(200, { success: true });
+  wrapper.setData({
+    template: {
       name: 'Test template',
-      content: 'Hello #name#, this is a test email for #purpose#.'
-    })
+      text: 'Hello #name#, this is a test email for #purpose#.'
+    }
   })
+
+  const createButton = wrapper.find('[data-test="create-button"]');
+  await wrapper.vm.$nextTick();
+  createButton.trigger('click');
+
+  expect(scope.isDone()).toBe(true);
+})
 
 
 })
