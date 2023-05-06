@@ -30,6 +30,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
 import router from "@/router";
 import {DatePicker} from "v-calendar";
+import PlanningService from "@/api/services/PlanningService";
 
 export default {
   name: "BuildingFollowUp",
@@ -49,10 +50,15 @@ export default {
 
   beforeMount() {
     this.getBuildingInformation()
+    this.getStudentPosts()
     RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
       .then(async result => this.buildings = result)
   },
   methods: {
+    changed() {
+      console.log(this.date)
+      this.getStudentPosts()
+    },
     getBuildingInformation() {
       RequestHandler.handle(BuildingService.getBuildingById(this.$route.params.id), {
         id: 'getBuildingError',
@@ -80,6 +86,11 @@ export default {
     },
     buildingChange(building) {
       router.push({name: "admin_info_building", params: {id: building.id}})
+    },
+    getStudentPosts(){
+      console.log(this.date)
+      RequestHandler.handle(PlanningService.getInfoFromBuilding(this.$route.params.id, this.date))
+        .then(async result => console.log(result))
     }
   }
 }

@@ -12,6 +12,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
 
 from .util import *
+from ronde.models import Building
 
 
 @api_view(["GET"])
@@ -231,10 +232,16 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
         dagPlanning = request.query_params[
             'dagPlanning'] if 'dagPlanning' in request.query_params else None
 
+        building = request.query_params[
+            'building'] if 'building' in request.query_params else None
+
+        date = request.query_params[
+            'date'] if 'date' in request.query_params else None
+
         if dagPlanning is not None:
             try:
                 DagPlanning.objects.get(pk=dagPlanning)
-                self.queryset = InfoPerBuilding.objects.filter(
+                self.queryset = self.queryset.filter(
                     dagPlanning=dagPlanning)
             except Exception:
                 raise serializers.ValidationError(
@@ -246,6 +253,39 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
                             }
                         ]
                     }, code='invalid')
+
+        if building is not None:
+            try:
+                Building.objects.get(pk=building)
+                self.queryset = self.queryset.filter(
+                    building=building)
+            except Exception:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db",
+                                "field": "building"
+                            }
+                        ]
+                    }
+                )
+
+        if date is not None:
+            try:
+                self.queryset = self.queryset.filter(
+                    date=date)
+            except Exception:
+                raise serializers.ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "No right time in info per building",
+                                "field": "date"
+                            }
+                        ]
+                    }
+                )
 
         return super().get(request=request, args=args, kwargs=kwargs)
 

@@ -50,6 +50,15 @@ class PlanningService extends EchoService {
   }
 
   /**
+   * Get building info for a building and date
+   */
+  @GET("/infoperbuilding/")
+  getInfoFromBuilding(@Query('building') building: number, @Query('date') date: string): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>;
+  }
+
+
+  /**
    * Get student images for building info
    */
   @GET("/buildingpicture/")

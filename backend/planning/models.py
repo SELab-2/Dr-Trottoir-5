@@ -6,6 +6,7 @@ from trashtemplates.models import TrashContainerTemplate, Status
 from pickupdays.models import PickUpDay
 from ronde.models import LocatieEnum, Building
 
+
 class DagPlanning(models.Model):
     """
     The planning for one Ronde on a specific day
