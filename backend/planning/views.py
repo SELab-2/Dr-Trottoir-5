@@ -16,6 +16,7 @@ from .util import *
 
 class StudentDayPlan(generics.RetrieveAPIView):
     permission_classes = [StudentPermission]
+
     def get(self, request, *args, **kwargs):
         year = kwargs["year"]
         week = kwargs["week"]
@@ -42,7 +43,6 @@ class StudentDayPlan(generics.RetrieveAPIView):
 
         data = DagPlanningSerializerFull(dayplan).data
         return Response(data)
-
 
 
 class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
