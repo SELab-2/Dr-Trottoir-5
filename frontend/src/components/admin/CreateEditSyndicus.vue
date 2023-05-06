@@ -61,6 +61,7 @@ import UserService from "@/api/services/UserService";
 import BuildingService from "@/api/services/BuildingService";
 import LocationService from "@/api/services/LocationService";
 import AuthService from "@/api/services/AuthService";
+import router from "@/router";
 
 export default {
   name: 'CreateEditSyndicus',
@@ -136,7 +137,7 @@ export default {
           }
         ]
       })
-      await this.$router.back()
+      await router.push({name: 'syndici'})
     },
     async editSyndicus() {
       /**
@@ -158,7 +159,7 @@ export default {
           await this.update(building_id, syndicus)
         }
       }
-      await this.$router.back()
+      await router.push({name: 'syndici'})
     },
     updateBuilding() {
       /**

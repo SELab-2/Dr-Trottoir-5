@@ -3,7 +3,7 @@
     <div class="text-h4 text-md-h2 text-lg-h1">
       Template
     </div>
-    <v-btn :to="'/studenttemplates/'" variant="outlined" >
+    <v-btn :to="{name: 'studenttemplates'}" variant="outlined" >
         Terug
     </v-btn>
   </v-row>

@@ -78,7 +78,8 @@ export default {
       // TODO
     },
     goToBuildingPage: function () {
-      router.push({ path: '/building/' + this.data.id });
+      // TODO Check if correct id with data because now it's with this.building
+      router.push({name: 'admin_info_building', params: {id: this.building.id}});
     }
   },
   mounted() {

@@ -2,7 +2,7 @@
   <v-container align="center">
     <v-card height="auto" max-width="750px">
       <v-card-title class="mt-2">
-        <h1>Planning</h1>
+        <h4 class="text-h4">Planning</h4>
       </v-card-title>
       <v-card-text class="mt-8 mb-6">
         <DatePicker v-model.string="date" :masks="masks" color="yellow" :is-dark="true" :is-required="true" view="weekly"
@@ -30,7 +30,7 @@ export default defineComponent({
   },
   methods: {
     selectDay() {
-      router.push({ path: '/dagplanning', query: { date: this.date } });
+      router.push({ name: 'dagplanning', query: { date: this.date } });
     }
   },
   data: () => {
