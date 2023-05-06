@@ -46,6 +46,7 @@ it displays the information of one round so that a list of round views can easil
 import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
 import router from "@/router";
+import {getWeek} from "@/api/DateUtil";
 
 export default {
   name: "RoundViewCard",
@@ -79,21 +80,11 @@ export default {
     info() {
       router.push({name: 'adminRoundView', query: {planning: this.data.round.id, date: this.data.date}});
     },
-    getWeek(d) {
-      const date = new Date(d);
-      date.setHours(0, 0, 0, 0);
-      // Thursday in current week decides the year.
-      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-      // January 4 is always in week 1.
-      const week1 = new Date(date.getFullYear(), 0, 4);
-      // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-    },
     getStatus() {
       const date = new Date(this.data.date);
       this.percentage = 0;
 
-      RequestHandler.handle(PlanningService.getStatus(date.getFullYear(), this.getWeek(date), this.data.round.id), {
+      RequestHandler.handle(PlanningService.getStatus(date.getFullYear(), getWeek(date), this.data.round.id), {
         id: `getStatus${this.data.round.id}Error`,
         style: "NONE"
       }).then(statuses => {

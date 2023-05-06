@@ -45,6 +45,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton.vue";
 import FollowUpRoundBuildingCard from "@/components/admin/FollowUpRoundBuildingCard.vue";
+import {getWeek} from "@/api/DateUtil";
 
 export default {
   name: "AdminRoundView",
@@ -58,18 +59,6 @@ export default {
     template: null,
     status: "Niet voltooid"
   }),
-  methods: {
-    getWeek(d) {
-      const date = new Date(d);
-      date.setHours(0, 0, 0, 0);
-      // Thursday in current week decides the year.
-      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-      // January 4 is always in week 1.
-      const week1 = new Date(date.getFullYear(), 0, 4);
-      // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-    }
-  },
   created() {
     if ('date' in this.$route.query) this.date = new Date(this.$route.query.date);
     this.dateString = this.date.toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'});
@@ -85,7 +74,7 @@ export default {
       }).then(t => this.template = t.template_id).catch(() => null);
 
       RequestHandler.handle(PlanningService.getStatusPictures(this.date.getFullYear(),
-        this.getWeek(this.date), this.$route.query.planning), {
+        getWeek(this.date), this.$route.query.planning), {
         id: `getPicturesError`,
         style: "SNACKBAR"
       }).then(pictures => {

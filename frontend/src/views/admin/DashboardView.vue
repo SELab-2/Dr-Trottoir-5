@@ -52,6 +52,8 @@ import RoundViewCard from "@/components/admin/RoundViewCard.vue";
 import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton.vue";
 import router from "@/router";
+import {getWeek} from "@/api/DateUtil";
+
 export default {
   name: "DashboardView",
   components: {NormalButton, RoundViewCard, DatePicker},
@@ -71,7 +73,7 @@ export default {
     },
     changed() {
       const date = new Date(this.date);
-      const week = this.getWeek(this.date);
+      const week = getWeek(this.date);
 
       RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',

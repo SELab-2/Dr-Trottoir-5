@@ -30,6 +30,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton.vue";
 import router from '@/router';
+import {getWeek} from "@/api/DateUtil";
 
 export default defineComponent({
   name: "DayPlanView",
@@ -42,7 +43,7 @@ export default defineComponent({
     this.time = this.capitalize(new Date(this.date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
     const date = new Date(this.date);
     this.year = date.getFullYear();
-    this.week = this.getWeek(date);
+    this.week = getWeek(date);
 
     RequestHandler.handle(PlanningService.get(this.year, this.week, date.getUTCDay()), {
       id: "getDayplanningError",
@@ -68,16 +69,6 @@ export default defineComponent({
     },
     goBack() {
       router.go(-1);
-    },
-    getWeek(d) {
-      const date = new Date(d);
-      date.setHours(0, 0, 0, 0);
-      // Thursday in current week decides the year.
-      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-      // January 4 is always in week 1.
-      const week1 = new Date(date.getFullYear(), 0, 4);
-      // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
     }
   },
   data: () => ({
