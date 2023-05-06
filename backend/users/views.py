@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login, get_user_model, logout
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.middleware import csrf
 from rest_framework import serializers, generics
@@ -11,8 +10,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from exceptions.exceptionHandler import ExceptionHandler
-from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, \
-    StudentPermission
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
 
@@ -264,74 +262,26 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [AdminPermission | SuperstudentPermission]
 
-    def get(self, request, *args, **kwargs):
-        id = self.kwargs['pk']
-        try:
-            user = get_user_model().objects.get(id=id)
-            return Response(UserSerializer(user).data)
-        except ObjectDoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced user not in db", "field": "token"
-                        }
-                    ]
-                }, code='invalid')
+    def patch(self, request, *args, **kwargs):
+        data = request.data
 
-    def partial_update(self, request, *args, **kwargs):
-        id = self.kwargs['pk']
-        try:
-            user = get_user_model().objects.get(id=id)
-            serializer = UserSerializer(user, data=request.data, partial=True)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-            return Response({"succes": ["Updated user"]})
-        except ObjectDoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced user not in db", "field": "token"
-                        }
-                    ]
-                }, code='invalid')
+        id = kwargs['pk']
+        handler = ExceptionHandler()
+        handler.check_primary_key(id, 'id', User)
+        handler.check_not_blank(data.get("email"), "email")
+        handler.check_not_blank(data.get("first_name"), "firstname")
+        handler.check_not_blank(data.get("last_name"), "lastname")
+        handler.check_not_blank(data.get("password"), "password")
+        handler.check_integer(data.get("phone_nr"), "phone_nr")
+        handler.check()
 
+        user = User.objects.get(id=id)
 
-class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [
-        ReadOnly | StudentPermission | AdminPermission | SuperstudentPermission]
-
-    def get(self, request, *args, **kwargs):
-        try:
-            user = get_user_model().objects.get(username=request.user)
-            return Response(UserSerializer(user).data)
-        except ObjectDoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced user not in db",
-                            "field": "token"
-                        }
-                    ]
-                }, code='invalid')
-
-    def partial_update(self, request, *args, **kwargs):
-        try:
-            user = get_user_model().objects.get(username=request.user)
-            serializer = UserSerializer(user, data=request.data, partial=True)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-            return Response({"succes": ["Updated user"]})
-        except ObjectDoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced user not in db",
-                            "field": "token"
-                        }
-                    ]
-                }, code='invalid')
+        if user.email != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
+            raise serializers.ValidationError({
+                "errors": [{
+                    "message": "Dit email adres is al in gebruik.",
+                    "field": "email"
+                }]
+            })
+        return super().patch(request, *args, **kwargs)

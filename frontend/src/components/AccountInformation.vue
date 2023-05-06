@@ -10,7 +10,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.first_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model:model-value="first_name" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -19,7 +19,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.last_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model:model-value="last_name" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.email" :readonly="!edit" variant="outlined"
+        <v-text-field v-model:model-value="email" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -38,7 +38,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.phone_nr" :readonly="!edit" variant="outlined"
+        <v-text-field v-model:model-value="phone_nr" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -46,7 +46,7 @@
         <h1>Rol</h1>
       </v-col>
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pb-10">
-        <v-select variant="outlined" :items="roles" item-title="name" item-value="value" v-model:model-value="data.role"
+        <v-select variant="outlined" :items="roles" item-title="name" item-value="value" v-model:model-value="role"
                   :readonly="!edit || not_admin"
                   style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-select>
@@ -83,56 +83,56 @@
 <script>
 import NormalButton from '@/components/NormalButton'
 import ConfirmDialog from '@/components/util/ConfirmDialog'
+import UserService from "@/api/services/UserService";
+import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: 'AccountInformation',
   components: {ConfirmDialog, NormalButton},
   props: {
-    get_data: {
-      type: Function, default: () => {
-      }
-    },
-    save_data: {
-      type: Function, default: () => {
-      }
-    },
-    delete_current: {
-      type: Function, default: () => {
-
-      }
-    },
     not_admin: {type: Boolean, default: true},
     can_edit_permission: {type: Boolean, default: true}
   },
-  data: () => {
-    return {
-      data: {
-        type: Object,
-        default: () => ({
-          first_name: '',
-          last_name: '',
-          email: '',
-          phone_nr: '',
-          role: '',
-          rondes: []
-        })
-      },
-      roles: [
+  data: () => ({
+    user: null,
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone_nr: '',
+    role: '',
+    rondes: [],
+    roles: [
         {name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
         {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'},
-        {name: 'Syndicus', value: 'SY'}],
-      edit: false,
-      smallScreen: false,
-      can_edit_permission: true
-    }
-  },
+        {name: 'Syndicus', value: 'SY'}
+    ],
+    edit: false,
+    smallScreen: false,
+    can_edit_permission: true,
+    errors: null
+  }),
   async beforeMount() {
-    this.data = await this.get_data()
+    let id = this.$route.params.id
+
     const currentUser = await this.$store.getters['session/currentUser']
+    this.user = currentUser
+
+    if(id) {
+      UserService.getUserById(id)
+        .then(data => {this.user = data})
+        .catch(async (error) => {this.errors = await get_errors(error)});
+    }
+
+    this.first_name = this.user.first_name
+    this.last_name = this.user.last_name
+    this.email = this.user.email
+    this.phone_nr = this.user.phone_nr
+    this.role = this.user.role
+
     if (!this.not_admin) {
       const currentUserRole = currentUser.role
       if (currentUserRole === 'SU') {
-        if (this.data.role === 'AD') {
+        if (this.role === 'AD') {
           this.can_edit_permission = false
         } else {
           this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
@@ -154,14 +154,28 @@ export default {
   methods: {
     async cancel_save() {
       this.edit = !this.edit
-      this.data = await this.get_data()
-    }
-    ,
+
+      this.first_name = this.user.first_name
+      this.last_name = this.user.last_name
+      this.email = this.user.email
+      this.phone_nr = this.user.phone_nr
+      this.role = this.user.role
+    },
     async save() {
       this.edit = !this.edit
-      await this.save_data(this.data)
-    }
-    ,
+      UserService.update({
+        first_name: this.first_name,
+        last_name: this.last_name,
+        email: this.email,
+        role: this.role,
+        phone_nr: this.phone_nr
+      }).then(() => {})
+        .catch(async (error) => this.errors = await get_errors(error));
+    },
+    delete_current() {
+      UserService.deleteUserById(this.id)
+      this.$router.push({name: 'admin_user_register'})
+    },
     onResize() {
       this.smallScreen = window.innerWidth < 500
     }
