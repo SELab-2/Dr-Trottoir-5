@@ -81,7 +81,10 @@ export default {
       }
 
       StudentTemplateService.addStudentTemplate(body)
-        .then(response => router.push({name: 'studenttemplates', params: {id: response["new_id"]}}))
+        .then(response => {
+          this.errors = null;
+          router.push({name: 'studenttemplates', params: {id: response["new_id"]}})
+        })
         .catch(async (error) => this.errors = await get_errors(error));
     }
   }
