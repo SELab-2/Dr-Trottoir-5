@@ -35,19 +35,19 @@
         <h2>Naam</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start pt-5">
-        <v-text-field class="text_field" v-model:model-value="name" variant="solo"></v-text-field>
+        <v-text-field class="text_field" v-model:model-value="name" :error-messages="check_errors(this.errors, 'name')" variant="solo"></v-text-field>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
         <h2>Adres</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" v-model:model-value="adres" variant="solo"></v-text-field>
+        <v-text-field class="text_field" v-model:model-value="adres" :error-messages="check_errors(this.errors, 'adres')" variant="solo"></v-text-field>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
         <h2>Klanten nummer</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" v-model:model-value="ivago_klantnr" variant="solo"></v-text-field>
+        <v-text-field class="text_field" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model:model-value="ivago_klantnr" variant="solo"></v-text-field>
       </v-col>
       <!---
         TODO For milestone 3
@@ -73,6 +73,7 @@
       </v-col>
       <v-col md="6" lg="6" class="d-flex justify-start align-center">
         <v-file-input v-model="new_manual" prepend-icon="mdi-file-upload-outline" class="text_field"
+                      :error-messages="check_errors(this.errors, 'manual')"
                       variant="solo"></v-file-input>
       </v-col>
       <v-col class="d-flex justify-center align-center pt-5 pb-10" cols="12" sm="12" md="12" lg="12">
@@ -91,6 +92,7 @@ import BuildingService from "@/api/services/BuildingService";
 import {RequestHandler} from "@/api/RequestHandler";
 import router from "@/router";
 import ConfirmDialog from "@/components/util/ConfirmDialog"
+import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: "AdminBuildingView",
@@ -104,13 +106,15 @@ export default {
       ivago_klantnr: 0,
       // time: 0,  TODO <- milestone 3
       planningen: [],
-      new_manual: null
+      new_manual: null,
+      errors: null
     }
   },
   beforeMount() {
     this.getBuildingInformation()
   },
   methods: {
+    check_errors,
     goEditPage() {
       router.push({name: 'admin_edit_building', params: {id: this.$route.params.id}})
     },
@@ -162,7 +166,7 @@ export default {
         ivago_klantnr: this.ivago_klantnr,
       }
       if (this.new_manual !== null) {
-        await RequestHandler.handle(BuildingService.updateManualFileById(
+          await RequestHandler.handle(BuildingService.updateManualFileById(
           this.manual.id,
           this.new_manual[0], this.new_manual[0].type,
           this.manual.manualStatus), {
@@ -177,11 +181,14 @@ export default {
           style: 'SNACKBAR'
         })
       }
-      await RequestHandler.handle(BuildingService.updateBuildingById(this.$route.params.id, body_building), {
-        id: 'updateBuildingError',
-        style: 'SNACKBAR'
-      })
-      await router.push({name: 'buildings'})
+
+      BuildingService.updateBuildingById(this.$route.params.id, body_building)
+        .then(async () => {
+          this.errors = null;
+          await router.push({name: 'buildings'})
+        })
+        .catch(async (error) => this.errors = await get_errors(error));
+
     },
     async cancel_save() {
       await router.push({name: 'buildings'})

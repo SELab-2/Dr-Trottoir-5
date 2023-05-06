@@ -79,26 +79,6 @@ class ManualRetrieveUpdateDestroyAPIView(
         View that gets, deletes and updates a specific Manual
     """
 
-    def partial_update(self, request, *args, **kwargs):
-        id = self.kwargs['pk']
-        try:
-            manual = Manual.objects.get(id=id)
-            serializer = ManualSerializer(manual, data=request.data,
-                                          partial=True)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-            return Response(serializer.data)
-        except Manual.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced manual not in db",
-                            "field": "id"
-                        }
-                    ]
-                }, code='invalid')
-
     def delete(self, request, *args, **kwargs):
         id = self.kwargs['pk']
         manual = Manual.objects.filter(id=id)
@@ -128,7 +108,7 @@ class ManualRetrieveUpdateDestroyAPIView(
         handler.check_file(data.get("file"), "file", request.FILES)
         handler.check_not_blank(data.get("fileType"), "fileType")
         handler.check_enum_value(data.get("manualStatus"), "manualStatus",
-                                 ManualStatusField.value)
+                                 ManualStatusField.values)
         return super().patch(request, *args, **kwargs)
 
 
@@ -159,26 +139,6 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
-    def partial_update(self, request, *args, **kwargs):
-        id = self.kwargs['pk']
-        try:
-            building = Building.objects.get(id=id)
-            serializer = BuildingSerializer(building, data=request.data,
-                                            partial=True)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-            return Response({"succes": ["Updated building"]})
-        except Building.DoesNotExist:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "referenced building not in db",
-                            "field": "id"
-                        }
-                    ]
-                }, code='invalid')
-
     def put(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
@@ -196,6 +156,7 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         data = request.data
         handler = ExceptionHandler()
         handler.check_not_blank(data.get("adres"), "adres")
+        handler.check_not_blank(data.get("name"), "name")
         handler.check_integer(data.get("ivago_klantnr"), "ivago_klantnr")
         handler.check_primary_key(data.get("manual"), "manual", Manual)
         handler.check_primary_key(data.get("location"), "location",
