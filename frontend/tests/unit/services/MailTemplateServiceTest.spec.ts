@@ -11,9 +11,7 @@ describe('MailTemplateService', () => {
   });
 
   it('createMailTemplate', async () => {
-    const template = new MailTemplate();
-    template.name = 'test-template';
-    template.content = 'test';
+    const template = {name: 'test-template', text: 'test'};
 
     const expectedResponse = new MailTemplate();
     expectedResponse.id = 1;
@@ -24,8 +22,10 @@ describe('MailTemplateService', () => {
       .post('/mailtemplates', template)
       .reply(200, expectedResponse);
 
-    const service = MailTemplateService;
-    const response = await service.createMailTemplate("name");
+    const response = await MailTemplateService.createMailTemplate({
+            name: 'test-template',
+            content: 'test'
+          });
 
     expect(response).toEqual(expectedResponse);
     expect(scope.isDone()).toBeTruthy();
