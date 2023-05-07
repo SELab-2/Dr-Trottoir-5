@@ -123,23 +123,11 @@ export default {
         style: "SNACKBAR"
       }).then(b => b).catch(() => null);
 
-      RequestHandler.handle(PlanningService.getPlanning(this.data.planning), {
-        id: "getDayplanningError",
-        style: "NONE"
-      }).then(async planning => {
-        const building_index = planning.ronde.buildings.findIndex(b => b.id == this.data.building_id);
-        planning.status[building_index] = this.data.type === 'Vertrek' ? 'FI' : 'ST';
-        await RequestHandler.handle(PlanningService.updatePlanningStatus(this.data.planning, {status: planning.status}), {
-          id: 'updatePlanningError',
-          style: 'NONE'
-        }).then(() => {}).catch(() => null);
+      this.imageUrl = '';
+      input.value = '';
+      input.remove();
 
-        this.imageUrl = '';
-        input.value = '';
-        input.remove();
-
-        router.go(-1);
-      }).catch(() => null);
+      router.go(-1);
     },
     async editData() {
       if (!this.imageCheck()) return;
@@ -168,11 +156,11 @@ export default {
           id: "editImageError",
           style: "SNACKBAR"
         }).then(b => b).catch(() => null);
-        this.imageUrl = '';
-        input.value = '';
-        input.remove();
       }
 
+      this.imageUrl = '';
+      input.value = '';
+      input.remove();
       router.go(-1);
     }
   },

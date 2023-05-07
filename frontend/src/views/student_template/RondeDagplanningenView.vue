@@ -3,8 +3,8 @@
     <div class="text-h4 text-md-h2">
       Alle Dagplanningen
     </div>
-    <v-btn :to="`/studenttemplates/${this.template_id}`" variant="outlined" >
-        Terug
+    <v-btn :to="{name: 'studenttemplate', params: {id: this.template_id}}" variant="outlined">
+      Terug
     </v-btn>
   </v-row>
   <DagPlanningCard @remove="remove_dagplanning" v-for="dagplanning in dagplanningen" :data="{
@@ -19,7 +19,9 @@
   }"></DagPlanningCard>
   <v-row class=" align-center justify-center pb-15">
     <v-col cols="12" sm="3" md="3">
-      <NormalButton v-if="this.status !== 'Vervangen'" text="Nieuwe dagplanning aanmaken" :to="`/studenttemplates/${this.template_id}/rondes/${this.ronde_id}/add`" block></NormalButton>
+      <NormalButton v-if="this.status !== 'Vervangen'" text="Nieuwe dagplanning aanmaken"
+                    :to="{name: 'dagplanning_add', params: {template_id: this.template_id, ronde_id: this.ronde_id}}"
+                    block></NormalButton>
     </v-col>
   </v-row>
 </template>
@@ -59,7 +61,8 @@ export default {
     const template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => {});
+    }).then(result => result).catch(() => {
+    });
     this.status = this.state_mapping[template.status]
 
     this.dagplanningen = await RequestHandler.handle(StudentTemplateService.getDagPlanningen(this.template_id, this.ronde_id), {
@@ -70,7 +73,7 @@ export default {
   },
   methods: {
     async remove_dagplanning(new_template_id) {
-      if(new_template_id === undefined) new_template_id = this.template_id
+      if (new_template_id === undefined) new_template_id = this.template_id
 
       this.template_id = new_template_id
       this.dagplanningen = await RequestHandler.handle(StudentTemplateService.getDagPlanningen(this.template_id, this.ronde_id), {
@@ -78,7 +81,7 @@ export default {
         style: 'SNACKBAR'
       }).then(result => result).catch(() => []);
       this.sort_dagplanning()
-      return await router.replace({path: `/studenttemplates/${this.template_id}/rondes/${this.ronde_id}`})
+      return await router.push({name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}})
     },
     sort_dagplanning() {
       const sorted_dagplanningen = []

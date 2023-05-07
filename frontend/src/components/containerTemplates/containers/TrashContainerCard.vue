@@ -46,7 +46,8 @@ export default {
   methods: {
     editContainer: function () {
       router.push({
-        path: '/trashtemplates/' + this.id + '/containers/' + this.data.extra_id + '/edit'
+        name: 'editTrashtemplateContainers',
+        params: {id: this.id, containerId: this.data.extra_id}
       });
     },
     deleteContainer: function () {

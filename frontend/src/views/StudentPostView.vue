@@ -21,9 +21,12 @@ export default defineComponent({
     if (!('building' in this.$route.query)) return;
     if (!('type' in this.$route.query)) return;
     if (!('planning' in this.$route.query)) return;
+    if (!('year' in this.$route.query)) return;
+    if (!('week' in this.$route.query)) return;
     const typeMap = {Extra: 'EX', Aankomst: 'AR', Vertrek: 'DE', Berging: 'ST'};
     if ('info' in this.$route.query) {
-      const images = await RequestHandler.handle(PlanningService.getPictures(this.$route.query.info), {
+      const images = await RequestHandler.handle(PlanningService.getPictures(this.$route.query.info,
+        this.$route.query.year, this.$route.query.week), {
         id: "getPicturesError",
         style: "NONE"
       }).then(pictures => pictures.filter(p => p.pictureType === typeMap[this.$route.query.type])).catch(() => null);
