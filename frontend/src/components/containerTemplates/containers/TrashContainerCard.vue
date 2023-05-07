@@ -2,7 +2,7 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p class="text-style-title">{{ this.data.trash_container.collection_day.day }}</p>
+        <p>{{ Weekday[weekday_from_api(this.data.trash_container.collection_day.day)] }}</p>
       </v-col>
       <v-col cols="2">
         <p>{{
@@ -10,7 +10,7 @@
           }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ this.data.trash_container.type.toString() }}</p>
+        <p>{{ ContainerType[container_from_api(this.data.trash_container.type)]}}</p>
       </v-col>
       <v-col cols="4"/>
       <v-col class="text-right" cols="1">
@@ -31,19 +31,33 @@
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import router from '@/router'
+import {ContainerType, container_from_api} from "@/api/models/ContainerType";
+import Container from "@/api/models/Container";
+import {Weekday, weekday_from_api} from "@/api/models/Weekday";
 
 export default {
   name: 'TrashContainerCard',
+  computed: {
+    Weekday() {
+      return Weekday
+    },
+    ContainerType() {
+      return ContainerType
+    }
+  },
   components: {EditIcon, DeleteIcon},
   props: {
     data: {
       default: Object(),
+      type: Container
     },
   },
   data: () => ({
     id: null
   }),
   methods: {
+    container_from_api,
+    weekday_from_api,
     editContainer: function () {
       router.push({
         name: 'editTrashtemplateContainers',
@@ -61,8 +75,4 @@ export default {
 </script>
 
 <style scoped>
-.text-style-title {
-  text-decoration-line: underline;
-  cursor: pointer;
-}
 </style>

@@ -8,14 +8,14 @@
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="type"
-            :items="types"
+            :items="types.map(type => ContainerType[type])"
             label="type container"
           ></v-select>
         </v-col>
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="day"
-            :items="days"
+            :items="days.map(day => Weekday[day])"
             label="Dag van de week"
           ></v-select>
         </v-col>
@@ -39,11 +39,19 @@
 import NormalButton from '@/components/NormalButton.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import {ContainerType} from "@/api/models/ContainerType";
-import {Weekday} from "@/api/models/Weekday";
+import {ContainerType, container_to_api} from "@/api/models/ContainerType";
+import {Weekday, weekday_to_api} from "@/api/models/Weekday";
 
 export default {
   name: 'CreateTrashContainerView',
+  computed: {
+    Weekday() {
+      return Weekday
+    },
+    ContainerType() {
+      return ContainerType
+    }
+  },
   components: {NormalButton},
   props: {
     id: Number
@@ -79,9 +87,9 @@ export default {
     createContainer() {
       RequestHandler.handle(
         TrashTemplateService.newContainerToTemplate(this.id, {
-          type: this.type,
+          type: container_to_api(this.type),
           collection_day: {
-            day: this.day,
+            day: weekday_to_api(this.day),
             start_hour: this.start_hour,
             end_hour: this.end_hour
           },

@@ -1,8 +1,8 @@
 <template>
   <ListPage :add-function="addTrashContainerBuilding" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
-            :search="false"
-            :keys="keys" title="Gebouwen voor deze vuilnis planning"/>
+            :keys="keys"
+            :search="false" title="Gebouwen voor deze vuilnis planning"/>
 </template>
 
 <script lang="ts">
@@ -33,7 +33,6 @@ export default {
     }
   },
   async beforeMount() {
-    // TODO Add Manual
     await RequestHandler.handle(TrashTemplateService.getBuildingsOfTemplate(this.id), {
       id: 'getTrashBuildingsListError',
       style: 'SNACKBAR'

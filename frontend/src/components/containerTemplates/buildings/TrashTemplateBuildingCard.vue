@@ -72,23 +72,27 @@ export default {
   data: () => ({
     status: '',
     building: null
+
   }),
   methods: {
     downloadDocument: function () {
-      // TODO
+      window.open(this.manual)
     },
     goToBuildingPage: function () {
-      // TODO Check if correct id with data because now it's with this.building
-      router.push({name: 'admin_info_building', params: {id: this.building.id}});
+      router.push({ name: 'admin_info_building', params: { id: this.building.id } });
     }
   },
   mounted() {
-    this.status = this.building.status
+    this.status = this.building.manual.manualStatus
   },
   async beforeMount() {
     this.building = this.data.building
-    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(
-      async result => this.status = result.manualStatus)
+    await RequestHandler.handle(BuildingService.getManualById(this.building.manual.id)).then(
+      async result => {
+        this.status = result.manualStatus
+        this.manual = result.file.substring(result.file.indexOf('/api/'))
+      }
+    )
   }
 }
 </script>

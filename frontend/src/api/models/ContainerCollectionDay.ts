@@ -1,7 +1,7 @@
 import {Weekday} from "@/api/models/Weekday";
 
 export default class ContainerCollectionDay {
-  day: Weekday
+  day: String
   start_hour: string
   end_hour: string
 }

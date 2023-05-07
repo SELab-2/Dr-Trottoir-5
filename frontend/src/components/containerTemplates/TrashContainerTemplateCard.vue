@@ -61,7 +61,7 @@ export default {
       router.push({
         name: 'editTrashtemplates',
         params: {id: this.data.id}
-        });
+      });
     },
     deleteTemplate: function () {
       //todo

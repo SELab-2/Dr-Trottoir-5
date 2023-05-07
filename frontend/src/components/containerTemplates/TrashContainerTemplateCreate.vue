@@ -26,11 +26,11 @@
           <v-select
             v-model="buildings"
             :items="building_choices"
+            chips="true"
             item-title="name"
             item-value="id"
             label="Kies gebowen"
             multiple="true"
-            chips="true"
           ></v-select>
         </v-col>
       </v-row>

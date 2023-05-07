@@ -8,15 +8,15 @@
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="type"
-            :items="types"
-            label="containerType"
+            :items="types.map(type => ContainerType[type])"
+            label="type container"
           ></v-select>
         </v-col>
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="day"
-            :items="days"
-            label="containerType"
+            :items="days.map(day => Weekday[day])"
+            label="dag van de week"
           ></v-select>
         </v-col>
         <v-col cols="12" md="3" sm="3">
@@ -39,11 +39,19 @@
 import NormalButton from '@/components/NormalButton.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import {ContainerType} from "@/api/models/ContainerType";
-import {Weekday} from "@/api/models/Weekday";
+import {ContainerType, container_to_api, container_from_api} from "@/api/models/ContainerType";
+import {Weekday, weekday_from_api, weekday_to_api} from "@/api/models/Weekday";
 
 export default {
   name: 'CreateTrashContainerView',
+  computed: {
+    Weekday() {
+      return Weekday
+    },
+    ContainerType() {
+      return ContainerType
+    }
+  },
   components: {NormalButton},
   props: {
     id: Number,
@@ -84,8 +92,8 @@ export default {
         style: 'SNACKBAR'
       }
     ).then(result => {
-      this.type = result.trash_container.type
-      this.day = result.trash_container.collection_day.day
+      this.type = ContainerType[container_from_api(result.trash_container.type)]
+      this.day = Weekday[weekday_from_api(result.trash_container.collection_day.day)]
       this.start_hour = result.trash_container.collection_day.start_hour
       this.end_hour = result.trash_container.collection_day.end_hour
     })
@@ -94,9 +102,9 @@ export default {
     editContainer() {
       RequestHandler.handle(
         TrashTemplateService.updateContainerTemplate(this.id, this.$route.params.containerId, {
-          type: this.type,
+          type: container_to_api(this.type),
           collection_day: {
-            day: this.day,
+            day: weekday_to_api(this.day),
             start_hour: this.start_hour,
             end_hour: this.end_hour
           },
