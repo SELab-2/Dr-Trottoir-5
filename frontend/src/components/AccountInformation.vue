@@ -63,16 +63,16 @@
       ---->
       <div v-if="can_edit_permission">
         <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
-          <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
+          <normal-button data-test="edit-button" text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
         </v-col>
         <v-col v-else class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
-          <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
-          <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
+          <normal-button data-test="save-button" text='Aanpassingen opslaan' :parent-function="save"/>
+          <normal-button data-test="cancel-button" text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
         </v-col>
       </div>
       <v-col v-if="!not_admin && can_edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12"
              md="12" lg="12">
-        <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
+        <v-btn data-test="delete-button" @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
       </v-col>
     </v-row>
     <ConfirmDialog text="Bent u zeker dat u deze gebruiker wilt verwijderen?" :confirm_function="delete_current"
@@ -123,7 +123,6 @@ export default {
         {name: 'Syndicus', value: 'SY'}],
       edit: false,
       smallScreen: false,
-      can_edit_permission: true
     }
   },
   async beforeMount() {
