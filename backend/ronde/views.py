@@ -188,7 +188,7 @@ class ManualRetrieveUpdateDestroyAPIView(
         handler.check_file(data.get("file"), "file", request.FILES)
         handler.check_not_blank(data.get("fileType"), "fileType")
         handler.check_enum_value(data.get("manualStatus"), "manualStatus",
-                                 ManualStatusField.value)
+                                 ManualStatusField.values)
         return super().patch(request, *args, **kwargs)
 
 

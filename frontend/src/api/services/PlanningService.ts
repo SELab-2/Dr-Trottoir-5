@@ -18,11 +18,39 @@ class PlanningService extends EchoService {
   /**
    * Get a day planning
    */
-  @GET("/dagplanning/{year}/{week}/{day}")
+  @GET("/dagplanning/{year}/{week}/{day}/")
   get(@Path('year') year: number,
       @Path('week') week: number,
-      @Path('day') day: number): EchoPromise<DayPlanning> {
-    return {} as EchoPromise<DayPlanning>;
+      @Path('day') day: number): EchoPromise<[DayPlanning]> {
+    return {} as EchoPromise<[DayPlanning]>;
+  }
+
+  /**
+   * Get the statuses for a planning
+   */
+  @GET("/dagplanning/{year}/{week}/{id}/status/")
+  getStatus(@Path('year') year: number,
+            @Path('week') week: number,
+            @Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Get the pictures for a planning
+   */
+  @GET("/dagplanning/{year}/{week}/{id}/pictures/")
+  getStatusPictures(@Path('year') year: number,
+                    @Path('week') week: number,
+                    @Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Find the student template for a planning
+   */
+  @GET("/studenttemplates/find/planning/{id}/")
+  findTemplate(@Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
   }
 
   /**
@@ -53,7 +81,9 @@ class PlanningService extends EchoService {
    * Get student images for building info
    */
   @GET("/buildingpicture/")
-  getPictures(@Query('infoPerBuilding') infoPerBuilding: number): EchoPromise<any> {
+  getPictures(@Query('infoPerBuilding') infoPerBuilding: number,
+              @Query('year') year: number,
+              @Query('week') week: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -116,14 +146,6 @@ class PlanningService extends EchoService {
     @FormField("time") time: string,
     @FormField("remark") remark: string
   ): EchoPromise<any> {
-    return {} as EchoPromise<any>;
-  }
-
-  /**
-   * Update planning status
-   */
-  @PATCH("/dagplanning/{id}/")
-  updatePlanningStatus(@Path('id') id: number, @Body() body: PlanningStatusWrapper) {
     return {} as EchoPromise<any>;
   }
 

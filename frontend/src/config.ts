@@ -33,7 +33,7 @@ export default {
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
       'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template-edit', 'admin_info_building',
       'admin_edit_building', 'admin_info_user', 'admin_edit_user', 'admin_user_register', 'syndicus_create', 'syndicus_adjust',
-      'edit_round'
+      'edit_round', 'adminRoundView'
     ]
   }
 };

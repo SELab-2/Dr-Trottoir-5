@@ -45,6 +45,7 @@ import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashC
 import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
+import AdminRoundView from "@/views/admin/AdminRoundView.vue";
 
 const routes = [
   {
@@ -303,6 +304,11 @@ const routes = [
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
     props: true
+  },
+  {
+    path: '/admin/round',
+    name: 'adminRoundView',
+    component: AdminRoundView
   }
 ]
 
