@@ -1,23 +1,12 @@
 import Unauthorized from '../../../src/views/Unauthorized.vue';
 import {shallowMount} from "@vue/test-utils";
 import NormalButton from "@/components/NormalButton.vue";
-import { createRouter, createWebHistory } from 'vue-router';
 
 describe("Unauthorized.vue", () => {
 
   let wrapper;
-  let mockRouter;
 
   beforeEach(() => {
-    mockRouter = createRouter({
-      history: createWebHistory(),
-      routes: [],
-    });
-    mockRouter.back = jest.fn()
-    jest.mock('vue-router', () => ({
-      createRouter: jest.fn(() => mockRouter),
-      createWebHistory: jest.fn()
-    }));
     wrapper = shallowMount(Unauthorized);
   });
 
