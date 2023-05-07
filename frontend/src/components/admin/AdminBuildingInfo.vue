@@ -1,86 +1,49 @@
 <template>
-  <v-card v-if="!edit" color="white" class="mx-auto my-16 w-75">
-    <v-row>
-      <v-col md="12" lg="12" class="d-flex justify-end pl-5 pr-5 pt-5">
-        <v-btn @click="goEditPage" icon="mdi-pencil"></v-btn>
+  <v-card color="white" :class="`mx-auto my-10 py-5 w-75`">
+    <v-row class="justify-space-between mx-auto">
+      <v-col cols='12' sm='6' md='6'>
+        <v-text-field v-model='name' :readonly="!edit" :error-messages="check_errors(this.errors, 'name')" label='Naam' required></v-text-field>
       </v-col>
-      <v-col lg="12" md="12" class="d-flex align-center justify-center">
-        <h2>Gebouw: {{ name }}</h2>
-      </v-col>
-      <v-col md="12" lg="12" class="d-flex align-center justify-center">
-        <h2>Adres: {{ adres }}</h2>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <normal-button text="Handleiding" :parent-function="getManual"></normal-button>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field readonly variant="solo" class="text_field_manaul"
-                      :model-value="manual.manualStatus"></v-text-field>
-      </v-col>
-      <v-col md="12" lg="12" class="d-flex align-center justify-center">
-        <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
-      </v-col>
-      <v-col md="12" lg="12" class="d-flex align-center justify-center">
-        <h2>Vuilnis planning:</h2>
-      </v-col>
-      <!-- TODO Add list of planning cards -->
-      <v-col md="12" lg="12" class="d-flex align-center justify-center pb-10">
-        <normal-button text="Nieuwe ophaling" :parent-function="addPlanning"></normal-button>
+      <v-col cols="12" sm="6" md="6">
+        <v-text-field :readonly="!edit" :error-messages="check_errors(this.errors, 'adres')" v-model="adres" label="Adres"></v-text-field>
       </v-col>
     </v-row>
-  </v-card>
-  <v-card v-else color="white" class="mx-auto my-16 w-75">
-    <v-row>
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <h2>Naam</h2>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-start pt-5">
-        <v-text-field class="text_field" v-model:model-value="name" :error-messages="check_errors(this.errors, 'name')" variant="solo"></v-text-field>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <h2>Adres</h2>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" v-model:model-value="adres" :error-messages="check_errors(this.errors, 'adres')" variant="solo"></v-text-field>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <h2>Klanten nummer</h2>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model:model-value="ivago_klantnr" variant="solo"></v-text-field>
-      </v-col>
-      <!---
-        TODO For milestone 3
-          <h2>Geschatte tijd in minuten</h2>
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" v-model:model-value="time" variant="solo"></v-text-field>
-      </v-col>
-      --->
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <h2>Handleiding status</h2>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-select class="text_field"
+    <v-row class="justify-space-between mx-auto">
+      <v-col cols='12' sm='6' md='6'>
+        <v-select label="Locatie"
+                  :readonly="!edit"
+                  :error-messages="check_errors(this.errors, 'location')"
                   variant="solo"
+                  :items="locations"
+                  item-title="name"
+                  item-value="id"
+                  v-model="selectedLocation"
+        ></v-select>
+      </v-col>
+      <v-col cols="12" sm="6" md="6">
+        <v-text-field :readonly="!edit" label="Klanten nummer" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model="ivago_klantnr"></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row class="justify-space-between mx-auto">
+      <v-col cols="12" sm="3" md="3">
+        <v-select variant="solo"
+                  :readonly="!edit"
                   :items="['Klaar', 'Update nodig', 'Bezig', 'Geüpdatet']"
                   v-model="manual.manualStatus"
         ></v-select>
       </v-col>
-      <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
-        <h2>Nieuwe handleiding</h2>
-      </v-col>
-      <v-col md="6" lg="6" class="d-flex justify-start align-center">
-        <v-file-input v-model="new_manual" prepend-icon="mdi-file-upload-outline" class="text_field"
-                      :error-messages="check_errors(this.errors, 'manual')"
-                      variant="solo"></v-file-input>
-      </v-col>
-      <v-col class="d-flex justify-center align-center pt-5 pb-10" cols="12" sm="12" md="12" lg="12">
-        <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
-        <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
+      <v-col cols="12" sm="6" md="6">
+        <v-file-input label="Handleiding" :readonly="!edit" v-model="manual" :error-messages="check_errors(this.errors, 'manual')" prepend-icon="mdi-file-upload-outline" ></v-file-input>
       </v-col>
     </v-row>
+    <v-col v-if="edit" class="d-flex justify-center align-center py-5">
+      <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
+      <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
+    </v-col>
+    <v-col v-if="!edit" class="d-flex justify-center align-center py-5">
+      <normal-button text="Afvalcontainer toevoegen" :parent-function="addPlanning"></normal-button>
+      <normal-button text="Aanpassen" :parent-function="goEditPage" class="ml-2"></normal-button>
+    </v-col>
   </v-card>
   <ConfirmDialog ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?"
                  :confirm_function="deleteBuilding"></ConfirmDialog>
@@ -93,6 +56,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import router from "@/router";
 import ConfirmDialog from "@/components/util/ConfirmDialog"
 import {check_errors, get_errors} from "@/error_handling";
+import LocationService from "@/api/services/LocationService";
 
 export default {
   name: "AdminBuildingView",
@@ -107,6 +71,8 @@ export default {
       // time: 0,  TODO <- milestone 3
       planningen: [],
       new_manual: null,
+      selectedLocation: null,
+      locations: [],
       errors: null
     }
   },
@@ -118,7 +84,14 @@ export default {
     goEditPage() {
       router.push({name: 'admin_edit_building', params: {id: this.$route.params.id}})
     },
-    getBuildingInformation() {
+    async getBuildingInformation() {
+
+        // get all possible locations
+      this.locations = await RequestHandler.handle(LocationService.getLocations(), {
+        id: 'getLocationsError',
+        style: 'SNACKBAR'
+      }).then(result => result).catch(() => []);
+
       RequestHandler.handle(BuildingService.getBuildingById(this.$route.params.id), {
         id: 'getBuildingError',
         style: 'SNACKBAR'
@@ -126,6 +99,7 @@ export default {
         this.name = result.name
         this.adres = result.adres
         this.ivago_klantnr = result.ivago_klantnr
+        this.selectedLocation = result.location
 
         if (result.manual != null) {
           this.manual = result.manual;
@@ -139,9 +113,6 @@ export default {
       }).catch(async () => {
         await router.push({name: 'buildings'})
       })
-    },
-    getManual() {
-      window.open(this.manual.file)
     },
     addPlanning() {
       router.push({'name': 'trashtemplates'})
@@ -191,24 +162,11 @@ export default {
 
     },
     async cancel_save() {
-      await router.push({name: 'buildings'})
+      await router.back()
     }
   }
 }
 </script>
 
 <style>
-.text_field_manaul {
-  height: 40px;
-  max-width: 150px;
-  padding-left: 5px;
-  padding-top: 5px;
-}
-
-.text_field {
-  height: 40px;
-  max-width: 350px;
-  padding-left: 5px;
-  padding-top: 5px;
-}
 </style>
