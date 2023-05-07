@@ -2,25 +2,18 @@
   <v-row justify="center" align="center" class="pt-10">
     <h1>Nieuw gebouw aanmaken</h1>
   </v-row>
-  <v-card color="white" :class="`mx-auto my-16 ${smallScreen ? 'w-100' : 'w-75'}`">
-    <v-row align="center" justify="center" class="xs-flex-column">
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
-        <h2>Naam</h2>
+  <v-card color="white" :class="`mx-auto my-10 py-5 w-75`">
+    <v-row class="justify-space-between mx-auto">
+      <v-col cols='12' sm='6' md='6'>
+        <v-text-field v-model='name' :error-messages="check_errors(this.errors, 'name')" label='Naam' required></v-text-field>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-text-field class="text_field" :error-messages="check_errors(this.errors, 'name')" variant="outlined" v-model:model-value="name"></v-text-field>
+      <v-col cols="12" sm="6" md="6">
+        <v-text-field :error-messages="check_errors(this.errors, 'adres')" v-model="adres" label="Adres"></v-text-field>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
-        <h2>Adres</h2>
-      </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-text-field class="text_field" variant="outlined" :error-messages="check_errors(this.errors, 'adres')" v-model:model-value="adres"></v-text-field>
-      </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
-        <h2>Locatie</h2>
-      </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-select class="text_field"
+    </v-row>
+    <v-row class="justify-space-between mx-auto">
+      <v-col cols='12' sm='6' md='6'>
+        <v-select label="Locatie"
                   :error-messages="check_errors(this.errors, 'location')"
                   variant="solo"
                   :items="locations"
@@ -29,19 +22,14 @@
                   v-model="selectedLocation"
         ></v-select>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
-        <h2>Klanten nummer</h2>
+      <v-col cols="12" sm="3" md="3">
+        <v-text-field label="Klanten nummer" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model="klant_nr"></v-text-field>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-text-field class="text_field" variant="outlined" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model:model-value="klant_nr"></v-text-field>
+      <v-col cols="12" sm="3" md="3">
+        <v-file-input label="Handleiding" v-model="file" :error-messages="check_errors(this.errors, 'manual')" prepend-icon="mdi-file-upload-outline" ></v-file-input>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
-        <h2>Handleiding</h2>
-      </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
-        <v-file-input v-model="file" :error-messages="check_errors(this.errors, 'manual')" prepend-icon="mdi-file-upload-outline" class="text_field"
-                      variant="outlined"></v-file-input>
-      </v-col>
+    </v-row>
+    <v-row align="center" justify="center" class="xs-flex-column">
       <!---
       TODO Milestone 3
       <v-col col="12" lg="6" class="d-flex justify-end align-center pt-10">
@@ -132,18 +120,5 @@ export default {
 }
 </script>
 <style>
-.text_field {
-  height: 40px;
-  max-width: 350px;
-  padding-left: 5px;
-  padding-top: 5px;
-}
 
-.drag_image {
-  -webkit-user-drag: none;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
 </style>

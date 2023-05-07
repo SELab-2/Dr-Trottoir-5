@@ -116,6 +116,7 @@ export default defineComponent({
       this.smallScreen = window.innerWidth < 800
     },
     goBack () {
+      this.errors = null
       if (this.sendEmail) {
         router.back()
       } else {
