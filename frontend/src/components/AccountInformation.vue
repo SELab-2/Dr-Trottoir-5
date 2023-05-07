@@ -10,7 +10,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="first_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="first_name" :error-messages="check_errors(this.errors, 'first_name')" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -19,7 +19,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="last_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="last_name" :error-messages="check_errors(this.errors, 'last_name')" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="email" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="email" :error-messages="check_errors(this.errors, 'email')" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -38,7 +38,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="phone_nr" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="phone_nr" :error-messages="check_errors(this.errors, 'phone_nr')" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -46,7 +46,7 @@
         <h1>Rol</h1>
       </v-col>
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pb-10">
-        <v-select variant="outlined" :items="roles" item-title="name" item-value="value" v-model:model-value="role"
+        <v-select variant="outlined" :items="roles" :error-messages="check_errors(this.errors, 'role')" item-title="name" item-value="value" v-model="role"
                   :readonly="!edit || not_admin"
                   style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-select>
@@ -152,6 +152,7 @@ export default {
   }
   ,
   methods: {
+    check_errors,
     async cancel_save() {
       this.edit = !this.edit
 
@@ -162,14 +163,16 @@ export default {
       this.role = this.user.role
     },
     async save() {
-      this.edit = !this.edit
-      UserService.update({
+      UserService.updateUserById(this.user.id, {
         first_name: this.first_name,
         last_name: this.last_name,
         email: this.email,
         role: this.role,
         phone_nr: this.phone_nr
-      }).then(() => {})
+      }).then(() => {
+        this.edit = !this.edit
+        this.errors = null
+      })
         .catch(async (error) => this.errors = await get_errors(error));
     },
     delete_current() {
