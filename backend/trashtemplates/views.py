@@ -266,7 +266,7 @@ def buildings_view(request, template_id, permanent):
             None,
             new_building_list,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().trash_templates
         )
         return Response({"message": "Success"})
 

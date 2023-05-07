@@ -29,11 +29,11 @@
           <v-select
             v-model="buildings"
             :items="building_choices"
-            :chips="true"
-            :multiple="true"
+            chips
             item-title="name"
             item-value="id"
             label="Kies gebowen"
+            multiple
           ></v-select>
         </v-col>
       </v-row>
@@ -54,7 +54,6 @@ import TrashTemplateService from "@/api/services/TrashTemplateService";
 import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 import buildingService from "@/api/services/BuildingService";
-import {th} from "vuetify/locale";
 
 export default {
   name: "TrashContainerTemplateEditView",
@@ -68,8 +67,8 @@ export default {
     permanent: true,
     location: null,
     locations: [],
-    buildings: null,
-    building_choices: null,
+    buildings: [],
+    building_choices: [],
   }),
   async mounted() {
   },
@@ -80,46 +79,22 @@ export default {
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
 
+    const trashTemplate = await RequestHandler.handle(trashTemplateService.getTrashTemplate(this.$route.params.id), {
+      id: 'getTemplateEditError',
+      style: 'SNACKBAR'
+    }).then(result => result).catch(() => null)
+
+    this.name = trashTemplate.name
+    this.even = trashTemplate.even
+    this.location = trashTemplate.location
+    this.buildings = trashTemplate.buildings.map(building => building.building.id)
+
     // get all possible buildings
     this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
       id: 'getbuildingsError',
       style: 'SNACKBAR'
-    }).then(result => {
-      if(this.buildings){
-        let new_buildings = []
-        result.forEach(
-          (building) => this.new_buildings.push(
-            result.filter(
-              (c_building) => c_building.id === building.id
-            )[0]
-          )
-        )
-        this.buildings = new_buildings
-      }
-      return result
-    }).catch(() => []);
+    }).then(result => result).catch(() => []);
 
-    RequestHandler.handle(trashTemplateService.getTrashTemplate(this.$route.params.id), {
-      id: 'getTemplateEditError',
-      style: 'SNACKBAR'
-    }).then((result) => {
-      this.name = result.name
-      this.even = result.even
-      this.location = result.location
-      if(this.building_choices){
-        this.buildings = []
-        result.buildings.forEach(
-          (building) => this.buildings.push(
-            this.building_choices.filter(
-              (c_building) => c_building.id === building.id
-            )[0]
-          )
-        )
-      } else {
-        this.buildings = result.buildings
-      }
-      return result
-    })
   },
   methods: {
     async create() {
