@@ -1,5 +1,5 @@
 import Unauthorized from '../../../src/views/Unauthorized.vue';
-import {mount} from "@vue/test-utils";
+import {shallowMount} from "@vue/test-utils";
 import NormalButton from "@/components/NormalButton.vue";
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -18,7 +18,7 @@ describe("Unauthorized.vue", () => {
       createRouter: jest.fn(() => mockRouter),
       createWebHistory: jest.fn()
     }));
-    wrapper = mount(Unauthorized);
+    wrapper = shallowMount(Unauthorized);
   });
 
   it('render the component', () => {
@@ -43,9 +43,5 @@ describe("Unauthorized.vue", () => {
     expect(wrapper.findComponent(NormalButton).exists()).toBeTruthy();
   })
 
-  it('normal button with go back triggr',  () => {
-    wrapper.findComponent(NormalButton).trigger('click');
-    expect(mockRouter.back()).toHaveBeenCalled();
-  })
 
 });

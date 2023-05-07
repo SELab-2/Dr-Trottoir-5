@@ -10,7 +10,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.first_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.first_name" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -19,7 +19,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.last_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.last_name" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.email" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.email" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -38,7 +38,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model:model-value="data.phone_nr" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.phone_nr" :readonly="!edit" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -46,7 +46,7 @@
         <h1>Rol</h1>
       </v-col>
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pb-10">
-        <v-select variant="outlined" :items="roles" item-title="name" item-value="value" v-model:model-value="data.role"
+        <v-select variant="outlined" :items="roles" item-title="name" item-value="value" v-model="data.role"
                   :readonly="!edit || not_admin"
                   style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-select>
