@@ -124,7 +124,10 @@ export default defineComponent({
     },
     async sendOtp () {
       AuthService.forgot(new AuthForgotWrapper(this.email))
-        .then(() => this.sendEmail = false)
+        .then(() => {
+          this.sendEmail = false
+          this.errors = null
+        })
         .catch(async (error) => {
           this.errors = await get_errors(error)
         })
