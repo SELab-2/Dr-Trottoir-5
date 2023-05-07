@@ -83,7 +83,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @POST("/trashtemplates/{id}/buildings/eenmalig/")
-  newBuildingToTemplateEenmalig(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  newBuildingToTemplateEenmalig(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -105,12 +105,12 @@ class TrashTemplateService extends EchoService {
   }
 
   @PATCH("/trashtemplates/{id}/buildings/")
-  updateBuildingTemplate(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  updateBuildingTemplate(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
   @PATCH("/trashtemplates/{id}/buildings/eenmalig/")
-  updateBuildingTemplateEenmalig(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  updateBuildingTemplateEenmalig(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

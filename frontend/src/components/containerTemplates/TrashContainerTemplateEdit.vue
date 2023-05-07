@@ -25,18 +25,31 @@
             label="Locatie"
           ></v-select>
         </v-col>
+      </v-row>
+
+      <v-row
+        v-for="gebouw in this.buildings"
+        class="justify-space-between mx-auto"
+      >
+        <v-col cols='6' md='3' sm='3'>
+          <p>{{ gebouw.building.name }}</p>
+        </v-col>
+        <v-col cols='6' md='3' sm='3'>
+          <p>{{ gebouw.building.adres }}</p>
+        </v-col>
         <v-col cols='12' md='6' sm='6'>
           <v-select
-            v-model="buildings"
-            :items="building_choices"
+            v-model="gebouw.trash_ids"
+            :items="container_choices"
             chips
-            item-title="name"
-            item-value="id"
-            label="Kies gebowen"
+            item-title="trash_container.type"
+            item-value="extra_id"
+            label="Kies containers voor dit gebouw"
             multiple
           ></v-select>
         </v-col>
       </v-row>
+
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
           <v-btn class="overflow-hidden" @click="create()">Aanpassen</v-btn>
@@ -68,7 +81,9 @@ export default {
     location: null,
     locations: [],
     buildings: [],
+    original_buildings: [],
     building_choices: [],
+    container_choices: [],
   }),
   async mounted() {
   },
@@ -87,13 +102,28 @@ export default {
     this.name = trashTemplate.name
     this.even = trashTemplate.even
     this.location = trashTemplate.location
-    this.buildings = trashTemplate.buildings.map(building => building.building.id)
+    this.original_buildings = trashTemplate.buildings
+    this.buildings = trashTemplate.buildings
+    console.log(this.buildings)
 
     // get all possible buildings
     this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
       id: 'getbuildingsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => {
+      return result.map(res => {
+        return {
+          building: res,
+          trash_ids: []
+        }
+      })
+    }).catch(() => []);
+
+    this.container_choices = await RequestHandler.handle(
+      trashTemplateService.getTrashContainersOfTemplate(this.$route.params.id), {
+        id: 'getContainersForTemplateError',
+        style: 'SNACKBAR'
+      }).then(result => result.map(con => con.extra_id)).catch(() => []);
 
   },
   methods: {
@@ -108,16 +138,26 @@ export default {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => {
-        this.building_choices.forEach((building) => {
-          RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
-            building: building.id,
-            selection: [] //TODO ADD THE SELECTED TRASHCANS
-          }), {
-            id: 'addBuildingError',
-            style: 'SNACKBAR'
-          }).then((result) => {
-            console.log("done")
-          })
+        this.buildings.forEach((building) => {
+          console.log(building)
+          if (building.building.id in this.original_buildings.map(b => b.building.id)){
+            RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, {
+              building: building.building.id,
+              selection: building.trash_ids
+            }), {
+              id: 'updateSelectionToBuildingError',
+              style: 'SNACKBAR'
+            })
+          } else {
+            RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
+              building: building.building.id,
+              selection: building.trash_ids
+            }), {
+              id: 'addSelectionToBuildingError',
+              style: 'SNACKBAR'
+            })
+          }
+
         })
         return result
       });

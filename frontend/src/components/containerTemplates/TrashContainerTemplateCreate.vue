@@ -65,8 +65,7 @@ export default {
     buildings: null,
     building_choices: []
   }),
-  async mounted() {
-  },
+
   async beforeMount() {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
