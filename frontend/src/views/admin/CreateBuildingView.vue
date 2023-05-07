@@ -2,24 +2,24 @@
   <v-row justify="center" align="center" class="pt-10">
     <h1>Nieuw gebouw aanmaken</h1>
   </v-row>
-  <v-card color="white" :class="`mx-auto my-16 ${smallScreen ? 'w-100' : 'w-75'}`">
+  <v-card color="white" :class="`mx-auto my-16 h-70 ${smallScreen ? 'w-100' : 'w-75'}`">
     <v-row align="center" justify="center" class="xs-flex-column">
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h2>Naam</h2>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-text-field class="text_field" variant="outlined" v-model:model-value="name"></v-text-field>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h2>Adres</h2>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-text-field class="text_field" variant="outlined" v-model:model-value="adres"></v-text-field>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h2>Locatie</h2>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-select class="text_field"
                   variant="solo"
                   :items="locations"
@@ -28,16 +28,16 @@
                   v-model="selectedLocation"
         ></v-select>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h2>Klanten nummer</h2>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-text-field class="text_field" variant="outlined" v-model:model-value="klant_nr"></v-text-field>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-end align-center pt-10">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-end justify-lg-end align-center pt-10">
         <h2>Handleiding</h2>
       </v-col>
-      <v-col col="12" lg="6" class="d-flex justify-lg-start align-center">
+      <v-col col="12" sm="6" md="6" lg="6" class="d-flex justify-center justify-md-start justify-lg-start align-center">
         <v-file-input v-model="file" prepend-icon="mdi-file-upload-outline" class="text_field"
                       variant="outlined"></v-file-input>
       </v-col>
@@ -51,7 +51,7 @@
                       v-model:model-value="time"></v-text-field>
       </v-col>
       ---->
-      <v-col col="12" lg="12" class="d-flex justify-center align-center">
+      <v-col col="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pt-10">
         <normal-button text="Maak gebouw aan" :parent-function="createBuilding"></normal-button>
       </v-col>
       <v-col class="pt-5"></v-col>
@@ -91,7 +91,19 @@ export default {
       }
     )
   },
+  beforeUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize, {passive: true})
+    }
+  },
+  mounted() {
+    this.onResize()
+    window.addEventListener('resize', this.onResize, {passive: true})
+  },
   methods: {
+    onResize() {
+      this.smallScreen = window.innerWidth < 800
+    },
     createBuilding() {
       // TODO Milestone 3 Add geschatte tijd
       this.createManual().then(result =>
