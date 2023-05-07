@@ -10,7 +10,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="data.first_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.first_name" :readonly="!edit || !not_admin" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -19,7 +19,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="data.last_name" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.last_name" :readonly="!edit || !not_admin" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="data.email" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.email" :readonly="!edit || !not_admin" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -38,7 +38,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="data.phone_nr" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="data.phone_nr" :readonly="!edit || !not_admin" variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
