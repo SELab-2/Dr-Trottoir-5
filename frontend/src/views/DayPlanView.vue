@@ -1,10 +1,24 @@
 <template>
   <v-container align="center">
-    <v-card max-width="750px" class="py-3">
-      <h1>{{ time }}</h1>
-      <h2>{{ ronde }}</h2>
-      <normal-button text="Terug" v-bind:parent-function="goBack" block class="mt-2" v-if="buildings.length === 0"></normal-button>
-      <DayPlanBuilding v-for="building in buildings" :data="{building: building, planning: planning, year: year, week: week}" :date="date" />
+    <v-expansion-panels v-model="panel" style="max-width: 750px;" v-if="rondes.length > 0">
+      <h4 class="text-h4 mb-3">{{ time }}</h4>
+      <v-expansion-panel v-for="ronde in rondes">
+        <v-expansion-panel-title>
+          Ronde {{ ronde.ronde.name }}
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-card max-width="750px" class="py-3" elevation="0">
+            <DayPlanBuilding v-for="building in ronde.ronde.buildings"
+                             :data="{building: building, planning: ronde.id, year: year, week: week}" :date="date" />
+          </v-card>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
+    <v-card max-width="750px" class="py-3" v-if="rondes.length === 0">
+      <h4 class="text-h4 mb-3">{{ time }}</h4>
+      <h5 class="text-h5 mb-3">Er is nog geen ronde ingepland.</h5>
+      <normal-button text="Terug" v-bind:parent-function="goBack" class="mt-2" style="width: 90%;"
+                           v-if="rondes.length === 0"></normal-button>
     </v-card>
   </v-container>
 </template>
@@ -16,6 +30,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton.vue";
 import router from '@/router';
+import {getWeek} from "@/api/DateUtil";
 
 export default defineComponent({
   name: "DayPlanView",
@@ -28,19 +43,24 @@ export default defineComponent({
     this.time = this.capitalize(new Date(this.date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
     const date = new Date(this.date);
     this.year = date.getFullYear();
-    this.week = this.getWeek(date);
+    this.week = getWeek(date);
 
     RequestHandler.handle(PlanningService.get(this.year, this.week, date.getUTCDay()), {
       id: "getDayplanningError",
       style: "NONE"
-    }).then(planning => {
-      const buildings = Object(planning.ronde.buildings);
-      const statusMap = {NS: 'Niet begonnen', ST: 'Bezig', FI: 'Voltooid'};
-      for (let index in planning.status) buildings[index].status = statusMap[planning.status[index]];
-
-      this.buildings = buildings;
-      this.ronde = planning.ronde.name;
-      this.planning = planning.id;
+    }).then(plannings => {
+      plannings.forEach(planning => {
+        RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
+          id: `getStatus${planning.id}Error`,
+          style: "NONE"
+        }).then(statuses => {
+          const buildings = Object(planning.ronde.buildings);
+          for (let building of buildings)
+            building.status = statuses[building.id].AR === 0 ? 'Niet begonnen' : statuses[building.id].DE > 0 ? 'Voltooid' : 'Bezig';
+          planning.ronde.buildings = buildings;
+          this.rondes.push(planning);
+        }).catch(() => null);
+      });
     }).catch(() => {});
   },
   methods: {
@@ -49,26 +69,16 @@ export default defineComponent({
     },
     goBack() {
       router.go(-1);
-    },
-    getWeek(d) {
-      const date = new Date(d);
-      date.setHours(0, 0, 0, 0);
-      // Thursday in current week decides the year.
-      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-      // January 4 is always in week 1.
-      const week1 = new Date(date.getFullYear(), 0, 4);
-      // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
     }
   },
   data: () => ({
     time: '',
     date: new Date().toISOString().split('T')[0],
     ronde: 'Er is nog geen ronde ingepland.',
-    buildings: [],
-    planning: null,
+    rondes: [],
     year: null,
-    week: null
+    week: null,
+    panel: [0]
   })
 });
 </script>
