@@ -27,15 +27,15 @@ Example usage:
 </template>
 
 <script type="js">
-import { defineComponent } from 'vue';
-import router from "@/router";
+import { defineComponent } from 'vue'
+import router from '@/router'
 
 export default defineComponent({
   name: 'DayPlanBuilding',
   props: {
     data: {
       type: Object,
-      default: () => ({building: {adres: 'Leeg', status: 'Onbekend'}, planning: null})
+      default: () => ({ building: { adres: 'Leeg', status: 'Onbekend' }, planning: null })
     },
     date: {
       type: String,
@@ -44,9 +44,12 @@ export default defineComponent({
   },
   methods: {
     buildingClicked () {
-      router.push({name: 'building_student', query: {
+      router.push({
+name: 'building_student',
+query: {
         building: this.data.building.id, planning: this.data.planning, year: this.data.year, week: this.data.week
-      }});
+      }
+})
     }
   }
 })

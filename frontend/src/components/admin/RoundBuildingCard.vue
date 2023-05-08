@@ -32,7 +32,7 @@
       <v-col cols="1"/>
       <v-col cols="2">
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template>
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
                 status
               }}</span>
@@ -51,10 +51,10 @@
 
 <script>
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
-import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
-import Building from "@/api/models/Building";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import BuildingService from '@/api/services/BuildingService'
+import Building from '@/api/models/Building'
+import router from '@/router'
 /**
  * RoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String
@@ -88,14 +88,14 @@ export default {
       // TODO opslaan in database
     },
     goToBuildingPage: function () {
-      router.push({name: 'admin_info_building', params : {id: this.data.id}})
+      router.push({ name: 'admin_info_building', params: { id: this.data.id } })
     }
   },
   async mounted () {
     this.status = this.data.status
   },
   async beforeMount () {
-    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => this.status = result.manualStatus)
+    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => { this.status = result.manualStatus })
   }
 }
 </script>

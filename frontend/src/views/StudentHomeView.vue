@@ -16,11 +16,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { DatePicker } from 'v-calendar';
-import NormalButton from "@/components/NormalButton.vue";
-import 'v-calendar/dist/style.css';
-import router from '@/router';
+import { defineComponent } from 'vue'
+import { DatePicker } from 'v-calendar'
+import NormalButton from '@/components/NormalButton.vue'
+import 'v-calendar/dist/style.css'
+import router from '@/router'
 
 export default defineComponent({
   name: 'StudentHomeView',
@@ -29,8 +29,8 @@ export default defineComponent({
     NormalButton
   },
   methods: {
-    selectDay() {
-      router.push({ name: 'dagplanning', query: { date: this.date } });
+    selectDay () {
+      router.push({ name: 'dagplanning', query: { date: this.date } })
     }
   },
   data: () => {
@@ -39,6 +39,6 @@ export default defineComponent({
       masks: { modelValue: 'YYYY-MM-DD' }
     }
   }
-});
+})
 
 </script>

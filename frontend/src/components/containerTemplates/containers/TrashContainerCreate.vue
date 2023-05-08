@@ -36,15 +36,13 @@
 </template>
 
 <script lang="ts">
-import NormalButton from '@/components/NormalButton.vue'
-import {RequestHandler} from "@/api/RequestHandler";
-import TrashTemplateService from "@/api/services/TrashTemplateService";
-import {ContainerType} from "@/api/models/ContainerType";
-import {Weekday} from "@/api/models/Weekday";
+import { RequestHandler } from '@/api/RequestHandler'
+import TrashTemplateService from '@/api/services/TrashTemplateService'
+import { ContainerType } from '@/api/models/ContainerType'
+import { Weekday } from '@/api/models/Weekday'
 
 export default {
   name: 'CreateTrashContainerView',
-  components: {NormalButton},
   props: {
     id: Number
   },
@@ -60,7 +58,7 @@ export default {
         ContainerType.PMD,
         ContainerType.PK,
         ContainerType.GLAS,
-        ContainerType.REST,
+        ContainerType.REST
       ],
       days: [
         Weekday.SUNDAY,
@@ -69,14 +67,14 @@ export default {
         Weekday.WEDNESDAY,
         Weekday.THURSDAY,
         Weekday.FRIDAY,
-        Weekday.SATURDAY,
+        Weekday.SATURDAY
       ]
     }
   },
-  async beforeMount() {
+  async beforeMount () {
   },
   methods: {
-    createContainer() {
+    createContainer () {
       RequestHandler.handle(
         TrashTemplateService.newContainerToTemplate(this.id, {
           type: this.type,
@@ -84,17 +82,17 @@ export default {
             day: this.day,
             start_hour: this.start_hour,
             end_hour: this.end_hour
-          },
+          }
         }), {
           id: 'createContainerTemplateError',
           style: 'SNACKBAR'
         }
       ).then(() =>
-        this.$store.dispatch("snackbar/open", {
-          message: "De container is aangemaakt",
-          color: "success"
+        this.$store.dispatch('snackbar/open', {
+          message: 'De container is aangemaakt',
+          color: 'success'
         }))
-    },
+    }
   }
 }
 </script>

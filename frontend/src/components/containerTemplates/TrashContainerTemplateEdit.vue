@@ -47,20 +47,14 @@
 </template>
 
 <script lang="ts">
-import NormalButton from "@/components/NormalButton.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
-import TrashTemplateService from "@/api/services/TrashTemplateService";
-import trashTemplateService from "@/api/services/TrashTemplateService";
-import router from "@/router";
-import buildingService from "@/api/services/BuildingService";
-import {th} from "vuetify/locale";
+import { RequestHandler } from '@/api/RequestHandler'
+import LocationService from '@/api/services/LocationService'
+import TrashTemplateService from '@/api/services/TrashTemplateService'
+import router from '@/router'
+import buildingService from '@/api/services/BuildingService'
 
 export default {
-  name: "TrashContainerTemplateEditView",
-  components: {
-    NormalButton
-  },
+  name: 'TrashContainerTemplateEditView',
   props: {},
   data: () => ({
     name: '',
@@ -69,24 +63,24 @@ export default {
     location: null,
     locations: [],
     buildings: null,
-    building_choices: null,
+    building_choices: null
   }),
-  async mounted() {
+  async mounted () {
   },
-  async beforeMount() {
+  async beforeMount () {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
 
     // get all possible buildings
     this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
       id: 'getbuildingsError',
       style: 'SNACKBAR'
     }).then(result => {
-      if(this.buildings){
-        let new_buildings = []
+      if (this.buildings) {
+        const new_buildings = []
         result.forEach(
           (building) => this.new_buildings.push(
             result.filter(
@@ -97,16 +91,16 @@ export default {
         this.buildings = new_buildings
       }
       return result
-    }).catch(() => []);
+    }).catch(() => [])
 
-    RequestHandler.handle(trashTemplateService.getTrashTemplate(this.$route.params.id), {
+    RequestHandler.handle(TrashTemplateService.getTrashTemplate(this.$route.params.id), {
       id: 'getTemplateEditError',
       style: 'SNACKBAR'
     }).then((result) => {
       this.name = result.name
       this.even = result.even
       this.location = result.location
-      if(this.building_choices){
+      if (this.building_choices) {
         this.buildings = []
         result.buildings.forEach(
           (building) => this.buildings.push(
@@ -122,31 +116,31 @@ export default {
     })
   },
   methods: {
-    async create() {
+    async create () {
       const body = {
         name: this.name,
         even: this.even,
         location: this.location,
         permanent: this.permanent
       }
-      const response = await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.$route.params.id, body), {
+      await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.$route.params.id, body), {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => {
         this.building_choices.forEach((building) => {
           RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
             building: building.id,
-            selection: [] //TODO ADD THE SELECTED TRASHCANS
+            selection: [] // TODO ADD THE SELECTED TRASHCANS
           }), {
             id: 'addBuildingError',
             style: 'SNACKBAR'
           }).then((result) => {
-            console.log("done")
+            console.log('done')
           })
         })
         return result
-      });
-      return await router.push({name: 'trashtemplates'})
+      })
+      return await router.push({ name: 'trashtemplates' })
     }
   }
 }

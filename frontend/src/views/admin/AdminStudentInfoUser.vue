@@ -4,16 +4,16 @@
 </template>
 
 <script>
-import AccountInformation from "@/components/AccountInformation";
-import UserService from "@/api/services/UserService";
-import {RequestHandler} from "@/api/RequestHandler";
+import AccountInformation from '@/components/AccountInformation'
+import UserService from '@/api/services/UserService'
+import { RequestHandler } from '@/api/RequestHandler'
 
 export default {
-  name: "AdminStudentInfoUser",
-  components: {AccountInformation},
-  props: {id: String},
+  name: 'AdminStudentInfoUser',
+  components: { AccountInformation },
+  props: { id: String },
   methods: {
-    async get_data() {
+    async get_data () {
       return RequestHandler.handle(UserService.getUserById(Number(this.id)), {
         id: 'getUserInfoByIdError',
         style: 'SNACKBAR',
@@ -23,9 +23,9 @@ export default {
           description: 'Kon data van gebruiker niet ophalen'
         }]
       }).catch(() => {
-        this.$router.push({name: 'admin_user_register'})
-      });
-    },
+        this.$router.push({ name: 'admin_user_register' })
+      })
+    }
   }
 }
 </script>

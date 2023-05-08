@@ -55,24 +55,24 @@
  * edit: Boolean als je een syndicus wilt bewerken of aanmaken
  */
 
-import NormalButton from "@/components/NormalButton.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import UserService from "@/api/services/UserService";
-import BuildingService from "@/api/services/BuildingService";
-import LocationService from "@/api/services/LocationService";
-import AuthService from "@/api/services/AuthService";
-import router from "@/router";
+import NormalButton from '@/components/NormalButton.vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import UserService from '@/api/services/UserService'
+import BuildingService from '@/api/services/BuildingService'
+import LocationService from '@/api/services/LocationService'
+import AuthService from '@/api/services/AuthService'
+import router from '@/router'
 
 export default {
   name: 'CreateEditSyndicus',
-  components: {NormalButton},
+  components: { NormalButton },
   props: {
     edit: {
       type: Boolean,
       default: false
-    },
+    }
   },
-  data() {
+  data () {
     return {
       allUsers: [],
       allLocations: [],
@@ -86,13 +86,13 @@ export default {
     }
   },
   methods: {
-    async update(building_id, syndicus) {
+    async update (building_id, syndicus) {
       /**
        * This method is the request we send to the backend. The body exists of an updated list
        * of syndicussen for a specific building.
        */
       await RequestHandler.handle(BuildingService.updateBuildingById(Number(building_id), {
-        'syndicus': syndicus
+        syndicus: syndicus
       }), {
         id: 'addSyndicusToBuilding',
         style: 'SNACKBAR',
@@ -105,21 +105,21 @@ export default {
         ]
       })
     },
-    async addSyndicus() {
+    async addSyndicus () {
       /**
        * For adding a syndicus do we need to check if all fields are not empty. After this can
        * we send a request with an updated list. We do this for every selected building. We than change
        * the role of the user to syndicus.
        */
       if (this.syndicus.id === null || this.syndicus.location === null || this.syndicus.buildings.length === 0) {
-        this.$store.dispatch("snackbar/open", {
-          message: "Een of meerdere van de verplichte velden zijn leeg.",
-          color: "error"
+        this.$store.dispatch('snackbar/open', {
+          message: 'Een of meerdere van de verplichte velden zijn leeg.',
+          color: 'error'
         })
-        return;
+        return
       }
-      for (let building_id of this.syndicus.buildings) {
-        let syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
+      for (const building_id of this.syndicus.buildings) {
+        const syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
         syndicus.push(this.syndicus.id)
         await this.update(building_id, syndicus)
       }
@@ -137,31 +137,31 @@ export default {
           }
         ]
       })
-      await router.push({name: 'syndici'})
+      await router.push({ name: 'syndici' })
     },
-    async editSyndicus() {
+    async editSyndicus () {
       /**
        * If we want to edit the buildings of a syndicus we have two options. There are buildings removed
        * or buildings been added to the syndicus. For every option do we need to update the list of syndicates of a building.
        */
-      for (let building_id of this.syndicus.old_buildings) {
+      for (const building_id of this.syndicus.old_buildings) {
         if (!this.syndicus.buildings.includes(building_id)) {
-          let syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
+          const syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
           const index = syndicus.indexOf(this.syndicus.id)
           syndicus.splice(index, 1)
           await this.update(building_id, syndicus)
         }
       }
-      for (let building_id of this.syndicus.buildings) {
+      for (const building_id of this.syndicus.buildings) {
         if (!this.syndicus.old_buildings.includes(building_id)) {
           const syndicus = this.allBuildings.find(building => building.id === building_id).syndicus
           syndicus.push(this.syndicus.id)
           await this.update(building_id, syndicus)
         }
       }
-      await router.push({name: 'syndici'})
+      await router.push({ name: 'syndici' })
     },
-    updateBuilding() {
+    updateBuilding () {
       /**
        * Every time the location of a syndicus is changed we update the selected buildings
        * for the given syndicus.
@@ -174,7 +174,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     /**
      * We collect the needed data to adjust or add a syndicus.
      * We need a list of locations, a list of users that are not registered or have the role syndicus.
@@ -193,7 +193,7 @@ export default {
         ]
       }).then(users => {
         this.allUsers = users.filter(x => x.role === 'SY').map(user => {
-          user['name'] = `${user.first_name} ${user.last_name}`
+          user.name = `${user.first_name} ${user.last_name}`
           return user
         })
       })
@@ -210,7 +210,7 @@ export default {
         ]
       }).then(users => {
         this.allUsers = users.filter(x => x.role === 'AA').map(user => {
-          user['name'] = `${user.first_name} ${user.last_name}`
+          user.name = `${user.first_name} ${user.last_name}`
           return user
         })
       })

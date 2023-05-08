@@ -53,23 +53,23 @@
  * Data (aangepaste) moet naar de backend worden gestuurd worden zie functie uploadData en editData.
  */
 
-import NormalButton from "@/components/NormalButton.vue";
-import DeleteIcon from "@/components/icons/DeleteIcon.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import PlanningService from "@/api/services/PlanningService";
-import router from "@/router";
-const emitter = require('tiny-emitter/instance');
+import NormalButton from '@/components/NormalButton.vue'
+import DeleteIcon from '@/components/icons/DeleteIcon.vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import PlanningService from '@/api/services/PlanningService'
+import router from '@/router'
+const emitter = require('tiny-emitter/instance')
 
 export default {
   name: 'CreateEditPostStudent',
-  components: {DeleteIcon, NormalButton},
+  components: { DeleteIcon, NormalButton },
   props: {
     data: {
       type: Object,
-      default: () => ({nameBuilding: '', type: '', info: '', edit: false, id: '', planning: '', building_id: ''})
+      default: () => ({ nameBuilding: '', type: '', info: '', edit: false, id: '', planning: '', building_id: '' })
     }
   },
-  data() {
+  data () {
     return {
       imageUrl: '',
       description: '',
@@ -77,41 +77,41 @@ export default {
     }
   },
   methods: {
-    selectImage() {
-      const input = document.createElement('input');
-      input.style = 'display: none;';
-      input.id = 'input';
-      document.body.appendChild(input);
-      input.type = 'file';
+    selectImage () {
+      const input = document.createElement('input')
+      input.style = 'display: none;'
+      input.id = 'input'
+      document.body.appendChild(input)
+      input.type = 'file'
       // Alleen images accepteren
-      input.accept = 'image/*';
+      input.accept = 'image/*'
       input.onchange = (event) => {
         // selecteert de eerste file die die de gebruiker heeft geselecteerd
-        this.imageUrl = URL.createObjectURL(event.target.files[0]);
+        this.imageUrl = URL.createObjectURL(event.target.files[0])
       }
-      input.click();
+      input.click()
     },
-    removeImage() {
-      this.imageUrl = '';
+    removeImage () {
+      this.imageUrl = ''
     },
-    imageCheck() {
+    imageCheck () {
       if (this.imageUrl === '') {
-        emitter.emit("error", {message: 'Voeg een foto toe.'}, {
+        emitter.emit('error', { message: 'Voeg een foto toe.' }, {
           style: 'SNACKBAR',
           id: 'imageURLEmptyError'
         })
         router.afterEach(() => {
-          emitter.emit("error-clear");
-        });
-        return false;
+          emitter.emit('error-clear')
+        })
+        return false
       }
 
-      return true;
+      return true
     },
-    async uploadData() {
-      if (!this.imageCheck()) return;
-      const input = document.getElementById("input");
-      const image = input.files[0];
+    async uploadData () {
+      if (!this.imageCheck()) return
+      const input = document.getElementById('input')
+      const image = input.files[0]
       await RequestHandler.handle(PlanningService.uploadPicture(
         image,
         this.data.info,
@@ -119,19 +119,19 @@ export default {
         new Date().toISOString(),
         this.description
       ), {
-        id: "uploadImageError",
-        style: "SNACKBAR"
-      }).then(b => b).catch(() => null);
+        id: 'uploadImageError',
+        style: 'SNACKBAR'
+      }).then(b => b).catch(() => null)
 
-      this.imageUrl = '';
-      input.value = '';
-      input.remove();
+      this.imageUrl = ''
+      input.value = ''
+      input.remove()
 
-      router.go(-1);
+      router.go(-1)
     },
-    async editData() {
-      if (!this.imageCheck()) return;
-      const input = document.getElementById("input");
+    async editData () {
+      if (!this.imageCheck()) return
+      const input = document.getElementById('input')
       if (!input) {
         await RequestHandler.handle(PlanningService.patchPicture(
           this.data.id,
@@ -140,11 +140,11 @@ export default {
           new Date().toISOString(),
           this.description
         ), {
-          id: "patchImageError",
-          style: "SNACKBAR"
-        }).then(b => b).catch(() => null);
+          id: 'patchImageError',
+          style: 'SNACKBAR'
+        }).then(b => b).catch(() => null)
       } else {
-        const image = input.files[0];
+        const image = input.files[0]
         await RequestHandler.handle(PlanningService.updatePicture(
           this.data.id,
           image,
@@ -153,27 +153,27 @@ export default {
           new Date().toISOString(),
           this.description
         ), {
-          id: "editImageError",
-          style: "SNACKBAR"
-        }).then(b => b).catch(() => null);
+          id: 'editImageError',
+          style: 'SNACKBAR'
+        }).then(b => b).catch(() => null)
       }
 
-      this.imageUrl = '';
-      input.value = '';
-      input.remove();
-      router.go(-1);
+      this.imageUrl = ''
+      input.value = ''
+      input.remove()
+      router.go(-1)
     }
   },
-  mounted() {
-    if (this.data.edit){
+  mounted () {
+    if (this.data.edit) {
       RequestHandler.handle(PlanningService.getPicture(this.data.id), {
-        id: "getImageError",
-        style: "SNACKBAR"
+        id: 'getImageError',
+        style: 'SNACKBAR'
       }).then(b => {
-        this.description = b.remark;
-        this.imageUrl = b.image;
-        this.original = b;
-      }).catch(() => null);
+        this.description = b.remark
+        this.imageUrl = b.image
+        this.original = b
+      }).catch(() => null)
     }
   }
 }

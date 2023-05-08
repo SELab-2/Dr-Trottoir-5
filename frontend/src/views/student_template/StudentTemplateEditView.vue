@@ -75,20 +75,20 @@
       status: this.status,
       name: ronde.name,
       location: ronde.location.name
-    }"></TemplateRondeCard>
+    }" :key="ronde.id"></TemplateRondeCard>
 </template>
 
 <script>
-import NormalButton from '@/components/NormalButton.vue';
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import TemplateRondeCard from "@/components/admin/student_template/TemplateRondeCard.vue";
-import RoundService from "@/api/services/RoundService";
-import router from "@/router";
+import NormalButton from '@/components/NormalButton.vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import LocationService from '@/api/services/LocationService'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
+import TemplateRondeCard from '@/components/admin/student_template/TemplateRondeCard.vue'
+import RoundService from '@/api/services/RoundService'
+import router from '@/router'
 
 export default {
-  name: "StudentTemplateEditView",
+  name: 'StudentTemplateEditView',
   components: {
     NormalButton,
     TemplateRondeCard
@@ -101,39 +101,39 @@ export default {
     status: '',
     even: true,
     location: 0,
-    start_hour: "",
-    end_hour: "",
+    start_hour: '',
+    end_hour: '',
     locations: [],
     rondes: [],
     all_rondes: [],
     add_id: null,
     state_mapping: {
-      "A": "Actief",
-      "E": "Eenmalig",
-      "V": "Vervangen",
-      "I": "Inactief"
+      A: 'Actief',
+      E: 'Eenmalig',
+      V: 'Vervangen',
+      I: 'Inactief'
     }
   }),
-  async mounted() {
+  async mounted () {
     this.template_id = this.$route.params.id
 
     // get the template
     this.template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => null);
+    }).then(result => result).catch(() => null)
 
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
 
     // get all rounds
     this.all_rondes = await RequestHandler.handle(RoundService.getRounds(), {
       id: 'getRondesError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
 
     this.name = this.template.name
     this.status = this.state_mapping[this.template.status]
@@ -144,11 +144,11 @@ export default {
     this.rondes = this.template.rondes
   },
   methods: {
-    async copy_taken(new_id) {
+    async copy_taken (new_id) {
       this.template_id = new_id
-      return await router.replace({path: `/studenttemplates/${new_id}`})
+      return await router.replace({ path: `/studenttemplates/${new_id}` })
     },
-    async save_edit() {
+    async save_edit () {
       this.edit = false
       const body = {
         name: this.name,
@@ -162,36 +162,35 @@ export default {
           id: 'updateStudentTemplate',
           style: 'SNACKBAR'
       }).then(res => res)
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"])
+      if (response.new_id !== undefined) {
+        await this.copy_taken(response.new_id)
       }
     },
-    async add_round() {
-      const body = {ronde: this.add_id}
+    async add_round () {
+      const body = { ronde: this.add_id }
       const response = await RequestHandler.handle(StudentTemplateService.addRound(this.template_id, body), {
           id: 'studentTemplateAddRound',
           style: 'SNACKBAR'
       })
-      for (let ronde of this.all_rondes) {
+      for (const ronde of this.all_rondes) {
         if (ronde.id === this.add_id) {
           this.rondes.push(ronde)
         }
       }
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"])
+      if (response.new_id !== undefined) {
+        await this.copy_taken(response.new_id)
       }
     },
-    remove_ronde(ronde_id) {
-      let index = -1;
+    remove_ronde (ronde_id) {
+      let index = -1
       for (let i = 0; i < this.rondes.length; i++) {
         if (this.rondes[i].id === ronde_id) {
           index = i
         }
       }
       if (index > -1) {
-        this.rondes.splice(index, 1);
+        this.rondes.splice(index, 1)
       }
-
     }
   }
 }

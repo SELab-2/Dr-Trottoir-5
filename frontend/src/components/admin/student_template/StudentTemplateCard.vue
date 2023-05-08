@@ -37,11 +37,11 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
+import { RequestHandler } from '@/api/RequestHandler'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
 
 export default {
-  name: "StudentTemplateCard",
+  name: 'StudentTemplateCard',
   props: {
     data: {
       type: Object,
@@ -55,7 +55,7 @@ export default {
     }
   },
   methods: {
-    async delete_template() {
+    async delete_template () {
       await RequestHandler.handle(StudentTemplateService.deleteStudentTemplate(this.data.template_id), {
           id: 'deleteStudentTemplate',
           style: 'SNACKBAR'

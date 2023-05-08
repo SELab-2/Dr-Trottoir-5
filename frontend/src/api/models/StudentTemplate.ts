@@ -1,4 +1,4 @@
-import Location from "@/api/models/Location";
+import Location from '@/api/models/Location'
 
 export default class StudentTemplate {
   id: number;

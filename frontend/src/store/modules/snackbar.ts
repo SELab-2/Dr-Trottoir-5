@@ -7,7 +7,7 @@ export class SnackbarData {
     /**
      * Location on the X-axis.
      */
-    public x: "right" | "left" | "center";
+    public x: 'right' | 'left' | 'center';
 
     /**
      * Location on the Y-axis.
@@ -24,12 +24,12 @@ export class SnackbarData {
      */
     public timeout: number;
 
-    constructor() {
-        this.message = "";
-        this.x = "right";
-        this.y = "bottom";
-        this.color = "info";
-        this.timeout = 6000;
+    constructor () {
+        this.message = ''
+        this.x = 'right'
+        this.y = 'bottom'
+        this.color = 'info'
+        this.timeout = 6000
     }
 }
 
@@ -38,7 +38,7 @@ export const snackbar = {
 
     state: {
         open: false,
-        data: {},
+        data: {}
     },
 
     mutations: {
@@ -48,8 +48,8 @@ export const snackbar = {
          * @param state
          * @param open
          */
-        SET_OPEN(state: any, open: boolean) {
-            state.open = open;
+        SET_OPEN (state: any, open: boolean) {
+            state.open = open
         },
 
         /**
@@ -58,14 +58,14 @@ export const snackbar = {
          * @param state
          * @param data
          */
-        SET_DATA(state: any, data: SnackbarData) {
+        SET_DATA (state: any, data: SnackbarData) {
             // Join a new snackbar with the given data.
             // This is so you only have to provide the changes.
             state.data = {
                 ...new SnackbarData(),
-                ...data,
-            };
-        },
+                ...data
+            }
+        }
     },
 
     actions: {
@@ -75,10 +75,10 @@ export const snackbar = {
          * @param context
          * @param data
          */
-        open(context: any, data: SnackbarData) {
-            context.commit("SET_OPEN", false);
-            context.commit("SET_DATA", data);
-            context.commit("SET_OPEN", true);
+        open (context: any, data: SnackbarData) {
+            context.commit('SET_OPEN', false)
+            context.commit('SET_DATA', data)
+            context.commit('SET_OPEN', true)
         },
 
         /**
@@ -86,8 +86,8 @@ export const snackbar = {
          *
          * @param context
          */
-        close(context: any) {
-            context.commit("SET_OPEN", false);
-        },
-    },
-};
+        close (context: any) {
+            context.commit('SET_OPEN', false)
+        }
+    }
+}

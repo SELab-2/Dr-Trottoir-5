@@ -48,13 +48,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
-import {RequestHandler} from '@/api/RequestHandler';
-import AuthService from '@/api/services/AuthService';
-import {AuthRegisterWrapper} from '@/api/wrappers/AuthWrappers';
-import NormalButton from '@/components/NormalButton.vue';
-import LoginTopBar from "@/components/LoginTopBar.vue";
-import router from '@/router';
+import { defineComponent } from 'vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import AuthService from '@/api/services/AuthService'
+import { AuthRegisterWrapper } from '@/api/wrappers/AuthWrappers'
+import NormalButton from '@/components/NormalButton.vue'
+import LoginTopBar from '@/components/LoginTopBar.vue'
+import router from '@/router'
 
 export default defineComponent({
   name: 'RegisterView',
@@ -84,30 +84,30 @@ export default defineComponent({
         this.firstname,
         this.lastname,
         this.phone_nr
-      );
+      )
 
       RequestHandler.handle(AuthService.register(wrapper), {
-        id: "registerError",
-        style: "SNACKBAR"
+        id: 'registerError',
+        style: 'SNACKBAR'
       }).then(async () => {
         // Send confirmation message.
-        this.$store.dispatch("snackbar/open", {
-          message: "Registreren gelukt",
-          color: "success"
-        });
+        this.$store.dispatch('snackbar/open', {
+          message: 'Registreren gelukt',
+          color: 'success'
+        })
 
         // Update the current user inside the store.
-        this.$store.dispatch("session/clear");
-        await this.$store.dispatch("session/fetch");
+        this.$store.dispatch('session/clear')
+        await this.$store.dispatch('session/fetch')
 
-        await router.push({ name: 'home' });
-      });
+        await router.push({ name: 'home' })
+      })
     },
     async validate () {
-      const { valid } = await this.$refs.form.validate();
+      const { valid } = await this.$refs.form.validate()
 
       if (valid) {
-        await this.apiRegister();
+        await this.apiRegister()
       }
     }
   }

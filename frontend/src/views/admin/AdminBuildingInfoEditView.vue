@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import AdminBuildingInfo from "@/components/admin/AdminBuildingInfo";
+import AdminBuildingInfo from '@/components/admin/AdminBuildingInfo'
 
 export default {
-  name: "AdminBuildingInfoEditView",
-  components: {AdminBuildingInfo}
+  name: 'AdminBuildingInfoEditView',
+  components: { AdminBuildingInfo }
 }
 </script>
 

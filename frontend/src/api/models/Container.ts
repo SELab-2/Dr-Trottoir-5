@@ -1,4 +1,4 @@
-import TrashContainer from "@/api/models/TrashContainer";
+import TrashContainer from '@/api/models/TrashContainer'
 
 export default class Container {
   extra_id: number;

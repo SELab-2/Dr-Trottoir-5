@@ -46,44 +46,40 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import UserService from "@/api/services/UserService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
+import UserService from '@/api/services/UserService'
+import router from '@/router'
 
 export default {
-  name: "DagplanningEditView",
-  components: {
-    NormalButton
-  },
+  name: 'DagplanningEditView',
   data: () => ({
     template_id: 0,
     dag_id: 0,
     ronde_id: 0,
     day: 'MO',
     status: '',
-    start_hour: "",
-    end_hour: "",
+    start_hour: '',
+    end_hour: '',
     students: [],
     all_students: [],
     state_mapping: {
-      "A": "Actief",
-      "E": "Eenmalig",
-      "V": "Vervangen",
-      "I": "Inactief"
+      A: 'Actief',
+      E: 'Eenmalig',
+      V: 'Vervangen',
+      I: 'Inactief'
     }
   }),
-  async mounted() {
+  async mounted () {
     this.template_id = this.$route.params.template_id
     this.dag_id = this.$route.params.dag_id
     this.ronde_id = this.$route.params.ronde_id
 
     // get the dagplanning
     const dagplanning = await RequestHandler.handle(StudentTemplateService.getDagPlanning(this.template_id, this.dag_id), {
-        id: "getDagPlanningError",
-        style: "SNACKBAR"
-    }).then(res => res).catch(() => null);
+        id: 'getDagPlanningError',
+        style: 'SNACKBAR'
+    }).then(res => res).catch(() => null)
 
     this.day = dagplanning.time.day
     this.start_hour = dagplanning.time.start_hour
@@ -94,36 +90,33 @@ export default {
     const template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => {});
+    }).then(result => result).catch(() => {})
     this.status = this.state_mapping[template.status]
 
     // get all users
     this.all_students = await RequestHandler.handle(UserService.getUsers(), {
       id: 'getUsersError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
-
-
+    }).then(result => result).catch(() => [])
   },
   methods: {
-    format_day(day) {
+    format_day (day) {
       const day_mapping = {
-          "MO": "Maandag",
-          "TU": "Dinsdag",
-          "WE": "Woensdag",
-          "TH": "Donderdag",
-          "FR": "Vrijdag",
-          "SA": "Zaterdag",
-          "SU": "Zondag",
+          MO: 'Maandag',
+          TU: 'Dinsdag',
+          WE: 'Woensdag',
+          TH: 'Donderdag',
+          FR: 'Vrijdag',
+          SA: 'Zaterdag',
+          SU: 'Zondag'
         }
         return day_mapping[day]
     },
-    async copy_taken(new_id) {
+    async copy_taken (new_id) {
       this.template_id = new_id
-      return await router.push({name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}})
+      return await router.push({ name: 'ronde_dagplanningen', params: { template_id: this.template_id, ronde_id: this.ronde_id } })
     },
-    async save_edit_permanent() {
-
+    async save_edit_permanent () {
       const body = {
         students: this.students,
         start_hour: this.start_hour,
@@ -131,18 +124,17 @@ export default {
       }
 
       const response = await RequestHandler.handle(StudentTemplateService.editDagPlanning(this.template_id, this.dag_id, body), {
-        id: "getDagPlanningError",
-        style: "SNACKBAR"
-      }).then(res => res).catch(() => {});
+        id: 'getDagPlanningError',
+        style: 'SNACKBAR'
+      }).then(res => res).catch(() => {})
 
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"], response["new_dag_id"])
+      if (response.new_id !== undefined) {
+        await this.copy_taken(response.new_id, response.new_dag_id)
       } else {
-        await this.copy_taken(this.template_id, response["new_dag_id"])
+        await this.copy_taken(this.template_id, response.new_dag_id)
       }
     },
-    async save_edit_eenmalig() {
-
+    async save_edit_eenmalig () {
       const body = {
         students: this.students,
         start_hour: this.start_hour,
@@ -150,12 +142,12 @@ export default {
       }
 
       const response = await RequestHandler.handle(StudentTemplateService.editDagPlanningEenmalig(this.template_id, this.dag_id, body), {
-        id: "getDagPlanningError",
-        style: "SNACKBAR"
-      }).then(res => res).catch(() => {});
+        id: 'getDagPlanningError',
+        style: 'SNACKBAR'
+      }).then(res => res).catch(() => {})
 
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"])
+      if (response.new_id !== undefined) {
+        await this.copy_taken(response.new_id)
       } else {
         await this.copy_taken(this.template_id)
       }

@@ -23,10 +23,10 @@
 <script>
 import EditIcon from '../icons/EditIcon.vue'
 import DeleteIcon from '../icons/DeleteIcon.vue'
-import MailTemplate from "@/api/models/MailTemplate";
-import {RequestHandler} from "@/api/RequestHandler";
-import router from "@/router";
-import EmailTemplateService from "@/api/services/EmailTemplateService";
+import MailTemplate from '@/api/models/MailTemplate'
+import { RequestHandler } from '@/api/RequestHandler'
+import router from '@/router'
+import EmailTemplateService from '@/api/services/EmailTemplateService'
 
 /**
  * TemplateMailCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -47,18 +47,18 @@ export default {
   }),
   methods: {
     goToEditPage: function () {
-      router.push({name: 'mail-template-edit', params: {id: this.data.id}})
+      router.push({ name: 'mail-template-edit', params: { id: this.data.id } })
     },
     deletePost: function () {
       RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
-        .then( () => window.location.reload())
+        .then(() => window.location.reload())
     }
   },
   components: {
     EditIcon,
     DeleteIcon
   },
-  mounted() {
+  mounted () {
     const count = this.data.content.match(/#([^#]*)#/g)
     if (count !== null) {
       this.argsCount = count.length

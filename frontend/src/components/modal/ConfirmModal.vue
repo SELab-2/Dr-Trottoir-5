@@ -36,7 +36,7 @@
 
 <script>
 
-import Vue, { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
 
@@ -55,17 +55,17 @@ export default defineComponent({
     /**
      * Close the modal.
      */
-    close() {
-      this.$store.dispatch("modal/close");
+    close () {
+      this.$store.dispatch('modal/close')
     },
     /**
      * Execute the confirm action.
      */
-    confirm() {
-      this.payload.action(this);
+    confirm () {
+      this.payload.action(this)
     }
   },
-  data() {
+  data () {
     /**
      * If the confirm model is loading.
      */

@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import {RouterUtil} from "@/util/RouterUtil";
-import {ErrorComponentPayload} from "@/api/error/types/component/ErrorComponentPayload";
+import { RouterUtil } from '@/util/RouterUtil'
+import { ErrorComponentPayload } from '@/api/error/types/component/ErrorComponentPayload'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -55,8 +55,8 @@ export default defineComponent({
     /**
      * Reload the current route.
      */
-    reloadRoute() {
-      RouterUtil.reload(this.$router);
+    reloadRoute () {
+      RouterUtil.reload(this.$router)
     }
   }
 

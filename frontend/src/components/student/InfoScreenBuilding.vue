@@ -16,7 +16,7 @@
       <v-card class="container-border ma-2">
         <h2 class="mt-2">Opmerkingen:</h2>
         <v-list>
-          <v-list-item v-for="remark in building.remarks">{{ remark }}</v-list-item>
+          <v-list-item v-for="remark in building.remarks" :key="remark">{{ remark }}</v-list-item>
         </v-list>
       </v-card>
     </v-card>
@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import RoundService from "@/api/services/RoundService";
+import { RequestHandler } from '@/api/RequestHandler'
+import RoundService from '@/api/services/RoundService'
 
 /**
  * InfoScreenBuilding component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -40,29 +40,29 @@ export default {
     data: {
       type: Object,
       default: () => ({
-        nameBuilding: "Empty",
+        nameBuilding: 'Empty',
         imageURL: 'empty',
         remarks: []
       })
     }
   },
   data: () => ({
-    building: {location: {name: 'Empty'}, manual: {file: ''}, remarks: []},
+    building: { location: { name: 'Empty' }, manual: { file: '' }, remarks: [] }
   }),
-  async created() {
+  async created () {
     if ('building' in this.$route.query) {
       const building = await RequestHandler.handle(RoundService.getBuilding(this.$route.query.building), {
-        id: "getBuildingError",
-        style: "NONE"
-      }).then(b => b).catch(() => null);
-      if (!building) return;
+        id: 'getBuildingError',
+        style: 'NONE'
+      }).then(b => b).catch(() => null)
+      if (!building) return
 
-      this.building = building;
+      this.building = building
     }
   },
   methods: {
-    downloadFile() {
-      window.open(this.building.manual.file);
+    downloadFile () {
+      window.open(this.building.manual.file)
     }
   }
 }

@@ -41,45 +41,45 @@ import TrashTemplate from '@/api/models/TrashTemplate'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import router from '@/router'
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
+import { RequestHandler } from '@/api/RequestHandler'
+import LocationService from '@/api/services/LocationService'
 
 export default {
   name: 'TrashContainerTemplateCard',
-  components: {EditIcon, DeleteIcon},
+  components: { EditIcon, DeleteIcon },
   props: {
     data: {
-      type: TrashTemplate,
+      type: TrashTemplate
     }
   },
   data: () => ({
     locations: [],
-    locatie: ""
+    locatie: ''
   }),
   methods: {
     editTemplate: function () {
       router.push({
         name: 'editTrashtemplates',
-        params: {id: this.data.id}
-        });
+        params: { id: this.data.id }
+        })
     },
     deleteTemplate: function () {
-      //todo
+      // todo
     },
     goToTrashTemplateBuildingsPage: function () {
       router.push({
         name: 'trashtemplateBuildings',
-        params: {id: this.data.id}
-      });
+        params: { id: this.data.id }
+      })
     },
     goToTrashTemplateContainersPage: function () {
       router.push({
         name: 'trashtemplateContainers',
-        params: {id: this.data.id}
+        params: { id: this.data.id }
       })
     }
   },
-  async beforeMount() {
+  async beforeMount () {
     await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'

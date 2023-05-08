@@ -63,16 +63,16 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import MailTemplateService from "@/api/services/MailTemplateService";
+import { RequestHandler } from '@/api/RequestHandler'
+import MailTemplateService from '@/api/services/MailTemplateService'
 
 /**
  * CreateEditMailTemplate component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * edit: Boolean als je een mail template wilt bewerken of aanmaken
  */
 
-import NormalButton from "@/components/NormalButton.vue";
-import router from "@/router";
+import NormalButton from '@/components/NormalButton.vue'
+import router from '@/router'
 
 export default {
   name: 'CreateEditMailTemplate',
@@ -80,9 +80,9 @@ export default {
     edit: {
       type: Boolean,
       default: false
-    },
+    }
   },
-  components: {NormalButton},
+  components: { NormalButton },
   data: () => ({
     template: {
       name: '',
@@ -94,9 +94,9 @@ export default {
   methods: {
     async createTemplate () {
       if (this.template.name === '' || this.template.text === '') {
-        this.$store.dispatch("snackbar/open", {
-          message: "Vul alle velden in",
-          color: "error"
+        this.$store.dispatch('snackbar/open', {
+          message: 'Vul alle velden in',
+          color: 'error'
         })
         return
       }
@@ -111,20 +111,20 @@ export default {
         ),
         {
         id: 'createMailTemplateError',
-        style: "SNACKBAR",
+        style: 'SNACKBAR'
       }).then(() => {
-          this.$store.dispatch("snackbar/open", {
-            message: "Mail template toegevoegd",
-            color: "success"
+          this.$store.dispatch('snackbar/open', {
+            message: 'Mail template toegevoegd',
+            color: 'success'
           })
-      router.push({name: 'mailtemplates'})
+      router.push({ name: 'mailtemplates' })
       })
     },
     editTemplate: function () {
     if (this.template.name === '' || this.template.text === '') {
-        this.$store.dispatch("snackbar/open", {
-          message: "Vul alle velden in",
-          color: "error"
+        this.$store.dispatch('snackbar/open', {
+          message: 'Vul alle velden in',
+          color: 'error'
         })
         return
       }
@@ -139,31 +139,32 @@ export default {
         ),
         {
           id: 'editMailTemplateError',
-          style: "SNACKBAR",
+          style: 'SNACKBAR'
         }).then(() => {
-        this.$store.dispatch("snackbar/open", {
-          message: "Mail template aangepast",
-          color: "success"
+        this.$store.dispatch('snackbar/open', {
+          message: 'Mail template aangepast',
+          color: 'success'
         })
-        router.push({name: 'mailtemplates' })
+        router.push({ name: 'mailtemplates' })
       })
     },
     closeDialog: function () {
       this.showDialog = false
     }
 
-  }, computed: {
-    formattedText() {
-      return this.template.text.replace(/#([^#]*)#/g, '<b>$1</b>');
+  },
+computed: {
+    formattedText () {
+      return this.template.text.replace(/#([^#]*)#/g, '<b>$1</b>')
     }
   },
-  async mounted() {
+  async mounted () {
     if (this.edit) {
       await RequestHandler.handle(
         MailTemplateService.getMailTemplate(this.$route.params.id),
         {
           id: 'getMailTemplateError',
-          style: "SNACKBAR",
+          style: 'SNACKBAR'
         }).then((response) => {
           this.template.name = response.name
           this.template.text = response.content

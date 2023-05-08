@@ -7,7 +7,7 @@
       Terug
     </v-btn>
   </v-row>
-  <DagPlanningCard @remove="remove_dagplanning" v-for="dagplanning in dagplanningen" :data="{
+  <DagPlanningCard @remove="remove_dagplanning" v-for="dagplanning in dagplanningen" :key="dagplanning" :data="{
     template_id: this.template_id,
     ronde_id: this.ronde_id,
     status: this.status,
@@ -27,33 +27,33 @@
 </template>
 
 <script>
-import DagPlanningCard from "@/components/admin/student_template/DagPlanningCard.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import NormalButton from "@/components/NormalButton.vue";
-import router from "@/router";
+import DagPlanningCard from '@/components/admin/student_template/DagPlanningCard.vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
+import NormalButton from '@/components/NormalButton.vue'
+import router from '@/router'
 
 export default {
-  name: "RondeDagplanningenView",
+  name: 'RondeDagplanningenView',
   components: {
     DagPlanningCard,
     NormalButton
   },
   data: () => ({
     template_id: 0,
-    status: "Actief",
+    status: 'Actief',
     ronde_id: 0,
     name: 'Testnaam',
     location: null,
     dagplanningen: [],
     state_mapping: {
-      "A": "Actief",
-      "E": "Eenmalig",
-      "V": "Vervangen",
-      "I": "Inactief"
+      A: 'Actief',
+      E: 'Eenmalig',
+      V: 'Vervangen',
+      I: 'Inactief'
     }
   }),
-  async mounted() {
+  async mounted () {
     this.template_id = this.$route.params.template_id
     this.ronde_id = this.$route.params.ronde_id
 
@@ -62,28 +62,28 @@ export default {
       id: 'getLocationsError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => {
-    });
+    })
     this.status = this.state_mapping[template.status]
 
     this.dagplanningen = await RequestHandler.handle(StudentTemplateService.getDagPlanningen(this.template_id, this.ronde_id), {
       id: 'getDagplanningenError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
     this.sort_dagplanning()
   },
   methods: {
-    async remove_dagplanning(new_template_id) {
+    async remove_dagplanning (new_template_id) {
       if (new_template_id === undefined) new_template_id = this.template_id
 
       this.template_id = new_template_id
       this.dagplanningen = await RequestHandler.handle(StudentTemplateService.getDagPlanningen(this.template_id, this.ronde_id), {
         id: 'getDagplanningenError',
         style: 'SNACKBAR'
-      }).then(result => result).catch(() => []);
+      }).then(result => result).catch(() => [])
       this.sort_dagplanning()
-      return await router.push({name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}})
+      return await router.push({ name: 'ronde_dagplanningen', params: { template_id: this.template_id, ronde_id: this.ronde_id } })
     },
-    sort_dagplanning() {
+    sort_dagplanning () {
       const sorted_dagplanningen = []
       for (const day of ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']) {
         for (const dagplanning of this.dagplanningen) {

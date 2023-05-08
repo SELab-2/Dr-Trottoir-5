@@ -3,8 +3,7 @@ import { modal } from './modules/modal'
 import { session } from './modules/session'
 import { createStore } from 'vuex'
 
-export let store
-store = createStore({
+export const store = createStore({
   state: {
   },
   getters: {

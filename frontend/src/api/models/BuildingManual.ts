@@ -1,6 +1,6 @@
-import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
+import { BuildingManualStatus } from '@/api/models/BuildingManualStatus'
 
-export default class BuildingManual{
+export default class BuildingManual {
   id: number;
   file: File;
   fileType: string;

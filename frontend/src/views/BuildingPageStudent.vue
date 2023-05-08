@@ -52,80 +52,80 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import {RequestHandler} from "@/api/RequestHandler";
-import PlanningService from "@/api/services/PlanningService";
-import NormalButton from "@/components/NormalButton";
-import ContainerService from "@/api/services/ContainerService";
-import router from "@/router";
+import { defineComponent } from 'vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import PlanningService from '@/api/services/PlanningService'
+import NormalButton from '@/components/NormalButton'
+import ContainerService from '@/api/services/ContainerService'
+import router from '@/router'
 
 export default defineComponent({
-  name: "BuildingPageStudent",
+  name: 'BuildingPageStudent',
   components: {
     NormalButton
   },
-  async created() {
-    if ('planning' in this.$route.query) this.planning = this.$route.query.planning;
-    if ('year' in this.$route.query) this.year = this.$route.query.year;
-    if ('week' in this.$route.query) this.week = this.$route.query.week;
+  async created () {
+    if ('planning' in this.$route.query) this.planning = this.$route.query.planning
+    if ('year' in this.$route.query) this.year = this.$route.query.year
+    if ('week' in this.$route.query) this.week = this.$route.query.week
     if ('building' in this.$route.query) {
       const planning = await RequestHandler.handle(PlanningService.getPlanning(this.planning), {
-        id: "getDayplanningError",
-        style: "NONE"
-      }).then(planning => planning).catch(() => null);
-      if (!planning) return;
+        id: 'getDayplanningError',
+        style: 'NONE'
+      }).then(planning => planning).catch(() => null)
+      if (!planning) return
 
       RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
         id: `getStatus${planning.id}Error`,
-        style: "NONE"
+        style: 'NONE'
       }).then(statuses => {
-        this.statuses = statuses[this.$route.query.building];
-      }).catch(() => null);
+        this.statuses = statuses[this.$route.query.building]
+      }).catch(() => null)
 
-      const building_index = planning.ronde.buildings.findIndex(b => String(b.id) === this.$route.query.building);
-      this.building = planning.ronde.buildings[building_index];
+      const building_index = planning.ronde.buildings.findIndex(b => String(b.id) === this.$route.query.building)
+      this.building = planning.ronde.buildings[building_index]
       RequestHandler.handle(PlanningService.getInfo(planning.id), {
-        id: "getBuildingInfoError",
-        style: "NONE"
-      }).then(infos => this.info = infos[building_index].id).catch(() => null);
+        id: 'getBuildingInfoError',
+        style: 'NONE'
+      }).then(infos => { this.info = infos[building_index].id }).catch(() => null)
 
       const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
-        id: "getContainersError",
-        style: "NONE"
-      }).then(c => c).catch(() => null);
-      if (!containers) return;
+        id: 'getContainersError',
+        style: 'NONE'
+      }).then(c => c).catch(() => null)
+      if (!containers) return
 
-      const weekDays = ['SU','MO','TU','WE','TH','FR','SA'];
-      const day = weekDays[new Date(this.date).getDay()];
-      this.containers = containers.filter(c => c.collection_day.day === day);
+      const weekDays = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+      const day = weekDays[new Date(this.date).getDay()]
+      this.containers = containers.filter(c => c.collection_day.day === day)
     }
   },
   data: () => ({
     date: new Date().toISOString().split('T')[0],
-    building: {location: {name: ''}, adres: '', id: ''},
-    trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
+    building: { location: { name: '' }, adres: '', id: '' },
+    trashMap: { PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK' },
     containers: [],
-    statuses: {ST: 0, DE: 0, AR: 0},
+    statuses: { ST: 0, DE: 0, AR: 0 },
     info: '',
     planning: '',
     year: null,
     week: null
   }),
   methods: {
-    clickArrival() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning}});
+    clickArrival () {
+      router.push({ name: 'student_post_view', query: { info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning } })
     },
-    clickStorage() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning}});
+    clickStorage () {
+      router.push({ name: 'student_post_view', query: { info: this.info, building: this.building.id, type: 'Berging', planning: this.planning } })
     },
-    clickDeparture() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning}});
+    clickDeparture () {
+      router.push({ name: 'student_post_view', query: { info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning } })
     },
-    buildingInfo() {
-      router.push({name: 'building_info', query: {building: this.building.id}});
+    buildingInfo () {
+      router.push({ name: 'building_info', query: { building: this.building.id } })
     }
   }
-});
+})
 </script>
 
 <style>

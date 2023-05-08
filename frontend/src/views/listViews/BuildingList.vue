@@ -6,9 +6,9 @@
 import ListPage from '@/components/admin/ListPage'
 import BuildingCard from '@/components/admin/BuildingCard'
 import BuildingHeader from '@/components/admin/BuildingHeader'
-import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import BuildingService from '@/api/services/BuildingService'
+import router from '@/router'
 export default {
   name: 'BuildingList',
   components: { ListPage },
@@ -21,12 +21,12 @@ export default {
     }
   },
   methods: {
-    addBuilding : function () {
-      router.push({name: 'create_building'})
+    addBuilding: function () {
+      router.push({ name: 'create_building' })
     }
   },
-  async beforeMount() {
-    await RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'}).then(async result => {
+  async beforeMount () {
+    await RequestHandler.handle(BuildingService.getBuildings(), { id: 'getBuildingsError', style: 'SNACKBAR' }).then(async result => {
       this.elements = result
     })
   }

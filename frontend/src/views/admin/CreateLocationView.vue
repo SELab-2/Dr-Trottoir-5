@@ -18,20 +18,20 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton";
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
+import NormalButton from '@/components/NormalButton'
+import { RequestHandler } from '@/api/RequestHandler'
+import LocationService from '@/api/services/LocationService'
 
 export default {
-  name: "CreateLocationView.vue",
-  components: {NormalButton},
+  name: 'CreateLocationView.vue',
+  components: { NormalButton },
   data: () => {
     return {
-      name: '',
+      name: ''
     }
   },
   methods: {
-    addLocation() {
+    addLocation () {
       RequestHandler.handle(LocationService.createLocation({
           name: this.name
         }
@@ -40,11 +40,11 @@ export default {
         style: 'SNACKBAR'
       }).then(() =>
 
-        this.$store.dispatch("snackbar/open", {
-          message: "De locatie is toegevoegd",
-          color: "success"
+        this.$store.dispatch('snackbar/open', {
+          message: 'De locatie is toegevoegd',
+          color: 'success'
         })
-      );
+      )
     }
   }
 }

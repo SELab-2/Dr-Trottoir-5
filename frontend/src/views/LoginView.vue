@@ -35,7 +35,7 @@ import AuthService from '@/api/services/AuthService'
 import router from '@/router'
 import { defineComponent } from 'vue'
 import NormalButton from '@/components/NormalButton'
-import LoginTopBar from "@/components/LoginTopBar.vue";
+import LoginTopBar from '@/components/LoginTopBar.vue'
 
 // TODO input error handling
 
@@ -53,7 +53,7 @@ export default defineComponent({
     NormalButton,
     LoginTopBar
   },
-  beforeRouteEnter(to, from, next) {
+  beforeRouteEnter (to, from, next) {
     // save the previous path so we can return after the login is done
     next(vm => {
       if (from !== undefined) {
@@ -61,45 +61,44 @@ export default defineComponent({
       }
     })
   },
-  beforeUnmount() {
+  beforeUnmount () {
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.onResize)
     }
   },
-  mounted() {
+  mounted () {
     this.onResize()
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-     login() {
+     login () {
        AuthService.login({ email: this.email, password: this.password })
         .then(
           async () => {
-
             // Send confirmation message.
-            this.$store.dispatch("snackbar/open", {
-              message: "U bent ingelogd",
-              color: "success"
-            });
+            this.$store.dispatch('snackbar/open', {
+              message: 'U bent ingelogd',
+              color: 'success'
+            })
 
             // Update the current user inside the store.
-            await this.$store.dispatch("session/clear");
-            await this.$store.dispatch("session/fetch");
+            await this.$store.dispatch('session/clear')
+            await this.$store.dispatch('session/fetch')
 
-            await router.push({ name: 'home' });
+            await router.push({ name: 'home' })
           }
         ).catch((error) => {
           ErrorHandler.handle(
             error,
             {
-              id: "login",
-              style: "SNACKBAR"
+              id: 'login',
+              style: 'SNACKBAR'
             },
             this.fields
-          );
+          )
       })
     },
-    onResize() {
+    onResize () {
       this.smallScreen = window.innerWidth < 600
     }
   }

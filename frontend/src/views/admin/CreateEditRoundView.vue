@@ -34,16 +34,16 @@
 </template>
 
 <script>
-import {defineComponent} from "vue";
-import RoundService from "@/api/services/RoundService";
-import {RequestHandler} from "@/api/RequestHandler";
-import NormalButton from "@/components/NormalButton.vue";
-import router from "@/router";
+import { defineComponent } from 'vue'
+import RoundService from '@/api/services/RoundService'
+import { RequestHandler } from '@/api/RequestHandler'
+import NormalButton from '@/components/NormalButton.vue'
+import router from '@/router'
 
 export default defineComponent({
-  name: "CreateRoundView",
-  components: {NormalButton},
-  props: {id: String},
+  name: 'CreateRoundView',
+  components: { NormalButton },
+  props: { id: String },
   data: () => ({
     valid: true,
     locations: [],
@@ -55,34 +55,34 @@ export default defineComponent({
       required: value => !!value || 'Dit veld is verplicht.'
     }
   }),
-  async beforeCreate() {
+  async beforeCreate () {
     RequestHandler.handle(RoundService.getLocations(), {
       id: 'getLocationsError',
       style: 'none'
     }).then(l => {
-      this.locations = l;
-    }).catch(() => null);
+      this.locations = l
+    }).catch(() => null)
 
     RequestHandler.handle(RoundService.getBuildings(), {
       id: 'getBuildingsError',
       style: 'none'
     }).then(b => {
-      this.buildings = b;
-    }).catch(() => null);
+      this.buildings = b
+    }).catch(() => null)
 
     if (this.id !== undefined) {
       RequestHandler.handle(RoundService.getRoundById(Number(this.id)), {
         id: 'getRoundError',
         style: 'SNACKBAR'
       }).then(r => {
-        this.name = r.name;
-        this.location = r.location;
-        this.selected = r.buildings;
-      }).catch(() => null);
+        this.name = r.name
+        this.location = r.location
+        this.selected = r.buildings
+      }).catch(() => null)
     }
   },
   methods: {
-    async createRound() {
+    async createRound () {
       if (this.id === undefined) {
         console.log(this.selected)
         RequestHandler.handle(RoundService.createRound({
@@ -93,12 +93,12 @@ export default defineComponent({
           id: 'createRoundError',
           style: 'none'
         }).then(b => {
-          this.$store.dispatch("snackbar/open", {
+          this.$store.dispatch('snackbar/open', {
             message: `Ronde ${b.name} is aangemaakt.`,
-            color: "success"
-          });
-          router.push({ name: 'rounds' });
-        }).catch(() => null);
+            color: 'success'
+          })
+          router.push({ name: 'rounds' })
+        }).catch(() => null)
       } else {
         RequestHandler.handle(RoundService.updateRoundById(Number(this.id), {
           name: this.name,
@@ -108,21 +108,21 @@ export default defineComponent({
           id: 'updateRoundError',
           style: 'none'
         }).then(b => {
-          this.$store.dispatch("snackbar/open", {
+          this.$store.dispatch('snackbar/open', {
             message: `Ronde ${b.name} is aangepast.`,
-            color: "success"
-          });
-          router.push({ name: 'rounds' });
-        }).catch(() => null);
+            color: 'success'
+          })
+          router.push({ name: 'rounds' })
+        }).catch(() => null)
       }
     },
     async validate () {
-      const { valid } = await this.$refs.form.validate();
+      const { valid } = await this.$refs.form.validate()
 
       if (valid) {
-        await this.createRound();
+        await this.createRound()
       }
     }
   }
-});
+})
 </script>

@@ -1,30 +1,18 @@
 <template>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  </div>
 </template>
 
 <script lang="ts">
-import router from '@/router';
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
+import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
 
 export default defineComponent({
   name: 'HomeView',
-  async created() {
-    const user = await this.$store.getters['session/currentUser'].catch(() => null);
-
-    // Route user to a base based on his role
-    switch (user.role) {
-      case 'AA':
-        return router.push({name: 'register_done'});
-      case 'ST':
-        return router.push({name: 'student_home'});
-      case 'SY':
-        return router.push({name: 'syndicus_home'});
-      case 'AD':
-      case 'SU':
-        return router.push({name: 'admin_home'});
-      case 'BE':
-        return router.push({name: 'resident_home'});
-    }
-
+  components: {
+    HelloWorld
   }
-});
+})
 </script>

@@ -17,9 +17,9 @@ export class InputField<T = unknown> {
     /**
      * Constructor without values
      */
-    constructor(field: { value?: any; rules?: Array<Function> } = {}) {
-        this.value = field.value !== undefined ? field.value : "";
-        this.rules = field.rules !== undefined ? field.rules : [];
-        this.error = "";
+    constructor (field: { value?: any; rules?: Array<Function> } = {}) {
+        this.value = field.value !== undefined ? field.value : ''
+        this.rules = field.rules !== undefined ? field.rules : []
+        this.error = ''
     }
 }

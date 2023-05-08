@@ -6,7 +6,7 @@
       <h3>LOADING users</h3>
     </div>
     <div v-else-if="users.isSuccess()">
-      <p v-for="u in users.requireData()">{{ u.email }}</p>
+      <p v-for="u in users.requireData()" :key="u.email">{{ u.email }}</p>
     </div>
 
     <h2>The currently logged in user</h2>
@@ -21,9 +21,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
-import UserService from "@/api/services/UserService";
-import {RequestHandler} from "@/api/RequestHandler";
+import { defineComponent } from 'vue'
+import UserService from '@/api/services/UserService'
+import { RequestHandler } from '@/api/RequestHandler'
 
 /*
  view is just for testing purposes, will be removed
@@ -31,22 +31,22 @@ import {RequestHandler} from "@/api/RequestHandler";
 
 export default defineComponent({
   name: 'UsersView',
-  data() {
+  data () {
     return {
       user: RequestHandler.handle(UserService.get(), {
-        id: "getUserError",
-        style: "SNACKBAR"
+        id: 'getUserError',
+        style: 'SNACKBAR'
       }),
       users: RequestHandler.handle(UserService.getUsers(), {
-        id: "getUsersError",
-        style: "SNACKBAR"
+        id: 'getUsersError',
+        style: 'SNACKBAR'
       }),
       loaded: {}
     }
   },
-  created() {
-    this.user.finally(() => this.loaded.user = true).catch(() => {});
-    this.users.finally(() => this.loaded.users = true).catch(() => {});
+  created () {
+    this.user.finally(() => { this.loaded.user = true }).catch(() => {})
+    this.users.finally(() => { this.loaded.users = true }).catch(() => {})
   }
 })
 </script>

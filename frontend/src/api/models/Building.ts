@@ -1,4 +1,4 @@
-import BuildingManual from "@/api/models/BuildingManual";
+import BuildingManual from '@/api/models/BuildingManual'
 
 export default class Building {
   name: string;

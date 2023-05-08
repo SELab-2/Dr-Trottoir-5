@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "LoginTopBar",
+  name: 'LoginTopBar',
   props: {
     login: Boolean, default: () => true
   }

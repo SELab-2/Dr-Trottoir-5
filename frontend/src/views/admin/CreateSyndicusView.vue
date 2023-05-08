@@ -3,10 +3,10 @@
 </template>
 
 <script>
-import CreateEditSyndicus from "@/components/admin/CreateEditSyndicus";
+import CreateEditSyndicus from '@/components/admin/CreateEditSyndicus'
 
 export default {
-  name: "CreateSyndicusView",
-  components: {CreateEditSyndicus}
+  name: 'CreateSyndicusView',
+  components: { CreateEditSyndicus }
 }
 </script>

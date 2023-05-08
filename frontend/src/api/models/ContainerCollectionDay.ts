@@ -1,4 +1,4 @@
-import {Weekday} from "@/api/models/Weekday";
+import { Weekday } from '@/api/models/Weekday'
 
 export default class ContainerCollectionDay {
   day: Weekday

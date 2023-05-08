@@ -1,14 +1,14 @@
-import User from "@/api/models/User";
-import UserService from "@/api/services/UserService";
-import {UserRole} from "@/api/models/UserRole";
-import {RequestHandler} from "@/api/RequestHandler";
-import {EchoPromise} from "@/api/EchoFetch";
+import User from '@/api/models/User'
+import UserService from '@/api/services/UserService'
+import { UserRole } from '@/api/models/UserRole'
+import { RequestHandler } from '@/api/RequestHandler'
+import { EchoPromise } from '@/api/EchoFetch'
 
 export const session = {
   namespaced: true,
 
   state: {
-    currentUser: null,
+    currentUser: null
   },
 
   mutations: {
@@ -18,9 +18,9 @@ export const session = {
      * @param state
      * @param currentUser User that is logged in.
      */
-    SET_CURRENTUSER(state: any, currentUser: EchoPromise<User>) {
-      state.currentUser = currentUser;
-    },
+    SET_CURRENTUSER (state: any, currentUser: EchoPromise<User>) {
+      state.currentUser = currentUser
+    }
   },
 
   actions: {
@@ -30,13 +30,13 @@ export const session = {
      * @param context
      * @param args
      */
-    fetch(context: any, args: {needsLogin}) {
+    fetch (context: any, args: {needsLogin}) {
       if (context.state.currentUser === null) {
-        const style = args && args.needsLogin && args.needsLogin === true ? "SNACKBAR" : "NONE";
-        context.commit("SET_CURRENTUSER", RequestHandler.handle(UserService.get(), {
-          id: "getUserError",
+        const style = args && args.needsLogin && args.needsLogin === true ? 'SNACKBAR' : 'NONE'
+        context.commit('SET_CURRENTUSER', RequestHandler.handle(UserService.get(), {
+          id: 'getUserError',
           style: style
-        }).catch(() => {}));
+        }).catch(() => {}))
       }
     },
 
@@ -44,8 +44,8 @@ export const session = {
      * Clear the currently stored user
      * @param context
      */
-    clear(context: any) {
-      if (context.state.currentUser !== null) context.state.currentUser = null;
+    clear (context: any) {
+      if (context.state.currentUser !== null) context.state.currentUser = null
     }
   },
 
@@ -55,8 +55,8 @@ export const session = {
      *
      * @param state
      */
-    currentUser(state: any): EchoPromise<User> {
-      return state.currentUser;
+    currentUser (state: any): EchoPromise<User> {
+      return state.currentUser
     },
 
     /**
@@ -64,8 +64,8 @@ export const session = {
      *
      * @param state
      */
-    isAuthenticated(state: any): boolean {
-      return state.currentUser.then(() => true).catch(() => false);
+    isAuthenticated (state: any): boolean {
+      return state.currentUser.then(() => true).catch(() => false)
     },
 
     /**
@@ -73,10 +73,10 @@ export const session = {
      *
      * @param state
      */
-    isAdmin(state: any): Promise<boolean> {
+    isAdmin (state: any): Promise<boolean> {
       return state.currentUser
       .then(u => u.role === UserRole.AD || u.role === UserRole.SU)
-      .catch(() => false);
-    },
-  },
-};
+      .catch(() => false)
+    }
+  }
+}

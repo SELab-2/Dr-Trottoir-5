@@ -36,7 +36,7 @@
       <v-col cols="1"/>
       <v-col class="d-flex align-center" cols="2">
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template>
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
                 status
               }}</span>
@@ -48,11 +48,9 @@
 </template>
 
 <script>
-import Building from "@/api/models/Building";
-import BuildingService from "@/api/services/BuildingService";
-import { RequestHandler } from "@/api/RequestHandler";
-import router from "@/router";
-
+import BuildingService from '@/api/services/BuildingService'
+import { RequestHandler } from '@/api/RequestHandler'
+import router from '@/router'
 
 export default {
   name: 'TrashTemplateBuildingCard',
@@ -66,7 +64,7 @@ export default {
        *   trash_ids: Number[]
        * }
        * **/
-      type: Object //TODO MAKE OBJECT FOR THIS
+      type: Object // TODO MAKE OBJECT FOR THIS
     }
   },
   data: () => ({
@@ -79,16 +77,16 @@ export default {
     },
     goToBuildingPage: function () {
       // TODO Check if correct id with data because now it's with this.building
-      router.push({name: 'admin_info_building', params: {id: this.building.id}});
+      router.push({ name: 'admin_info_building', params: { id: this.building.id } })
     }
   },
-  mounted() {
+  mounted () {
     this.status = this.building.status
   },
-  async beforeMount() {
+  async beforeMount () {
     this.building = this.data.building
     await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(
-      async result => this.status = result.manualStatus)
+      async result => { this.status = result.manualStatus })
   }
 }
 </script>

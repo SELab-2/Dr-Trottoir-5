@@ -2,9 +2,8 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": false,
+    "strict": true,
     "jsx": "preserve",
-    "experimentalDecorators": true,
     "moduleResolution": "node",
     "allowJs": true,
     "skipLibCheck": true,
@@ -38,7 +37,6 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "src/api/EchoFetch"
+    "node_modules"
   ]
 }

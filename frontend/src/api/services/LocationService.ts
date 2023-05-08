@@ -1,14 +1,14 @@
-import {Body, EchoPromise, EchoService, EchoServiceBuilder, GET, POST} from "@/api/EchoFetch";
-import config from "@/config";
-import Location from "@/api/models/Location";
-import {InputFields} from "@/types/fields/InputFields";
+import { Body, EchoPromise, EchoService, EchoServiceBuilder, GET, POST } from '@/api/EchoFetch'
+import config from '@/config'
+import Location from '@/api/models/Location'
+import { InputFields } from '@/types/fields/InputFields'
 
 class LocationService extends EchoService {
   /**
    * Get locations
    */
   @GET('/ronde/locatie/')
-  getLocations() : EchoPromise<Location[]> {
+  getLocations () : EchoPromise<Location[]> {
     return {} as EchoPromise<Location[]>
   }
 
@@ -16,10 +16,9 @@ class LocationService extends EchoService {
    * Add Location
    */
   @POST('/ronde/locatie/')
-  createLocation(@Body() body: InputFields) : EchoPromise<Location> {
+  createLocation (@Body() body: InputFields) : EchoPromise<Location> {
     return {} as EchoPromise<Location>
   }
-
 }
 
 export default new EchoServiceBuilder()

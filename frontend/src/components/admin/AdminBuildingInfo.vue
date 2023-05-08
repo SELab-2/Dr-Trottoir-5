@@ -86,35 +86,35 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton";
-import BuildingService from "@/api/services/BuildingService";
-import {RequestHandler} from "@/api/RequestHandler";
-import router from "@/router";
-import ConfirmDialog from "@/components/util/ConfirmDialog"
+import NormalButton from '@/components/NormalButton'
+import BuildingService from '@/api/services/BuildingService'
+import { RequestHandler } from '@/api/RequestHandler'
+import router from '@/router'
+import ConfirmDialog from '@/components/util/ConfirmDialog'
 
 export default {
-  name: "AdminBuildingView",
-  components: {ConfirmDialog, NormalButton},
-  props: {edit: Boolean},
+  name: 'AdminBuildingView',
+  components: { ConfirmDialog, NormalButton },
+  props: { edit: Boolean },
   data: () => {
     return {
       name: '',
       adres: '',
-      manual: {file: '', fileType: '', manualStatus: ''},
+      manual: { file: '', fileType: '', manualStatus: '' },
       ivago_klantnr: 0,
       // time: 0,  TODO <- milestone 3
       planningen: [],
       new_manual: null
     }
   },
-  beforeMount() {
+  beforeMount () {
     this.getBuildingInformation()
   },
   methods: {
-    goEditPage() {
-      router.push({name: 'admin_edit_building', params: {id: this.$route.params.id}})
+    goEditPage () {
+      router.push({ name: 'admin_edit_building', params: { id: this.$route.params.id } })
     },
-    getBuildingInformation() {
+    getBuildingInformation () {
       RequestHandler.handle(BuildingService.getBuildingById(this.$route.params.id), {
         id: 'getBuildingError',
         style: 'SNACKBAR'
@@ -124,42 +124,42 @@ export default {
         this.ivago_klantnr = result.ivago_klantnr
 
         if (result.manual != null) {
-          this.manual = result.manual;
+          this.manual = result.manual
           this.manual.file = this.manual.file.substring(this.manual.file.indexOf('/api/'))
         } else {
-          this.$store.dispatch("snackbar/open", {
-            message: "Het gebouw heeft geen handleiding.",
-            color: "error"
+          this.$store.dispatch('snackbar/open', {
+            message: 'Het gebouw heeft geen handleiding.',
+            color: 'error'
           })
         }
       }).catch(async () => {
-        await router.push({name: 'buildings'})
+        await router.push({ name: 'buildings' })
       })
     },
-    getManual() {
+    getManual () {
       window.open(this.manual.file)
     },
-    addPlanning() {
-      router.push({'name': 'trashtemplates'})
+    addPlanning () {
+      router.push({ name: 'trashtemplates' })
     },
-    async deleteBuilding() {
+    async deleteBuilding () {
       if (this.manual.file !== '') {
         await RequestHandler.handle(BuildingService.deleteManualById(this.manual.id), {
           id: 'deleteManualError',
-          style: "SNACKBAR"
+          style: 'SNACKBAR'
         })
       }
       RequestHandler.handle(BuildingService.deleteBuildingById(this.$route.params.id), {
         id: 'deleteBuildingError',
-        style: "SNACKBAR"
+        style: 'SNACKBAR'
       })
-      await router.push({name: 'buildings'})
+      await router.push({ name: 'buildings' })
     },
-    async save() {
-      let body_building = {
+    async save () {
+      const body_building = {
         name: this.name,
         adres: this.adres,
-        ivago_klantnr: this.ivago_klantnr,
+        ivago_klantnr: this.ivago_klantnr
       }
       if (this.new_manual !== null) {
         await RequestHandler.handle(BuildingService.updateManualFileById(
@@ -168,7 +168,7 @@ export default {
           this.manual.manualStatus), {
           id: 'updateManualFileError',
           style: 'SNACKBAR'
-        }).then(manual => this.manual = manual)
+        }).then(manual => { this.manual = manual })
       } else {
         await RequestHandler.handle(BuildingService.updateManualStatusById(this.manual.id, {
           manualStatus: this.manual.manualStatus
@@ -181,10 +181,10 @@ export default {
         id: 'updateBuildingError',
         style: 'SNACKBAR'
       })
-      await router.push({name: 'buildings'})
+      await router.push({ name: 'buildings' })
     },
-    async cancel_save() {
-      await router.push({name: 'buildings'})
+    async cancel_save () {
+      await router.push({ name: 'buildings' })
     }
   }
 }

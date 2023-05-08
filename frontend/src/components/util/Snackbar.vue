@@ -21,29 +21,30 @@
 </template>
 
 <script lang="ts">
-import {mapActions, mapState} from "vuex";
-import {defineComponent} from "vue";
-import NormalButton from "@/components/NormalButton.vue";
+import { mapActions, mapState } from 'vuex'
+import { defineComponent } from 'vue'
+import NormalButton from '@/components/NormalButton.vue'
 
 export default defineComponent({
-  components: {NormalButton},
+  name: 'snackbarComponent',
+  components: { NormalButton },
   methods: {
-    ...mapActions("snackbar", ["close"]),
+    ...mapActions('snackbar', ['close'])
   },
   computed: {
-    ...mapState("snackbar", ["data"]),
+    ...mapState('snackbar', ['data']),
     open: {
       /**
        * Get if the snackbar should be open.
        */
-      get(): boolean {
-        return this.$store.state.snackbar.open;
+      get (): boolean {
+        return this.$store.state.snackbar.open
       },
       /**
        * Set if the snackbar should be open/closed.
        */
-      set(value: boolean) {
-        this.$store.commit("snackbar/SET_OPEN", value);
+      set (value: boolean) {
+        this.$store.commit('snackbar/SET_OPEN', value)
       }
     }
   }

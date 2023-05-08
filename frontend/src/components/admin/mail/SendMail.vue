@@ -17,7 +17,7 @@
     <div v-if="this.description !== null">
       <div v-if="this.inputArguments.length !== 0">
         <h2>Argumenten</h2>
-        <div v-for="(arg, index) in this.positionsArguments">
+        <div v-for="(arg, index) in this.positionsArguments" :key="index">
           <label>{{ arg.substring(1, arg.length - 1) }}</label>
           <v-text-field v-model="this.inputArguments[index]"></v-text-field>
         </div>
@@ -45,10 +45,10 @@
  * Ook moet je in het data object de syndicusEmail meegeven.
  */
 
-import FotoCardSyndicus from "@/components/syndicus/FotoCardSyndicus.vue";
-import NormalButton from "@/components/NormalButton.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import MailTemplateService from "@/api/services/MailTemplateService";
+import FotoCardSyndicus from '@/components/syndicus/FotoCardSyndicus.vue'
+import NormalButton from '@/components/NormalButton.vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import MailTemplateService from '@/api/services/MailTemplateService'
 
 export default {
   name: 'SendMail',
@@ -72,75 +72,74 @@ export default {
     subject: ''
   }),
   methods: {
-    sendMail() {
-      const email = this.$props.data.syndicusEmail;
-      const subject = this.subject;
-      const body = this.getMailBody();
+    sendMail () {
+      const email = this.$props.data.syndicusEmail
+      const subject = this.subject
+      const body = this.getMailBody()
 
       if (!(email && subject && body)) {
-        this.$store.dispatch("snackbar/open", {
-          message: "Vul alle velden in",
-          color: "error"
+        this.$store.dispatch('snackbar/open', {
+          message: 'Vul alle velden in',
+          color: 'error'
         })
         return
       }
 
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
     },
-    getMailBody() {
+    getMailBody () {
       return encodeURIComponent(this.getDescriptionWithArguments()).replace(/%0A/g, '%0D%0A') +
-        encodeURIComponent("\n\nStudent:\nOpmerking student: " + this.$props.data.post.description + "\nTijdstip: " + this.$props.data.post.timeStamp.toString() + "\nZie bijlage voor foto.\n\n").replace(/%0A/g, '%0D%0A');
+        encodeURIComponent('\n\nStudent:\nOpmerking student: ' + this.$props.data.post.description + '\nTijdstip: ' + this.$props.data.post.timeStamp.toString() + '\nZie bijlage voor foto.\n\n').replace(/%0A/g, '%0D%0A')
     },
-    updateArguments() {
-      this.positionsArguments = [];
+    updateArguments () {
+      this.positionsArguments = []
 
-      const regex = /(#\w+#)/g;
-      let match;
+      const regex = /(#\w+#)/g
+      let match
 
       while ((match = regex.exec(this.description)) !== null) {
-        const argument = match[1];
+        const argument = match[1]
         if (!this.positionsArguments.includes(argument)) {
-          this.positionsArguments.push(argument);
+          this.positionsArguments.push(argument)
         }
       }
       if (this.positionsArguments.length !== 0) {
-        this.inputArguments = new Array(this.positionsArguments.length).fill('');
+        this.inputArguments = new Array(this.positionsArguments.length).fill('')
       } else {
-        this.inputArguments = [];
+        this.inputArguments = []
       }
     },
-    getDescriptionWithArguments() {
-      let description = this.description;
+    getDescriptionWithArguments () {
+      let description = this.description
       for (let i = 0; i < this.positionsArguments.length; i++) {
         if (this.inputArguments[i] !== '') {
-          description = description.replaceAll(this.positionsArguments[i], this.inputArguments[i]);
+          description = description.replaceAll(this.positionsArguments[i], this.inputArguments[i])
         }
       }
-      return description;
+      return description
     }
   },
   watch: {
-    description() {
-      this.updateArguments();
+    description () {
+      this.updateArguments()
     }
   },
   computed: {
-    formattedText() {
-      return this.getDescriptionWithArguments().replace(/#([^#]*)#/g, '<b>$1</b>');
+    formattedText () {
+      return this.getDescriptionWithArguments().replace(/#([^#]*)#/g, '<b>$1</b>')
     }
   },
-  async mounted() {
+  async mounted () {
     await RequestHandler.handle(
       MailTemplateService.getMailTemplates(),
       {
         id: 'getMailTemplateError',
-        style: "SNACKBAR",
+        style: 'SNACKBAR'
       }).then((response) => {
       this.templates = response
     })
   },
-  components: {NormalButton, FotoCardSyndicus}
+  components: { NormalButton, FotoCardSyndicus }
 }
 </script>
 

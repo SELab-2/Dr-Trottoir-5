@@ -1,5 +1,5 @@
-import Round from "@/api/models/Round";
-import ContainerCollectionDay from "@/api/models/ContainerCollectionDay";
+import Round from '@/api/models/Round'
+import ContainerCollectionDay from '@/api/models/ContainerCollectionDay'
 
 export default class DayPlanning {
   id: number;

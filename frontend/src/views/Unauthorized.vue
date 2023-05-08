@@ -27,15 +27,15 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton";
-import router from "@/router";
+import NormalButton from '@/components/NormalButton'
+import router from '@/router'
 
 export default {
-  name: "Unauthorized",
-  components: {NormalButton},
+  name: 'UnauthorizedComponent',
+  components: { NormalButton },
   methods: {
-    goBack() {
-      router.back();
+    goBack () {
+      router.back()
     }
   }
 }

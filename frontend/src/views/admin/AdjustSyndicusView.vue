@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import CreateEditSyndicus from "@/components/admin/CreateEditSyndicus";
+import CreateEditSyndicus from '@/components/admin/CreateEditSyndicus'
 
 export default {
-  name: "AdjustSyndicusView.vue",
-  components: {CreateEditSyndicus}
+  name: 'AdjustSyndicusView.vue',
+  components: { CreateEditSyndicus }
 }
 </script>
 

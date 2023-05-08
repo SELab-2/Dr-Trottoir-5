@@ -5,17 +5,17 @@
 </template>
 
 <script lang="ts">
-import {RequestHandler} from "@/api/RequestHandler";
-import router from "@/router";
-import TrashTemplateService from "@/api/services/TrashTemplateService";
-import TrashContainerTemplateCard from "@/components/containerTemplates/TrashContainerTemplateCard.vue";
-import TrashContainerTemplateHeader from "@/components/containerTemplates/TrashContainerTemplateHeader.vue";
-import ListPage from "@/components/admin/ListPage.vue";
+import { RequestHandler } from '@/api/RequestHandler'
+import router from '@/router'
+import TrashTemplateService from '@/api/services/TrashTemplateService'
+import TrashContainerTemplateCard from '@/components/containerTemplates/TrashContainerTemplateCard.vue'
+import TrashContainerTemplateHeader from '@/components/containerTemplates/TrashContainerTemplateHeader.vue'
+import ListPage from '@/components/admin/ListPage.vue'
 
 export default {
   name: 'TrashContainerTemplateList',
-  components: {ListPage, TrashContainerTemplateCard, TrashContainerTemplateHeader},
-  data() {
+  components: { ListPage },
+  data () {
     return {
       childComponent: TrashContainerTemplateCard,
       elements: [],
@@ -25,10 +25,10 @@ export default {
   },
   methods: {
     addTrashContainerTemplate: function () {
-      router.push({name: 'createTrashtemplates'});
+      router.push({ name: 'createTrashtemplates' })
     }
   },
-  async beforeMount() {
+  async beforeMount () {
     await RequestHandler.handle(TrashTemplateService.getTrashTemplates(), {
       id: 'getTrashContainersListError',
       style: 'SNACKBAR'

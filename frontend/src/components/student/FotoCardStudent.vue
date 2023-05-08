@@ -36,9 +36,9 @@
 <script>
 import EditIcon from '../icons/EditIcon.vue'
 import DeleteIcon from '../icons/DeleteIcon.vue'
-import {RequestHandler} from "@/api/RequestHandler";
-import PlanningService from "@/api/services/PlanningService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import PlanningService from '@/api/services/PlanningService'
+import router from '@/router'
 
 /**
  * FotoCardStudent component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -54,21 +54,21 @@ export default {
       type: Object,
       default: () => ({ time: 'Empty', remark: 'Empty', image: 'Empty', id: '' })
     },
-    buildingName: {type: String, default: ''},
-    type: {type: String, default: ''},
-    info: {type: String, default: ''}
+    buildingName: { type: String, default: '' },
+    type: { type: String, default: '' },
+    info: { type: String, default: '' }
   },
   methods: {
-    goToEditPage() {
-      router.push({name: 'student_post_edit', query: {building: this.buildingName, type: this.type, info: this.info, id: this.data.id}});
+    goToEditPage () {
+      router.push({ name: 'student_post_edit', query: { building: this.buildingName, type: this.type, info: this.info, id: this.data.id } })
     },
-    deletePost() {
+    deletePost () {
       RequestHandler.handle(PlanningService.deletePicture(this.data.id), {
-        id: "getPicturesError",
-        style: "NONE"
+        id: 'getPicturesError',
+        style: 'NONE'
       }).catch(() => null).finally(() => {
-        this.$el.parentNode.removeChild(this.$el);
-      });
+        this.$el.parentNode.removeChild(this.$el)
+      })
     }
   },
   components: {

@@ -13,38 +13,38 @@
       location: template.location.name,
       even: template.even,
       status: state_mapping[template.status]
-    }"></StudentTemplateCard>
+    }" :key="template"></StudentTemplateCard>
 </template>
 
 <script>
-import StudentTemplateCard from "@/components/admin/student_template/StudentTemplateCard.vue";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import {RequestHandler} from "@/api/RequestHandler";
+import StudentTemplateCard from '@/components/admin/student_template/StudentTemplateCard.vue'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
+import { RequestHandler } from '@/api/RequestHandler'
 
 export default {
-  name: "StudentTemplateView",
-  components: {StudentTemplateCard},
+  name: 'StudentTemplateView',
+  components: { StudentTemplateCard },
   data: () => ({
     templates: [],
     state_mapping: {
-      "A": "Actief",
-      "E": "Eenmalig",
-      "V": "Vervangen",
-      "I": "Inactief"
+      A: 'Actief',
+      E: 'Eenmalig',
+      V: 'Vervangen',
+      I: 'Inactief'
     }
   }),
-  async created() {
+  async created () {
     this.templates = await RequestHandler.handle(StudentTemplateService.getStudentTemplates(), {
-        id: "getStudentTemplatesError",
-        style: "SNACKBAR"
-      }).then(templates => templates).catch(() => []);
+        id: 'getStudentTemplatesError',
+        style: 'SNACKBAR'
+      }).then(templates => templates).catch(() => [])
   },
   methods: {
-    async remove_template() {
+    async remove_template () {
       this.templates = await RequestHandler.handle(StudentTemplateService.getStudentTemplates(), {
-        id: "getStudentTemplatesError",
-        style: "SNACKBAR"
-      }).then(templates => templates).catch(() => []);
+        id: 'getStudentTemplatesError',
+        style: 'SNACKBAR'
+      }).then(templates => templates).catch(() => [])
     }
   }
 

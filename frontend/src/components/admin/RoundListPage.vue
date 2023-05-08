@@ -43,7 +43,7 @@ Heeft als nodige argumenten nodig:
 
 <script>
 import NormalButton from '@/components/NormalButton'
-import RoundSearchDropdown from "@/components/util/RoundSearchDropdown";
+import RoundSearchDropdown from '@/components/util/RoundSearchDropdown'
 export default {
   name: 'ListPage',
   components: { RoundSearchDropdown, NormalButton },
@@ -93,7 +93,7 @@ export default {
       const regex = new RegExp(this.searched, 'ig')
       if (this.key === 'roundName') {
         for (const el of this.elements) {
-          if (this.searched.length < 1 || el['name'].toString().match(regex)) {
+          if (this.searched.length < 1 || el.name.toString().match(regex)) {
             filtered.push(el)
           }
         }
@@ -108,7 +108,7 @@ export default {
       searched: '',
       key: this.keys[0]
     }
-  },
+  }
 }
 </script>
 

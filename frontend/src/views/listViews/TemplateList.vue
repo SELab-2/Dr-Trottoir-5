@@ -6,9 +6,9 @@
 import ListPage from '@/components/admin/ListPage'
 import TemplateMailCard from '@/components/admin/TemplateMailCard'
 import TemplateMailCardHeader from '@/components/admin/TemplateMailCardHeader'
-import {RequestHandler} from "@/api/RequestHandler";
-import EmailTemplateService from "@/api/services/EmailTemplateService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import EmailTemplateService from '@/api/services/EmailTemplateService'
+import router from '@/router'
 
 export default {
   name: 'TemplateList',
@@ -26,8 +26,8 @@ export default {
       router.push({ name: 'create_mail-template' })
     }
   },
-  async beforeMount() {
-    await RequestHandler.handle(EmailTemplateService.getEmailTemplates(), {id: 'getEmailTemplatesError', style: 'SNACKBAR'}).then(async result => {
+  async beforeMount () {
+    await RequestHandler.handle(EmailTemplateService.getEmailTemplates(), { id: 'getEmailTemplatesError', style: 'SNACKBAR' }).then(async result => {
       this.elements = result
     })
   }

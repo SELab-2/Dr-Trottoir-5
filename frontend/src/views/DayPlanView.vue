@@ -2,13 +2,13 @@
   <v-container align="center">
     <v-expansion-panels v-model="panel" style="max-width: 750px;" v-if="rondes.length > 0">
       <h4 class="text-h4 mb-3">{{ time }}</h4>
-      <v-expansion-panel v-for="ronde in rondes">
+      <v-expansion-panel v-for="ronde in rondes" :key="ronde.id">
         <v-expansion-panel-title>
           Ronde {{ ronde.ronde.name }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card max-width="750px" class="py-3" elevation="0">
-            <DayPlanBuilding v-for="building in ronde.ronde.buildings"
+            <DayPlanBuilding v-for="building in ronde.ronde.buildings" :key="building"
                              :data="{building: building, planning: ronde.id, year: year, week: week}" :date="date" />
           </v-card>
         </v-expansion-panel-text>
@@ -24,51 +24,50 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import DayPlanBuilding from '@/components/student/DayPlanBuilding.vue';
-import {RequestHandler} from "@/api/RequestHandler";
-import PlanningService from "@/api/services/PlanningService";
-import NormalButton from "@/components/NormalButton.vue";
-import router from '@/router';
-import {getWeek} from "@/api/DateUtil";
+import { defineComponent } from 'vue'
+import DayPlanBuilding from '@/components/student/DayPlanBuilding.vue'
+import { RequestHandler } from '@/api/RequestHandler'
+import PlanningService from '@/api/services/PlanningService'
+import NormalButton from '@/components/NormalButton.vue'
+import router from '@/router'
+import { getWeek } from '@/api/DateUtil'
 
 export default defineComponent({
-  name: "DayPlanView",
+  name: 'DayPlanView',
   components: {
     DayPlanBuilding,
     NormalButton
   },
-  async created() {
-    if ('date' in this.$route.query) this.date = this.$route.query.date;
-    this.time = this.capitalize(new Date(this.date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'}));
-    const date = new Date(this.date);
-    this.year = date.getFullYear();
-    this.week = getWeek(date);
+  async created () {
+    if ('date' in this.$route.query) this.date = this.$route.query.date
+    this.time = this.capitalize(new Date(this.date).toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' }))
+    const date = new Date(this.date)
+    this.year = date.getFullYear()
+    this.week = getWeek(date)
 
     RequestHandler.handle(PlanningService.get(this.year, this.week, date.getUTCDay()), {
-      id: "getDayplanningError",
-      style: "NONE"
+      id: 'getDayplanningError',
+      style: 'NONE'
     }).then(plannings => {
       plannings.forEach(planning => {
         RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
           id: `getStatus${planning.id}Error`,
-          style: "NONE"
+          style: 'NONE'
         }).then(statuses => {
-          const buildings = Object(planning.ronde.buildings);
-          for (let building of buildings)
-            building.status = statuses[building.id].AR === 0 ? 'Niet begonnen' : statuses[building.id].DE > 0 ? 'Voltooid' : 'Bezig';
-          planning.ronde.buildings = buildings;
-          this.rondes.push(planning);
-        }).catch(() => null);
-      });
-    }).catch(() => {});
+          const buildings = Object(planning.ronde.buildings)
+          for (const building of buildings) { building.status = statuses[building.id].AR === 0 ? 'Niet begonnen' : statuses[building.id].DE > 0 ? 'Voltooid' : 'Bezig' }
+          planning.ronde.buildings = buildings
+          this.rondes.push(planning)
+        }).catch(() => null)
+      })
+    }).catch(() => {})
   },
   methods: {
-    capitalize(s: string) {
-      return s.split(' ').map(s => s[0].toUpperCase() + s.slice(1)).join(' ');
+    capitalize (s: string) {
+      return s.split(' ').map(s => s[0].toUpperCase() + s.slice(1)).join(' ')
     },
-    goBack() {
-      router.go(-1);
+    goBack () {
+      router.go(-1)
     }
   },
   data: () => ({
@@ -80,5 +79,5 @@ export default defineComponent({
     week: null,
     panel: [0]
   })
-});
+})
 </script>

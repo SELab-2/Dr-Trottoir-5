@@ -44,10 +44,8 @@
 import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import InfoIcon from '@/components/icons/InfoIcon.vue'
-import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
-import router from "@/router";
-import UserService from "@/api/services/UserService";
+import { RequestHandler } from '@/api/RequestHandler'
+import UserService from '@/api/services/UserService'
 
 /**
  * StudentCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
@@ -64,19 +62,19 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({id: 0, first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
+      default: () => ({ id: 0, first_name: 'Empty', last_name: 'Empty', phone_nr: '0123456789', location: 'Empty', email: 'Empty', rounds: 'Empty' })
     }
   },
   methods: {
     goToEditPage: async function () {
-      await this.$router.push({name: 'admin_edit_user', params: {id: this.data.id}})
+      await this.$router.push({ name: 'admin_edit_user', params: { id: this.data.id } })
     },
     deletePost: function () {
       RequestHandler.handle(UserService.deleteUserById(this.data.id), {
-        id:'deleteUserByIdError',
+        id: 'deleteUserByIdError',
         style: 'SNACKBAR',
         customMessages: [{
-          code:'500',
+          code: '500',
           message: 'Kon gebruiker niet verwijderen',
           description: 'Kon gebruiker niet verwijderen'
         }]
@@ -84,7 +82,7 @@ export default {
       location.reload()
     },
     goToInfoPage: async function () {
-      await this.$router.push({name: 'admin_info_user', params: {id: this.data.id}})
+      await this.$router.push({ name: 'admin_info_user', params: { id: this.data.id } })
     }
   },
   components: {

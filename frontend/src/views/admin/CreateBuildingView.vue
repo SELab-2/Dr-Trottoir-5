@@ -61,15 +61,15 @@
 
 <script>
 import NormalButton from '@/components/NormalButton'
-import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
-import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
-import LocationService from "@/api/services/LocationService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import BuildingService from '@/api/services/BuildingService'
+import { BuildingManualStatus } from '@/api/models/BuildingManualStatus'
+import LocationService from '@/api/services/LocationService'
+import router from '@/router'
 
 export default {
   name: 'CreateBuildingView',
-  components: {NormalButton},
+  components: { NormalButton },
   data: () => {
     return {
       name: '',
@@ -82,7 +82,7 @@ export default {
       selectedLocation: ''
     }
   },
-  async beforeMount() {
+  async beforeMount () {
     await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
@@ -92,7 +92,7 @@ export default {
     )
   },
   methods: {
-    createBuilding() {
+    createBuilding () {
       // TODO Milestone 3 Add geschatte tijd
       this.createManual().then(result =>
         RequestHandler.handle(
@@ -100,31 +100,31 @@ export default {
             name: this.name,
             adres: this.adres,
             ivago_klantnr: this.klant_nr,
-            manual: result['succes']['id'], //TODO just return in backend without succes
+            manual: result.succes.id, // TODO just return in backend without succes
             location: this.selectedLocation
           }), {
             id: 'createBuildingError',
             style: 'SNACKBAR'
           }
         ).then(() => {
-          this.$store.dispatch("snackbar/open", {
-            message: "Het gebouw is toegevoegd",
-            color: "success"
+          this.$store.dispatch('snackbar/open', {
+            message: 'Het gebouw is toegevoegd',
+            color: 'success'
           })
-          router.push({name: 'buildings'})
+          router.push({ name: 'buildings' })
         })
       )
     },
-    async createManual() {
+    async createManual () {
       if (this.file === null) {
-        return "Error"
+        return 'Error'
       }
       return RequestHandler.handle(BuildingService.createManual(this.file[0], this.file[0].type,
         BuildingManualStatus.klaar
       ), {
         id: 'createManualError',
-        style: "SNACKBAR",
-      });
+        style: 'SNACKBAR'
+      })
     }
   }
 }

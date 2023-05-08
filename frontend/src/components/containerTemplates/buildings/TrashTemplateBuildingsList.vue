@@ -7,19 +7,19 @@
 
 <script lang="ts">
 import ListPage from '@/components/admin/ListPage.vue'
-import {RequestHandler} from "@/api/RequestHandler";
-import TrashTemplateService from "@/api/services/TrashTemplateService";
-import router from "@/router";
-import TrashTemplateBuildingHeader from "@/components/containerTemplates/buildings/TrashTemplateBuildingHeader.vue";
-import TrashTemplateBuildingCard from "@/components/containerTemplates/buildings/TrashTemplateBuildingCard.vue";
+import { RequestHandler } from '@/api/RequestHandler'
+import TrashTemplateService from '@/api/services/TrashTemplateService'
+import router from '@/router'
+import TrashTemplateBuildingHeader from '@/components/containerTemplates/buildings/TrashTemplateBuildingHeader.vue'
+import TrashTemplateBuildingCard from '@/components/containerTemplates/buildings/TrashTemplateBuildingCard.vue'
 
 export default {
-  name: "TrashTemplateBuildingsList",
-  components: {ListPage, TrashTemplateBuildingHeader, TrashTemplateBuildingCard},
+  name: 'TrashTemplateBuildingsList',
+  components: { ListPage },
   props: {
     id: Number
   },
-  data() {
+  data () {
     return {
       childComponent: TrashTemplateBuildingCard,
       elements: [],
@@ -29,10 +29,10 @@ export default {
   },
   methods: {
     addTrashContainerBuilding: function () {
-      router.push({name: 'create_building'});
+      router.push({ name: 'create_building' })
     }
   },
-  async beforeMount() {
+  async beforeMount () {
     // TODO Add Manual
     await RequestHandler.handle(TrashTemplateService.getBuildingsOfTemplate(this.id), {
       id: 'getTrashBuildingsListError',

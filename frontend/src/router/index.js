@@ -7,36 +7,36 @@ import UsersView from '../views/UsersView.vue'
 import CreateBuildingView from '@/views/admin/CreateBuildingView'
 import ForgotView from '../views/ForgotView.vue'
 import RegisterDone from '@/components/RegisterDone'
-import DayPlanView from "@/views/DayPlanView";
-import BuildingList from "@/views/listViews/BuildingList";
-import RoundList from "@/views/listViews/RoundList";
-import StudentList from "@/views/listViews/StudentList";
-import SyndicusList from "@/views/listViews/SyndicusList";
-import TemplateList from "@/views/listViews/TemplateList";
-import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
-import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
-import Unauthorized from "@/views/Unauthorized";
-import BuildingPageStudent from "@/views/BuildingPageStudent";
-import InfoScreenBuilding from "@/components/student/InfoScreenBuilding";
-import StudentCreatePost from "@/views/StudentCreatePost";
-import StudentPostView from "@/views/StudentPostView";
-import StudentEditPost from "@/views/StudentEditPost";
-import CreateLocationView from "@/views/admin/CreateLocationView";
-import HomeView from "@/views/HomeView.vue";
-import DashboardView from "@/views/admin/DashboardView.vue";
-import AdminStudentInfoUser from "@/views/admin/AdminStudentInfoUser";
-import RegisterUserList from "@/views/listViews/RegisterUserList";
-import AdminStudentInfoUserEdit from "@/views/admin/AdminStudentInfoUserEdit";
-import AdminBuildingInfoEditView from "@/views/admin/AdminBuildingInfoEditView";
-import AdminBuildingInfoView from "@/views/admin/AdminBuildingInfoView";
-import StudentTemplateView from "@/views/student_template/StudentTemplateView.vue";
-import StudentTemplateEditView from "@/views/student_template/StudentTemplateEditView.vue";
-import StudentTemplateAddView from "@/views/student_template/StudentTemplateAddView.vue";
-import RondeDagplanningenView from "@/views/student_template/RondeDagplanningenView.vue";
-import DagplanningEditView from "@/views/student_template/DagplanningEditView.vue";
-import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue";
-import CreateSyndicusView from "@/views/admin/CreateSyndicusView";
-import AdjustSyndicusView from "@/views/admin/AdjustSyndicusView";
+import DayPlanView from '@/views/DayPlanView'
+import BuildingList from '@/views/listViews/BuildingList'
+import RoundList from '@/views/listViews/RoundList'
+import StudentList from '@/views/listViews/StudentList'
+import SyndicusList from '@/views/listViews/SyndicusList'
+import TemplateList from '@/views/listViews/TemplateList'
+import AdminMailTemplateView from '@/views/AdminMailTemplateView.vue'
+import CreateMailTemplateView from '@/views/CreateMailTemplateView.vue'
+import UnauthorizedComponent from '@/views/Unauthorized'
+import BuildingPageStudent from '@/views/BuildingPageStudent'
+import InfoScreenBuilding from '@/components/student/InfoScreenBuilding'
+import StudentCreatePost from '@/views/StudentCreatePost'
+import StudentPostView from '@/views/StudentPostView'
+import StudentEditPost from '@/views/StudentEditPost'
+import CreateLocationView from '@/views/admin/CreateLocationView'
+import HomeView from '@/views/HomeView.vue'
+import DashboardView from '@/views/admin/DashboardView.vue'
+import AdminStudentInfoUser from '@/views/admin/AdminStudentInfoUser'
+import RegisterUserList from '@/views/listViews/RegisterUserList'
+import AdminStudentInfoUserEdit from '@/views/admin/AdminStudentInfoUserEdit'
+import AdminBuildingInfoEditView from '@/views/admin/AdminBuildingInfoEditView'
+import AdminBuildingInfoView from '@/views/admin/AdminBuildingInfoView'
+import StudentTemplateView from '@/views/student_template/StudentTemplateView.vue'
+import StudentTemplateEditView from '@/views/student_template/StudentTemplateEditView.vue'
+import StudentTemplateAddView from '@/views/student_template/StudentTemplateAddView.vue'
+import RondeDagplanningenView from '@/views/student_template/RondeDagplanningenView.vue'
+import DagplanningEditView from '@/views/student_template/DagplanningEditView.vue'
+import DagplanningAddView from '@/views/student_template/DagplanningAddView.vue'
+import CreateSyndicusView from '@/views/admin/CreateSyndicusView'
+import AdjustSyndicusView from '@/views/admin/AdjustSyndicusView'
 import TrashTemplateBuildingsList from '@/components/containerTemplates/buildings/TrashTemplateBuildingsList.vue'
 import TrashTemplateContainersList from '@/components/containerTemplates/containers/TrashTemplateContainersList.vue'
 import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
@@ -44,8 +44,8 @@ import TrashContainerCreate from '@/components/containerTemplates/containers/Tra
 import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
 import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
-import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
-import AdminRoundView from "@/views/admin/AdminRoundView.vue";
+import CreateEditRoundView from '@/views/admin/CreateEditRoundView.vue'
+import AdminRoundView from '@/views/admin/AdminRoundView.vue'
 
 const routes = [
   {
@@ -138,7 +138,7 @@ const routes = [
   {
     path: '/verboden',
     name: 'unauthorized',
-    component: Unauthorized
+    component: UnauthorizedComponent
   },
   {
     path: '/student/gebouw',

@@ -19,10 +19,10 @@ export class ModalData {
      */
     public fullscreen: boolean;
 
-    constructor() {
-        this.component = "";
-        this.width = 600;
-        this.fullscreen = false;
+    constructor () {
+        this.component = ''
+        this.width = 600
+        this.fullscreen = false
     }
 }
 
@@ -31,7 +31,7 @@ export const modal = {
 
     state: {
         open: false,
-        data: {},
+        data: {}
     },
 
     mutations: {
@@ -41,8 +41,8 @@ export const modal = {
          * @param state
          * @param open
          */
-        SET_OPEN(state: any, open: boolean) {
-            state.open = open;
+        SET_OPEN (state: any, open: boolean) {
+            state.open = open
         },
 
         /**
@@ -51,14 +51,14 @@ export const modal = {
          * @param state
          * @param data
          */
-        SET_DATA(state: any, data: ModalData) {
+        SET_DATA (state: any, data: ModalData) {
             // Join a new modal with the given data.
             // This is so you only have to provide the changes.
             state.data = {
                 ...new ModalData(),
-                ...data,
-            };
-        },
+                ...data
+            }
+        }
     },
 
     actions: {
@@ -68,10 +68,10 @@ export const modal = {
          * @param context
          * @param data
          */
-        open(context: any, data: ModalData) {
-            context.commit("SET_OPEN", false);
-            context.commit("SET_DATA", data);
-            context.commit("SET_OPEN", true);
+        open (context: any, data: ModalData) {
+            context.commit('SET_OPEN', false)
+            context.commit('SET_DATA', data)
+            context.commit('SET_OPEN', true)
         },
 
         /**
@@ -79,8 +79,8 @@ export const modal = {
          *
          * @param context
          */
-        close(context: any) {
-            context.commit("SET_OPEN", false);
-        },
-    },
-};
+        close (context: any) {
+            context.commit('SET_OPEN', false)
+        }
+    }
+}

@@ -27,8 +27,8 @@ export default defineComponent({
     /**
      * Close the modal.
      */
-    close() {
-      this.$store.dispatch("modal/close");
+    close () {
+      this.$store.dispatch('modal/close')
     }
   }
 })

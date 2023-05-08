@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import { RouterUtil } from "@/util/RouterUtil";
-import { ErrorComponentPayload } from "@/api/error/types/component/ErrorComponentPayload";
+import { RouterUtil } from '@/util/RouterUtil'
+import { ErrorComponentPayload } from '@/api/error/types/component/ErrorComponentPayload'
 
 export default {
   name: 'ErrorSection',
@@ -57,8 +57,8 @@ export default {
     /**
      * Reload the current route.
      */
-    reloadRoute() {
-      RouterUtil.reload(this.$router);
+    reloadRoute () {
+      RouterUtil.reload(this.$router)
     }
   }
 }

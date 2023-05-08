@@ -40,34 +40,30 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
-import NormalButton from '@/components/NormalButton.vue';
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import LocationService from '@/api/services/LocationService'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
+import router from '@/router'
 
 export default {
-  name: "StudentTemplateAddView",
-  components: {
-    NormalButton
-  },
+  name: 'StudentTemplateAddView',
   data: () => ({
     name: '',
     even: true,
     location: null,
-    start_hour: "",
-    end_hour: "",
+    start_hour: '',
+    end_hour: '',
     locations: []
   }),
-  async mounted() {
+  async mounted () {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
   },
   methods: {
-    async create() {
+    async create () {
       const body = {
         name: this.name,
         even: this.even,
@@ -76,11 +72,11 @@ export default {
         location: this.location
       }
 
-      const response = await RequestHandler.handle(StudentTemplateService.addStudentTemplate(body),{
+      const response = await RequestHandler.handle(StudentTemplateService.addStudentTemplate(body), {
         id: 'createStudentTemplateError',
         style: 'SNACKBAR'
-      }).then(result => result);
-      return await router.push({name: 'studenttemplates', params: {id: response["new_id"]}})
+      }).then(result => result)
+      return await router.push({ name: 'studenttemplates', params: { id: response.new_id } })
     }
   }
 }

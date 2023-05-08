@@ -1,5 +1,5 @@
-import Vue from "vue";
-import {Router} from "vue-router";
+import Vue from 'vue'
+import { Router } from 'vue-router'
 
 export class RouterUtil {
   /**
@@ -7,11 +7,11 @@ export class RouterUtil {
    * @param router Instance of the current Vue router
    */
 
-  static reload(router: Router) {
-    const location = router.currentRoute.value.path;
+  static reload (router: Router) {
+    const location = router.currentRoute.value.path
 
-    router.replace("/");
+    router.replace('/')
 
-    Vue.nextTick(() => router.push(location));
+    Vue.nextTick(() => router.push(location))
   }
 }

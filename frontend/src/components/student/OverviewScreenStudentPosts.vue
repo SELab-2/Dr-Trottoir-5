@@ -23,28 +23,34 @@
  * Data halen van backend voor de FotoCardStudent componenten zie ´mounted()´
  */
 
-import FotoCardStudent from "@/components/student/FotoCardStudent.vue";
-import NormalButton from "@/components/NormalButton.vue";
-import router from "@/router";
+import FotoCardStudent from '@/components/student/FotoCardStudent.vue'
+import NormalButton from '@/components/NormalButton.vue'
+import router from '@/router'
 
 export default {
   name: 'OverviewScreenStudentPosts',
-  components: {NormalButton, FotoCardStudent},
+  components: { NormalButton, FotoCardStudent },
   props: {
     data: {
       type: Object,
-      default: () => ({buildingName: '', type: '', images: [], info: '', planning: '', building_id: ''})
+      default: () => ({ buildingName: '', type: '', images: [], info: '', planning: '', building_id: '' })
     }
   },
   methods: {
-    goToPhotoPage() {
-      router.push({name: 'student_post', query: {
-        building: this.data.buildingName, type: this.data.type, info: this.data.info, planning: this.data.planning,
+    goToPhotoPage () {
+      router.push({
+name: 'student_post',
+query: {
+        building: this.data.buildingName,
+type: this.data.type,
+info: this.data.info,
+planning: this.data.planning,
         building_id: this.data.building_id
-      }});
+      }
+})
     },
-    completeTask() {
-      router.go(-1);
+    completeTask () {
+      router.go(-1)
     }
   }
 }

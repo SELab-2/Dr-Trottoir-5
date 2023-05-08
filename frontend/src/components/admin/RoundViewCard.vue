@@ -27,7 +27,7 @@ it displays the information of one round so that a list of round views can easil
             <v-expansion-panel :title="data.round.students.length + ` student${data.round.students.length === 1 ? '' : 'en'}`"
                                :disabled="data.round.students.length === 0">
               <v-expansion-panel-text v-if="data.round.students.length > 0">
-                <p style="word-wrap: break-word;" v-for="s in data.round.students" class="mt-2">
+                <p style="word-wrap: break-word;" v-for="s in data.round.students" :key="s.id" class="mt-2">
                   <a :href="'/admin/gebruiker/'+s.id" style="text-decoration: none;">
                   {{ s.first_name }} {{ s.last_name }}</a></p>
               </v-expansion-panel-text>
@@ -43,58 +43,58 @@ it displays the information of one round so that a list of round views can easil
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import PlanningService from "@/api/services/PlanningService";
-import router from "@/router";
-import {getWeek} from "@/api/DateUtil";
+import { RequestHandler } from '@/api/RequestHandler'
+import PlanningService from '@/api/services/PlanningService'
+import router from '@/router'
+import { getWeek } from '@/api/DateUtil'
 
 export default {
-  name: "RoundViewCard",
+  name: 'RoundViewCard',
   data: () => ({
     percentage: 0,
     users: [],
     count: 0
   }),
-  created() {
-    this.getStatus();
+  created () {
+    this.getStatus()
   },
   props: {
     data: {
       type: Object,
       default: () => ({
-        round: {ronde: {name: ''}, id: -1},
+        round: { ronde: { name: '' }, id: -1 },
         date: ''
       })
     }
   },
   watch: {
-    data: function() {
-      this.count++;
-      if (this.count % 2 === 0) this.getStatus();
+    data: function () {
+      this.count++
+      if (this.count % 2 === 0) this.getStatus()
     }
   },
   methods: {
-    router() {
+    router () {
       return router
     },
-    info() {
-      router.push({name: 'adminRoundView', query: {planning: this.data.round.id, date: this.data.date}});
+    info () {
+      router.push({ name: 'adminRoundView', query: { planning: this.data.round.id, date: this.data.date } })
     },
-    getStatus() {
-      const date = new Date(this.data.date);
-      this.percentage = 0;
+    getStatus () {
+      const date = new Date(this.data.date)
+      this.percentage = 0
 
       RequestHandler.handle(PlanningService.getStatus(date.getFullYear(), getWeek(date), this.data.round.id), {
         id: `getStatus${this.data.round.id}Error`,
-        style: "NONE"
+        style: 'NONE'
       }).then(statuses => {
-        let progress = 0;
-        for (let id in statuses) {
-          const status = statuses[id];
-          progress += status.DE > 0 ? 3 : status.ST > 0 ? 2 : status.AR > 0 ? 1 : 0;
+        let progress = 0
+        for (const id in statuses) {
+          const status = statuses[id]
+          progress += status.DE > 0 ? 3 : status.ST > 0 ? 2 : status.AR > 0 ? 1 : 0
         }
-        this.percentage = progress / (this.data.round.ronde.buildings.length * 3) * 100;
-      }).catch(() => null);
+        this.percentage = progress / (this.data.round.ronde.buildings.length * 3) * 100
+      }).catch(() => null)
     }
   }
 }

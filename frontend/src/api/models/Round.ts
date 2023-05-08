@@ -1,4 +1,4 @@
-import Building from "@/api/models/Building";
+import Building from '@/api/models/Building'
 
 export default class Round {
   id: number;

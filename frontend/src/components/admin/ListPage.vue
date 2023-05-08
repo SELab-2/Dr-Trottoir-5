@@ -66,12 +66,12 @@ export default {
       required: true
     },
     headComponent: {
-      type: Object,
+      type: String,
       default: 'div',
       required: false
     },
     childComponent: {
-      type: Object,
+      type: String,
       default: 'div',
       required: true
     },
@@ -101,15 +101,15 @@ export default {
     }
   },
   methods: {
-    onSearch(newValue) {
+    onSearch (newValue) {
       this.searched = newValue
     },
-    onKeyChange(newValue) {
+    onKeyChange (newValue) {
       this.key = newValue
     }
   },
   computed: {
-    filteredOptions() {
+    filteredOptions () {
       const filtered = []
       if (this.key !== 'key') {
         const regex = new RegExp(this.searched, 'ig')
@@ -118,11 +118,11 @@ export default {
             filtered.push(el)
           }
         }
-        return filtered
       }
+      return filtered
     }
   },
-  data() {
+  data () {
     return {
       searched: '',
       key: this.keys[0]

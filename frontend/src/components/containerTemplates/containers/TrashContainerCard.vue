@@ -34,11 +34,11 @@ import router from '@/router'
 
 export default {
   name: 'TrashContainerCard',
-  components: {EditIcon, DeleteIcon},
+  components: { EditIcon, DeleteIcon },
   props: {
     data: {
-      default: Object(),
-    },
+      default: Object()
+    }
   },
   data: () => ({
     id: null
@@ -47,14 +47,14 @@ export default {
     editContainer: function () {
       router.push({
         name: 'editTrashtemplateContainers',
-        params: {id: this.id, containerId: this.data.extra_id}
-      });
+        params: { id: this.id, containerId: this.data.extra_id }
+      })
     },
     deleteContainer: function () {
-      //todo
-    },
+      // todo
+    }
   },
-  async beforeMount() {
+  async beforeMount () {
     this.id = this.$route.params.id
   }
 }

@@ -44,45 +44,40 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import UserService from "@/api/services/UserService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
+import UserService from '@/api/services/UserService'
+import router from '@/router'
 
 export default {
-  name: "DagplanningAddView",
-  components: {
-    NormalButton
-  },
+  name: 'DagplanningAddView',
   data: () => ({
     template_id: 0,
     ronde_id: 0,
-    day: "MO",
-    start_hour: "",
-    end_hour: "",
+    day: 'MO',
+    start_hour: '',
+    end_hour: '',
     students: [],
     all_students: [],
     weekdagen: [
-      {id: 'MO', day:"Maandag"},
-      {id: 'TU', day:"Dinsdag"},
-      {id: 'WE', day:"Woensdag"},
-      {id: 'TH', day:"Donderdag"},
-      {id: 'FR', day:"Vrijdag"},
-      {id: 'SA', day:"Zaterdag"},
-      {id: 'SU', day:"Zondag"},
+      { id: 'MO', day: 'Maandag' },
+      { id: 'TU', day: 'Dinsdag' },
+      { id: 'WE', day: 'Woensdag' },
+      { id: 'TH', day: 'Donderdag' },
+      { id: 'FR', day: 'Vrijdag' },
+      { id: 'SA', day: 'Zaterdag' },
+      { id: 'SU', day: 'Zondag' }
     ]
   }),
-  async mounted() {
+  async mounted () {
     this.template_id = this.$route.params.template_id
     this.ronde_id = this.$route.params.ronde_id
-
 
     // get the status of template
     const template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => {});
+    }).then(result => result).catch(() => {})
 
     this.start_hour = template.start_hour
     this.end_hour = template.end_hour
@@ -91,12 +86,10 @@ export default {
     this.all_students = await RequestHandler.handle(UserService.getUsers(), {
       id: 'getUsersError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
-
-
+    }).then(result => result).catch(() => [])
   },
   methods: {
-    async make_new_dagplanning() {
+    async make_new_dagplanning () {
       const body = {
         day: this.day,
         students: this.students,
@@ -104,14 +97,14 @@ export default {
         end_hour: this.end_hour
       }
       const response = RequestHandler.handle(StudentTemplateService.addDagPlanningen(this.template_id, this.ronde_id, body), {
-        id: "addDagplanningError",
-        style: "SNACKBAR"
-      }).then(res => res).catch(() => {});
+        id: 'addDagplanningError',
+        style: 'SNACKBAR'
+      }).then(res => res).catch(() => {})
 
-      if (response["new_id"] !== undefined) {
-        this.template_id = response["new_id"]
+      if (response.new_id !== undefined) {
+        this.template_id = response.new_id
       }
-      return await router.push({name: 'ronde_dagplanningen', params: {template_id: this.template_id, ronde_id: this.ronde_id}})
+      return await router.push({ name: 'ronde_dagplanningen', params: { template_id: this.template_id, ronde_id: this.ronde_id } })
     }
   }
 }

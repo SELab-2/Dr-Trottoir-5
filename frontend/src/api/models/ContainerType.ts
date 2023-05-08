@@ -1,7 +1,7 @@
 export enum ContainerType {
-  PMD = "PM",
-  REST = "RE",
-  PK = "PK",
-  GLAS = "GL",
-  GFT = "GF"
+  PMD = 'PM',
+  REST = 'RE',
+  PK = 'PK',
+  GLAS = 'GL',
+  GFT = 'GF'
 }

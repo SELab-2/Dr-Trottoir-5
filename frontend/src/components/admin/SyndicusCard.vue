@@ -40,8 +40,8 @@
 <script>
 import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
-import User from "@/api/models/User";
-import router from "@/router";
+import User from '@/api/models/User'
+import router from '@/router'
 
 /**
  * SyndicusCard component wordt gebruikt door als props een Object met de volgende keys mee te geven
@@ -57,15 +57,15 @@ export default {
   name: 'SyndicusCard',
   props: {
     data: {
-      type: User,
+      type: User
     }
   },
   methods: {
     goToEditPage: function () {
-      router.push({name: 'syndicus_adjust'})
+      router.push({ name: 'syndicus_adjust' })
     },
     deletePost: function () {
-      router.push({name: 'admin_edit_user', params: {id: this.data.id}})
+      router.push({ name: 'admin_edit_user', params: { id: this.data.id } })
     }
   },
   components: {

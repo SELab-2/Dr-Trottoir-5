@@ -42,18 +42,17 @@
 
 import { onMounted, onBeforeUnmount, ref, defineComponent } from 'vue'
 import router from '@/router'
-import AuthService from "@/api/services/AuthService";
-import { UserRole } from '@/api/models/UserRole';
+import AuthService from '@/api/services/AuthService'
 
 export default defineComponent({
   name: 'NavigationBar',
   data: () => ({
     isAdminOrSu: false
   }),
-  async beforeCreate() {
-    this.isAdminOrSu = await this.$store.getters['session/isAdmin'];
+  async beforeCreate () {
+    this.isAdminOrSu = await this.$store.getters['session/isAdmin']
   },
-  setup() {
+  setup () {
     const drawer = ref(false)
     const smallScreen = ref(false)
 

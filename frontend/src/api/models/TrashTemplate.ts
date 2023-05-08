@@ -1,9 +1,9 @@
-import {TrashTemplateStatus} from "@/api/models/TrashTemplateStatus";
-import Building from "@/api/models/Building";
+import { TrashTemplateStatus } from '@/api/models/TrashTemplateStatus'
+import Building from '@/api/models/Building'
 
 export default class TrashTemplate {
   id: number = 1;
-  name: string = "";
+  name: string = '';
   even: boolean = true;
   status: TrashTemplateStatus = TrashTemplateStatus.inactief;
   year: number = 2000;

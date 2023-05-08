@@ -103,7 +103,7 @@ export default {
   computed: {
     filteredOptions () {
       const filtered = []
-      if (this.key !== ''){
+      if (this.key !== '') {
         const regex = new RegExp(this.searchFilter, 'ig')
         for (const option of this.elements) {
           const value = option[this.key].toString()

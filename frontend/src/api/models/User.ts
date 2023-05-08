@@ -1,4 +1,4 @@
-import {UserRole} from "@/api/models/UserRole";
+import { UserRole } from '@/api/models/UserRole'
 
 export default class User {
   id: number;

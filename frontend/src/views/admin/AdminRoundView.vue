@@ -12,7 +12,7 @@
                  class="my-2" color="primary"><v-icon color="secondary" icon="mdi-pencil"></v-icon></v-btn>
         </v-col>
       </v-row>
-      <h2 v-for="student in planning.students"><a :href="'/admin/gebruiker/'+student.id" style="text-decoration: none;">
+      <h2 v-for="student in planning.students" :key="student.id"><a :href="'/admin/gebruiker/'+student.id" style="text-decoration: none;">
         {{student.first_name}} {{student.last_name}}</a></h2>
       <v-card class="mt-4 py-4" style="max-width: 95%;">
         <v-row>
@@ -24,7 +24,7 @@
         </v-row>
       </v-card>
       <FollowUpRoundBuildingCard v-for="building in planning.ronde.buildings" class="my-4" style="max-width: 95%;"
-                                 v-if="pictures !== null"
+                                 :key="building.id"
                                  :data="{building: building, pictures: pictures[building.id], optimalDuration: 15 * 60}">
       </FollowUpRoundBuildingCard>
       <v-card class="mt-8 py-4" style="max-width: 95%;">
@@ -41,56 +41,55 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import PlanningService from "@/api/services/PlanningService";
-import NormalButton from "@/components/NormalButton.vue";
-import FollowUpRoundBuildingCard from "@/components/admin/FollowUpRoundBuildingCard.vue";
-import {getWeek} from "@/api/DateUtil";
+import { RequestHandler } from '@/api/RequestHandler'
+import PlanningService from '@/api/services/PlanningService'
+import FollowUpRoundBuildingCard from '@/components/admin/FollowUpRoundBuildingCard.vue'
+import { getWeek } from '@/api/DateUtil'
 
 export default {
-  name: "AdminRoundView",
-  components: {FollowUpRoundBuildingCard, NormalButton},
-  data: () =>({
+  name: 'AdminRoundView',
+  components: { FollowUpRoundBuildingCard },
+  data: () => ({
     date: null,
-    dateString: "",
+    dateString: '',
     planning: null,
     pictures: null,
     duration: null,
     template: null,
-    status: "Niet voltooid"
+    status: 'Niet voltooid'
   }),
-  created() {
-    if ('date' in this.$route.query) this.date = new Date(this.$route.query.date);
-    this.dateString = this.date.toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'});
+  created () {
+    if ('date' in this.$route.query) this.date = new Date(this.$route.query.date)
+    this.dateString = this.date.toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' })
     if ('planning' in this.$route.query) {
       RequestHandler.handle(PlanningService.getPlanning(this.$route.query.planning), {
-        id: `getPlanningError`,
-        style: "SNACKBAR"
-      }).then(planning => this.planning = planning).catch(() => null);
+        id: 'getPlanningError',
+        style: 'SNACKBAR'
+      }).then(planning => { this.planning = planning }).catch(() => null)
 
       RequestHandler.handle(PlanningService.findTemplate(this.$route.query.planning), {
         id: 'findTemplateError',
-        style: "NONE"
-      }).then(t => this.template = t.template_id).catch(() => null);
+        style: 'NONE'
+      }).then(t => { this.template = t.template_id }).catch(() => null)
 
       RequestHandler.handle(PlanningService.getStatusPictures(this.date.getFullYear(),
         getWeek(this.date), this.$route.query.planning), {
-        id: `getPicturesError`,
-        style: "SNACKBAR"
+        id: 'getPicturesError',
+        style: 'SNACKBAR'
       }).then(pictures => {
-        this.pictures = pictures;
+        this.pictures = pictures
         const times = Object.keys(pictures).map(p => pictures[p].map(t => new Date(t.time)))
-                .flat().sort((p1, p2) => p1 < p2 ? -1 : 1);
+                .flat().sort((p1, p2) => p1 < p2 ? -1 : 1)
         if (times.length > 0) {
-          const secs = (times[times.length - 1].getTime() - times[0].getTime()) / 1000;
-          const minutes = Math.floor(secs / 60);
-          const seconds = Math.round(secs - minutes * 60);
-          this.duration = `${minutes}min ${seconds}s`;
-        } else this.duration = '-';
+          const secs = (times[times.length - 1].getTime() - times[0].getTime()) / 1000
+          const minutes = Math.floor(secs / 60)
+          const seconds = Math.round(secs - minutes * 60)
+          this.duration = `${minutes}min ${seconds}s`
+        } else this.duration = '-'
 
-        if (Object.keys(pictures).every(p => pictures[p].some(pic => pic.pictureType === 'DE'))) this.status = 'Voltooid';
-        else if (Object.keys(pictures).some(p => pictures[p].length > 0)) this.status = 'bezig';
-      }).catch(() => null);
+        if (Object.keys(pictures).every(p => pictures[p].some(pic => pic.pictureType === 'DE'))) this.status = 'Voltooid'
+        else if (Object.keys(pictures).some(p => pictures[p].length > 0)) this.status = 'bezig'
+      }).catch(() => null)
     }
   }
 }

@@ -1,6 +1,6 @@
-import { EchoError, EchoPromise } from "echofetch";
-import { CustomErrorOptions } from "./error/types/CustomErrorOptions";
-import { ErrorHandler } from "./error/ErrorHandler";
+import { EchoError, EchoPromise } from 'echofetch'
+import { CustomErrorOptions } from './error/types/CustomErrorOptions'
+import { ErrorHandler } from './error/ErrorHandler'
 
 export class RequestHandler {
     /**
@@ -8,15 +8,15 @@ export class RequestHandler {
      * @param request
      * @param errorOptions
      */
-    static handle<T>(
+    static handle<T> (
         request: EchoPromise<T>,
         errorOptions: CustomErrorOptions
     ): EchoPromise<T> {
         // Handle the error when it occurs.
         request.getPromise().catch(async (error: EchoError) => {
-          await ErrorHandler.handle(error, errorOptions);
-        });
+          await ErrorHandler.handle(error, errorOptions)
+        })
 
-        return request;
+        return request
     }
 }

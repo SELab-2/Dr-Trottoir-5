@@ -25,16 +25,15 @@
 </template>
 
 <script lang="ts">
-import {EchoError} from "echofetch";
-import {CustomErrorOptions} from "@/api/error/types/CustomErrorOptions";
-import {ErrorComponentPayload} from "@/api/error/types/component/ErrorComponentPayload";
-import ErrorCard from "@/components/error/placeholders/ErrorCard.vue";
-import ErrorSection from "@/components/error/placeholders/ErrorSection.vue";
-import {ErrorHandler} from "@/api/error/ErrorHandler";
-import {defineComponent, onActivated, onMounted} from 'vue'
+import { EchoError } from 'echofetch'
+import { CustomErrorOptions } from '@/api/error/types/CustomErrorOptions'
+import { ErrorComponentPayload } from '@/api/error/types/component/ErrorComponentPayload'
+import ErrorCard from '@/components/error/placeholders/ErrorCard.vue'
+import ErrorSection from '@/components/error/placeholders/ErrorSection.vue'
+import { ErrorHandler } from '@/api/error/ErrorHandler'
+import { defineComponent } from 'vue'
 
-const emitter = require('tiny-emitter/instance');
-
+const emitter = require('tiny-emitter/instance')
 
 export default defineComponent({
 
@@ -71,25 +70,25 @@ export default defineComponent({
      */
     errorComponentPayload: ErrorComponentPayload
   }),
-  mounted() {
+  mounted () {
     // Create a listener that will show an error when it is spawned.
     emitter.$on(
-      "error",
+      'error',
       (error: EchoError, options: CustomErrorOptions) => {
         // Check if the error should be rendered.
-        if ( options.id === this.errorId || (this.displayFullPage && options.displayFullpage) ) {
+        if (options.id === this.errorId || (this.displayFullPage && options.displayFullpage)) {
           // Get the component to display for the error.
-          if (options.style === "CARD") {
-            this.errorComponent = ErrorCard;
-          } else if (options.style === "SECTION") {
-            this.errorComponent = ErrorSection;
+          if (options.style === 'CARD') {
+            this.errorComponent = ErrorCard
+          } else if (options.style === 'SECTION') {
+            this.errorComponent = ErrorSection
           }
 
           // Apply the custom error messages to the error object.
           error.message = ErrorHandler.getCustomMessage(
             error,
             options
-          );
+          )
 
           this.errorComponentPayload = {
             error,
@@ -98,17 +97,17 @@ export default defineComponent({
               options
             ),
             options
-          };
+          }
 
-          this.renderError = true;
+          this.renderError = true
         }
       }
-    );
+    )
 
     // Clear the error when a "error-clear" event is send.
-    emitter.$on("error-clear", () => {
-      this.renderError = false;
-    });
+    emitter.$on('error-clear', () => {
+      this.renderError = false
+    })
   }
 })
 </script>

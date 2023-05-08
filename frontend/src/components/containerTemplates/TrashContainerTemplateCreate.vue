@@ -45,18 +45,14 @@
 </template>
 
 <script lang="ts">
-import NormalButton from "@/components/NormalButton.vue";
-import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
-import TrashTemplateService from "@/api/services/TrashTemplateService";
-import router from "@/router";
-import buildingService from "@/api/services/BuildingService";
+import { RequestHandler } from '@/api/RequestHandler'
+import LocationService from '@/api/services/LocationService'
+import TrashTemplateService from '@/api/services/TrashTemplateService'
+import router from '@/router'
+import buildingService from '@/api/services/BuildingService'
 
 export default {
-  name: "TrashContainerTemplateCreateView",
-  components: {
-    NormalButton
-  },
+  name: 'TrashContainerTemplateCreateView',
   data: () => ({
     name: '',
     even: true,
@@ -65,46 +61,46 @@ export default {
     buildings: null,
     building_choices: []
   }),
-  async mounted() {
+  async mounted () {
   },
-  async beforeMount() {
+  async beforeMount () {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
 
     // get all possible buildings
     this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
       id: 'getbuildingsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
+    }).then(result => result).catch(() => [])
   },
   methods: {
-    async create() {
+    async create () {
       const body = {
         name: this.name,
         even: this.even,
         location: this.location
       }
-      const response = await RequestHandler.handle(TrashTemplateService.newTrashTemplate(body), {
+      await RequestHandler.handle(TrashTemplateService.newTrashTemplate(body), {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => {
         this.building_choices.forEach((building) => {
           RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(result.id, {
             building: building.id,
-            selection: [] //TODO ADD THE SELECTED TRASHCANS
+            selection: [] // TODO ADD THE SELECTED TRASHCANS
           }), {
             id: 'addBuildingError',
             style: 'SNACKBAR'
           }).then((result) => {
-            console.log("done")
+            console.log('done')
           })
         })
         return result
-      });
-      return await router.push({name: 'trashtemplates'})
+      })
+      return await router.push({ name: 'trashtemplates' })
     }
   }
 }

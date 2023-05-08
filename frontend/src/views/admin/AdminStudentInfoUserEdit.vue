@@ -4,16 +4,16 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import UserService from "@/api/services/UserService";
-import AccountInformation from "@/components/AccountInformation";
+import { RequestHandler } from '@/api/RequestHandler'
+import UserService from '@/api/services/UserService'
+import AccountInformation from '@/components/AccountInformation'
 
 export default {
-  name: "AdminStudentInfoUserEdit",
-  components: {AccountInformation},
-  props: {id: Number},
+  name: 'AdminStudentInfoUserEdit',
+  components: { AccountInformation },
+  props: { id: Number },
   methods: {
-    async get_data() {
+    async get_data () {
       return RequestHandler.handle(UserService.getUserById(Number(this.id)), {
         id: 'AdminStudentInfoUserEditGetUserInfoByIdError',
         style: 'SNACKBAR',
@@ -23,13 +23,13 @@ export default {
           description: 'Kon data van gebruiker niet ophalen'
         }]
       }).catch(() => {
-        this.$router.push({name: 'admin_user_register'})
-      });
+        this.$router.push({ name: 'admin_user_register' })
+      })
     },
-    update(data) {
+    update (data) {
       // TODO Use role view from other branch
       RequestHandler.handle(UserService.updateUserById(Number(this.id), {
-        role: data.role,
+        role: data.role
       }), {
         id: 'updateUserRoleError',
         style: 'SNACKBAR',
@@ -40,7 +40,7 @@ export default {
         }]
       })
     },
-    delete_user() {
+    delete_user () {
       RequestHandler.handle(UserService.deleteUserById(Number(this.id)), {
         id: 'deleteUserError',
         style: 'SNACKBAR',
@@ -50,7 +50,7 @@ export default {
           description: 'Kon gebruiker niet verwijderen'
         }]
       })
-      this.$router.push({name: 'admin_user_register'})
+      this.$router.push({ name: 'admin_user_register' })
     }
   }
 }

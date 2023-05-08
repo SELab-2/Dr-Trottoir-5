@@ -1,57 +1,55 @@
-import {EchoError} from 'echofetch';
-import {CustomErrorOptions} from "./types/CustomErrorOptions";
-import {CustomErrorMessage} from "./types/CustomErrorMessage";
-import {InputFields} from "@/types/fields/InputFields";
-import {InputFieldError} from "@/types/fields/InputFieldError";
+import { EchoError } from 'echofetch'
+import { CustomErrorOptions } from './types/CustomErrorOptions'
+import { CustomErrorMessage } from './types/CustomErrorMessage'
+import { InputFields } from '@/types/fields/InputFields'
+import { InputFieldError } from '@/types/fields/InputFieldError'
 import router from '../../router'
 
-
-const emitter = require('tiny-emitter/instance');
-
+const emitter = require('tiny-emitter/instance')
 
 /**
  * List with custom error messages for certain response codes/messages
  */
 const globalCustomErrors: Array<CustomErrorMessage> = [
   {
-    code: "401",
-    message: "Je bent niet ingelogd",
+    code: '401',
+    message: 'Je bent niet ingelogd',
     description:
-      "Je bent momenteel niet ingelogd, log in en probeer het opnieuw",
+      'Je bent momenteel niet ingelogd, log in en probeer het opnieuw'
   },
   {
-    code: "403",
-    message: "Geen toegang",
+    code: '403',
+    message: 'Geen toegang',
     description:
-      "Je hebt onvoldoende rechten om deze actie uit te voeren",
+      'Je hebt onvoldoende rechten om deze actie uit te voeren'
   },
   {
-    code: "404",
-    message: "Pagina niet gevonden",
+    code: '404',
+    message: 'Pagina niet gevonden',
     description:
-      "We hebben deze pagina niet gevonden. De pagina bestaat niet meer of is verplaatst naar een andere locatie.",
+      'We hebben deze pagina niet gevonden. De pagina bestaat niet meer of is verplaatst naar een andere locatie.'
   },
 
   {
-    code: "500",
-    message: "Interne server error",
+    code: '500',
+    message: 'Interne server error',
     description:
-      "We hebben problemen met de server. Probeer het later opnieuw.",
+      'We hebben problemen met de server. Probeer het later opnieuw.'
   },
 
   {
-    code: "502",
-    message: "De server is momenteel offline.",
+    code: '502',
+    message: 'De server is momenteel offline.',
     description:
-      "We hebben problemen met de server. Probeer het later opnieuw.",
+      'We hebben problemen met de server. Probeer het later opnieuw.'
   },
   {
-    code: "network_error",
-    message: "Geen connectie met de server.",
+    code: 'network_error',
+    message: 'Geen connectie met de server.',
     description:
-      "We kunnen niet verbinden met de server om informatie op te halen. Check of je internet hebt en probeer later opnieuw.",
-  },
-];
+      'We kunnen niet verbinden met de server om informatie op te halen. Check of je internet hebt en probeer later opnieuw.'
+  }
+]
 
 export class ErrorHandler {
   /**
@@ -60,12 +58,12 @@ export class ErrorHandler {
    * @param options
    * @param fields
    */
-  static async handle(
+  static async handle (
     error: EchoError,
     options: CustomErrorOptions,
     fields: InputFields = {}
   ) {
-    let errors = error.json ? await error.json().catch(() => null) : null;
+    const errors = error.json ? await error.json().catch(() => null) : null
 
     // Handle field errors.
     this.handleInputFields(error, fields)
@@ -74,13 +72,12 @@ export class ErrorHandler {
     this.handleGeneral(error, errors)
 
     // Emit the error on the ErrorBus.
-    emitter.emit("error", error, options)
+    emitter.emit('error', error, options)
 
     // Clear the error when navigating to a different route.
     router.afterEach(() => {
-      emitter.emit("error-clear")
-    });
-
+      emitter.emit('error-clear')
+    })
   }
 
   /**
@@ -89,27 +86,24 @@ export class ErrorHandler {
    * @param errors
    * @param fields
    */
-  static handleInputFields(errors: any, fields: InputFields) {
+  static handleInputFields (errors: any, fields: InputFields) {
     // Check if the input errors are undefined.
     if (!errors) {
-      return;
+      return
     }
 
     // Set the error messages for every field.
     for (const fieldName of Object.keys(fields)) {
-      const fieldValue = fields[fieldName];
+      const fieldValue = fields[fieldName]
       const fieldNewError = errors.find(
         (inputError: InputFieldError) => inputError.field === fieldName
-      );
+      )
 
       // Set the new error message, when available.
       if (fieldNewError) {
-        fieldValue.error = fieldNewError.message;
-      }
-
-      // Otherwise set an empty error. (necessary for reset of previous error)
-      else {
-        fieldValue.error = "";
+        fieldValue.error = fieldNewError.message
+      } else { // Otherwise set an empty error. (necessary for reset of previous error)
+        fieldValue.error = ''
       }
     }
   }
@@ -120,11 +114,11 @@ export class ErrorHandler {
    * @param error
    * @param errors
    */
-  static handleGeneral(error: EchoError, errors: any) {
-    error.message = this.getCustomMessage(error, new CustomErrorOptions()); // (temp?) fix
+  static handleGeneral (error: EchoError, errors: any) {
+    error.message = this.getCustomMessage(error, new CustomErrorOptions()) // (temp?) fix
     // Check if the general errors are undefined.
     if (!errors || !errors.errors) {
-      return;
+      return
     }
 
     const generalErrors = errors.errors
@@ -132,7 +126,7 @@ export class ErrorHandler {
     // Check if any general error was found.
     if (generalErrors.length > 0) {
       // Modify the error message to contain the first general error.
-      error.message = generalErrors[0].message;
+      error.message = generalErrors[0].message
     }
   }
 
@@ -141,13 +135,13 @@ export class ErrorHandler {
    * @param error
    * @param options
    */
-  static getCustomMessage(
+  static getCustomMessage (
     error: EchoError,
     options: CustomErrorOptions
   ): string {
-    const customError = this.getCustomError(error, options);
+    const customError = this.getCustomError(error, options)
 
-    return customError ? customError.message : error.message;
+    return customError ? customError.message : error.message
   }
 
   /**
@@ -155,13 +149,13 @@ export class ErrorHandler {
    * @param error
    * @param options
    */
-  static getCustomDescription(
+  static getCustomDescription (
     error: EchoError,
     options: CustomErrorOptions
   ): string {
-    const customError = this.getCustomError(error, options);
+    const customError = this.getCustomError(error, options)
 
-    return customError ? customError.description : "";
+    return customError ? customError.description : ''
   }
 
   /**
@@ -169,12 +163,12 @@ export class ErrorHandler {
    * @param error
    * @param options
    */
-  private static getCustomError(
+  private static getCustomError (
     error: EchoError,
     options: CustomErrorOptions
   ): CustomErrorMessage | undefined {
     if (!error) {
-      return undefined;
+      return undefined
     }
 
     // Ajust some errors that can be displayed better based on the given error code.
@@ -182,20 +176,20 @@ export class ErrorHandler {
       e =>
         (error.status &&
           e.code === error.status.toString())
-    );
+    )
 
-    return customError;
+    return customError
   }
 
   /**
    * Get a list with custom error messages based on global custom messages & given error options
    * @param options
    */
-  private static getCustomErrors(
+  private static getCustomErrors (
     options: CustomErrorOptions
   ): Array<CustomErrorMessage> {
     return options.customMessages !== undefined
       ? [...globalCustomErrors, ...options.customMessages]
-      : globalCustomErrors;
+      : globalCustomErrors
   }
 }

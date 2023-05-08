@@ -44,19 +44,18 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
 
 export default {
-  name: "DagPlanningCard",
+  name: 'DagPlanningCard',
   props: {
     data: {
       type: Object,
       default: () => ({
         template_id: 0,
         ronde_id: 0,
-        status: "Actief",
+        status: 'Actief',
         dag_id: 0,
         students: [],
         day: 'MO',
@@ -66,24 +65,24 @@ export default {
     }
   },
   methods: {
-    format_day(day) {
+    format_day (day) {
       const day_mapping = {
-        "MO": "Maandag",
-        "TU": "Dinsdag",
-        "WE": "Woensdag",
-        "TH": "Donderdag",
-        "FR": "Vrijdag",
-        "SA": "Zaterdag",
-        "SU": "Zondag",
+        MO: 'Maandag',
+        TU: 'Dinsdag',
+        WE: 'Woensdag',
+        TH: 'Donderdag',
+        FR: 'Vrijdag',
+        SA: 'Zaterdag',
+        SU: 'Zondag'
       }
       return day_mapping[day]
     },
-    async remove_dagplanning() {
+    async remove_dagplanning () {
       const response = await RequestHandler.handle(StudentTemplateService.deleteDagPlanning(this.data.template_id, this.data.dag_id), {
-        id: "deleteDagplanningError",
-        style: "SNACKBAR"
+        id: 'deleteDagplanningError',
+        style: 'SNACKBAR'
       }).then(res => res).catch(() => {})
-      this.$emit('remove', response["new_id"])
+      this.$emit('remove', response.new_id)
     }
   }
 }

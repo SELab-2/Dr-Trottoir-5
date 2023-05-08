@@ -1,4 +1,4 @@
-import { CustomErrorMessage } from "./CustomErrorMessage";
+import { CustomErrorMessage } from './CustomErrorMessage'
 
 export class CustomErrorOptions {
     /**
@@ -11,7 +11,7 @@ export class CustomErrorOptions {
     /**
      * Way to display the error on screen.
      */
-    public style: "SNACKBAR" | "CARD" | "SECTION" | "NONE";
+    public style: 'SNACKBAR' | 'CARD' | 'SECTION' | 'NONE';
 
     /**
      * Should the error be displayed on a seperate page.

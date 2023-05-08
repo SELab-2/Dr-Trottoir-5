@@ -35,11 +35,11 @@ import EditIcon from '@/components/icons/EditIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import RoundBuildingCard from '@/components/admin/RoundBuildingCard'
 import BuildingHeader from '@/components/admin/BuildingHeader'
-import Round from "@/api/models/Round";
-import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
-import router from "@/router";
-import RoundService from "@/api/services/RoundService";
+import Round from '@/api/models/Round'
+import { RequestHandler } from '@/api/RequestHandler'
+import BuildingService from '@/api/services/BuildingService'
+import router from '@/router'
+import RoundService from '@/api/services/RoundService'
 
 export default {
   name: 'BuildingList',
@@ -60,12 +60,12 @@ export default {
         .then(async result => router.go(0))
     },
     editRound () {
-      router.push({ name: 'edit_round', params: {id: this.data.id} });
+      router.push({ name: 'edit_round', params: { id: this.data.id } })
     }
   },
   computed: {
     filteredOptions () {
-      if (this.keyValue !== 'roundName'){
+      if (this.keyValue !== 'roundName') {
         const filtered = []
         const regex = new RegExp(this.searched, 'ig')
         for (const el of this.buildings) {
@@ -79,7 +79,7 @@ export default {
       }
     }
   },
-  async beforeMount() {
+  async beforeMount () {
     for (const building of this.data.buildings) {
       await RequestHandler.handle(BuildingService.getBuildingById(building)).then(async result => this.buildings.push(result))
     }

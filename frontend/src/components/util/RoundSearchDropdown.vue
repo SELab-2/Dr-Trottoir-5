@@ -57,9 +57,8 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
 <script>
 import NormalButton from '@/components/NormalButton'
 import { capitalize } from 'vue'
-import Building from "@/api/models/Building";
-import {RequestHandler} from "@/api/RequestHandler";
-import BuildingService from "@/api/services/BuildingService";
+import { RequestHandler } from '@/api/RequestHandler'
+import BuildingService from '@/api/services/BuildingService'
 
 // TODO: fix search
 
@@ -120,7 +119,7 @@ export default {
         }
       } else {
         for (const option of this.elements) {
-          const value = option['name'].toString()
+          const value = option.name.toString()
           if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
             filtered.push(value)
           }
@@ -165,7 +164,7 @@ export default {
       }
     }
   },
-  updated() {
+  updated () {
     console.log(this.elements)
     for (const round of this.elements) {
       for (const id of round.buildings) {

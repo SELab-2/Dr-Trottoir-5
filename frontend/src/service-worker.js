@@ -1,12 +1,12 @@
 import config from '@/config'
-import { CacheableResponsePlugin } from 'workbox-cacheable-response';
-import { ExpirationPlugin } from 'workbox-expiration';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response'
+import { ExpirationPlugin } from 'workbox-expiration'
 
-import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute, Route } from 'workbox-routing';
-import { CacheFirst } from 'workbox-strategies';
+import { precacheAndRoute } from 'workbox-precaching'
+import { registerRoute, Route } from 'workbox-routing'
+import { CacheFirst } from 'workbox-strategies'
 
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(self.__WB_MANIFEST)
 
 // todo check of alle pathnames wel kloppen
 
@@ -28,11 +28,11 @@ const imageRoute = new Route(({ request }) => {
       statuses: [0, 200]
     })
   ]
-}));
+}))
 
 // Handle scripts:
 const scriptsRoute = new Route(({ request }) => {
-  return request.destination === 'script';
+  return request.destination === 'script'
 }, new CacheFirst({
   cacheName: 'scripts',
   plugins: [
@@ -44,11 +44,11 @@ const scriptsRoute = new Route(({ request }) => {
       statuses: [0, 200]
     })
   ]
-}));
+}))
 
 // Handle styles:
 const stylesRoute = new Route(({ request }) => {
-  return request.destination === 'style';
+  return request.destination === 'style'
 }, new CacheFirst({
   cacheName: 'styles',
   plugins: [
@@ -60,7 +60,7 @@ const stylesRoute = new Route(({ request }) => {
       statuses: [0, 200]
     })
   ]
-}));
+}))
 registerRoute(imageRoute)
 registerRoute(scriptsRoute)
 registerRoute(stylesRoute)
@@ -74,7 +74,7 @@ registerRoute(
     cacheName: 'images',
     plugins: [
       new ExpirationPlugin({
-        maxEntries: 60, //todo test of dit veel/weinig is
+        maxEntries: 60, // todo test of dit veel/weinig is
         maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
       }),
       new CacheableResponsePlugin({
@@ -82,7 +82,7 @@ registerRoute(
       })
     ]
   })
-);
+)
 
 registerRoute(
   ({ url }) => url.pathname.startsWith(`${config.BACKEND.URL}/admin/mailtemplates`),
@@ -90,7 +90,7 @@ registerRoute(
     cacheName: 'mailtemplates',
     plugins: [
       new ExpirationPlugin({
-        maxEntries: 60, //todo test of dit veel/weinig is
+        maxEntries: 60, // todo test of dit veel/weinig is
         maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
       }),
       new CacheableResponsePlugin({
@@ -98,7 +98,7 @@ registerRoute(
       })
     ]
   })
-);
+)
 
 registerRoute(
   ({ url }) => url.pathname.startsWith(`${config.BACKEND.URL}/ronde/building/manual`),
@@ -106,7 +106,7 @@ registerRoute(
     cacheName: 'manuals',
     plugins: [
       new ExpirationPlugin({
-        maxEntries: 60, //todo test of dit veel/weinig is
+        maxEntries: 60, // todo test of dit veel/weinig is
         maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
       }),
       new CacheableResponsePlugin({
@@ -114,11 +114,11 @@ registerRoute(
       })
     ]
   })
-);
+)
 
 /* Matches everything */
 registerRoute(new Route(({ request }) => {
-  return true;
+  return true
 }, new CacheFirst({
   cacheName: 'scripts',
   plugins: [
@@ -131,5 +131,3 @@ registerRoute(new Route(({ request }) => {
     })
   ]
 })))
-
-

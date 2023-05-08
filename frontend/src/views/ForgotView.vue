@@ -69,15 +69,15 @@
 import { defineComponent } from 'vue'
 import router from '@/router'
 import NormalButton from '@/components/NormalButton.vue'
-import AuthService from "@/api/services/AuthService";
-import {AuthForgotWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
-import LoginTopBar from "@/components/LoginTopBar.vue";
+import AuthService from '@/api/services/AuthService'
+import { AuthForgotWrapper, AuthResetWrapper } from '@/api/wrappers/AuthWrappers'
+import LoginTopBar from '@/components/LoginTopBar.vue'
 
 // TODO input error handling
 
 export default defineComponent({
   name: 'ForgotView',
-  components: {LoginTopBar, NormalButton },
+  components: { LoginTopBar, NormalButton },
   data: () => ({
     email: '',
     password: '',
@@ -127,7 +127,7 @@ export default defineComponent({
         this.password,
         this.otp
       ))
-      return router.push({name : 'login' })
+      return router.push({ name: 'login' })
     }
   }
 })

@@ -6,20 +6,19 @@ import {
   POST,
   FormMultipart,
   FormField, GET, Path, DELETE, PATCH
-} from "@/api/EchoFetch";
-import Building from "@/api/models/Building";
-import BuildingManual from "@/api/models/BuildingManual";
-import config from "@/config";
-import {BuildingManualStatus} from "@/api/models/BuildingManualStatus";
-import {InputFields} from "@/types/fields/InputFields";
+} from '@/api/EchoFetch'
+import Building from '@/api/models/Building'
+import BuildingManual from '@/api/models/BuildingManual'
+import config from '@/config'
+import { BuildingManualStatus } from '@/api/models/BuildingManualStatus'
+import { InputFields } from '@/types/fields/InputFields'
 
 class BuildingService extends EchoService {
-
   /**
    * Get all buildings
    */
   @GET('/ronde/building')
-  getAllBuildings() : EchoPromise<[Building]> {
+  getAllBuildings () : EchoPromise<[Building]> {
     return {} as EchoPromise<[Building]>
   }
 
@@ -28,7 +27,7 @@ class BuildingService extends EchoService {
    */
   @FormMultipart()
   @POST('/ronde/building/manual/')
-  createManual(@FormField('file') file: File,
+  createManual (@FormField('file') file: File,
                @FormField('fileType') fileType: string,
                @FormField('manualStatus') manualStatus: BuildingManualStatus): EchoPromise<BuildingManual> {
     return {} as EchoPromise<BuildingManual>
@@ -38,7 +37,7 @@ class BuildingService extends EchoService {
    * Get building manual
    */
   @GET('/ronde/building/manual/{id}')
-  getManualById(@Path('id') id: number): EchoPromise<BuildingManual> {
+  getManualById (@Path('id') id: number): EchoPromise<BuildingManual> {
     return {} as EchoPromise<BuildingManual>
   }
 
@@ -46,7 +45,7 @@ class BuildingService extends EchoService {
    * Delete building manual
    */
   @DELETE('/ronde/building/manual/{id}')
-  deleteManualById(@Path('id') id: number): EchoPromise<void> {
+  deleteManualById (@Path('id') id: number): EchoPromise<void> {
     return {} as EchoPromise<void>
   }
 
@@ -54,13 +53,13 @@ class BuildingService extends EchoService {
    * Update a building manual
    */
   @PATCH('/ronde/building/manual/{id}/')
-  updateManualStatusById(@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
+  updateManualStatusById (@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
     return {} as EchoPromise<any>
   }
 
   @FormMultipart()
   @PATCH('/ronde/building/manual/{id}/')
-  updateManualFileById(@Path('id') id: number,
+  updateManualFileById (@Path('id') id: number,
                        @FormField('file') file: File,
                        @FormField('fileType') fileType: string,
                        @FormField('manualStatus') manualStatus: BuildingManualStatus): EchoPromise<any> {
@@ -71,7 +70,7 @@ class BuildingService extends EchoService {
    * Create a new building
    */
   @POST('/ronde/building/')
-  createBuilding(@Body() body: InputFields): EchoPromise<Building> {
+  createBuilding (@Body() body: InputFields): EchoPromise<Building> {
     return {} as EchoPromise<Building>
   }
 
@@ -79,7 +78,7 @@ class BuildingService extends EchoService {
    * Get building information
    */
   @GET('/ronde/building/{id}/')
-  getBuildingById(@Path('id') id: number): EchoPromise<Building> {
+  getBuildingById (@Path('id') id: number): EchoPromise<Building> {
     return {} as EchoPromise<Building>
   }
 
@@ -87,7 +86,7 @@ class BuildingService extends EchoService {
    * Update building information
    */
   @PATCH('/ronde/building/{id}/')
-  updateBuildingById(@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
+  updateBuildingById (@Path('id') id: number, @Body() body: {}): EchoPromise<any> {
     return {} as EchoPromise<any>
   }
 
@@ -95,7 +94,7 @@ class BuildingService extends EchoService {
    * Get list of buildings
    */
   @GET('/ronde/building/')
-  getBuildings() : EchoPromise<Array<Building>> {
+  getBuildings () : EchoPromise<Array<Building>> {
     return {} as EchoPromise<Array<Building>>
   }
 
@@ -103,11 +102,11 @@ class BuildingService extends EchoService {
    * Delete building
    */
   @DELETE('/ronde/building/{id}')
-  deleteBuildingById(@Path('id') id: number): EchoPromise<void> {
+  deleteBuildingById (@Path('id') id: number): EchoPromise<void> {
     return {} as EchoPromise<void>
   }
 }
 
 export default new EchoServiceBuilder()
   .setBaseUrl(config.BACKEND.URL)
-  .build(BuildingService);
+  .build(BuildingService)

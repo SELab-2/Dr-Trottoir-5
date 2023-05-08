@@ -36,7 +36,7 @@
       <v-col cols="1"/>
       <v-col cols="2" class="d-flex align-center">
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template>
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
                 status
               }}</span>
@@ -57,11 +57,11 @@
 
 <script>
 import EditIcon from '@/components/icons/EditIcon.vue'
-import Building from "@/api/models/Building";
-import BuildingService from "@/api/services/BuildingService";
-import {RequestHandler} from "@/api/RequestHandler";
-import router from "@/router";
-import DeleteIcon from "@/components/icons/DeleteIcon.vue";
+import Building from '@/api/models/Building'
+import BuildingService from '@/api/services/BuildingService'
+import { RequestHandler } from '@/api/RequestHandler'
+import router from '@/router'
+import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 
 /**
  * BuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -73,7 +73,7 @@ import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 
 export default {
   name: 'BuildingCard',
-  components: {DeleteIcon, EditIcon},
+  components: { DeleteIcon, EditIcon },
   props: {
     data: {
       type: Building
@@ -81,14 +81,14 @@ export default {
   },
   data: () => ({
     manual: '',
-    status: '',
+    status: ''
   }),
   methods: {
     downloadDocument: function () {
       window.open(this.manual)
     },
     goToEditBuilding: function () {
-      router.push({name: 'admin_edit_building', params: {id: this.data.id}})
+      router.push({ name: 'admin_edit_building', params: { id: this.data.id } })
     },
     deletePost: async function () {
       await RequestHandler.handle(BuildingService.deleteBuildingById(this.data.id), {
@@ -105,10 +105,10 @@ export default {
         .catch(() => location.reload())
     },
     goToBuildingPage: function () {
-      router.push({name: 'admin_info_building', params: {id: this.data.id}});
-    },
+      router.push({ name: 'admin_info_building', params: { id: this.data.id } })
+    }
   },
-  async beforeMount() {
+  async beforeMount () {
     await RequestHandler.handle(BuildingService.getManualById(this.data.id), {
       id: 'BuildingCardGetManual',
       style: 'SNACKBAR'

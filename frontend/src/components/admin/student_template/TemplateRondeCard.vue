@@ -32,32 +32,31 @@
 </template>
 
 <script>
-import {RequestHandler} from "@/api/RequestHandler";
-import StudentTemplateService from "@/api/services/StudentTemplateService";
-import router from "@/router";
+import { RequestHandler } from '@/api/RequestHandler'
+import StudentTemplateService from '@/api/services/StudentTemplateService'
 
 export default {
-  name: "TemplateRondeCard",
+  name: 'TemplateRondeCard',
   props: {
     data: {
       type: Object,
       default: () => ({
         template_id: 0,
         ronde_id: 0,
-        status: "Actief",
+        status: 'Actief',
         name: 'Template Rondes Gent',
         location: 'Gent'
       })
     }
   },
   methods: {
-    async on_delete() {
+    async on_delete () {
       const response = await RequestHandler.handle(StudentTemplateService.removeRound(this.data.template_id, this.data.ronde_id), {
           id: 'deleteRound',
           style: 'SNACKBAR'
       })
-      if (response["new_id"] !== undefined) {
-        const new_id = response["new_id"]
+      if (response.new_id !== undefined) {
+        const new_id = response.new_id
         this.$emit('copy', new_id)
       }
       this.$emit('round_removed')
