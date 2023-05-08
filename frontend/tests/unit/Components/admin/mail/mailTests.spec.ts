@@ -28,7 +28,7 @@ describe('CreateEditMailTemplate.vue', () => {
     const textField = wrapper.find('v-text-field')
     textField.element.value = 'test';
     textField.trigger('input');
-    await wrapper.vm.$nextTick();
+    wrapper.vm.$forceUpdate()
     expect(wrapper.vm.$data.template.name).toBe('test');
   })
 
@@ -36,7 +36,7 @@ describe('CreateEditMailTemplate.vue', () => {
     const textArea = wrapper.find('v-textarea')
     textArea.element.value = 'Dit is een test mail template #test#';
     textArea.trigger('input');
-    await wrapper.vm.$nextTick();
+    wrapper.vm.$forceUpdate()
     expect(wrapper.vm.$data.template.text).toBe('Dit is een test mail template #test#');
   })
 
