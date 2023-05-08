@@ -1,10 +1,10 @@
 export default {
   FRONTEND: {
-    URL: process.env.VUE_APP_FRONTEND_URL,
+    URL: (<string>process.env.VUE_APP_FRONTEND_URL).endsWith('/') ? (<string>process.env.VUE_APP_FRONTEND_URL).substring(0, (<string>process.env.VUE_APP_FRONTEND_URL).length - 1) : (<string>process.env.VUE_APP_FRONTEND_URL),
   },
 
   BACKEND: {
-    URL: process.env.VUE_APP_BACKEND_URL,
+    URL: (<string>process.env.VUE_APP_BACKEND_URL).endsWith('/') ? (<string>process.env.VUE_APP_BACKEND_URL).substring(0, (<string>process.env.VUE_APP_BACKEND_URL).length - 1) : (<string>process.env.VUE_APP_BACKEND_URL),
   },
 
   /**

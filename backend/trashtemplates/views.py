@@ -1,6 +1,5 @@
 from .util import *
 from planning.util import filter_templates, get_current_week_planning
-from ronde.models import Building, LocatieEnum
 from .serializers import *
 from rest_framework.response import Response
 import datetime
