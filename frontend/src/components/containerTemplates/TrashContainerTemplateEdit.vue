@@ -81,6 +81,7 @@ import buildingService from "@/api/services/BuildingService";
 
 import BuildingContainer from "@/api/models/BuildingContainer";
 import Container from "@/api/models/Container";
+import {el} from "vuetify/locale";
 
 export default {
   name: "TrashContainerTemplateEditView",
@@ -174,20 +175,41 @@ export default {
         this.chosen_buildings.forEach((building_id) => {
           if (this.buildings.map(b => b.building.id).includes(building_id)) {
             const building = this.buildings.filter(b => b.building.id === building_id)[0]
-            RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, building_id, {
-              selection: building.trash_ids
-            }), {
-              id: 'updateSelectionToBuildingError',
-              style: 'SNACKBAR'
-            })
+            if (this.permanent) {
+              RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, building_id, {
+                selection: building.trash_ids
+              }), {
+                id: 'updateSelectionToBuildingError',
+                style: 'SNACKBAR'
+              })
+            } else {
+              RequestHandler.handle(TrashTemplateService.updateBuildingTemplateEenmalig(this.$route.params.id, building_id, {
+                selection: building.trash_ids
+              }), {
+                id: 'updateSelectionToBuildingError',
+                style: 'SNACKBAR'
+              })
+            }
+
           } else {
-            RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
-              building: building_id,
-              selection: this.building_choices.filter(b => b.building.id === building_id).map(b => b.trash_ids)[0]
-            }), {
-              id: 'makeNewBuildingError',
-              style: 'SNACKBAR'
-            })
+            if (this.permanent){
+              RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
+                building: building_id,
+                selection: this.building_choices.filter(b => b.building.id === building_id).map(b => b.trash_ids)[0]
+              }), {
+                id: 'makeNewBuildingError',
+                style: 'SNACKBAR'
+              })
+            } else {
+              RequestHandler.handle(TrashTemplateService.newBuildingToTemplateEenmalig(this.$route.params.id, {
+                building: building_id,
+                selection: this.building_choices.filter(b => b.building.id === building_id).map(b => b.trash_ids)[0]
+              }), {
+                id: 'makeNewBuildingError',
+                style: 'SNACKBAR'
+              })
+            }
+
           }
         })
 
