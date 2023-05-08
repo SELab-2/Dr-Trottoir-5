@@ -27,7 +27,7 @@ jobs:
         working-directory: ./frontend/src/api/EchoFetch
       - name: Install Dependencies
         run: |
-          npm install
+          npm install --force
         working-directory: ./frontend
       - name: Run Tests
         run: |
@@ -52,7 +52,7 @@ jobs:
         working-directory: ./frontend/src/api
       - name: Install Dependencies
         run: |
-          npm install
+          npm install --force
         working-directory: ./frontend
       - name: Run Linter
         run: |
