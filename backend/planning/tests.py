@@ -9,7 +9,6 @@ from model_bakery import baker
 
 
 class CreateTest(APITestCase):
-
     def setUp(self) -> None:
         self.dp = baker.make(DagPlanning)
         self.ronde = baker.make(Ronde)
