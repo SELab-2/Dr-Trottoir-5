@@ -22,12 +22,13 @@ class CreateTest(APITestCase):
     def testCreateStudentTemplate(self):
         # Create a student template
         factory = APIRequestFactory()
+        date = datetime.datetime.now().isocalendar()
         request = factory.post("/api/studenttemplates/", {
             "location": self.location.id,
             "name": "Gent template even",
             "start_hour": "12:00",
             "end_hour": "13:00",
-            "even": True
+            "even": date.week % 2 == 0
         })
         force_authenticate(request, user=self.user)
         response = student_templates_view(request).data
@@ -54,7 +55,6 @@ class CreateTest(APITestCase):
         self.assertIn("buildings", response[0])
 
         # Get the dayplans for this template
-        date = datetime.datetime.now().isocalendar()
         days = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"]
         request = factory.get(f'/api/studenttemplates/{template_id}/rondes/{self.ronde.id}/dagplanningen/')
         force_authenticate(request, user=self.user)
@@ -80,7 +80,7 @@ class CreateTest(APITestCase):
         request = factory.get(f'/api/dagplanning/{date.year}/{date.week}/{date.weekday}/')
         force_authenticate(request, user=self.student)
         response = student_dayplan(request, date.year, date.week, date.weekday).data
-        self.assertIn("id", response)
+        self.assertIn("id", response[0])
         self.assertEqual(student_dayplan(request, date.year, date.week, 8).status_code, 400)
 
         request = factory.get(f'studenttemplates/rondes/{date.year}/{date.week}/{date.weekday}/6/')
@@ -150,7 +150,7 @@ class CreateTest(APITestCase):
         force_authenticate(request, user=self.user)
         response = BuildingPictureCreateAndListAPIView.as_view()(request).data
         self.assertIn("id", response[0])
-        request = factory.get('/api/buildingpicture?infoPerBuilding=9')
+        request = factory.get('/api/buildingpicture?infoPerBuilding=9&year=2002&week=11')
         force_authenticate(request, user=self.user)
         response = BuildingPictureCreateAndListAPIView.as_view()(request).data
         self.assertIn("errors", response)
