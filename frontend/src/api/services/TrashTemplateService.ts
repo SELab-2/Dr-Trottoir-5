@@ -1,7 +1,8 @@
-import {Body, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, Path, POST} from "@/api/EchoFetch";
+import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, Path, POST} from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import TrashTemplate from "@/api/models/TrashTemplate";
+import BuildingContainer from "@/api/models/BuildingContainer";
 import Container from "@/api/models/Container";
 import Building from "@/api/models/Building";
 import {TrashTemplateWrapper} from "@/api/wrappers/TrashTemplateWrapper";
@@ -83,7 +84,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @POST("/trashtemplates/{id}/buildings/eenmalig/")
-  newBuildingToTemplateEenmalig(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
+  newBuildingToTemplateEenmalig(@Path('id') id: number, @Body() body: BuildingContainer): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -104,13 +105,20 @@ class TrashTemplateService extends EchoService {
     return {} as EchoPromise<any>;
   }
 
-  @PATCH("/trashtemplates/{id}/buildings/")
-  updateBuildingTemplate(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
+  @PATCH("/trashtemplates/{id}/buildings/{buildingId}/")
+  updateBuildingTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
-  @PATCH("/trashtemplates/{id}/buildings/eenmalig/")
-  updateBuildingTemplateEenmalig(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
+  @PATCH("/trashtemplates/{id}/buildings/{buildingId}/eenmalig/")
+  updateBuildingTemplateEenmalig(@Path('id') id: number, @Path('buildingId') buildingId: number, @Body() body: BuildingContainer): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /* All the needed DELETE requests */
+
+  @DELETE("/trashtemplates/{id}/buildings/{buildingId}/")
+  deleteBuildingTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

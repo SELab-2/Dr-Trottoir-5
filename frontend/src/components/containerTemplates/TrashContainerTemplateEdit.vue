@@ -25,34 +25,48 @@
             label="Locatie"
           ></v-select>
         </v-col>
-      </v-row>
-
-      <v-row
-        v-for="gebouw in this.buildings"
-        class="justify-space-between mx-auto"
-      >
-        <v-col cols='6' md='3' sm='3'>
-          <p>{{ gebouw.building.name }}</p>
-        </v-col>
-        <v-col cols='6' md='3' sm='3'>
-          <p>{{ gebouw.building.adres }}</p>
-        </v-col>
         <v-col cols='12' md='6' sm='6'>
           <v-select
-            v-model="gebouw.trash_ids"
-            :items="container_choices"
+            v-model="chosen_buildings"
+            :items="building_choices"
             chips
-            item-title="trash_container.type"
-            item-value="extra_id"
-            label="Kies containers voor dit gebouw"
+            item-title="name"
+            item-value="id"
+            label="Gekozen gebouwen"
             multiple
           ></v-select>
         </v-col>
       </v-row>
 
+      <div v-if="chosen_buildings.length > 0">
+        <v-row
+          v-for="gebouw in to_show()"
+          :key="gebouw.building.id"
+          class="justify-space-between mx-auto"
+        >
+          <v-col cols='6' md='3' sm='3'>
+            <p>{{ gebouw.building.name }}</p>
+          </v-col>
+          <v-col cols='6' md='3' sm='3'>
+            <p>{{ gebouw.building.adres }}</p>
+          </v-col>
+          <v-col cols='12' md='6' sm='6'>
+            <v-select
+              v-model="gebouw.trash_ids"
+              :items="container_choices"
+              chips
+              item-title="trash_container.type"
+              item-value="extra_id"
+              label="Kies containers voor dit gebouw"
+              multiple
+            ></v-select>
+          </v-col>
+        </v-row>
+      </div>
+
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="create()">Aanpassen</v-btn>
+          <v-btn class="overflow-hidden" @click="update()">Aanpassen</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -60,7 +74,6 @@
 </template>
 
 <script lang="ts">
-import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
@@ -68,11 +81,12 @@ import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 import buildingService from "@/api/services/BuildingService";
 
+import BuildingContainer from "@/api/models/BuildingContainer";
+import Container from "@/api/models/Container";
+
 export default {
   name: "TrashContainerTemplateEditView",
-  components: {
-    NormalButton
-  },
+  components: {},
   props: {},
   data: () => ({
     name: '',
@@ -80,10 +94,11 @@ export default {
     permanent: true,
     location: null,
     locations: [],
-    buildings: [],
+    buildings: <BuildingContainer[]>[],
+    chosen_buildings: [],
     original_buildings: [],
-    building_choices: [],
-    container_choices: [],
+    building_choices: <BuildingContainer[]>[],
+    container_choices: <Container[]>[],
   }),
   async mounted() {
   },
@@ -102,32 +117,34 @@ export default {
     this.name = trashTemplate.name
     this.even = trashTemplate.even
     this.location = trashTemplate.location
-    this.original_buildings = trashTemplate.buildings
     this.buildings = trashTemplate.buildings
-    console.log(this.buildings)
+    this.chosen_buildings = this.buildings.map(b => b.building.id)
 
     // get all possible buildings
     this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
       id: 'getbuildingsError',
       style: 'SNACKBAR'
     }).then(result => {
-      return result.map(res => {
-        return {
-          building: res,
-          trash_ids: []
-        }
-      })
+      return result.map(res => res)
     }).catch(() => []);
 
     this.container_choices = await RequestHandler.handle(
       trashTemplateService.getTrashContainersOfTemplate(this.$route.params.id), {
         id: 'getContainersForTemplateError',
         style: 'SNACKBAR'
-      }).then(result => result.map(con => con.extra_id)).catch(() => []);
+      }).then(result => result).catch(() => []);
 
+    for (const building of this.buildings) {
+      building.trash_ids.map(id => this.container_choices.filter(con => con.extra_id === id)[0])
+    }
   },
   methods: {
-    async create() {
+
+    to_show(): BuildingContainer[] {
+      return this.buildings.filter(b => this.chosen_buildings.includes(b.building.id))
+    },
+
+    async update() {
       const body = {
         name: this.name,
         even: this.even,
@@ -138,26 +155,27 @@ export default {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => {
-        this.buildings.forEach((building) => {
-          console.log(building)
-          if (building.building.id in this.original_buildings.map(b => b.building.id)){
-            RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, {
-              building: building.building.id,
+        /* Update or make the chosen buildings */
+        this.chosen_buildings.forEach((building_id) => {
+          if (this.buildings.map(b => b.building.id).includes(building_id)) {
+            const building = this.buildings.filter(b => b.building.id === building_id)[0]
+            RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, building_id, {
               selection: building.trash_ids
             }), {
               id: 'updateSelectionToBuildingError',
               style: 'SNACKBAR'
             })
-          } else {
-            RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
-              building: building.building.id,
-              selection: building.trash_ids
-            }), {
-              id: 'addSelectionToBuildingError',
+          }
+        })
+
+        /* Delete buildings that were removed from the list */
+        this.buildings.forEach((building) => {
+          if (!this.chosen_buildings.includes(building.building.id)){
+            RequestHandler.handle(TrashTemplateService.deleteBuildingTemplate(this.$route.params.id, building.building.id), {
+              id: 'deletebuildingError',
               style: 'SNACKBAR'
             })
           }
-
         })
         return result
       });
