@@ -9,7 +9,6 @@ import { CacheFirst, NetworkOnly, StaleWhileRevalidate } from 'workbox-strategie
 precacheAndRoute(self.__WB_MANIFEST)
 
 const backend = config.BACKEND
-const frontend = config.FRONTEND
 
 /*
 * Start with the service workers for the static files
