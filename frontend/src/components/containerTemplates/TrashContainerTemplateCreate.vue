@@ -98,7 +98,6 @@ export default {
             id: 'addBuildingError',
             style: 'SNACKBAR'
           }).then((result) => {
-            console.log("done")
           })
         })
         return result
