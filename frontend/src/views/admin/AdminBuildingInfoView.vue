@@ -1,6 +1,6 @@
 <template>
-<!--  <AdminBuildingInfo :edit="false"></AdminBuildingInfo>-->
-  <BuildingFollowUp/>
+  <AdminBuildingInfo :edit="false"></AdminBuildingInfo>
+<!--  <BuildingFollowUp/>-->
 </template>
 
 <script>

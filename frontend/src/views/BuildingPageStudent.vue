@@ -113,13 +113,13 @@ export default defineComponent({
   }),
   methods: {
     clickArrival() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year, week: this.week}});
     },
     clickStorage() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year, week: this.week}});
     },
     clickDeparture() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year, week: this.week}});
     },
     buildingInfo() {
       router.push({name: 'building_info', query: {building: this.building.id}});

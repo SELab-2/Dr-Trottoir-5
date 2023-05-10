@@ -1,20 +1,20 @@
 <template>
   <v-container fluid>
-    <v-card max-width="450px" min-width="250px" class="container-border">
+    <v-card max-width="900px" min-width="500px" class="container-border">
       <v-card-text>
         <v-row align-end>
           <v-col align="left" cols="8">
-            <p style="font-size: 8px">{{ data.description }}</p>
+            <p style="font-size: 16px; font-weight: bold;">{{ data.remark }}</p>
           </v-col>
           <v-col class="d-flex align-center" cols="4">
             <v-row justify="end" class="image-margin">
-              <v-img :src="data.imageURL" :max-width="'150'" :max-height="150"></v-img>
+              <v-img :src="data.image" :max-width="300" :max-height="300"></v-img>
             </v-row>
           </v-col>
         </v-row>
         <v-row align="end">
           <v-col align="left">
-            <p style="font-size: 8px">{{ data.timeStamp }}</p>
+            <p style="font-size: 16px">{{ data.time.split('.')[0] }}</p>
           </v-col>
           <v-col>
             <v-row justify="end" class="row-margin">
@@ -31,9 +31,9 @@
 
 /**
  * FotoCardAdmin component wordt gebruikt door als props een Object met de volgende keys mee te geven:
- * timeStamp: String
- * description: String
- * imageURL: String
+ * time: String
+ * remark: String
+ * image: String
  */
 
 export default {
@@ -41,7 +41,7 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({ timeStamp: 'Empty', description: 'Empty', imageURL: 'empty' })
+      default: () => ({ time: 'Empty', remark: 'Empty', image: 'empty' })
     }
   },
   methods: {

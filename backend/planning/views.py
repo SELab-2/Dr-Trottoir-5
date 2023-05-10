@@ -223,14 +223,19 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
         week = request.query_params[
             'week'] if 'week' in request.query_params else None
 
+
+
         if infoPerBuilding is not None and year is not None and week is not None:
             try:
+                print(week)
+                print(self.queryset.values_list())
                 InfoPerBuilding.objects.get(pk=infoPerBuilding)
                 self.queryset = BuildingPicture.objects.filter(
                     infoPerBuilding=infoPerBuilding,
                     time__year=year,
                     time__week=week
                 )
+                print(self.queryset)
             except Exception:
                 raise serializers.ValidationError(
                     {
@@ -306,14 +311,27 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
         building = request.query_params[
             'building'] if 'building' in request.query_params else None
 
-        date = request.query_params[
-            'date'] if 'date' in request.query_params else None
-
         if dagPlanning is not None:
             try:
                 DagPlanning.objects.get(pk=dagPlanning)
-                self.queryset = self.queryset.filter(
+                self.queryset = InfoPerBuilding.objects.filter(
                     dagPlanning=dagPlanning)
+                if building is not None:
+                    try:
+                        Building.objects.get(pk=building)
+                        self.queryset = self.queryset.filter(
+                            building=building)
+                    except Exception:
+                        raise serializers.ValidationError(
+                            {
+                                "errors": [
+                                    {
+                                        "message": "referenced pk not in db",
+                                        "field": "building"
+                                    }
+                                ]
+                            }, code='invalid')
+
             except Exception:
                 raise serializers.ValidationError(
                     {
@@ -321,38 +339,6 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
                             {
                                 "message": "referenced pk not in db",
                                 "field": "dagPlanning"
-                            }
-                        ]
-                    }, code='invalid')
-
-        if building is not None:
-            try:
-                Building.objects.get(pk=building)
-                self.queryset = self.queryset.filter(
-                    building=building)
-            except Exception:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [
-                            {
-                                "message": "referenced pk not in db",
-                                "field": "building"
-                            }
-                        ]
-                    }
-                )
-
-        if date is not None:
-            try:
-                self.queryset = self.queryset.filter(
-                    date=date)
-            except Exception:
-                raise serializers.ValidationError(
-                    {
-                        "errors": [
-                            {
-                                "message": "No right time in info per building",
-                                "field": "date"
                             }
                         ]
                     }
@@ -434,6 +420,7 @@ def week_planning_view(request, year, week):
 @permission_classes([AdminPermission | SuperstudentPermission | AllowAny])
 def student_templates_rondes_view(request, year, week, day, location):
     if request.method == "GET":
+
         if day < 0 or day > 6:
             return Response(status=400)
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
