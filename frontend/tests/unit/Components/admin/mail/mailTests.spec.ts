@@ -190,6 +190,23 @@ describe('Sendmail.vue', () => {
     expect(wrapper.vm.formattedText).toBe("Hello test <b>surname</b>")
   })
 
+  it('test if sendMail is called when the send button is clicked', async () => {
+    SendMail.methods.sendMail = jest.fn()
+    const wrapper = mount(SendMail)
+    const button = wrapper.find('[data-test="send-button"]');
+    button.trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(SendMail.methods.sendMail).toHaveBeenCalled();
+  })
+
+  it('getMailbody', () => {
+    initializeV_Autocomplete(wrapper)
+    wrapper.vm.$data.inputArguments = ['test', 'test2']
+    const date = new Date()
+    wrapper.setProps({data: {syndicusEmail: 'test@test.be', post: {timeStamp: date, imageURL: '', description: 'test2'}}})
+    expect(wrapper.vm.getMailBody()).toBeTruthy()
+  })
+
 
 
 })

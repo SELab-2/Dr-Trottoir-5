@@ -28,7 +28,7 @@
       <v-container v-html="formattedText" style="white-space: pre-wrap; font-size: 16px" class="container-border"/>
     </div>
     <v-container align="center">
-      <NormalButton text="Stuur email" :parent-function="sendMail"/>
+      <NormalButton data-test="send-button" text="Stuur email" :parent-function="sendMail"/>
     </v-container>
   </v-container>
 
