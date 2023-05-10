@@ -1,6 +1,15 @@
 import {mount} from '@vue/test-utils'
 import CreateEditMailTemplate from '@/components/admin/mail/CreateEditMailTemplate.vue'
 
+/**
+ * Gaat het v-model van een input veld triggeren (omdat de gewone manier niet werkt hebben
+ * we deze functie gemaakt)
+ */
+function triggerInput(input, model, activator) {
+  const data = activator(input.element.value)
+  model.setData(data)
+}
+
 
 describe('CreateEditMailTemplate.vue', () => {
 
@@ -27,16 +36,16 @@ describe('CreateEditMailTemplate.vue', () => {
   it('sets the v-model of v-text-field for the name of the mail template', async () => {
     const textField = wrapper.find('v-text-field')
     textField.element.value = 'test';
-    textField.trigger('input');
-    wrapper.vm.$forceUpdate()
+    const activator  = (x) => {return {template: {name: x}}}
+    triggerInput(textField, wrapper, activator)
     expect(wrapper.vm.$data.template.name).toBe('test');
   })
 
   it('sets the v-model of v-textarea for the text of the mail template', async () => {
     const textArea = wrapper.find('v-textarea')
     textArea.element.value = 'Dit is een test mail template #test#';
-    textArea.trigger('input');
-    wrapper.vm.$forceUpdate()
+    const activator  = (x) => {return {template: {text: x}}}
+    triggerInput(textArea, wrapper, activator)
     expect(wrapper.vm.$data.template.text).toBe('Dit is een test mail template #test#');
   })
 
