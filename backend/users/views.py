@@ -269,13 +269,13 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
         handler = ExceptionHandler()
         handler.check_primary_key(id, 'id', User)
         handler.check_not_blank(data.get("email"), "email")
-        handler.check_not_blank(data.get("first_name"), "firstname")
-        handler.check_not_blank(data.get("last_name"), "lastname")
+        handler.check_not_blank(data.get("first_name"), "first_name")
+        handler.check_not_blank(data.get("last_name"), "last_name")
         handler.check_not_blank(data.get("password"), "password")
         handler.check_integer(data.get("phone_nr"), "phone_nr")
         handler.check()
 
-        user = User.objects.get(id=id)
+        user = get_user_model().objects.get(id=id)
 
         if user.email != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError({

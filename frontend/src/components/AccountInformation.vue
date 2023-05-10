@@ -108,18 +108,16 @@ export default {
     ],
     edit: false,
     smallScreen: false,
-    can_edit_permission: true,
     errors: null
   }),
   async beforeMount() {
     let id = this.$route.params.id
-
     const currentUser = await this.$store.getters['session/currentUser']
     this.user = currentUser
 
-    if(id) {
-      UserService.getUserById(id)
-        .then(data => {this.user = data})
+    if(id !== undefined) {
+      await UserService.getUserById(id)
+        .then(async data => {this.user = data})
         .catch(async (error) => {this.errors = await get_errors(error)});
     }
 
