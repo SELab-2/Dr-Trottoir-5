@@ -30,6 +30,15 @@ class MailTemplateService extends EchoService {
   }
 
   /**
+   * Get all mail templates
+   */
+
+  @GET('/mailtemplates/')
+  getMailTemplates(): EchoPromise<MailTemplate[]> {
+    return {} as EchoPromise<MailTemplate[]>
+  }
+
+  /**
    * Update mail template
    */
   @PATCH('/mailtemplates/{id}/')
