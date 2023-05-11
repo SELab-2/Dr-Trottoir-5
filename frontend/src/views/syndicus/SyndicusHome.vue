@@ -9,11 +9,12 @@
           </v-col>
           <v-col sm="6" align="left" class="text-wrap">
             <h4 class="text-h4">
-              Opmerkingen voor {{}} op {{new Date(date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'})}}
+              Opmerkingen voor {{building !== null ? building.name : ''}} op
+              {{new Date(date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'})}}
             </h4>
             <v-autocomplete
               label="Gebouw" :items="buildings" class="mt-4" style="width: 50%;"
-              v-model="building" item-title="name"  return-object
+              v-model="building" item-title="name" return-object
               variant="outlined"
             ></v-autocomplete>
           </v-col>
@@ -27,6 +28,8 @@
 <script>
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/dist/style.css';
+import {RequestHandler} from "@/api/RequestHandler";
+import RoundService from "@/api/services/RoundService";
 
 export default {
   name: "SyndicusHome",
@@ -53,5 +56,14 @@ export default {
       }
     ]
   }),
+  beforeMount() {
+    RequestHandler.handle(RoundService.getBuildingsForSyndicus(), {
+      id: "getBuildingsError",
+      style: "NONE"
+    }).then(buildings => {
+      this.buildings = buildings;
+      if (buildings.length > 0) this.building = buildings[0];
+    }).catch(() => null);
+  }
 }
 </script>

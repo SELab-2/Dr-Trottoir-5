@@ -1,17 +1,13 @@
-from .models import *
-
-from exceptions.exceptionHandler import ExceptionHandler
 import os
 
-from django.conf import settings
-from rest_framework import generics, status, serializers
+from exceptions.exceptionHandler import ExceptionHandler
+from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission
+    SuperstudentPermission, SyndicusPermission
 
-from .models import LocatieEnum, Manual, Building, Ronde
-
+from .models import *
 from .serializers import *
 
 
@@ -190,6 +186,15 @@ class ManualRetrieveUpdateDestroyAPIView(
         handler.check_enum_value(data.get("manualStatus"), "manualStatus",
                                  ManualStatusField.value)
         return super().patch(request, *args, **kwargs)
+
+
+class SyndicusBuildingListView(generics.ListAPIView):
+    permission_classes = [SyndicusPermission]
+    serializer_class = BuildingSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = Building.objects.filter(syndicus__in=[request.user])
+        return super().get(request, *args, **kwargs)
 
 
 class BuildingListCreateView(generics.ListCreateAPIView):

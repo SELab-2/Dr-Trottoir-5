@@ -38,6 +38,14 @@ class RoundService extends EchoService {
   }
 
   /**
+   * Get all buildings for a syndicus
+   */
+  @GET("/ronde/building/syndicus")
+  getBuildingsForSyndicus(): EchoPromise<[Building]> {
+    return {} as EchoPromise<[Building]>;
+  }
+
+  /**
    * Create new round
    */
   @POST("/ronde/")
