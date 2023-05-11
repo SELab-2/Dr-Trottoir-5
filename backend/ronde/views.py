@@ -301,11 +301,11 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.check_not_blank_required("name")
+        handler.check_not_blank_required(data.get("name"), "name")
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
-        handler.check_primary_key_value_required(data.get("buildings"),
-                                                 "buildings", Building)
+        # handler.check_primary_key_value_required(data.get("buildings"),
+        #                                         "buildings", Building)
         handler.check()
         return super().put(request, *args, **kwargs)
 
