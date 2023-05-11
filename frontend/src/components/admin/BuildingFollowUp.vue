@@ -8,18 +8,21 @@
         </v-card>
       </v-col>
       <v-col cols="4" align-self="center">
-        <v-autocomplete
-          clearable
-          outlined
-          rounded
-          :menu-props:="{rounded: 'xl'}"
-          :items="this.buildings"
-          item-title="name"
-          item-value="id"
-          v-model="this.name"
-          v-on:update:modelValue="(el) => this.buildingChange(el)"
-        ></v-autocomplete>
-        <h2>{{ this.name }}</h2>
+        <div v-if="this.search">
+          <v-autocomplete
+            clearable
+            outlined
+            rounded
+            :menu-props:="{rounded: 'xl'}"
+            :items="this.buildings"
+            item-title="name"
+            item-value="id"
+            v-model="this.name"
+            v-on:update:modelValue="(el) => this.buildingChange(el)"
+          ></v-autocomplete>
+         </div>
+        <h1>{{ this.name }}</h1>
+        <button @click="() => {this.search = !this.search}" class="text-decoration-underline">Change building</button>
       </v-col>
     </v-row>
     <v-row/>
@@ -81,10 +84,11 @@ import PlanningService from "@/api/services/PlanningService";
 import {getWeek} from "@/api/DateUtil";
 import RoundBuildingCard from "@/components/admin/RoundBuildingCard.vue";
 import FotoCardAdmin from "@/components/admin/FotoCardAdmin.vue";
+import NormalButton from "@/components/NormalButton.vue";
 
 export default {
   name: "BuildingFollowUp",
-  components: {FotoCardAdmin, RoundBuildingCard, DatePicker},
+  components: {NormalButton, FotoCardAdmin, RoundBuildingCard, DatePicker},
   data: () => {
     return {
       id: 0,
@@ -98,7 +102,8 @@ export default {
       buildings: [],
       arrivals: [],
       departs: [],
-      storages: []
+      storages: [],
+      search: false,
     }
   },
 
@@ -140,6 +145,7 @@ export default {
       window.open(this.manual.file)
     },
     buildingChange(building) {
+      this.search = false
       router.push({name: "admin_info_building", params: {id: building}})
       this.getBuildingInformation(building).then(() => this.getStudentPosts())
     },
