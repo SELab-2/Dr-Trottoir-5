@@ -1,16 +1,7 @@
 import {mount} from '@vue/test-utils'
 import CreateEditMailTemplate from '@/components/admin/mail/CreateEditMailTemplate.vue'
 import SendMail from '@/components/admin/mail/SendMail.vue'
-
-/**
- * Gaat het v-model van een input veld triggeren (omdat de gewone manier niet werkt hebben
- * we deze functie gemaakt)
- */
-function triggerInput(input, model, activator) {
-  const data = activator(input.element.value)
-  model.setData(data)
-}
-
+import {triggerInput} from "../../../../utils/testHelper";
 
 describe('CreateEditMailTemplate.vue', () => {
 

@@ -3,7 +3,7 @@
     <v-card max-width="750px">
       <div class="top-div-style">
         <div v-if="imageUrl === ''" class="if-div-style mt-3 mb-2">
-          <div @click="selectImage" class="image-upload-placeholder">
+          <div data-test="square-button" @click="selectImage" class="image-upload-placeholder">
             <v-avatar size="100px">
               <v-icon size="100px" dark>mdi-image</v-icon>
             </v-avatar>
@@ -15,25 +15,25 @@
             <v-img :src="imageUrl"></v-img>
           </div>
           <div align="center" style="height: 15%">
-            <v-btn icon tile class="icon-size" v-on:click="removeImage">
+            <v-btn data-test="delete-button" icon tile class="icon-size" v-on:click="removeImage">
                   <DeleteIcon/>
             </v-btn>
           </div>
         </div>
       </div>
-      <div class="bottom-div-style">
-        <h1 align="center">{{ data.buildingName }}</h1>
-        <h3 align="center">{{ data.type }}</h3>
+      <div data-test="building-info" class="bottom-div-style">
+        <h1 data-test="buildingName" align="center">{{ data.buildingName }}</h1>
+        <h3 data-test="buildingType" align="center">{{ data.type }}</h3>
         <div align="center">
           <v-form>
             <v-container>
-              <v-textarea label="Beschrijving" outlined v-model="description" rows="4"></v-textarea>
+              <v-textarea data-test="description" label="Beschrijving" outlined v-model="description" rows="4"></v-textarea>
             </v-container>
           </v-form>
         </div>
         <div align="center">
-          <NormalButton v-if="!data.edit" class="own-button-style mb-4 mx-2" text="Uploaden" :parent-function="uploadData" />
-          <NormalButton v-else class="own-button-style my-2 mx-2" text="Bevestig" :parent-function="editData"/>
+          <NormalButton data-test="upload-button" v-if="!data.edit" class="own-button-style mb-4 mx-2" text="Uploaden" :parent-function="uploadData" />
+          <NormalButton data-test="edit-button" v-else class="own-button-style my-2 mx-2" text="Bevestig" :parent-function="editData"/>
         </div>
       </div>
     </v-card>
