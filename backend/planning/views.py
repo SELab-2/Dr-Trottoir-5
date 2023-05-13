@@ -189,6 +189,7 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
         handler.check_primary_key_value_required(data.get("infoPerBuilding"),
                                                  "infoPerBuilding",
                                                  InfoPerBuilding)
+        handler.check_date_time_value_required(data.get("time"), "time")
         handler.check()
         return super().post(request=request, args=args, kwargs=kwargs)
 
