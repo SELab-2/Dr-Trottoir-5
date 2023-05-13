@@ -318,9 +318,8 @@ def get_student_templates(year, week):
 
 
 class WeekplanningView(generics.RetrieveAPIView):
-    permission_classes = [AdminPermission |
-                          SuperstudentPermission |
-                          StudentReadOnly]
+    permission_classes = [AdminPermission | SuperstudentPermission
+                          | StudentReadOnly]
 
     def get(self, request, *args, **kwargs):
         year = kwargs["year"]
