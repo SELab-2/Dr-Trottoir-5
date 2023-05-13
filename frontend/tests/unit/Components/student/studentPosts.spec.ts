@@ -1,6 +1,7 @@
 import {mount} from '@vue/test-utils'
 import CreateEditPostStudent from "@/components/student/CreateEditPostStudent.vue";
 import {triggerInput} from "../../../utils/testHelper";
+import OverviewScreenStudentPosts from "@/components/student/OverviewScreenStudentPosts.vue";
 
 describe('CreateEditPostStudent.vue', () => {
 
@@ -82,4 +83,51 @@ describe('CreateEditPostStudent.vue', () => {
     expect(buildingName.text()).toBe(data.nameBuilding)
     expect(buildingType.text()).toBe(data.type)
   })*/
+})
+
+describe('OverviewScreenStudentPost.vue', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(OverviewScreenStudentPosts)
+  })
+
+  it('renders the component', () => {
+    expect(wrapper.exists()).toBe(true);
+  })
+
+  it('check building name', async () => {
+    await wrapper.setProps({
+      data: {buildingName: 'test', type: 'test', images: [], info: '', planning: '', building_id: ''}
+    })
+
+    expect(wrapper.find('h1').text()).toBe('test')
+  })
+
+  it('check type', async () => {
+    await wrapper.setProps({
+      data: {buildingName: 'test', type: 'test2', images: [], info: '', planning: '', building_id: ''}
+    })
+
+    expect(wrapper.find('h4').text()).toBe('test2')
+  })
+
+  it('goToPhotoPage is called when clicked on the icon', async () => {
+    OverviewScreenStudentPosts.methods.goToPhotoPage = jest.fn()
+    const wrapper = mount(OverviewScreenStudentPosts)
+    const icon = wrapper.find('[data-test="goToFotoPage-button"]');
+    await icon.trigger('click')
+    await wrapper.vm.$nextTick();
+    expect(OverviewScreenStudentPosts.methods.goToPhotoPage).toHaveBeenCalled()
+  })
+
+  it('completeTask is called when clicked on the icon', async () => {
+    OverviewScreenStudentPosts.methods.completeTask = jest.fn()
+    const wrapper = mount(OverviewScreenStudentPosts)
+    const icon = wrapper.find('[data-test="completeTask-button"]');
+    await icon.trigger('click')
+    await wrapper.vm.$nextTick();
+    expect(OverviewScreenStudentPosts.methods.completeTask).toHaveBeenCalled()
+  })
+
 })
