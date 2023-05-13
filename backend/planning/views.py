@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotFound
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
@@ -318,8 +319,9 @@ def get_student_templates(year, week):
 
 
 class WeekplanningView(generics.RetrieveAPIView):
-    permission_classes = [StudentReadOnly, AdminPermission,
-                          SuperstudentPermission]
+    permission_classes = [AdminPermission |
+                          SuperstudentPermission |
+                          StudentReadOnly]
 
     def get(self, request, *args, **kwargs):
         year = kwargs["year"]
