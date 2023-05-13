@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotFound
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
@@ -334,7 +333,7 @@ class WeekplanningView(generics.RetrieveAPIView):
 
 
 class StudentTemplateRondeView(generics.RetrieveAPIView):
-    permission_classes = [AdminPermission, SuperstudentPermission]
+    permission_classes = [AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         year, week, day, location = kwargs["year"], kwargs["week"], kwargs[
@@ -357,7 +356,7 @@ class StudentTemplateRondeView(generics.RetrieveAPIView):
 
 
 class StudentTemplateView(generics.RetrieveAPIView, generics.CreateAPIView):
-    permission_classes = [AdminPermission, SuperstudentPermission]
+    permission_classes = [AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         """
