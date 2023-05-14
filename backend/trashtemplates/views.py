@@ -1,15 +1,6 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-from .util import *
-
-from planning.util import filter_templates, get_current_week_planning, get_current_time
-from ronde.models import Building, LocatieEnum
-
-from .serializers import *
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
 
 from planning.util import filter_templates, get_current_week_planning
 from users.permissions import *

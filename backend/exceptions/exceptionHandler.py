@@ -1,10 +1,9 @@
 from datetime import datetime
 
+from django.db import models
 from rest_framework.serializers import ValidationError
 
-from rest_framework import serializers
 from trashtemplates.models import Status
-from django.db import models
 
 
 class ExceptionHandler:
