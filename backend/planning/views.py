@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotFound
 from rest_framework import generics
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
@@ -45,6 +46,15 @@ class StudentDayPlan(generics.RetrieveAPIView):
         if dayplan is None:
             return HttpResponseNotFound()
 
+
+@api_view(["GET"])
+@permission_classes([StudentPermission | AdminPermission | SuperstudentPermission])
+def planning_status(request, year, week, pk):
+    if request.method == "GET":
+        try:
+            dayplan = DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
+            return Response(status=404)
 
         buildings = [building.id for building in dayplan.ronde.buildings.all()]
         infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
