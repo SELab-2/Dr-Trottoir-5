@@ -66,12 +66,12 @@ export default {
       required: true
     },
     headComponent: {
-      type: Object,
+      type: String,
       default: 'div',
       required: false
     },
     childComponent: {
-      type: Object,
+      type: String,
       default: 'div',
       required: true
     },
@@ -90,9 +90,7 @@ export default {
       default: false
     },
     refresh_function: {
-      type: Function,
-      default: () => {
-      }
+      type: Function
     },
     search: {
       type: Boolean,
@@ -118,8 +116,8 @@ export default {
             filtered.push(el)
           }
         }
-        return filtered
       }
+      return filtered
     }
   },
   data() {

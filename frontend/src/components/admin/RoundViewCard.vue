@@ -27,7 +27,7 @@ it displays the information of one round so that a list of round views can easil
             <v-expansion-panel :title="data.round.students.length + ` student${data.round.students.length === 1 ? '' : 'en'}`"
                                :disabled="data.round.students.length === 0">
               <v-expansion-panel-text v-if="data.round.students.length > 0">
-                <p style="word-wrap: break-word;" v-for="s in data.round.students" class="mt-2">
+                <p style="word-wrap: break-word;" v-for="s in data.round.students" class="mt-2" :key="s.id">
                   <a :href="'/admin/gebruiker/'+s.id" style="text-decoration: none;">
                   {{ s.first_name }} {{ s.last_name }}</a></p>
               </v-expansion-panel-text>
