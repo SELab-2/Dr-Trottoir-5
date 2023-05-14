@@ -1,6 +1,3 @@
-<template>
-</template>
-
 <script lang="ts">
 import router from '@/router';
 import { defineComponent } from 'vue';
