@@ -15,7 +15,7 @@ import TrashContainerHeader from "@/components/containerTemplates/containers/Tra
 
 export default {
   name: "TrashTemplateContainersList",
-  components: {ListPage, TrashContainerCard, TrashContainerHeader},
+  components: {ListPage},
   props: {
     id: Number
   },
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     addTrashContainerTemplate: function () {
-      router.push({path: '/trashtemplates/' + this.id + '/containers/create'});
+      router.push({name: 'createTrashtemplateContainers', params: {id: this.id}});
     }
   },
   async beforeMount() {

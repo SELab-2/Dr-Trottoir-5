@@ -34,7 +34,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col class="d-flex ml-auto" cols="12">
-              <normal-button text="Registreer" v-bind:parent-function="validate" block></normal-button>
+              <normal-button text="Registreer" v-bind:parent-function="validate" block type="submit"></normal-button>
             </v-col>
           </v-row>
         </v-form>
@@ -100,7 +100,7 @@ export default defineComponent({
         this.$store.dispatch("session/clear");
         await this.$store.dispatch("session/fetch");
 
-        await router.push({ path: '/' });
+        await router.push({ name: 'home' });
       });
     },
     async validate () {

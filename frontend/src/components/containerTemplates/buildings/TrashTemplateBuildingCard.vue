@@ -36,7 +36,7 @@
       <v-col cols="1"/>
       <v-col class="d-flex align-center" cols="2">
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template>
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
                 status
               }}</span>
@@ -78,7 +78,8 @@ export default {
       // TODO
     },
     goToBuildingPage: function () {
-      router.push({ path: '/building/' + this.data.id });
+      // TODO Check if correct id with data because now it's with this.building
+      router.push({name: 'admin_info_building', params: {id: this.building.id}});
     }
   },
   mounted() {
@@ -87,7 +88,7 @@ export default {
   async beforeMount() {
     this.building = this.data.building
     await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(
-      async result => this.status = result.manualStatus)
+      async result => { this.status = result.manualStatus })
   }
 }
 </script>

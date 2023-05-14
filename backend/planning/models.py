@@ -1,10 +1,9 @@
-from django.contrib.postgres.fields import ArrayField
-from django.db import models
 from django.conf import settings
-from ronde.models import Ronde
-from trashtemplates.models import TrashContainerTemplate, Status
+from django.db import models
 from pickupdays.models import PickUpDay
 from ronde.models import LocatieEnum
+from ronde.models import Ronde
+from trashtemplates.models import TrashContainerTemplate, Status
 
 
 class DagPlanning(models.Model):
@@ -21,9 +20,6 @@ class DagPlanning(models.Model):
 
     ronde : models.ForeignKey
         The round that the students will do this day
-
-    status : ArrayField
-        Student status per building, according to building order
     """
     students = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
 
@@ -32,21 +28,6 @@ class DagPlanning(models.Model):
     ronde = models.ForeignKey(
         Ronde,
         on_delete=models.DO_NOTHING
-    )
-
-    class StatusEnum(models.TextChoices):
-        """
-        enum for type of status
-        """
-        NOT_STARTED = "NS", "Not started"
-        STARTED = "ST", "Started"
-        FINISHED = "FI", "Finished"
-
-    status = ArrayField(
-        models.CharField(
-            max_length=2,
-            choices=StatusEnum.choices
-        ), default=list
     )
 
 
@@ -152,17 +133,11 @@ class InfoPerBuilding(models.Model):
     remark : models.TextField
         The remarks about the building
 
-    date : models.DateField
-        The date when this info was created.
-        Because of this we can reuse DagPlanning objects.
-
     dagPlanning : models.ForeignKey
         The associated DagPlanning
     """
 
     remark = models.TextField(default="")
-
-    date = models.DateField()
 
     dagPlanning = models.ForeignKey(DagPlanning, on_delete=models.CASCADE)
 

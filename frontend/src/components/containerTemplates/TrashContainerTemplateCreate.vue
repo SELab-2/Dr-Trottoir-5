@@ -45,7 +45,6 @@
 </template>
 
 <script lang="ts">
-import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
@@ -54,9 +53,6 @@ import buildingService from "@/api/services/BuildingService";
 
 export default {
   name: "TrashContainerTemplateCreateView",
-  components: {
-    NormalButton
-  },
   data: () => ({
     name: '',
     even: true,
@@ -65,8 +61,6 @@ export default {
     buildings: null,
     building_choices: []
   }),
-  async mounted() {
-  },
   async beforeMount() {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
@@ -104,7 +98,7 @@ export default {
         })
         return result
       });
-      return await router.push({path: '/trashtemplates'})
+      return await router.push({name: 'trashtemplates'})
     }
   }
 }

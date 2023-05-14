@@ -14,7 +14,7 @@ import ListPage from "@/components/admin/ListPage.vue";
 
 export default {
   name: 'TrashContainerTemplateList',
-  components: {ListPage, TrashContainerTemplateCard, TrashContainerTemplateHeader},
+  components: {ListPage},
   data() {
     return {
       childComponent: TrashContainerTemplateCard,
@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     addTrashContainerTemplate: function () {
-      router.push({path: '/trashtemplates/create'});
+      router.push({name: 'createTrashtemplates'});
     }
   },
   async beforeMount() {

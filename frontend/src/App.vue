@@ -39,7 +39,7 @@ export default defineComponent({
         this.navbar = true;
 
         if (!(config.AUTHORIZED[user.role].includes(to.name.toString()))) {
-         return next({path: '/unauthorized'});
+         return next({name: 'unauthorized'});
         }
       } else {
         if (user !== null) {

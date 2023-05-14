@@ -5,19 +5,19 @@
     <v-list density="compact" nav>
       <v-list-item v-if="!this.isAdminOrSu" prepend-icon="mdi-home-account" title="Home" to="/"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" to="/admin_home"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{name: 'admin_home'}"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" to="/studenttemplates"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" :to="{name: 'studenttemplates'}"
                    value="studenten templates"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-bike" title="Rondes" to="/rounds"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-bike" title="Rondes" :to="{name: 'rounds'}"
                    value="rondes"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-office-building" title="Gebouwen" to="/buildings"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-office-building" title="Gebouwen" :to="{name: 'buildings'}"
                    value="gebouwen"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" to="/students"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" :to="{name: 'students'}"
                    value="studenten"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" to="/syndicusen"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" :to="{name: 'syndici'}"
                    value="syndicussen"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" to="/mailtemplates"
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" :to="{name: 'mailtemplates'}"
                    value="email templates"></v-list-item>
       <v-list-item prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
       <v-list-item prepend-icon="mdi-logout" @click="this.logout()" title="Logout" value="logout"></v-list-item>

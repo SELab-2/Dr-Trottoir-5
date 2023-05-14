@@ -2,7 +2,7 @@
 <v-card
     class="mx-auto w-75 my-10"
     variant="outlined"
-    :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`"
+    :to="{name: 'ronde_dagplanningen', params: {template_id: data.template_id, ronde_id: data.ronde_id}}"
   >
     <v-card-item>
       <div>
@@ -20,7 +20,7 @@
     </v-card-item>
 
     <v-card-actions class="px-3 my-1 justify-space-between">
-      <v-btn variant="outlined" :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`">
+      <v-btn variant="outlined" :to="{name: 'ronde_dagplanningen', params: {template_id: data.template_id, ronde_id: data.ronde_id}}">
         Dagplanningen
       </v-btn>
       <v-btn v-if="this.data.status !== 'Vervangen'" @click.prevent="on_delete" variant="outlined">

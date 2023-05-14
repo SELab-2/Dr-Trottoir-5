@@ -1,6 +1,15 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
+from .util import *
+
+from planning.util import filter_templates, get_current_week_planning, get_current_time
+from ronde.models import Building, LocatieEnum
+
+from .serializers import *
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 from planning.util import filter_templates, get_current_week_planning
 from users.permissions import *
@@ -25,7 +34,7 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
         TODO checks
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         location = LocatieEnum.objects.get(id=data["location"])
 
         new_template = TrashContainerTemplate.objects.create(
@@ -45,6 +54,7 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
 class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [SuperstudentPermission | AdminPermission]
+
 
     def get(self, request, *args, **kwargs):
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
@@ -101,7 +111,7 @@ class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
         # oude template op inactief zetten
         template.status = Status.INACTIEF
         template.save()
-        remove_if_match(planning.trash_templates, template, current_week)
+        remove_if_match(planning.trash_templates, template)
 
         return Response({"message": "Success"})
 
@@ -160,8 +170,6 @@ class TrashContainersView(generics.CreateAPIView, generics.RetrieveAPIView):
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         permanent = kwargs["permanent"]
         data = request.data
-
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         extra_id = ExtraId.objects.create()
         new_tc_id_wrapper = make_new_tc_id_wrapper(data, extra_id)
