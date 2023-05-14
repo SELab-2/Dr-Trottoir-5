@@ -1,14 +1,13 @@
 <template>
-  <AdminBuildingInfo :edit="false"></AdminBuildingInfo>
-<!--  <BuildingFollowUp/>-->
+  <AdminBuildingInfo/>
 </template>
 
 <script>
-import AdminBuildingInfo from "@/components/admin/AdminBuildingInfo";
-import BuildingFollowUp from "@/components/admin/BuildingFollowUp.vue";
+
+import AdminBuildingInfo from "@/components/admin/AdminBuildingInfo.vue";
 
 export default {
   name: "AdminBuildingInfoView",
-  components: {BuildingFollowUp, AdminBuildingInfo}
+  components: {AdminBuildingInfo}
 }
 </script>

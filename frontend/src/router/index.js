@@ -46,7 +46,8 @@ import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashCon
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminRoundView from "@/views/admin/AdminRoundView.vue";
-import BuildingFollowUp from "@/components/admin/BuildingFollowUp.vue";
+import BuildingFollowUp from "@/components/admin/AdminBuildingInfo.vue";
+import AdminBuildingInfo from "@/components/admin/AdminBuildingInfoEdit.vue";
 
 const routes = [
   {
@@ -170,7 +171,7 @@ const routes = [
     path: '/admin/gebouw/:id',
     name: 'admin_info_building',
     props: true,
-    component: BuildingFollowUp
+    component: AdminBuildingInfoView
   },
   {
     path: '/admin/gebouw/:id/aanpassen',
