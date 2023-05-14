@@ -60,7 +60,7 @@ export default {
         .then(async result => router.go(0))
     },
     editRound () {
-      // TODO
+      router.push({ name: 'edit_round', params: {id: this.data.id} });
     }
   },
   computed: {

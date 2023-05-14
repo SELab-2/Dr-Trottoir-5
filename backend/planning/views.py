@@ -10,12 +10,13 @@ from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
+from trashtemplates.models import Status
 
 from .util import *
 
 
 @api_view(["GET"])
-@permission_classes([StudentPermission])
+@permission_classes([StudentPermission | SuperstudentPermission])
 def student_dayplan(request, year, week, day):
     if request.method == "GET":
         if day < 0 or day > 6:
@@ -23,19 +24,83 @@ def student_dayplan(request, year, week, day):
         days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
         day_name = days[day]
 
-        templates = StudentTemplate.objects.filter(year=year, week=week)
-        dayplan = None
+        templates = get_student_templates(year, week)
+        if templates is None:
+            return Response(status=404)
+
+        dayplans = []
         for template in templates:
             for plan in template.dag_planningen.all():
                 if plan.time.day == day_name and request.user in plan.students.all():
-                    dayplan = plan
-                    break
+                    dayplans.append(plan)
 
-        if dayplan is None:
+        data = DagPlanningSerializerFull(dayplans, many=True).data
+        return Response(data)
+
+
+@api_view(["GET"])
+@permission_classes([StudentPermission | AdminPermission | SuperstudentPermission])
+def planning_status(request, year, week, pk):
+    if request.method == "GET":
+        try:
+            dayplan = DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
             return Response(status=404)
 
-        data = DagPlanningSerializerFull(dayplan).data
-        return Response(data)
+        buildings = [building.id for building in dayplan.ronde.buildings.all()]
+        infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
+        status = {}
+        for index, info in enumerate(infos):
+            pictures = BuildingPicture.objects.filter(infoPerBuilding=info.id,
+                                                      time__year=year,
+                                                      time__week=week)
+            if buildings[index] not in status:
+                status[buildings[index]] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
+
+            for picture in pictures:
+                status[buildings[index]][picture.pictureType] += 1
+
+        return Response(status)
+
+
+@api_view(["GET"])
+@permission_classes([AdminPermission | SuperstudentPermission])
+def template_for_planning(request, pk):
+    if request.method == "GET":
+        try:
+            DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
+            return Response(status=404)
+
+        student_templates = StudentTemplate.objects.filter(dag_planningen__in=[pk])
+        if len(student_templates) == 0:
+            return Response(status=404)
+
+        return Response({"template_id": student_templates[0].id})
+
+
+@api_view(["GET"])
+@permission_classes([AdminPermission | SuperstudentPermission])
+def planning_pictures(request, year, week, pk):
+    if request.method == "GET":
+        try:
+            dayplan = DagPlanning.objects.get(pk=pk)
+        except DagPlanning.DoesNotExist:
+            return Response(status=404)
+
+        buildings = [building.id for building in dayplan.ronde.buildings.all()]
+        infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
+        pictures = {}
+        for index, info in enumerate(infos):
+            if buildings[index] not in pictures:
+                pictures[buildings[index]] = []
+            pictures[buildings[index]] += BuildingPicture.objects.filter(infoPerBuilding=info.id,
+                                                                         time__year=year,
+                                                                         time__week=week)
+        for k, v in pictures.items():
+            pictures[k] = BuildingPictureSerializer(v, many=True).data
+
+        return Response(pictures)
 
 
 class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -153,12 +218,19 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         infoPerBuilding = request.query_params[
             'infoPerBuilding'] if 'infoPerBuilding' in request.query_params else None
+        year = request.query_params[
+            'year'] if 'year' in request.query_params else None
+        week = request.query_params[
+            'week'] if 'week' in request.query_params else None
 
-        if infoPerBuilding is not None:
+        if infoPerBuilding is not None and year is not None and week is not None:
             try:
                 InfoPerBuilding.objects.get(pk=infoPerBuilding)
                 self.queryset = BuildingPicture.objects.filter(
-                    infoPerBuilding=infoPerBuilding)
+                    infoPerBuilding=infoPerBuilding,
+                    time__year=year,
+                    time__week=week
+                )
             except Exception:
                 raise serializers.ValidationError(
                     {
@@ -205,7 +277,7 @@ class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
                                                  "infoPerBuilding",
                                                  InfoPerBuilding)
         handler.check()
-        super().put(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
         data = request.data
@@ -216,7 +288,7 @@ class BuildingPictureRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_primary_key(data.get("infoPerBuilding"),
                                   "infoPerBuilding", InfoPerBuilding)
         handler.check()
-        super().patch(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
 
 class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
@@ -286,17 +358,21 @@ class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 def get_student_templates(year, week):
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     if year > current_year or (current_year == year and week > current_week):
         # dit is een week die nog moet komen dus geven we alleen de actieve of nu tijdelijk vervangen templates terug
-        student_templates = StudentTemplate.objects.filter(
-            status=Status.ACTIEF) | StudentTemplate.objects.filter(
-            status=Status.VERVANGEN)
+        # buiten als de template vervangen is voor de volgende week
+        student_templates_actief = StudentTemplate.objects.filter(status=Status.ACTIEF)
+        student_templates_vervangen = StudentTemplate.objects.filter(status=Status.VERVANGEN).exclude(week=week, year=year)
+        student_templates_eenmalig = StudentTemplate.objects.filter(status=Status.EENMALIG, week=week, year=year)
+
         even = week % 2 == 0
+        student_templates = student_templates_actief | student_templates_vervangen | student_templates_eenmalig
         student_templates = student_templates.filter(even=even)
     else:
         # weekplanning is al voorbij of bezig
+        get_current_week_planning()  # nodig voor moest de weekplanning nog niet gemaakt zijn
         try:
             week_planning = WeekPlanning.objects.get(
                 week=week,
@@ -358,7 +434,7 @@ def student_templates_view(request):
         TODO checks
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         handler = ExceptionHandler()
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
@@ -388,13 +464,13 @@ def student_templates_view(request):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def student_template_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
     if request.method == "GET":
         """
         Geeft de StudentTemplate terug.
         """
         return Response(StudentTemplateSerializer(template).data)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     if request.method == "DELETE":
         """
@@ -494,7 +570,7 @@ def student_template_view(request, template_id):
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def rondes_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     if request.method == "GET":
         """
@@ -508,7 +584,7 @@ def rondes_view(request, template_id):
         Voegt een nieuwe Ronde toe aan de template.
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         handler = ExceptionHandler()
         handler.check_primary_key_value_required(data.get("ronde"), "ronde",
                                                  Ronde)
@@ -543,10 +619,10 @@ def rondes_view(request, template_id):
 @api_view(["DELETE"])
 @permission_classes([AllowAny])
 def ronde_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
     ronde = Ronde.objects.get(id=ronde_id)
 
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     if request.method == "DELETE":
         """
@@ -571,7 +647,7 @@ def ronde_view(request, template_id, ronde_id):
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def dagplanningen_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     if request.method == "GET":
         """
@@ -586,7 +662,6 @@ def dagplanningen_view(request, template_id, ronde_id):
         Maakt een nieuwe DagPlanning aan.
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         data["ronde"] = ronde_id
         validate_dag_planning_data(data)
@@ -608,10 +683,9 @@ def dagplanningen_view(request, template_id, ronde_id):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     dag_planning = DagPlanning.objects.get(id=dag_id)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     if request.method == "GET":
         """

@@ -3,7 +3,7 @@
     <div class="text-h4 text-md-h2 text-lg-h1">
       Studenten Templates
     </div>
-    <v-btn :to="'/studenttemplates/add'" variant="outlined" >
+    <v-btn :to="{name: 'add_studenttemplate'}" variant="outlined" >
         Nieuwe Aanmaken
     </v-btn>
   </v-row>
@@ -13,7 +13,7 @@
       location: template.location.name,
       even: template.even,
       status: state_mapping[template.status]
-    }"></StudentTemplateCard>
+    }" :key="template.id"></StudentTemplateCard>
 </template>
 
 <script>

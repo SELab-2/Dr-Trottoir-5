@@ -15,7 +15,7 @@ import TrashTemplateBuildingCard from "@/components/containerTemplates/buildings
 
 export default {
   name: "TrashTemplateBuildingsList",
-  components: {ListPage, TrashTemplateBuildingHeader, TrashTemplateBuildingCard},
+  components: {ListPage},
   props: {
     id: Number
   },
@@ -29,10 +29,11 @@ export default {
   },
   methods: {
     addTrashContainerBuilding: function () {
-      router.push({path: '/building/create'});
+      router.push({name: 'create_building'});
     }
   },
   async beforeMount() {
+    // TODO Add Manual
     await RequestHandler.handle(TrashTemplateService.getBuildingsOfTemplate(this.id), {
       id: 'getTrashBuildingsListError',
       style: 'SNACKBAR'

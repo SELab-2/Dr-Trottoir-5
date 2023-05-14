@@ -2,7 +2,8 @@
   <v-container>
     <V-card align="center">
       <v-card-title>
-        <h4 class="text-h4">Nieuwe ronde aanmaken</h4>
+        <h4 class="text-h4" v-if="id === undefined">Nieuwe ronde aanmaken</h4>
+        <h4 class="text-h4" v-if="id !== undefined">Ronde bewerken</h4>
       </v-card-title>
       <v-spacer />
       <v-card-text>
@@ -23,7 +24,8 @@
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" sm="6" md="6">
-            <normal-button text="Aanmaken" v-bind:parent-function="validate"></normal-button>
+            <normal-button v-if="id === undefined" text="Aanmaken" v-bind:parent-function="validate"></normal-button>
+            <normal-button v-if="id !== undefined" text="Opslaan" v-bind:parent-function="validate"></normal-button>
           </v-col>
         </v-form>
       </v-card-text>
@@ -41,6 +43,7 @@ import router from "@/router";
 export default defineComponent({
   name: "CreateRoundView",
   components: {NormalButton},
+  props: {id: String},
   data: () => ({
     valid: true,
     locations: [],
@@ -66,23 +69,52 @@ export default defineComponent({
     }).then(b => {
       this.buildings = b;
     }).catch(() => null);
+
+    if (this.id !== undefined) {
+      RequestHandler.handle(RoundService.getRoundById(Number(this.id)), {
+        id: 'getRoundError',
+        style: 'SNACKBAR'
+      }).then(r => {
+        this.name = r.name;
+        this.location = r.location;
+        this.selected = r.buildings;
+      }).catch(() => null);
+    }
   },
   methods: {
     async createRound() {
-      RequestHandler.handle(RoundService.createRound({
-        name: this.name,
-        location: this.location,
-        buildings: this.selected
-      }), {
-        id: 'createRoundError',
-        style: 'none'
-      }).then(b => {
-        this.$store.dispatch("snackbar/open", {
-          message: `Ronde ${b.name} is aangemaakt.`,
-          color: "success"
-        });
-        router.push({ path: '/' }); // TODO: change to list of rounds
-      }).catch(() => null);
+      if (this.id === undefined) {
+        console.log(this.selected)
+        RequestHandler.handle(RoundService.createRound({
+          name: this.name,
+          location: this.location,
+          buildings: this.selected
+        }), {
+          id: 'createRoundError',
+          style: 'none'
+        }).then(b => {
+          this.$store.dispatch("snackbar/open", {
+            message: `Ronde ${b.name} is aangemaakt.`,
+            color: "success"
+          });
+          router.push({ name: 'rounds' });
+        }).catch(() => null);
+      } else {
+        RequestHandler.handle(RoundService.updateRoundById(Number(this.id), {
+          name: this.name,
+          location: this.location,
+          buildings: this.selected
+        }), {
+          id: 'updateRoundError',
+          style: 'none'
+        }).then(b => {
+          this.$store.dispatch("snackbar/open", {
+            message: `Ronde ${b.name} is aangepast.`,
+            color: "success"
+          });
+          router.push({ name: 'rounds' });
+        }).catch(() => null);
+      }
     },
     async validate () {
       const { valid } = await this.$refs.form.validate();

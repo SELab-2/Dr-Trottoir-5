@@ -42,15 +42,11 @@
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
-import NormalButton from '@/components/NormalButton.vue';
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import router from "@/router";
 
 export default {
   name: "StudentTemplateAddView",
-  components: {
-    NormalButton
-  },
   data: () => ({
     name: '',
     even: true,
@@ -80,7 +76,7 @@ export default {
         id: 'createStudentTemplateError',
         style: 'SNACKBAR'
       }).then(result => result);
-      return await router.push({path: `/studenttemplates/${response["new_id"]}`})
+      return await router.push({name: 'studenttemplates', params: {id: response["new_id"]}})
     }
   }
 }

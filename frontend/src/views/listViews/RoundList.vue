@@ -4,15 +4,15 @@
 
 <script>
 import RoundListPage from '@/components/admin/RoundListPage'
-import ListPage from '@/components/admin/ListPage'
 import ListBuildings from '@/components/admin/ListBuildings'
 import {RequestHandler} from "@/api/RequestHandler";
 import RoundService from "@/api/services/RoundService";
 import BuildingService from "@/api/services/BuildingService";
 import router from "@/router";
+
 export default {
   name: 'RoundList',
-  components: {ListPage, RoundListPage },
+  components: {RoundListPage },
   data () {
     return {
       childComponent: ListBuildings,
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     addMethod: function () {
-      router.push({ path: '/create_round'});
+      router.push({name: 'create_round'})
     }
   },
   async beforeMount () {
@@ -31,7 +31,7 @@ export default {
         this.elements = result
         for (const el of this.elements) {
           for (let building of el.buildings) {
-            await RequestHandler.handle(BuildingService.getBuildingById(building)).then(async resultBuilding => building = resultBuilding)
+            await RequestHandler.handle(BuildingService.getBuildingById(building)).then( resultBuilding => { building = resultBuilding })
           }
         }
     })

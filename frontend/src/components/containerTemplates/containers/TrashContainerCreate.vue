@@ -36,7 +36,6 @@
 </template>
 
 <script lang="ts">
-import NormalButton from '@/components/NormalButton.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import {ContainerType} from "@/api/models/ContainerType";
@@ -44,7 +43,6 @@ import {Weekday} from "@/api/models/Weekday";
 
 export default {
   name: 'CreateTrashContainerView',
-  components: {NormalButton},
   props: {
     id: Number
   },
@@ -72,8 +70,6 @@ export default {
         Weekday.SATURDAY,
       ]
     }
-  },
-  async beforeMount() {
   },
   methods: {
     createContainer() {
