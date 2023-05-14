@@ -81,7 +81,7 @@ class AuthService extends EchoService {
         store.dispatch("session/clear");
         await store.dispatch("session/fetch");
 
-        await router.push(goHome ? "/" : "/login");
+        await router.push(goHome ? {name: 'home'} : {name: 'login'});
       })
       .catch((error) => {
         ErrorHandler.handle(error, {

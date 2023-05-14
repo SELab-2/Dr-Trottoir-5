@@ -37,6 +37,7 @@
       <v-divider style="width: 90%;" class="mt-4"></v-divider>
       <v-card-text class="mt-3">
         <RoundViewCard v-for="round in show" :data="{round: round, date: date}" />
+        <NormalButton v-if="rounds.length === 0" text="Nieuwe planning" v-bind:parent-function="plan" />
       </v-card-text>
     </v-card>
   </v-container>
@@ -49,9 +50,13 @@ import {RequestHandler} from "@/api/RequestHandler";
 import RoundService from "@/api/services/RoundService";
 import RoundViewCard from "@/components/admin/RoundViewCard.vue";
 import PlanningService from "@/api/services/PlanningService";
+import NormalButton from "@/components/NormalButton.vue";
+import router from "@/router";
+import {getWeek} from "@/api/DateUtil";
+
 export default {
   name: "DashboardView",
-  components: {RoundViewCard, DatePicker},
+  components: {NormalButton, RoundViewCard, DatePicker},
   async created() {
     RequestHandler.handle(RoundService.getLocations(), {
       id: 'getLocationsError',
@@ -63,9 +68,13 @@ export default {
     }).catch(() => null);
   },
   methods: {
+
+    plan() {
+      router.push({name: 'add_studenttemplate'});
+    },
     async changed() {
       const date = new Date(this.date);
-      const week = this.getWeek(this.date);
+      const week = getWeek(this.date);
 
       const rounds = await RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',

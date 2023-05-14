@@ -127,7 +127,7 @@ export default defineComponent({
         this.password,
         this.otp
       ))
-      return router.push({ path: '/login' })
+      return router.push({name : 'login' })
     }
   }
 })

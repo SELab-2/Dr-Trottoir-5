@@ -3,7 +3,7 @@
     <div class="text-h4 text-md-h2 text-lg-h1">
       Studenten Templates
     </div>
-    <v-btn :to="'/studenttemplates/add'" variant="outlined" >
+    <v-btn :to="{name: 'add_studenttemplate'}" variant="outlined" >
         Nieuwe Aanmaken
     </v-btn>
   </v-row>

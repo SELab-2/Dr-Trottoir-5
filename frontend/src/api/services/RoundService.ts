@@ -4,7 +4,7 @@ import {
   EchoService,
   EchoServiceBuilder,
   GET,
-  Path, POST
+  Path, POST, PUT
 } from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
@@ -59,6 +59,22 @@ class RoundService extends EchoService {
   @DELETE('/ronde/{id}')
   deleteRoundById(@Path('id') id: number): EchoPromise<void> {
     return {} as EchoPromise<void>
+  }
+
+  /**
+   * Get round by ID
+   */
+  @GET('/ronde/{id}/')
+  getRoundById(@Path('id') id: number): EchoPromise<Round> {
+    return {} as EchoPromise<Round>
+  }
+
+  /**
+   * Update round by ID
+   */
+  @PUT('/ronde/{id}/')
+  updateRoundById(@Path('id') id: number, @Body() body: RoundWrapper): EchoPromise<Round> {
+    return {} as EchoPromise<Round>
   }
 
 }
