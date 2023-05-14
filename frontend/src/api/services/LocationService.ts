@@ -1,4 +1,4 @@
-import {Body, EchoPromise, EchoService, EchoServiceBuilder, GET, POST} from "@/api/EchoFetch";
+import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, Path, POST} from "@/api/EchoFetch";
 import config from "@/config";
 import Location from "@/api/models/Location";
 import {InputFields} from "@/types/fields/InputFields";
@@ -20,6 +20,13 @@ class LocationService extends EchoService {
     return {} as EchoPromise<Location>
   }
 
+  /**
+   * Remove location
+   */
+  @DELETE('/ronde/locatie/{id}')
+  deleteLocationById(@Path('id') id : number) : EchoPromise<void> {
+    return {} as EchoPromise<void>
+  }
 }
 
 export default new EchoServiceBuilder()
