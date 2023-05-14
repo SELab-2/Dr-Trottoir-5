@@ -8,7 +8,7 @@ from .util import *
 
 
 class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
-    permission_classes = [SuperstudentPermission, AdminPermission]
+    permission_classes = [SuperstudentPermission | AdminPermission]
 
     def get(self, request, *args, **kwargs):
         """
