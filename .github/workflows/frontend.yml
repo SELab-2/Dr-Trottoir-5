@@ -55,7 +55,7 @@ jobs:
           npm install --force
           npm i -D @vue/cli-plugin-eslint @vue/eslint-config-typescript --force
         working-directory: ./frontend
-      - name: Run Tests
+      - name: Run Linter
         run: |
           npm run lint
         working-directory: ./frontend

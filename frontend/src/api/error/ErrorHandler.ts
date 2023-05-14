@@ -105,10 +105,7 @@ export class ErrorHandler {
       // Set the new error message, when available.
       if (fieldNewError) {
         fieldValue.error = fieldNewError.message;
-      }
-
-      // Otherwise set an empty error. (necessary for reset of previous error)
-      else {
+      } else { // Otherwise set an empty error. (necessary for reset of previous error)
         fieldValue.error = "";
       }
     }
