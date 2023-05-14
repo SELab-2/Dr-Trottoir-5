@@ -13,18 +13,23 @@ describe('AccountInformation.vue', () => {
     role: 'ST',
   }
 
-  it('render the comonent', () => {
-    const wrapper = mount(AccountInformation);
-    expect(wrapper.exists()).toBeTruthy();
-  })
+  let wrapper;
 
-  it('user data is shown without edit', async () => {
+  beforeEach(async () => {
     AccountInformation.props.get_data = {
       type: Function, default: () => {
         return dataOfComponent
       }
     };
-    const wrapper = await mount(AccountInformation);
+    wrapper = await mount(AccountInformation);
+  })
+
+
+  it('render the comonent', () => {
+    expect(wrapper.exists()).toBeTruthy();
+  })
+
+  it('user data is shown without edit', async () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.data.first_name === dataOfComponent.first_name).toBeTruthy();
     expect(wrapper.vm.$data.data.last_name === dataOfComponent.last_name).toBeTruthy();
@@ -35,12 +40,6 @@ describe('AccountInformation.vue', () => {
   });
 
   it('user can be deleted by admin', async () => {
-    AccountInformation.props.get_data = {
-      type: Function, default: () => {
-        return dataOfComponent
-      }
-    };
-    const wrapper = await mount(AccountInformation);
     await wrapper.setProps({not_admin: false, can_edit_permission: true});
     expect(wrapper.findComponent(NormalButton).text()).toBe('Pas aan');
     expect(wrapper.findComponent(ConfirmDialog).exists()).toBeTruthy();
@@ -48,23 +47,12 @@ describe('AccountInformation.vue', () => {
   });
 
   it('user can not be deleted by admin', async () => {
-    AccountInformation.props.get_data = {
-      type: Function, default: () => {
-        return dataOfComponent
-      }
-    };
-    const wrapper = await mount(AccountInformation);
     await wrapper.setProps({not_admin: true, can_edit_permission: true});
     expect(wrapper.findComponent(NormalButton).text()).toBe('Pas aan');
     expect(wrapper.find('[data-test="delete-button"]').exists()).toBeFalsy();
   });
 
   it('user can not edit data', async () => {
-    AccountInformation.props.get_data = {
-      type: Function, default: () => {
-        return dataOfComponent
-      }
-    };
     const wrapper = await mount(AccountInformation);
     await wrapper.setProps({not_admin: true, can_edit_permission: false})
     await wrapper.vm.$nextTick();
@@ -74,12 +62,6 @@ describe('AccountInformation.vue', () => {
   })
 
   it('user can edit data', async () => {
-    AccountInformation.props.get_data = {
-      type: Function, default: () => {
-        return dataOfComponent
-      }
-    };
-    const wrapper = await mount(AccountInformation);
     await wrapper.setProps({not_admin: true, can_edit_permission: true})
     const editButton = wrapper.find('[data-test="edit-button"]')
     expect(editButton.exists()).toBeTruthy()
