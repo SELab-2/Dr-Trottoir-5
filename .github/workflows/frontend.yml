@@ -33,3 +33,29 @@ jobs:
         run: |
           npm run test:unit
         working-directory: ./frontend
+
+  Frontend-linter:
+    runs-on: self-hosted
+    environment: vue tests
+    strategy:
+      max-parallel: 4
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - name: Empty EchoFetch directory
+        run: |
+          rm -rf EchoFetch
+        working-directory: ./frontend/src/api
+      - name: Install Dependencies
+        run: |
+          npm install --force
+          npm i -D @vue/cli-plugin-eslint @vue/eslint-config-typescript --force
+        working-directory: ./frontend
+      - name: Run Tests
+        run: |
+          npm run lint
+        working-directory: ./frontend
