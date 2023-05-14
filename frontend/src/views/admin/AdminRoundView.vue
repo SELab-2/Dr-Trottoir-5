@@ -8,7 +8,7 @@
         </v-col>
         <v-col cols="2">
           <v-btn v-if="template !== null"
-                 :to="`/studenttemplates/${template}/rondes/${planning.ronde.id}/dagplanningen/${planning.id}`"
+                 :to="`/admin/studenttemplate/${template}/ronde/${planning.ronde.id}/dagplanning/${planning.id}`"
                  class="my-2" color="primary"><v-icon color="secondary" icon="mdi-pencil"></v-icon></v-btn>
         </v-col>
       </v-row>
