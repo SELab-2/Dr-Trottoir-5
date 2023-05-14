@@ -46,7 +46,6 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
 class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [SuperstudentPermission | AdminPermission]
 
-
     def get(self, request, *args, **kwargs):
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         return Response(TrashContainerTemplateSerializerFull(template).data)
