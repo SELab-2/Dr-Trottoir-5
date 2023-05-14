@@ -2,13 +2,13 @@
   <v-container align="center">
     <v-card max-width="750px">
       <div align="center">
-        <h1>{{ building.name }}</h1>
+        <h1 data-test="buildingName">{{ building.name }}</h1>
         <v-container>
           <v-img style="max-height: 30vh;" src=""></v-img>
         </v-container>
       </div>
       <v-container >
-        <v-btn rounded="xl" @click="downloadFile">
+        <v-btn data-test="download-button" rounded="xl" @click="downloadFile">
           <v-icon color="#FFE600" dark>mdi-file</v-icon>
           <p style="color: #FFE600">Handleiding</p>
         </v-btn>
