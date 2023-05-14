@@ -6,7 +6,7 @@
       <h3>LOADING users</h3>
     </div>
     <div v-else-if="users.isSuccess()">
-      <p v-for="u in users.requireData()">{{ u.email }}</p>
+      <p v-for="u in users.requireData()" :key="u.email">{{ u.email }}</p>
     </div>
 
     <h2>The currently logged in user</h2>
@@ -45,8 +45,8 @@ export default defineComponent({
     }
   },
   created() {
-    this.user.finally(() => this.loaded.user = true).catch(() => {});
-    this.users.finally(() => this.loaded.users = true).catch(() => {});
+    this.user.finally(() => { this.loaded.user = true }).catch(() => null);
+    this.users.finally(() => { this.loaded.users = true }).catch(() => null);
   }
 })
 </script>
