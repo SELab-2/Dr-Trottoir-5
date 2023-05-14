@@ -36,7 +36,7 @@
       </v-card-title>
       <v-divider style="width: 90%;" class="mt-4"></v-divider>
       <v-card-text class="mt-3">
-        <RoundViewCard v-for="round in show" :data="{round: round, date: date}" />
+        <RoundViewCard v-for="round in show" :data="{round: round, date: date}" :key="round.id" />
         <NormalButton v-if="rounds.length === 0" text="Nieuwe planning" v-bind:parent-function="plan" />
       </v-card-text>
     </v-card>
@@ -74,7 +74,7 @@ export default {
     },
     async changed() {
       const date = new Date(this.date);
-      const week = getWeek(this.date);
+      const week = getWeek(date);
 
       const rounds = await RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',
