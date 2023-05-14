@@ -1,13 +1,7 @@
 module.exports = {
-  globals: {
-    'vue-jest': {
-      compilerOptions: {
-        isCustomElement: tag => tag.startsWith('v-')
-      }
-    }
-  },
   transform: {
-    '^.+\\.js$': 'babel-jest',
+    "^.+\\.vue$": "@vue/vue3-jest",
+    "^.+\\.js$": "babel-jest",
   },
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   "moduleNameMapper": {
