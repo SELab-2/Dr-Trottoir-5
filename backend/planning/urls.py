@@ -16,7 +16,7 @@ urlpatterns = [
 
     path("studenttemplates/rondes/<int:year>/<int:week>/<int:day>/<int"
          ":location>/", views.StudentTemplateRondeView.as_view()),
-    path("studenttemplates/", views.StudentTemplateDetailView.as_view()),
+    path("studenttemplates/", views.StudentTemplateView.as_view()),
     path("studenttemplates/<int:template_id>/", views.StudentTemplateDetailView.as_view()),
     path("studenttemplates/<int:template_id>/rondes/", views.RondesView.as_view()),
     path("studenttemplates/<int:template_id>/rondes/<int:ronde_id>/",
