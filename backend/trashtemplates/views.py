@@ -44,6 +44,8 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
 
 class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [SuperstudentPermission | AdminPermission]
+
     def get(self, request, *args, **kwargs):
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         return Response(TrashContainerTemplateSerializerFull(template).data)
@@ -140,6 +142,7 @@ class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class TrashContainersView(generics.CreateAPIView, generics.RetrieveAPIView):
+    permission_classes = [AdminPermission | SuperstudentPermission]
 
     def get(self, request, *args, **kwargs):
         """
@@ -176,6 +179,8 @@ class TrashContainersView(generics.CreateAPIView, generics.RetrieveAPIView):
 
 
 class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [AdminPermission | SuperstudentPermission]
+
     def get(self, request, *args, **kwargs):
         """
         Geeft een TrashContainer terug.
@@ -249,6 +254,8 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class BuildingsView(generics.CreateAPIView, generics.RetrieveAPIView):
+    permission_classes = [AdminPermission | SuperstudentPermission]
+
     def get(self, request, *args, **kwargs):
         """
         Geeft alle gebouwen van deze template terug samen met hun selecties.
@@ -286,6 +293,8 @@ class BuildingsView(generics.CreateAPIView, generics.RetrieveAPIView):
 
 
 class BuildingView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [AdminPermission | SuperstudentPermission]
+
     def get(self, request, *args, **kwargs):
         """
         Geeft het gebouw met zijn selectie terug.
