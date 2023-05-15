@@ -1,8 +1,10 @@
 from .util import *
-from planning.util import filter_templates, get_current_week_planning
+
+from planning.util import filter_templates, get_current_week_planning, get_current_time
+from ronde.models import Building, LocatieEnum
+
 from .serializers import *
 from rest_framework.response import Response
-import datetime
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
@@ -25,7 +27,7 @@ def trash_templates_view(request):
         TODO checks
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         location = LocatieEnum.objects.get(id=data["location"])
 
         new_template = TrashContainerTemplate.objects.create(
@@ -45,8 +47,8 @@ def trash_templates_view(request):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def trash_template_view(request, template_id):
-    template = TrashContainerTemplate.objects.get(id=template_id)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    template = get_trash_template(template_id)
+    current_year, current_week = get_current_time()
     planning = get_current_week_planning()
 
     if request.method == "GET":
@@ -74,13 +76,13 @@ def trash_template_view(request, template_id):
             add_if_match(planning.trash_templates, original, current_week)
 
             # verwijder de oude uit de huidige planning
-            remove_if_match(planning.trash_templates, template, current_week)
+            remove_if_match(planning.trash_templates, template)
             # verwijder hem ook uit de database omdat hij eenmalig was en dus niet nodig is voor de geschiedenis
             template.delete()
         else:
             template.status = Status.INACTIEF
             template.save()
-            remove_if_match(planning.trash_templates, template, current_week)
+            remove_if_match(planning.trash_templates, template)
 
         return Response({"message": "Success"})
 
@@ -131,7 +133,7 @@ def trash_template_view(request, template_id):
         # oude template op inactief zetten
         template.status = Status.INACTIEF
         template.save()
-        remove_if_match(planning.trash_templates, template, current_week)
+        remove_if_match(planning.trash_templates, template)
 
         return Response(
             {
@@ -144,7 +146,7 @@ def trash_template_view(request, template_id):
 @api_view(["POST", "GET"])
 @permission_classes([AllowAny])
 def trash_containers_view(request, template_id, permanent):
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
 
     if request.method == "GET":
         """
@@ -158,8 +160,6 @@ def trash_containers_view(request, template_id, permanent):
         Voegt de nieuwe TrashContainer toe aan de template adhv een TrashContainerIdWrapper.
         """
         data = request.data
-
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         extra_id = ExtraId.objects.create()
         new_tc_id_wrapper = make_new_tc_id_wrapper(data, extra_id)
@@ -178,7 +178,7 @@ def trash_containers_view(request, template_id, permanent):
 @permission_classes([AllowAny])
 def trash_container_view(request, template_id, extra_id, permanent):
 
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
     tc_id_wrapper = template.trash_containers.get(extra_id=extra_id)
 
     if request.method == "GET":
@@ -239,7 +239,7 @@ def trash_container_view(request, template_id, extra_id, permanent):
 def buildings_view(request, template_id, permanent):
     data = request.data
 
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
 
     if request.method == "GET":
         """
@@ -273,7 +273,7 @@ def buildings_view(request, template_id, permanent):
 @permission_classes([AllowAny])
 def building_view(request, template_id, building_id, permanent):
 
-    template = TrashContainerTemplate.objects.get(id=template_id)
+    template = get_trash_template(template_id)
     building_list = template.buildings.get(building=building_id)
 
     if request.method == "GET":

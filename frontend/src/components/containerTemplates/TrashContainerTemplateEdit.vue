@@ -39,7 +39,6 @@
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 
 export default {
@@ -53,8 +52,6 @@ export default {
     location: null,
     locations: [],
   }),
-  async mounted() {
-  },
   async beforeMount() {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
@@ -62,7 +59,7 @@ export default {
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
 
-    const trashTemplate = await RequestHandler.handle(trashTemplateService.getTrashTemplate(this.$route.params.id), {
+    const trashTemplate = await RequestHandler.handle(TrashTemplateService.getTrashTemplate(this.$route.params.id), {
       id: 'getTemplateEditError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => null)

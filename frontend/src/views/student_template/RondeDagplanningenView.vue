@@ -16,7 +16,7 @@
     day: dagplanning.time.day,
     start_hour: dagplanning.time.start_hour,
     end_hour: dagplanning.time.end_hour
-  }"></DagPlanningCard>
+  }" :key="dagplanning.id"></DagPlanningCard>
   <v-row class=" align-center justify-center pb-15">
     <v-col cols="12" sm="3" md="3">
       <NormalButton v-if="this.status !== 'Vervangen'" text="Nieuwe dagplanning aanmaken"
@@ -61,8 +61,7 @@ export default {
     const template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => {
-    });
+    }).then(result => result).catch(() => null);
     this.status = this.state_mapping[template.status]
 
     this.dagplanningen = await RequestHandler.handle(StudentTemplateService.getDagPlanningen(this.template_id, this.ronde_id), {

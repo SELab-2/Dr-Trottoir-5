@@ -17,7 +17,7 @@
     <div v-if="this.description !== null">
       <div v-if="this.inputArguments.length !== 0">
         <h2>Argumenten</h2>
-        <div v-for="(arg, index) in this.positionsArguments">
+        <div v-for="(arg, index) in this.positionsArguments" :key="index">
           <label>{{ arg.substring(1, arg.length - 1) }}</label>
           <v-text-field v-model="this.inputArguments[index]"></v-text-field>
         </div>

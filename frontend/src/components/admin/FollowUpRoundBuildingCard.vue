@@ -12,7 +12,7 @@
         <v-expansion-panels style="width: 90%;">
           <v-expansion-panel :title="this.remarks.length + ' opmerkingen'" :disabled="this.remarks.length === 0">
             <v-expansion-panel-text v-if="this.remarks.length > 0">
-              <p style="word-wrap: break-word;" class="mt-2" v-for="remark in this.remarks">{{ remark }}</p>
+              <p style="word-wrap: break-word;" class="mt-2" v-for="remark in this.remarks" :key="remark">{{ remark }}</p>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -89,11 +89,11 @@ export default {
     this.remarks = this.data.pictures.map(pic => pic.remark).filter(remark => remark !== '');
 
     if (this.data.pictures.filter(pic => pic.pictureType === 'DE').length > 0) {
-      const last = this.data.pictures.sort((p1, p2) => new Date(p1.time) < new Date(p2.time) ? -1 : 1);
+      const last = this.data.pictures.slice().sort((p1, p2) => new Date(p1.time) < new Date(p2.time) ? -1 : 1);
       this.state = `Voltooid om ${new Date(last[last.length - 1].time).toLocaleTimeString([], {timeStyle: 'short'})}`;
       this.duration = (new Date(last[last.length - 1].time).getTime() - new Date(last[0].time).getTime()) / 1000;
     } else if (this.data.pictures.length > 0) {
-      const first = this.data.pictures.sort((p1, p2) => new Date(p1.time) < new Date(p2.time) ? -1 : 1)[0];
+      const first = this.data.pictures.slice().sort((p1, p2) => new Date(p1.time) < new Date(p2.time) ? -1 : 1)[0];
       this.state = `Bezig sinds ${new Date(first.time).toLocaleTimeString([], {timeStyle: 'short'})}`;
     }
   }

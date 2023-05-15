@@ -33,7 +33,6 @@
 </template>
 
 <script lang="ts">
-import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
@@ -41,9 +40,6 @@ import router from "@/router";
 
 export default {
   name: "TrashContainerTemplateCreateView",
-  components: {
-    NormalButton
-  },
   data: () => ({
     name: '',
     even: true,

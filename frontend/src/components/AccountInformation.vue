@@ -61,7 +61,7 @@
         </template>
       </v-col>
       ---->
-      <div v-if="can_edit_permission">
+      <div v-if="edit_permission">
         <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
           <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
         </v-col>
@@ -70,7 +70,7 @@
           <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
         </v-col>
       </div>
-      <v-col v-if="!not_admin && can_edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12"
+      <v-col v-if="!not_admin && edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12"
              md="12" lg="12">
         <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
       </v-col>
@@ -89,17 +89,13 @@ export default {
   components: {ConfirmDialog, NormalButton},
   props: {
     get_data: {
-      type: Function, default: () => {
-      }
+      type: Function
     },
     save_data: {
-      type: Function, default: () => {
-      }
+      type: Function
     },
     delete_current: {
-      type: Function, default: () => {
-
-      }
+      type: Function
     },
     not_admin: {type: Boolean, default: true},
     can_edit_permission: {type: Boolean, default: true}
@@ -123,17 +119,18 @@ export default {
         {name: 'Syndicus', value: 'SY'}],
       edit: false,
       smallScreen: false,
-      can_edit_permission: true
+      edit_permission: true
     }
   },
   async beforeMount() {
+    this.edit_permission = this.can_edit_permission
     this.data = await this.get_data()
     const currentUser = await this.$store.getters['session/currentUser']
     if (!this.not_admin) {
       const currentUserRole = currentUser.role
       if (currentUserRole === 'SU') {
         if (this.data.role === 'AD') {
-          this.can_edit_permission = false
+          this.edit_permission = false
         } else {
           this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
             {name: 'Superstudent', value: 'SU'}]

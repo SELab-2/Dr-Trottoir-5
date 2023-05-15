@@ -15,7 +15,7 @@ import TrashTemplateBuildingCard from "@/components/containerTemplates/buildings
 
 export default {
   name: "TrashTemplateBuildingsList",
-  components: {ListPage, TrashTemplateBuildingHeader, TrashTemplateBuildingCard},
+  components: {ListPage},
   props: {
     id: Number
   },
