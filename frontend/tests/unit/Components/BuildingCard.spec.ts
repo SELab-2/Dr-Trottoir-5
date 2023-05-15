@@ -13,7 +13,7 @@ describe('BuildingCard.vue', () => {
       buildingID: "test",
       manual: 1,
   }
-
+  // TODO Fix
   beforeEach(async () => {
     BuildingCard.beforeMount = () => Promise.resolve();
     wrapper = mount(BuildingCard, {
