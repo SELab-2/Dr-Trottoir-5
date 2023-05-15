@@ -48,12 +48,14 @@ import BuildingContainer from "@/api/models/BuildingContainer";
 
 export default {
   name: "TrashTemplateEditView",
-  data: () => ({
-    permanent: true,
-    building: <BuildingContainer> undefined,
-    trash_ids: [],
-    container_choices: []
-  }),
+  data() {
+    return {
+      permanent: true,
+      building: <BuildingContainer> undefined,
+      trash_ids: [],
+      container_choices: []
+    }
+  },
   async beforeMount() {
     this.building = await RequestHandler.handle(
       trashTemplateService.getBuildingOfTemplate(this.$route.params.id, this.$route.params.gebouwId), {
