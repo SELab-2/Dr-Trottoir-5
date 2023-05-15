@@ -37,4 +37,19 @@ describe("InfoScreenBuilding.vue", () => {
   })
 
 
+  it('renders remarks correct', async () => {
+    const remarks = ['Remark 1', 'Remark 2', 'Remark 3']
+
+    await wrapper.setData({building: {remarks: remarks}})
+    wrapper.vm.$nextTick();
+    wrapper.vm.$forceUpdate()
+
+    const remarkItems = wrapper.findAll('[data-test="remarks"]');
+    expect(remarkItems).toHaveLength(remarks.length);
+
+    remarkItems.forEach((item, index) => {
+      expect(item.text()).toBe(remarks[index]);
+    });
+  });
+
 })

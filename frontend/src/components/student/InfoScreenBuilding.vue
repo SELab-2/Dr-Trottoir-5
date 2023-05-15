@@ -16,7 +16,7 @@
       <v-card class="container-border ma-2">
         <h2 class="mt-2">Opmerkingen:</h2>
         <v-list>
-          <v-list-item v-for="remark in building.remarks">{{ remark }}</v-list-item>
+          <v-list-item data-test="remarks" v-for="remark in building.remarks">{{ remark }}</v-list-item>
         </v-list>
       </v-card>
     </v-card>
