@@ -42,7 +42,6 @@
 <script lang="ts">
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 import BuildingContainer from "@/api/models/BuildingContainer";
 
@@ -58,13 +57,13 @@ export default {
   },
   async beforeMount() {
     this.building = await RequestHandler.handle(
-      trashTemplateService.getBuildingOfTemplate(this.$route.params.id, this.$route.params.gebouwId), {
+      TrashTemplateService.getBuildingOfTemplate(this.$route.params.id, this.$route.params.gebouwId), {
         id: 'getBuildingError',
         style: 'SNACKBAR'
       })
 
     this.container_choices = await RequestHandler.handle(
-      trashTemplateService.getTrashContainersOfTemplate(this.$route.params.id), {
+      TrashTemplateService.getTrashContainersOfTemplate(this.$route.params.id), {
         id: 'getContainersForTemplateError',
         style: 'SNACKBAR'
       }).then(result => result).catch(() => []);
