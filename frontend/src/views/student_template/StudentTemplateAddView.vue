@@ -63,7 +63,7 @@ export default {
     }).then(result => result).catch(() => []);
   },
   methods: {
-    async update() {
+    async create() {
       const body = {
         name: this.name,
         even: this.even,
