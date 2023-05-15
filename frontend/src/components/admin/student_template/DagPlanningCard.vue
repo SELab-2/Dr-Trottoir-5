@@ -82,7 +82,7 @@ export default {
       const response = await RequestHandler.handle(StudentTemplateService.deleteDagPlanning(this.data.template_id, this.data.dag_id), {
         id: "deleteDagplanningError",
         style: "SNACKBAR"
-      }).then(res => res).catch(() => {})
+      }).then(res => res).catch(() => null)
       this.$emit('remove', response["new_id"])
     }
   }

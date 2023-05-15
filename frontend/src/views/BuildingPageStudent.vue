@@ -87,7 +87,7 @@ export default defineComponent({
       RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
         style: "NONE"
-      }).then(infos => this.info = infos[building_index].id).catch(() => null);
+      }).then(infos => { this.info = infos[building_index].id }).catch(() => null);
 
       const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
         id: "getContainersError",

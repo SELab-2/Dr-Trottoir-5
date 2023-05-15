@@ -47,21 +47,14 @@
 </template>
 
 <script lang="ts">
-import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 import buildingService from "@/api/services/BuildingService";
-import {th} from "vuetify/locale";
 
 export default {
   name: "TrashContainerTemplateEditView",
-  components: {
-    NormalButton
-  },
-  props: {},
   data: () => ({
     name: '',
     even: true,
@@ -71,8 +64,6 @@ export default {
     buildings: null,
     building_choices: null,
   }),
-  async mounted() {
-  },
   async beforeMount() {
     // get all possible locations
     this.locations = await RequestHandler.handle(LocationService.getLocations(), {
@@ -99,7 +90,7 @@ export default {
       return result
     }).catch(() => []);
 
-    RequestHandler.handle(trashTemplateService.getTrashTemplate(this.$route.params.id), {
+    RequestHandler.handle(TrashTemplateService.getTrashTemplate(this.$route.params.id), {
       id: 'getTemplateEditError',
       style: 'SNACKBAR'
     }).then((result) => {
@@ -129,7 +120,7 @@ export default {
         location: this.location,
         permanent: this.permanent
       }
-      const response = await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.$route.params.id, body), {
+      await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.$route.params.id, body), {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => {
