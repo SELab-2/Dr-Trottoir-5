@@ -16,15 +16,8 @@
             multiple
           />
         </v-col>
-        <v-col cols='12' md="3" sm="3">
-          <v-checkbox v-model="permanent" label="Permanent"></v-checkbox>
-        </v-col>
       </v-row>
-      <v-row class="px-5 justify-center mx-auto">
-        <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="aanpassen()">Aanpassen</v-btn>
-        </v-col>
-      </v-row>
+      <StateButtons :status="status" :eenmalig="() => aanpassen(true)" :permanent="() => aanpassen(false)"/>
     </v-form>
   </v-card>
 </template>
@@ -34,18 +27,19 @@ import {RequestHandler} from "@/api/RequestHandler";
 import buildingService from "@/api/services/BuildingService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
+import StateButtons from "@/components/StateButtons.vue";
 
 export default {
   name: "TrashTemplateBuildingAdd",
 
-  components: {},
+  components: {StateButtons},
   props: {},
   data() {
     return {
       building_options: [],
       building_chosen: [],
       building_originals: [],
-      permanent: true
+      status: "I"
     }
   },
 
@@ -62,16 +56,25 @@ export default {
       return result.map(buildingContainer => buildingContainer.building.id)
     })
     this.building_chosen = this.building_originals
+
+    RequestHandler.handle(
+      TrashTemplateService.getTrashTemplate(this.$route.params.id),
+      {
+        id: 'getTrashtemplateError',
+        style: 'SNACKBAR'
+      }
+    ).then(result => {
+      this.status = result.status
+    })
   },
 
   methods: {
-    async aanpassen() {
-      console.log(this.building_originals)
-      console.log(this.building_chosen)
+    async aanpassen(eenmalig) {
+
       /* Al de gebouwen die niet in de originele lijst zaten en dus nieuw toegevoegd moeten worden. */
       this.building_chosen.forEach(building_id => {
         if (!this.building_originals.includes(building_id)) {
-          if (this.permanent) {
+          if (!eenmalig) {
             RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
               building: building_id,
               selection: []

@@ -11,10 +11,7 @@
         <p class="text-style-url" @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
       </v-col>
       <v-col cols="1">
-        {{ this.data.year }}
-      </v-col>
-      <v-col cols="1">
-        {{ this.data.week }}
+        {{ status_mapping[this.data.status] }}
       </v-col>
       <v-col cols="1">
         {{ this.locatie }}
@@ -55,7 +52,12 @@ export default {
   },
   data: () => ({
     locations: [],
-    locatie: ""
+    locatie: "",
+    status_mapping: {
+      "A": "Actief",
+      "E": "Eenmalig",
+      "V": "Vervangen"
+    }
   }),
   methods: {
     editTemplate: function () {

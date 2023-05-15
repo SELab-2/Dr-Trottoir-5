@@ -11,9 +11,6 @@
         <v-col cols="12" md="3" sm="3">
           <v-checkbox v-model="even" label="Even"></v-checkbox>
         </v-col>
-        <v-col cols="12" md="3" sm="3">
-          <v-checkbox v-model="permanent" label="Permanent"></v-checkbox>
-        </v-col>
       </v-row>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' md='6' sm='6'>
@@ -26,11 +23,7 @@
           />
         </v-col>
       </v-row>
-      <v-row class="px-5 justify-center mx-auto">
-        <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="update()">Aanpassen</v-btn>
-        </v-col>
-      </v-row>
+      <StateButtons :status="status" :eenmalig="() => update(true)" :permanent="() => update(false)"/>
     </v-form>
   </v-card>
 </template>
@@ -40,10 +33,11 @@ import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
+import StateButtons from "@/components/StateButtons.vue";
 
 export default {
   name: "TrashContainerTemplateEditView",
-  components: {},
+  components: {StateButtons},
   props: {},
   data: () => ({
     name: '',
@@ -51,6 +45,7 @@ export default {
     permanent: true,
     location: null,
     locations: [],
+    status: "I"
   }),
   async beforeMount() {
     // get all possible locations
@@ -67,14 +62,14 @@ export default {
     this.name = trashTemplate.name
     this.even = trashTemplate.even
     this.location = trashTemplate.location
+    this.status = trashTemplate.status
   },
   methods: {
     async update() {
       const body = {
         name: this.name,
         even: this.even,
-        location: this.location,
-        permanent: this.permanent
+        location: this.location
       }
       await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.$route.params.id, body), {
         id: 'CreateNewTrashTemplateError',

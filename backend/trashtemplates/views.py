@@ -294,7 +294,7 @@ def building_view(request, template_id, building_id, permanent):
             building_list,
             None,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().trash_templates
         ))
 
     if request.method == "PATCH":
@@ -312,5 +312,5 @@ def building_view(request, template_id, building_id, permanent):
             building_list,
             new_building_list,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().trash_templates
         ))

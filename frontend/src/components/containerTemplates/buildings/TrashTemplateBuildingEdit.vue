@@ -14,9 +14,6 @@
         <v-col cols='6' md='3' sm='3'>
           <p>{{ building.building.adres }}</p>
         </v-col>
-        <v-col cols="12" md="3" sm="3">
-          <v-checkbox v-model="permanent" label="Permanent"/>
-        </v-col>
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="trash_ids"
@@ -29,12 +26,7 @@
           />
         </v-col>
       </v-row>
-
-      <v-row class="px-5 justify-center mx-auto">
-        <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="update()">Aanpassen</v-btn>
-        </v-col>
-      </v-row>
+      <StateButtons :status="status" :eenmalig="() => update(true)" :permanent="() => update(false)"/>
     </v-form>
   </v-card>
 </template>
@@ -44,15 +36,17 @@ import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 import BuildingContainer from "@/api/models/BuildingContainer";
+import StateButtons from "@/components/StateButtons.vue";
 
 export default {
   name: "TrashTemplateEditView",
+  components: {StateButtons},
   data() {
     return {
-      permanent: true,
       building: BuildingContainer,
       trash_ids: [],
-      container_choices: []
+      container_choices: [],
+      status: "I"
     }
   },
   async beforeMount() {
@@ -61,16 +55,27 @@ export default {
         id: 'getBuildingError',
         style: 'SNACKBAR'
       })
+    this.trash_ids = this.building.trash_ids
 
     this.container_choices = await RequestHandler.handle(
       TrashTemplateService.getTrashContainersOfTemplate(this.$route.params.id), {
         id: 'getContainersForTemplateError',
         style: 'SNACKBAR'
       }).then(result => result).catch(() => []);
+
+    RequestHandler.handle(
+      TrashTemplateService.getTrashTemplate(this.$route.params.id),
+      {
+        id: 'getTrashtemplateError',
+        style: 'SNACKBAR'
+      }
+    ).then(result => {
+      this.status = result.status
+    })
   },
   methods: {
-    async update() {
-      if (this.permanent) {
+    async update(eenmalig) {
+      if (!eenmalig) {
         RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, this.$route.params.gebouwId, {
           selection: this.trash_ids
         }), {

@@ -26,12 +26,8 @@
           <v-text-field v-model='end_hour' label='Einduur' required></v-text-field>
         </v-col>
       </v-row>
-      <v-row class="px-5 justify-center mx-auto">
-        <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="editContainer()">Aanpassen</v-btn>
-        </v-col>
-      </v-row>
-    </v-form>
+      <StateButtons :status="this.status" :eenmalig="() => editContainer(true)" :permanent="() => editContainer(false)" />
+      </v-form>
   </v-card>
 </template>
 
@@ -41,9 +37,11 @@ import TrashTemplateService from "@/api/services/TrashTemplateService";
 import {container_from_api, container_to_api, ContainerType} from "@/api/models/ContainerType";
 import {Weekday, weekday_from_api, weekday_to_api} from "@/api/models/Weekday";
 import router from '@/router';
+import StateButtons from "@/components/StateButtons.vue";
 
 export default {
   name: 'CreateTrashContainerView',
+  components: {StateButtons},
   computed: {
     Weekday() {
       return Weekday
@@ -63,6 +61,7 @@ export default {
       day: '',
       start_hour: '',
       end_hour: '',
+      status: "I",
       smallScreen: false,
       types: [
         ContainerType.GFT,
@@ -96,11 +95,21 @@ export default {
       this.start_hour = result.trash_container.collection_day.start_hour
       this.end_hour = result.trash_container.collection_day.end_hour
     })
+    RequestHandler.handle(
+      TrashTemplateService.getTrashTemplate(this.id_),
+      {
+        id: 'getTrashtemplateError',
+        style: 'SNACKBAR'
+      }
+    ).then(result => {
+      this.status = result.status
+    })
   },
   methods: {
-    async editContainer() {
-      RequestHandler.handle(
-        TrashTemplateService.updateContainerTemplate(this.id_, this.$route.params.containerId, {
+    async editContainer(eenmalig) {
+      if(eenmalig) {
+        RequestHandler.handle(
+        TrashTemplateService.updateContainerTemplateEenmalig(this.id_, this.$route.params.containerId, {
           type: container_to_api(this.type),
           collection_day: {
             day: weekday_to_api(this.day),
@@ -108,14 +117,33 @@ export default {
             end_hour: this.end_hour
           },
         }), {
-          id: 'editContainerTemplateError',
+          id: 'editContainerTemplateEenmaligError',
           style: 'SNACKBAR'
         }
       ).then(() =>
         this.$store.dispatch("snackbar/open", {
-          message: "De container is aangepast",
+          message: "De container is eenmalig aangepast",
           color: "success"
         }))
+      } else {
+        RequestHandler.handle(
+          TrashTemplateService.updateContainerTemplate(this.id_, this.$route.params.containerId, {
+            type: container_to_api(this.type),
+            collection_day: {
+              day: weekday_to_api(this.day),
+              start_hour: this.start_hour,
+              end_hour: this.end_hour
+            },
+          }), {
+            id: 'editContainerTemplateError',
+            style: 'SNACKBAR'
+          }
+        ).then(() =>
+          this.$store.dispatch("snackbar/open", {
+            message: "De container is aangepast",
+            color: "success"
+          }))
+      }
       await router.push({name: 'trashtemplateContainers', params: {id: this.$router.params.id}})
     },
   }
