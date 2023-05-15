@@ -4,25 +4,25 @@
       <v-card-text>
         <v-row align-end>
           <v-col align="left" cols="8">
-            <p style="font-size: 12px">{{ data.remark }}</p>
+            <p data-test="remark" style="font-size: 12px">{{ data.remark }}</p>
           </v-col>
           <v-col class="d-flex align-center" cols="4">
             <v-row justify="end" class="image-margin">
-              <v-img :src="data.image" :max-width="'150px'" :max-height="'150px'"></v-img>
+              <v-img data-test="image" :src="data.image" :max-width="'150px'" :max-height="'150px'"></v-img>
             </v-row>
           </v-col>
         </v-row>
         <v-row align="end">
           <v-col align="left">
-            <p style="font-size: 10px">{{ new Date(data.time).toLocaleString() }}</p>
+            <p data-test="time" style="font-size: 10px">{{ new Date(data.time).toLocaleString() }}</p>
           </v-col>
           <v-col>
             <v-row justify="end" class="row-margin">
-              <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;"
+              <v-btn data-test="edit-button" icon tile class="button-margin" style="max-height: 35px; max-width: 35px;"
                      v-on:click="goToEditPage">
                 <EditIcon/>
               </v-btn>
-              <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
+              <v-btn data-test="delete-button" icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
                 <DeleteIcon/>
               </v-btn>
             </v-row>
