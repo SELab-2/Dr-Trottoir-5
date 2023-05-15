@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import UserService from "@/api/services/UserService";
@@ -52,9 +51,6 @@ import router from "@/router";
 
 export default {
   name: "DagplanningAddView",
-  components: {
-    NormalButton
-  },
   data: () => ({
     template_id: 0,
     ronde_id: 0,
@@ -82,7 +78,7 @@ export default {
     const template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => {});
+    }).then(result => result).catch(() => null);
 
     this.start_hour = template.start_hour
     this.end_hour = template.end_hour
@@ -106,7 +102,7 @@ export default {
       const response = RequestHandler.handle(StudentTemplateService.addDagPlanningen(this.template_id, this.ronde_id, body), {
         id: "addDagplanningError",
         style: "SNACKBAR"
-      }).then(res => res).catch(() => {});
+      }).then(res => res).catch(() => null);
 
       if (response["new_id"] !== undefined) {
         this.template_id = response["new_id"]

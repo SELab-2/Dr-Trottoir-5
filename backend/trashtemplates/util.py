@@ -2,7 +2,18 @@ from pickupdays.models import PickUpDay
 from .serializers import *
 from trashcontainers.models import TrashContainer
 from ronde.models import Building
-import datetime
+from planning.util import get_current_time
+from exceptions.exceptionHandler import ExceptionHandler
+
+
+def get_trash_template(template_id):
+    handler = ExceptionHandler()
+    handler.check_primary_key(template_id, "template_id", TrashContainerTemplate)
+    handler.check()
+    template = TrashContainerTemplate.objects.get(id=template_id)
+    handler.check_not_inactive(template, "template")
+    handler.check()
+    return template
 
 
 def make_new_tc_id_wrapper(data, extra_id):
@@ -47,7 +58,12 @@ def make_new_building_list(building_id, selection):
 def make_copy(template, permanent, current_year, current_week):
     """
         Neemt een copy van een template zodat de geschiedenis behouden wordt
+        Als er een oneven template wordt aangepast in een even week zijn deze aanpassingen pas voor
+        de volgende week.
     """
+    week = current_week
+    if (current_week % 2 == 0) != template.even:
+        week += 1
 
     copy = TrashContainerTemplate.objects.create(
         name=template.name,
@@ -55,14 +71,14 @@ def make_copy(template, permanent, current_year, current_week):
         status=Status.ACTIEF if permanent else Status.EENMALIG,
         location=template.location,
         year=current_year,
-        week=current_week
+        week=week
     )
     copy.buildings.set(template.buildings.all())
     copy.trash_containers.set(template.trash_containers.all())
 
     # verander de status van de nu oude template
     template.status = Status.INACTIEF if permanent else Status.VERVANGEN
-    template.week = current_week
+    template.week = week
     template.save()
 
     return copy
@@ -88,12 +104,11 @@ def add_if_match(many_to_many, new_template, current_week):
         many_to_many.add(new_template)
 
 
-def remove_if_match(many_to_many, old_template, current_week):
+def remove_if_match(many_to_many, old_template):
     """
     Verwijder de oude template alleen maar als hij in de many_to_many zat.
-    Dit kan alleen wanneer even/oneven matcht.
     """
-    if old_template.even == (current_week % 2 == 0) and many_to_many.filter(id=old_template.id).exists():
+    if many_to_many.filter(id=old_template.id).exists():
         many_to_many.remove(old_template)
 
 
@@ -127,13 +142,13 @@ def update(template, many_to_many, old, new, permanent, template_list, copy_temp
     @param permanent: Of de aanpassing permanent is
     @param template_list: De lijst van alle templates van de huidige weekplanning
     """
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
     if no_copy(template, permanent, current_year, current_week):
         update_many_to_many(template, many_to_many, old, new)
         return {}
     else:
         copy = copy_template(template, permanent, current_year, current_week)
         update_many_to_many(copy, many_to_many, old, new)
-        remove_if_match(template_list, template, current_week)
+        remove_if_match(template_list, template)
         add_if_match(template_list, copy, current_week)
         return {"new_id": copy.id}

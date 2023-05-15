@@ -36,7 +36,7 @@
       <v-col cols="1"/>
       <v-col cols="2" class="d-flex align-center">
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template>
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
                 status
               }}</span>

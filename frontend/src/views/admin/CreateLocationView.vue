@@ -21,6 +21,7 @@
 import NormalButton from "@/components/NormalButton";
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
+import router from "@/router";
 
 export default {
   name: "CreateLocationView.vue",
@@ -45,6 +46,7 @@ export default {
           color: "success"
         })
       );
+      router.push({name: 'locations'})
     }
   }
 }
