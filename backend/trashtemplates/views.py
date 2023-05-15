@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
+from exceptions.exceptionHandler import ExceptionHandler
+
 
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
@@ -50,6 +52,7 @@ def trash_template_view(request, template_id):
     template = get_trash_template(template_id)
     current_year, current_week = get_current_time()
     planning = get_current_week_planning()
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -57,6 +60,8 @@ def trash_template_view(request, template_id):
         """
         return Response(TrashContainerTemplateSerializerFull(template).data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "DELETE":
         """
         Verwijderd de TrashContainerTemplate.
@@ -147,6 +152,7 @@ def trash_template_view(request, template_id):
 @permission_classes([AllowAny])
 def trash_containers_view(request, template_id, permanent):
     template = get_trash_template(template_id)
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -155,6 +161,8 @@ def trash_containers_view(request, template_id, permanent):
         data = TrashContainerIdWrapperSerializer(template.trash_containers.all(), many=True).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "POST":
         """
         Voegt de nieuwe TrashContainer toe aan de template adhv een TrashContainerIdWrapper.
@@ -180,6 +188,7 @@ def trash_container_view(request, template_id, extra_id, permanent):
 
     template = get_trash_template(template_id)
     tc_id_wrapper = template.trash_containers.get(extra_id=extra_id)
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -188,6 +197,8 @@ def trash_container_view(request, template_id, extra_id, permanent):
         data = TrashContainerIdWrapperSerializer(tc_id_wrapper).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "DELETE":
         """
         Verwijderd de TrashContainer van de template.
@@ -238,8 +249,8 @@ def trash_container_view(request, template_id, extra_id, permanent):
 @permission_classes([AllowAny])
 def buildings_view(request, template_id, permanent):
     data = request.data
-
     template = get_trash_template(template_id)
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -248,6 +259,8 @@ def buildings_view(request, template_id, permanent):
         data = BuildingTrashContainerListSerializer(template.buildings.all(), many=True).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "POST":
         """
         Voegt een nieuw gebouw samen met zijn selectie toe aan de template.
@@ -275,6 +288,7 @@ def building_view(request, template_id, building_id, permanent):
 
     template = get_trash_template(template_id)
     building_list = template.buildings.get(building=building_id)
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -283,6 +297,8 @@ def building_view(request, template_id, building_id, permanent):
         data = BuildingTrashContainerListSerializer(building_list).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "DELETE":
         """
         Verwijderd het gebouw en zijn selectie van de template.

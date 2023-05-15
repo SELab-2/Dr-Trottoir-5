@@ -21,6 +21,7 @@ class ExceptionHandler:
     integer_error = "Veld moet een positief getal zijn."
     boolean_error = "Veld moet een Boolse waarde zijn."
     inactive_error = "Object is verwijderd."
+    vervangen_error = "Kan geen aanpassingen doen aan vervangen template"
 
     def __init__(self):
         self.errors = []
@@ -220,5 +221,17 @@ class ExceptionHandler:
             self.errors.append({
                 "message": ExceptionHandler.inactive_error,
                 "field": fieldname
+            })
+            return False
+
+    def check_vervangen(self, template):
+        self.checked = False
+        if template is None:
+            return True
+
+        if template.status == Status.VERVANGEN:
+            self.errors.append({
+                "message": ExceptionHandler.vervangen_error,
+                "field": "template"
             })
             return False
