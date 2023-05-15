@@ -70,8 +70,9 @@ export default {
       RequestHandler.handle(TrashTemplateService.deleteTrashTemplate(this.data.id), {
         id: 'deleteTrashTemplateError',
         style: 'SNACKBAR'
+      }).then(() => {
+        router.go(0) // refresh the page
       })
-      router.go(0) // refresh the page
     },
     goToTrashTemplateBuildingsPage: function () {
       router.push({

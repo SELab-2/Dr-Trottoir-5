@@ -465,6 +465,8 @@ def student_templates_view(request):
 @permission_classes([AllowAny])
 def student_template_view(request, template_id):
     template = get_student_template(template_id)
+    handler = ExceptionHandler()
+
     if request.method == "GET":
         """
         Geeft de StudentTemplate terug.
@@ -472,6 +474,8 @@ def student_template_view(request, template_id):
         return Response(StudentTemplateSerializer(template).data)
     current_year, current_week = get_current_time()
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "DELETE":
         """
         Verwijderd de StudentTemplate.
@@ -571,6 +575,7 @@ def student_template_view(request, template_id):
 @permission_classes([AllowAny])
 def rondes_view(request, template_id):
     template = get_student_template(template_id)
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -579,6 +584,8 @@ def rondes_view(request, template_id):
         data = RondeSerializer(template.rondes.all(), many=True).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "POST":
         """
         Voegt een nieuwe Ronde toe aan de template.
@@ -621,9 +628,11 @@ def rondes_view(request, template_id):
 def ronde_view(request, template_id, ronde_id):
     template = get_student_template(template_id)
     ronde = Ronde.objects.get(id=ronde_id)
-
+    handler = ExceptionHandler()
     current_year, current_week = get_current_time()
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "DELETE":
         """
         Verwijderd een ronde en al zijn dagplanningen uit de template.
@@ -648,6 +657,7 @@ def ronde_view(request, template_id, ronde_id):
 @permission_classes([AllowAny])
 def dagplanningen_view(request, template_id, ronde_id):
     template = get_student_template(template_id)
+    handler = ExceptionHandler()
 
     if request.method == "GET":
         """
@@ -657,6 +667,8 @@ def dagplanningen_view(request, template_id, ronde_id):
         data = DagPlanningSerializer(dag_planningen, many=True).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "POST":
         """
         Maakt een nieuwe DagPlanning aan.
@@ -684,7 +696,7 @@ def dagplanningen_view(request, template_id, ronde_id):
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
     template = get_student_template(template_id)
-
+    handler = ExceptionHandler()
     dag_planning = DagPlanning.objects.get(id=dag_id)
 
     if request.method == "GET":
@@ -694,6 +706,8 @@ def dagplanning_view(request, template_id, dag_id, permanent):
         data = DagPlanningSerializer(dag_planning).data
         return Response(data)
 
+    handler.check_vervangen(template)
+    handler.check()
     if request.method == "DELETE":
         """
         Verwijder een DagPlanning van de template
