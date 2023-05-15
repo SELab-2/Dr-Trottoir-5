@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       permanent: true,
-      building: <BuildingContainer> undefined,
+      building: BuildingContainer,
       trash_ids: [],
       container_choices: []
     }
