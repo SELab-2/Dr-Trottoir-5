@@ -223,8 +223,6 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
         week = request.query_params[
             'week'] if 'week' in request.query_params else None
 
-
-
         if infoPerBuilding is not None and year is not None and week is not None:
             try:
                 print(week)
