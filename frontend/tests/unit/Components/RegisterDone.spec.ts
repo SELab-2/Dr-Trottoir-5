@@ -9,7 +9,7 @@ describe('RegisterDone.vue', () => {
     wrapper = mount(RegisterDone);
   })
 
-  it('reder of component', () => {
+  it('render of component', () => {
     expect(wrapper.exists()).toBeTruthy()
   })
 
