@@ -42,11 +42,9 @@ import TrashTemplateService from "@/api/services/TrashTemplateService";
 import {container_to_api, ContainerType} from "@/api/models/ContainerType";
 import {Weekday, weekday_to_api} from "@/api/models/Weekday";
 import router from "@/router";
-import StateButtons from "@/components/StateButtons.vue";
 
 export default {
   name: 'CreateTrashContainerView',
-  components: {StateButtons},
   computed: {
     Weekday() {
       return Weekday
