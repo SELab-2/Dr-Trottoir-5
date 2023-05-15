@@ -474,6 +474,7 @@ def student_template_view(request, template_id):
         return Response(StudentTemplateSerializer(template).data)
     current_year, current_week = get_current_time()
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "DELETE":
@@ -584,6 +585,7 @@ def rondes_view(request, template_id):
         data = RondeSerializer(template.rondes.all(), many=True).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "POST":
@@ -631,6 +633,7 @@ def ronde_view(request, template_id, ronde_id):
     handler = ExceptionHandler()
     current_year, current_week = get_current_time()
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "DELETE":
@@ -667,6 +670,7 @@ def dagplanningen_view(request, template_id, ronde_id):
         data = DagPlanningSerializer(dag_planningen, many=True).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "POST":
@@ -706,6 +710,7 @@ def dagplanning_view(request, template_id, dag_id, permanent):
         data = DagPlanningSerializer(dag_planning).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "DELETE":

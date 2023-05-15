@@ -60,6 +60,7 @@ def trash_template_view(request, template_id):
         """
         return Response(TrashContainerTemplateSerializerFull(template).data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "DELETE":
@@ -161,6 +162,7 @@ def trash_containers_view(request, template_id, permanent):
         data = TrashContainerIdWrapperSerializer(template.trash_containers.all(), many=True).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "POST":
@@ -197,6 +199,7 @@ def trash_container_view(request, template_id, extra_id, permanent):
         data = TrashContainerIdWrapperSerializer(tc_id_wrapper).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "DELETE":
@@ -259,6 +262,7 @@ def buildings_view(request, template_id, permanent):
         data = BuildingTrashContainerListSerializer(template.buildings.all(), many=True).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "POST":
@@ -297,6 +301,7 @@ def building_view(request, template_id, building_id, permanent):
         data = BuildingTrashContainerListSerializer(building_list).data
         return Response(data)
 
+    handler.check_not_inactive(template, "template")
     handler.check_vervangen(template)
     handler.check()
     if request.method == "DELETE":
