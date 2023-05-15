@@ -75,7 +75,7 @@
       status: this.status,
       name: ronde.name,
       location: ronde.location.name
-    }"></TemplateRondeCard>
+    }" :key="ronde.id"></TemplateRondeCard>
 </template>
 
 <script>

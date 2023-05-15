@@ -43,16 +43,12 @@
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
-import NormalButton from '@/components/NormalButton.vue';
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import router from "@/router";
 import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: "StudentTemplateAddView",
-  components: {
-    NormalButton
-  },
   data: () => ({
     name: '',
     even: true,

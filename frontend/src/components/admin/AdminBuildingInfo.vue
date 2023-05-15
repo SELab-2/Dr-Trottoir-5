@@ -143,7 +143,7 @@ export default {
           this.manual.manualStatus), {
           id: 'updateManualFileError',
           style: 'SNACKBAR'
-        }).then(manual => this.manual = manual)
+        }).then(manual => { this.manual = manual })
       } else {
         await RequestHandler.handle(BuildingService.updateManualStatusById(this.manual.id, {
           manualStatus: this.manual.manualStatus

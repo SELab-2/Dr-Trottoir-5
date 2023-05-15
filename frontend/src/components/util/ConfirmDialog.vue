@@ -35,7 +35,7 @@ export default {
   components: {NormalButton},
   props: {
     text: { type: String },
-    confirm_function: { type: Function, default: () => {} }
+    confirm_function: { type: Function }
   },
   data: () => {
     return {

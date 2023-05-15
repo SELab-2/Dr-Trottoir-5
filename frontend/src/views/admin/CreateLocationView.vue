@@ -21,6 +21,7 @@
 import NormalButton from "@/components/NormalButton";
 import LocationService from "@/api/services/LocationService";
 import {check_errors, get_errors} from "@/error_handling";
+import router from "@/router";
 
 export default {
   name: "CreateLocationView.vue",
@@ -43,8 +44,8 @@ export default {
           message: "De locatie is toegevoegd",
           color: "success"
         })
-      }
-      ).catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => this.errors = await get_errors(error));
+      router.push({name: 'locations'})
     }
   }
 }
