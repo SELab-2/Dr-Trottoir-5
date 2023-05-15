@@ -135,7 +135,7 @@ import TrashPickupCard from "@/components/admin/TrashPickupCard.vue";
 
 export default {
   name: "AdminBuildingInfo",
-  components: {TrashPickupCard, EditIcon, DeleteIcon, NormalButton, FotoCardAdmin, RoundBuildingCard, DatePicker},
+  components: {TrashPickupCard, EditIcon, DeleteIcon, NormalButton, FotoCardAdmin, DatePicker},
   data: () => {
     return {
       id: 0,
@@ -159,7 +159,9 @@ export default {
     this.getBuildingInformation(this.$route.params.id).then(() => this.getStudentPosts())
     this.getTrashPickUps()
     RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
-      .then(async result => this.buildings = result)
+      .then(async result => {
+        this.buildings = result
+      })
   },
   methods: {
     changed() {
