@@ -94,7 +94,7 @@ export default defineComponent({
             color: "success"
           });
           router.push({ name: 'rounds' });
-        }).catch(async (error) => this.errors = await get_errors(error));
+        }).catch(async (error) => {this.errors = await get_errors(error)});
       } else {
         RoundService.updateRoundById(Number(this.id), {
           name: this.name,
@@ -106,7 +106,7 @@ export default defineComponent({
             color: "success"
           });
           router.push({ name: 'rounds' });
-        }).catch(async (error) => this.errors = await get_errors(error));
+        }).catch(async (error) => {this.errors = await get_errors(error)});
       }
     }
   }

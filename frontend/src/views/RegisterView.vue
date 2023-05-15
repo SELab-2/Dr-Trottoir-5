@@ -97,7 +97,7 @@ export default defineComponent({
         await this.$store.dispatch("session/fetch");
 
         await router.push({ name: 'home' });
-      }).catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => {this.errors = await get_errors(error)});
     }
   }
 })

@@ -102,7 +102,7 @@ export default {
           color: "success"
         })
         router.push({name: 'buildings'})
-      }).catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => {this.errors = await get_errors(error)});
 
     },
     async createManual() {

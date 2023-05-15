@@ -44,7 +44,7 @@ export default {
           message: "De locatie is toegevoegd",
           color: "success"
         })
-      }).catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => {this.errors = await get_errors(error)});
       router.push({name: 'locations'})
     }
   }

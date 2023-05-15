@@ -61,7 +61,7 @@
         </template>
       </v-col>
       ---->
-      <div v-if="can_edit_permission">
+      <div v-if="can_edit">
         <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
           <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
         </v-col>
@@ -70,7 +70,7 @@
           <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
         </v-col>
       </div>
-      <v-col v-if="!not_admin && can_edit_permission" class="d-flex justify-center align-center pb-10" cols="12" sm="12"
+      <v-col v-if="!not_admin && can_edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12"
              md="12" lg="12">
         <v-btn @click="$refs.confirm.open()" icon="mdi-delete"></v-btn>
       </v-col>
@@ -108,6 +108,7 @@ export default {
     ],
     edit: false,
     smallScreen: false,
+    can_edit: true,
     errors: null
   }),
   async beforeMount() {
@@ -127,11 +128,12 @@ export default {
     this.phone_nr = this.user.phone_nr
     this.role = this.user.role
 
+    this.can_edit = this.can_edit_permission
     if (!this.not_admin) {
       const currentUserRole = currentUser.role
       if (currentUserRole === 'SU') {
         if (this.role === 'AD') {
-          this.can_edit_permission = false
+          this.can_edit = false
         } else {
           this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
             {name: 'Superstudent', value: 'SU'}]
@@ -170,8 +172,7 @@ export default {
       }).then(() => {
         this.edit = !this.edit
         this.errors = null
-      })
-        .catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => {this.errors = await get_errors(error)});
     },
     delete_current() {
       UserService.deleteUserById(this.id)

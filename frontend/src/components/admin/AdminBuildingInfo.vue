@@ -158,7 +158,7 @@ export default {
           this.errors = null;
           await router.push({name: 'buildings'})
         })
-        .catch(async (error) => this.errors = await get_errors(error));
+        .catch(async (error) => {this.errors = await get_errors(error)} );
 
     },
     async cancel_save() {

@@ -10,7 +10,6 @@ from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
-from trashtemplates.models import Status
 
 from .util import *
 from ronde.models import LocatieEnum

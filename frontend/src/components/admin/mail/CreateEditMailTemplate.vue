@@ -106,7 +106,7 @@ export default {
           color: "success"
         })
         router.push({name: 'mailtemplates'})
-      }).catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => {this.errors = await get_errors(error)});
     },
     editTemplate () {
       MailTemplateService.updateMailTemplate(this.$route.params.id,{
@@ -118,7 +118,7 @@ export default {
           color: "success"
         })
         router.push({name: 'mailtemplates'})
-      }).catch(async (error) => this.errors = await get_errors(error));
+      }).catch(async (error) => {this.errors = await get_errors(error)});
 
     },
     closeDialog: function () {
