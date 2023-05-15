@@ -12,6 +12,9 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
 
 from .util import *
+from ronde.models import LocatieEnum
+
+from trashtemplates.models import Status
 
 
 @api_view(["GET"])
@@ -357,17 +360,21 @@ class InfoPerBuildingRUDAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 def get_student_templates(year, week):
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     if year > current_year or (current_year == year and week > current_week):
         # dit is een week die nog moet komen dus geven we alleen de actieve of nu tijdelijk vervangen templates terug
-        student_templates = StudentTemplate.objects.filter(
-            status=Status.ACTIEF) | StudentTemplate.objects.filter(
-            status=Status.VERVANGEN)
+        # buiten als de template vervangen is voor de volgende week
+        student_templates_actief = StudentTemplate.objects.filter(status=Status.ACTIEF)
+        student_templates_vervangen = StudentTemplate.objects.filter(status=Status.VERVANGEN).exclude(week=week, year=year)
+        student_templates_eenmalig = StudentTemplate.objects.filter(status=Status.EENMALIG, week=week, year=year)
+
         even = week % 2 == 0
+        student_templates = student_templates_actief | student_templates_vervangen | student_templates_eenmalig
         student_templates = student_templates.filter(even=even)
     else:
         # weekplanning is al voorbij of bezig
+        get_current_week_planning()  # nodig voor moest de weekplanning nog niet gemaakt zijn
         try:
             week_planning = WeekPlanning.objects.get(
                 week=week,
@@ -426,16 +433,17 @@ def student_templates_view(request):
     if request.method == "POST":
         """
         Maakt een nieuwe StudentTemplate aan.
-        TODO checks
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         handler = ExceptionHandler()
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
         handler.check_not_blank_required(data.get("name"), "name")
-        handler.check_time_value_required(data.get("start_hour"), "start_hour")
-        handler.check_time_value_required(data.get("end_hour"), "end_hour")
+        handler.check_not_blank_required(data.get("start_hour"), "start_hour")
+        handler.check_time_value(data.get("start_hour"), "start_hour")
+        handler.check_not_blank_required(data.get("end_hour"), "end_hour")
+        handler.check_time_value(data.get("end_hour"), "end_hour")
         handler.check_boolean_required(data.get("even"), "even")
         handler.check()
 
@@ -459,13 +467,13 @@ def student_templates_view(request):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def student_template_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
     if request.method == "GET":
         """
         Geeft de StudentTemplate terug.
         """
         return Response(StudentTemplateSerializer(template).data)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     if request.method == "DELETE":
         """
@@ -565,7 +573,7 @@ def student_template_view(request, template_id):
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def rondes_view(request, template_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     if request.method == "GET":
         """
@@ -579,7 +587,7 @@ def rondes_view(request, template_id):
         Voegt een nieuwe Ronde toe aan de template.
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         handler = ExceptionHandler()
         handler.check_primary_key_value_required(data.get("ronde"), "ronde",
                                                  Ronde)
@@ -614,10 +622,10 @@ def rondes_view(request, template_id):
 @api_view(["DELETE"])
 @permission_classes([AllowAny])
 def ronde_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
     ronde = Ronde.objects.get(id=ronde_id)
 
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+    current_year, current_week = get_current_time()
 
     if request.method == "DELETE":
         """
@@ -642,7 +650,7 @@ def ronde_view(request, template_id, ronde_id):
 @api_view(["GET", "POST"])
 @permission_classes([AllowAny])
 def dagplanningen_view(request, template_id, ronde_id):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     if request.method == "GET":
         """
@@ -657,7 +665,6 @@ def dagplanningen_view(request, template_id, ronde_id):
         Maakt een nieuwe DagPlanning aan.
         """
         data = request.data
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         data["ronde"] = ronde_id
         validate_dag_planning_data(data)
@@ -679,10 +686,9 @@ def dagplanningen_view(request, template_id, ronde_id):
 @api_view(["GET", "DELETE", "PATCH"])
 @permission_classes([AllowAny])
 def dagplanning_view(request, template_id, dag_id, permanent):
-    template = StudentTemplate.objects.get(id=template_id)
+    template = get_student_template(template_id)
 
     dag_planning = DagPlanning.objects.get(id=dag_id)
-    current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
     if request.method == "GET":
         """

@@ -1,10 +1,10 @@
 export default {
   FRONTEND: {
-    URL: process.env.VUE_APP_FRONTEND_URL,
+    URL: (<string>process.env.VUE_APP_FRONTEND_URL).endsWith('/') ? (<string>process.env.VUE_APP_FRONTEND_URL).substring(0, (<string>process.env.VUE_APP_FRONTEND_URL).length - 1) : (<string>process.env.VUE_APP_FRONTEND_URL),
   },
 
   BACKEND: {
-    URL: process.env.VUE_APP_BACKEND_URL,
+    URL: (<string>process.env.VUE_APP_BACKEND_URL).endsWith('/') ? (<string>process.env.VUE_APP_BACKEND_URL).substring(0, (<string>process.env.VUE_APP_BACKEND_URL).length - 1) : (<string>process.env.VUE_APP_BACKEND_URL),
   },
 
   /**
@@ -23,7 +23,7 @@ export default {
       'studenttemplate', 'users', 'studenttemplates', 'add_studenttemplate', 'ronde_dagplanningen', 'dagplanning_edit', 'dagplanning_add',
       'create_mail-template', 'buildings', 'rounds', 'students', 'syndici', 'mailtemplates', 'trashtemplates', 'editTrashtemplates',
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
-      'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template-edit',
+      'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template-edit', 'edit_round',
       'admin_info_user', 'admin_edit_user', 'admin_user_register'
     ],
     AD: [
@@ -32,8 +32,8 @@ export default {
       'create_mail-template', 'buildings', 'rounds', 'students', 'syndici', 'mailtemplates', 'trashtemplates', 'editTrashtemplates',
       'createTrashtemplates', 'trashtemplateContainers', 'createTrashtemplateContainers', 'editTrashtemplateContainers',
       'trashtemplateBuildings', 'editTrashtemplateBuildings', 'mail-template-edit', 'admin_info_building',
-      'admin_edit_building', 'admin_info_user', 'admin_edit_user', 'admin_user_register', 'syndicus_create', 'syndicus_adjust',
-      'adminRoundView'
+      'admin_edit_building', 'admin_info_user', 'admin_edit_user', 'admin_user_register', 'syndicus_create', 'syndicus_adjust', 'locations',
+      'edit_round', 'adminRoundView'
     ]
   }
 };

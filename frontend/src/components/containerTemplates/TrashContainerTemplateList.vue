@@ -14,7 +14,7 @@ import ListPage from "@/components/admin/ListPage.vue";
 
 export default {
   name: 'TrashContainerTemplateList',
-  components: {ListPage, TrashContainerTemplateCard, TrashContainerTemplateHeader},
+  components: {ListPage},
   data() {
     return {
       childComponent: TrashContainerTemplateCard,

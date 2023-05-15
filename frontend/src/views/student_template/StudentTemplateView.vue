@@ -13,7 +13,7 @@
       location: template.location.name,
       even: template.even,
       status: state_mapping[template.status]
-    }"></StudentTemplateCard>
+    }" :key="template.id"></StudentTemplateCard>
 </template>
 
 <script>

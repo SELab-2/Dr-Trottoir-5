@@ -32,7 +32,7 @@
       <v-col cols="1"/>
       <v-col cols="2">
         <v-menu>
-          <template v-slot:activator="{ props }">
+          <template>
             <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
                 status
               }}</span>
@@ -95,7 +95,7 @@ export default {
     this.status = this.data.status
   },
   async beforeMount () {
-    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => this.status = result.manualStatus)
+    await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => { this.status = result.manualStatus })
   }
 }
 </script>

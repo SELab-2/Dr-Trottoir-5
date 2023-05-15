@@ -2,13 +2,13 @@
   <v-container align="center">
     <v-expansion-panels v-model="panel" style="max-width: 750px;" v-if="rondes.length > 0">
       <h4 class="text-h4 mb-3">{{ time }}</h4>
-      <v-expansion-panel v-for="ronde in rondes">
+      <v-expansion-panel v-for="ronde in rondes" :key="ronde.id">
         <v-expansion-panel-title>
           Ronde {{ ronde.ronde.name }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card max-width="750px" class="py-3" elevation="0">
-            <DayPlanBuilding v-for="building in ronde.ronde.buildings"
+            <DayPlanBuilding v-for="building in ronde.ronde.buildings" :key="building.id"
                              :data="{building: building, planning: ronde.id, year: year, week: week}" :date="date" />
           </v-card>
         </v-expansion-panel-text>
@@ -61,7 +61,7 @@ export default defineComponent({
           this.rondes.push(planning);
         }).catch(() => null);
       });
-    }).catch(() => {});
+    }).catch(() => null);
   },
   methods: {
     capitalize(s: string) {

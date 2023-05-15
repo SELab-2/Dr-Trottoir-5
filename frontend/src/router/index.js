@@ -13,7 +13,6 @@ import RoundList from "@/views/listViews/RoundList";
 import StudentList from "@/views/listViews/StudentList";
 import SyndicusList from "@/views/listViews/SyndicusList";
 import TemplateList from "@/views/listViews/TemplateList";
-import CreateRoundView from "@/views/CreateRoundView.vue";
 import AdminMailTemplateView from "@/views/AdminMailTemplateView.vue";
 import CreateMailTemplateView from "@/views/CreateMailTemplateView.vue";
 import Unauthorized from "@/views/Unauthorized";
@@ -45,6 +44,8 @@ import TrashContainerCreate from '@/components/containerTemplates/containers/Tra
 import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
 import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
+import LocationList from "@/views/listViews/LocationList";
+import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminRoundView from "@/views/admin/AdminRoundView.vue";
 
 const routes = [
@@ -100,6 +101,11 @@ const routes = [
     component: UsersView
   },
   {
+    path: '/admin/locaties',
+    name: 'locations',
+    component: LocationList
+  },
+  {
     path: '/admin/locatie/aanmaken',
     name: 'create_location',
     component: CreateLocationView
@@ -127,7 +133,13 @@ const routes = [
   {
     path: '/admin/ronde/aanmaken',
     name: 'create_round',
-    component: CreateRoundView
+    component: CreateEditRoundView
+  },
+  {
+    path: '/admin/ronde/:id/aanpassen',
+    name: 'edit_round',
+    props: true,
+    component: CreateEditRoundView
   },
   {
     path: '/verboden',

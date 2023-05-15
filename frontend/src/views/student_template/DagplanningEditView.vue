@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import UserService from "@/api/services/UserService";
@@ -54,9 +53,6 @@ import router from "@/router";
 
 export default {
   name: "DagplanningEditView",
-  components: {
-    NormalButton
-  },
   data: () => ({
     template_id: 0,
     dag_id: 0,
@@ -94,7 +90,7 @@ export default {
     const template = await RequestHandler.handle(StudentTemplateService.getStudentTemplate(this.template_id), {
       id: 'getLocationsError',
       style: 'SNACKBAR'
-    }).then(result => result).catch(() => {});
+    }).then(result => result).catch(() => null);
     this.status = this.state_mapping[template.status]
 
     // get all users
@@ -133,7 +129,7 @@ export default {
       const response = await RequestHandler.handle(StudentTemplateService.editDagPlanning(this.template_id, this.dag_id, body), {
         id: "getDagPlanningError",
         style: "SNACKBAR"
-      }).then(res => res).catch(() => {});
+      }).then(res => res).catch(() => null);
 
       if (response["new_id"] !== undefined) {
         await this.copy_taken(response["new_id"], response["new_dag_id"])
@@ -152,7 +148,7 @@ export default {
       const response = await RequestHandler.handle(StudentTemplateService.editDagPlanningEenmalig(this.template_id, this.dag_id, body), {
         id: "getDagPlanningError",
         style: "SNACKBAR"
-      }).then(res => res).catch(() => {});
+      }).then(res => res).catch(() => null);
 
       if (response["new_id"] !== undefined) {
         await this.copy_taken(response["new_id"])
