@@ -98,7 +98,6 @@ def trash_template_view(request, template_id):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         data = request.data
-        permanent = data["permanent"]
 
         if "name" in data:
             pass
@@ -118,7 +117,7 @@ def trash_template_view(request, template_id):
         else:
             data["location"] = template.location
 
-        if no_copy(template, permanent, current_year, current_week):
+        if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
             template.even = data["even"]
             template.location = data["location"]

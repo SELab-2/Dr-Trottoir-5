@@ -23,7 +23,7 @@
           />
         </v-col>
       </v-row>
-      <StateButtons :status="status" :eenmalig="() => update(true)" :permanent="() => update(false)"/>
+      <StateButtons :status="status" :eenmalig="() => update()" :permanent="() => update()"/>
     </v-form>
   </v-card>
 </template>
@@ -74,12 +74,8 @@ export default {
       await RequestHandler.handle(TrashTemplateService.updateTrashTemplate(this.$route.params.id, body), {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
-      }).then(result => {
-        if (result['new_id'] !== null || result['new_id'] !== undefined) {
-          return router.push({name: 'editTrashtemplates', params: {id: result['new_id']}})
-        } else {
-          return router.push({name: 'trashtemplates'})
-        }
+      }).then(async () => {
+        return await router.push({name: 'trashtemplates'})
       })
     }
   }

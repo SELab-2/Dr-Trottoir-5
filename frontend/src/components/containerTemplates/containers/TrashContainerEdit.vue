@@ -108,7 +108,7 @@ export default {
   methods: {
     async editContainer(eenmalig) {
       if(eenmalig) {
-        RequestHandler.handle(
+        await RequestHandler.handle(
         TrashTemplateService.updateContainerTemplateEenmalig(this.id_, this.$route.params.containerId, {
           type: container_to_api(this.type),
           collection_day: {
@@ -125,6 +125,7 @@ export default {
           message: "De container is eenmalig aangepast",
           color: "success"
         }))
+        await router.replace({name: 'trashtemplates'})
       } else {
         RequestHandler.handle(
           TrashTemplateService.updateContainerTemplate(this.id_, this.$route.params.containerId, {
@@ -143,8 +144,8 @@ export default {
             message: "De container is aangepast",
             color: "success"
           }))
+        await router.replace({name: 'trashtemplateContainers', params: {id: this.id_}})
       }
-      await router.push({name: 'trashtemplateContainers', params: {id: this.$router.params.id}})
     },
   }
 }
