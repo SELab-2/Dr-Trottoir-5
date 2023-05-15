@@ -33,7 +33,6 @@
 import {RequestHandler} from "@/api/RequestHandler";
 import buildingService from "@/api/services/BuildingService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
 
 export default {
@@ -56,7 +55,7 @@ export default {
       style: 'SNACKBAR'
     }).then(result => result);
 
-    this.building_originals = await RequestHandler.handle(trashTemplateService.getBuildingsOfTemplate(this.$route.params.id), {
+    this.building_originals = await RequestHandler.handle(TrashTemplateService.getBuildingsOfTemplate(this.$route.params.id), {
       id: 'getBuildingsFromTemplateError',
       style: 'SNACKBAR'
     }).then((result) => {
