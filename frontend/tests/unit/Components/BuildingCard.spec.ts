@@ -1,10 +1,27 @@
-import {shallowMount} from "@vue/test-utils";
+import {mount} from "@vue/test-utils";
 import BuildingCard from "@/components/admin/BuildingCard.vue";
 
 describe('BuildingCard.vue', () => {
 
-  it('render of component', () => {
-    const wrapper = shallowMount(BuildingCard)
+  let wrapper
+
+  const data = {
+      name: 'Test Gebouw',
+      id: 1,
+      adres: 'TestStraat 1',
+      ivago_klantnr: 1,
+      buildingID: "test",
+      manual: 1,
+  }
+
+  beforeEach(async () => {
+    BuildingCard.beforeMount = () => Promise.resolve();
+    wrapper = mount(BuildingCard, {
+      propsData: data,
+    });
+  });
+
+  it('render of component', async () => {
     expect(wrapper.exists()).toBeTruthy();
   })
 
