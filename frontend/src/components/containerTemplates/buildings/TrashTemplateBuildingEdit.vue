@@ -48,11 +48,9 @@ import BuildingContainer from "@/api/models/BuildingContainer";
 
 export default {
   name: "TrashTemplateEditView",
-  components: {},
-  props: {},
   data: () => ({
     permanent: true,
-    building: <BuildingContainer>null,
+    building: <BuildingContainer> undefined,
     trash_ids: [],
     container_choices: []
   }),
