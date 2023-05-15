@@ -22,19 +22,7 @@
             label="Locatie"
           ></v-select>
         </v-col>
-        <v-col cols='12' md='6' sm='6'>
-          <v-select
-            v-model="buildings"
-            :items="building_choices"
-            chips="true"
-            item-title="name"
-            item-value="id"
-            label="Kies gebowen"
-            multiple="true"
-          ></v-select>
-        </v-col>
       </v-row>
-
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
           <v-btn class="overflow-hidden" @click="create()">Aanmaken</v-btn>
@@ -50,7 +38,6 @@ import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
-import buildingService from "@/api/services/BuildingService";
 
 export default {
   name: "TrashContainerTemplateCreateView",
@@ -61,9 +48,7 @@ export default {
     name: '',
     even: true,
     location: null,
-    locations: [],
-    buildings: null,
-    building_choices: []
+    locations: []
   }),
 
   async beforeMount() {
@@ -72,15 +57,9 @@ export default {
       id: 'getLocationsError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
-
-    // get all possible buildings
-    this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
-      id: 'getbuildingsError',
-      style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
   },
   methods: {
-    async update() {
+    async create() {
       const body = {
         name: this.name,
         even: this.even,
@@ -89,19 +68,7 @@ export default {
       const response = await RequestHandler.handle(TrashTemplateService.newTrashTemplate(body), {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
-      }).then(result => {
-        this.building_choices.forEach((building) => {
-          RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(result.id, {
-            building: building.id,
-            selection: [] //TODO ADD THE SELECTED TRASHCANS
-          }), {
-            id: 'addBuildingError',
-            style: 'SNACKBAR'
-          }).then((result) => {
-          })
-        })
-        return result
-      });
+      })
       return await router.push({name: 'trashtemplates'})
     }
   }

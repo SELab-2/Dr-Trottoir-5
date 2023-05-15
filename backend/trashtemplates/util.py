@@ -130,10 +130,13 @@ def update(template, many_to_many, old, new, permanent, template_list, copy_temp
     current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
     if no_copy(template, permanent, current_year, current_week):
         update_many_to_many(template, many_to_many, old, new)
-        return {}
+        return {"message": "success"}
     else:
         copy = copy_template(template, permanent, current_year, current_week)
         update_many_to_many(copy, many_to_many, old, new)
         remove_if_match(template_list, template, current_week)
         add_if_match(template_list, copy, current_week)
-        return {"new_id": copy.id}
+        return {
+            "message": "success",
+            "new_id": copy.id
+        }

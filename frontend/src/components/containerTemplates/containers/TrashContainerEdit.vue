@@ -39,8 +39,9 @@
 import NormalButton from '@/components/NormalButton.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import {ContainerType, container_to_api, container_from_api} from "@/api/models/ContainerType";
+import {container_from_api, container_to_api, ContainerType} from "@/api/models/ContainerType";
 import {Weekday, weekday_from_api, weekday_to_api} from "@/api/models/Weekday";
+import router from '@/router';
 
 export default {
   name: 'CreateTrashContainerView',
@@ -73,13 +74,13 @@ export default {
         ContainerType.REST,
       ],
       days: [
-        Weekday.SUNDAY,
-        Weekday.MONDAY,
-        Weekday.TUESDAY,
-        Weekday.WEDNESDAY,
-        Weekday.THURSDAY,
-        Weekday.FRIDAY,
-        Weekday.SATURDAY,
+        Weekday.Zondag,
+        Weekday.Maandag,
+        Weekday.Dinsdag,
+        Weekday.Woensdag,
+        Weekday.Donderdag,
+        Weekday.Vrijdag,
+        Weekday.Zaterdag,
       ]
     }
   },
@@ -99,7 +100,7 @@ export default {
     })
   },
   methods: {
-    editContainer() {
+    async editContainer() {
       RequestHandler.handle(
         TrashTemplateService.updateContainerTemplate(this.id, this.$route.params.containerId, {
           type: container_to_api(this.type),
@@ -117,6 +118,7 @@ export default {
           message: "De container is aangepast",
           color: "success"
         }))
+      await router.push({name: 'trashtemplateContainers', params: {id: this.$router.params.id}})
     },
   }
 }

@@ -66,7 +66,7 @@ export default {
        *   trash_ids: Number[]
        * }
        * **/
-      type: Object //TODO MAKE OBJECT FOR THIS
+      type: Object
     }
   },
   data: () => ({
@@ -79,7 +79,10 @@ export default {
       window.open(this.manual)
     },
     goToBuildingPage: function () {
-      router.push({ name: 'admin_info_building', params: { id: this.building.id } });
+      router.push({
+        name: 'editTrashtemplateBuilding',
+        params: { id: this.$route.params.id, gebouwId: this.building.id }
+      });
     }
   },
   mounted() {

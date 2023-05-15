@@ -23,45 +23,9 @@
             item-title="name"
             item-value="id"
             label="Locatie"
-          ></v-select>
-        </v-col>
-        <v-col cols='12' md='6' sm='6'>
-          <v-select
-            v-model="chosen_buildings"
-            :items="building_choices"
-            chips
-            item-title="building.name"
-            item-value="building.id"
-            label="Gekozen gebouwen"
-            multiple
-          ></v-select>
+          />
         </v-col>
       </v-row>
-
-      <v-row
-        v-for="gebouw in to_show()"
-        :key="gebouw.building.id"
-        class="justify-space-between mx-auto"
-      >
-        <v-col cols='6' md='3' sm='3'>
-          <p>{{ gebouw.building.name }}</p>
-        </v-col>
-        <v-col cols='6' md='3' sm='3'>
-          <p>{{ gebouw.building.adres }}</p>
-        </v-col>
-        <v-col cols='12' md='6' sm='6'>
-          <v-select
-            v-model="gebouw.trash_ids"
-            :items="container_choices"
-            chips
-            item-title="trash_container.type"
-            item-value="extra_id"
-            label="Kies containers voor dit gebouw"
-            multiple
-          ></v-select>
-        </v-col>
-      </v-row>
-
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
           <v-btn class="overflow-hidden" @click="update()">Aanpassen</v-btn>
@@ -77,11 +41,6 @@ import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
-import buildingService from "@/api/services/BuildingService";
-
-import BuildingContainer from "@/api/models/BuildingContainer";
-import Container from "@/api/models/Container";
-import {el} from "vuetify/locale";
 
 export default {
   name: "TrashContainerTemplateEditView",
@@ -93,11 +52,6 @@ export default {
     permanent: true,
     location: null,
     locations: [],
-    buildings: <BuildingContainer[]>[],
-    chosen_buildings: [],
-    original_buildings: [],
-    building_choices: <BuildingContainer[]>[],
-    container_choices: <Container[]>[],
   }),
   async mounted() {
   },
@@ -116,50 +70,8 @@ export default {
     this.name = trashTemplate.name
     this.even = trashTemplate.even
     this.location = trashTemplate.location
-    this.buildings = trashTemplate.buildings
-    this.chosen_buildings = this.buildings.map(b => b.building.id)
-
-    // get all possible buildings
-    this.building_choices = await RequestHandler.handle(buildingService.getBuildings(), {
-      id: 'getbuildingsError',
-      style: 'SNACKBAR'
-    }).then(result => {
-      return result.map(res => {
-        if (trashTemplate.buildings.length === 0){
-          return {
-            building: res,
-            trash_ids: []
-          }
-        } else if (trashTemplate.buildings.filter(b => b.building.id === res.id).length === 0){
-          return {
-            building: res,
-            trash_ids: []
-          }
-        } else {
-          return {
-            building: res,
-            trash_ids: trashTemplate.buildings.filter(b => b.building.id === res.id).map(b => b.trash_ids)[0]
-          }
-        }
-
-      })
-    }).catch(() => []);
-
-    this.container_choices = await RequestHandler.handle(
-      trashTemplateService.getTrashContainersOfTemplate(this.$route.params.id), {
-        id: 'getContainersForTemplateError',
-        style: 'SNACKBAR'
-      }).then(result => result).catch(() => []);
-
-    for (const building of this.buildings) {
-      building.trash_ids.map(id => this.container_choices.filter(con => con.extra_id === id)[0])
-    }
   },
   methods: {
-    to_show(): BuildingContainer[] {
-      return this.building_choices.filter(b => this.chosen_buildings.includes(b.building.id))
-    },
-
     async update() {
       const body = {
         name: this.name,
@@ -171,60 +83,12 @@ export default {
         id: 'CreateNewTrashTemplateError',
         style: 'SNACKBAR'
       }).then(result => {
-        /* Update the chosen buildings */
-        this.chosen_buildings.forEach((building_id) => {
-          if (this.buildings.map(b => b.building.id).includes(building_id)) {
-            const building = this.buildings.filter(b => b.building.id === building_id)[0]
-            if (this.permanent) {
-              RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, building_id, {
-                selection: building.trash_ids
-              }), {
-                id: 'updateSelectionToBuildingError',
-                style: 'SNACKBAR'
-              })
-            } else {
-              RequestHandler.handle(TrashTemplateService.updateBuildingTemplateEenmalig(this.$route.params.id, building_id, {
-                selection: building.trash_ids
-              }), {
-                id: 'updateSelectionToBuildingError',
-                style: 'SNACKBAR'
-              })
-            }
-
-          } else {
-            if (this.permanent){
-              RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
-                building: building_id,
-                selection: this.building_choices.filter(b => b.building.id === building_id).map(b => b.trash_ids)[0]
-              }), {
-                id: 'makeNewBuildingError',
-                style: 'SNACKBAR'
-              })
-            } else {
-              RequestHandler.handle(TrashTemplateService.newBuildingToTemplateEenmalig(this.$route.params.id, {
-                building: building_id,
-                selection: this.building_choices.filter(b => b.building.id === building_id).map(b => b.trash_ids)[0]
-              }), {
-                id: 'makeNewBuildingError',
-                style: 'SNACKBAR'
-              })
-            }
-
-          }
-        })
-
-        /* Delete buildings that were removed from the list */
-        this.buildings.forEach((building) => {
-          if (!this.chosen_buildings.includes(building.building.id)) {
-            RequestHandler.handle(TrashTemplateService.deleteBuildingTemplate(this.$route.params.id, building.building.id), {
-              id: 'deletebuildingError',
-              style: 'SNACKBAR'
-            })
-          }
-        })
-        return result
-      });
-      return await router.push({name: 'trashtemplates'})
+        if (result['new_id'] !== null || result['new_id'] !== undefined) {
+          return router.push({name: 'editTrashtemplates', params: {id: result['new_id']}})
+        } else {
+          return router.push({name: 'trashtemplates'})
+        }
+      })
     }
   }
 }

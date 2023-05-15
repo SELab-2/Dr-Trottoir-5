@@ -43,6 +43,7 @@ import EditIcon from '@/components/icons/EditIcon.vue'
 import router from '@/router'
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default {
   name: 'TrashContainerTemplateCard',
@@ -64,7 +65,11 @@ export default {
       });
     },
     deleteTemplate: function () {
-      //todo
+      RequestHandler.handle(TrashTemplateService.deleteTrashTemplate(this.data.id), {
+        id: 'deleteTrashTemplateError',
+        style: 'SNACKBAR'
+      })
+      router.go(0) // refresh the page
     },
     goToTrashTemplateBuildingsPage: function () {
       router.push({

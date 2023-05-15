@@ -1,6 +1,5 @@
 from .util import *
 from planning.util import filter_templates, get_current_week_planning
-from ronde.models import Building, LocatieEnum
 from .serializers import *
 from rest_framework.response import Response
 import datetime
@@ -40,7 +39,7 @@ def trash_templates_view(request):
 
         add_if_match(get_current_week_planning().trash_templates, new_template, current_week)
 
-        return Response({"id": new_template.id})
+        return Response({"new_id": new_template.id})
 
 
 @api_view(["GET", "DELETE", "PATCH"])
@@ -134,7 +133,12 @@ def trash_template_view(request, template_id):
         template.save()
         remove_if_match(planning.trash_templates, template, current_week)
 
-        return Response({"message": "Success"})
+        return Response(
+            {
+                "message": "Success",
+                "new_id": new_template.id
+            }
+        )
 
 
 @api_view(["POST", "GET"])
@@ -160,16 +164,14 @@ def trash_containers_view(request, template_id, permanent):
         extra_id = ExtraId.objects.create()
         new_tc_id_wrapper = make_new_tc_id_wrapper(data, extra_id)
 
-        update(
+        return Response(update(
             template,
             "trash_containers",
             None,
             new_tc_id_wrapper,
             permanent,
             get_current_week_planning().trash_templates
-        )
-
-        return Response({"message": "Success"})
+        ))
 
 
 @api_view(["GET", "DELETE", "PATCH"])
@@ -192,15 +194,14 @@ def trash_container_view(request, template_id, extra_id, permanent):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
 
-        update(
+        return Response(update(
             template,
             "trash_containers",
             tc_id_wrapper,
             None,
             permanent,
             get_current_week_planning().trash_templates
-        )
-        return Response({"message": "Success"})
+        ))
 
     if request.method == "PATCH":
         """
@@ -223,16 +224,14 @@ def trash_container_view(request, template_id, extra_id, permanent):
 
         new_tc_id_wrapper = make_new_tc_id_wrapper(data, tc_id_wrapper.extra_id)
 
-        update(
+        return Response(update(
             template,
             "trash_containers",
             tc_id_wrapper,
             new_tc_id_wrapper,
             permanent,
             get_current_week_planning().trash_templates
-        )
-
-        return Response({"message": "Success"})
+        ))
 
 
 @api_view(["POST", "GET"])
@@ -260,15 +259,14 @@ def buildings_view(request, template_id, permanent):
         )
         new_building_list.trash_ids.set(data["selection"])
 
-        update(
+        return Response(update(
             template,
             "buildings",
             None,
             new_building_list,
             permanent,
             get_current_week_planning().trash_templates
-        )
-        return Response({"message": "Success"})
+        ))
 
 
 @api_view(["GET", "DELETE", "PATCH"])
@@ -290,16 +288,14 @@ def building_view(request, template_id, building_id, permanent):
         Verwijderd het gebouw en zijn selectie van de template.
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
-        update(
+        return Response(update(
             template,
             "buildings",
             building_list,
             None,
             permanent,
             get_current_week_planning().student_templates
-        )
-
-        return Response({"message": "Success"})
+        ))
 
     if request.method == "PATCH":
         """
@@ -310,12 +306,11 @@ def building_view(request, template_id, building_id, permanent):
 
         new_building_list = make_new_building_list(building_id, data["selection"])
 
-        update(
+        return Response(update(
             template,
             "buildings",
             building_list,
             new_building_list,
             permanent,
             get_current_week_planning().student_templates
-        )
-        return Response({"message": "Success"})
+        ))

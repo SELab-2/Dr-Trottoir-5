@@ -10,7 +10,7 @@
           }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ ContainerType[container_from_api(this.data.trash_container.type)]}}</p>
+        <p>{{ ContainerType[container_from_api(this.data.trash_container.type)] }}</p>
       </v-col>
       <v-col cols="4"/>
       <v-col class="text-right" cols="1">
@@ -31,9 +31,11 @@
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import EditIcon from '@/components/icons/EditIcon.vue'
 import router from '@/router'
-import {ContainerType, container_from_api} from "@/api/models/ContainerType";
+import {container_from_api, ContainerType} from "@/api/models/ContainerType";
 import Container from "@/api/models/Container";
 import {Weekday, weekday_from_api} from "@/api/models/Weekday";
+import trashTemplateService from "@/api/services/TrashTemplateService";
+import {RequestHandler} from "@/api/RequestHandler";
 
 export default {
   name: 'TrashContainerCard',
@@ -64,8 +66,12 @@ export default {
         params: {id: this.id, containerId: this.data.extra_id}
       });
     },
-    deleteContainer: function () {
-      //todo
+    async deleteContainer() {
+      await RequestHandler.handle(trashTemplateService.deleteContainerFromTemplate(this.id, this.data.extra_id), {
+        id: 'deleteContainerFromTemplateError',
+        style: 'SNACKBAR'
+      })
+      await router.push({name: this.$route.name, params: this.$route.params})
     },
   },
   async beforeMount() {

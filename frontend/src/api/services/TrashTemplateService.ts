@@ -42,8 +42,8 @@ class TrashTemplateService extends EchoService {
   }
 
   @GET("/trashtemplates/{id}/buildings/")
-  getBuildingsOfTemplate(@Path('id') id: number): EchoPromise<Building[]> {
-    return {} as EchoPromise<Building[]>;
+  getBuildingsOfTemplate(@Path('id') id: number): EchoPromise<BuildingContainer[]> {
+    return {} as EchoPromise<BuildingContainer[]>;
   }
 
   @GET("/trashtemplates/{id}/buildings/eenmalig/")
@@ -119,6 +119,16 @@ class TrashTemplateService extends EchoService {
 
   @DELETE("/trashtemplates/{id}/buildings/{buildingId}/")
   deleteBuildingTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  @DELETE("/trashtemplates/{id}/trashcontainers/{extraId}/")
+  deleteContainerFromTemplate(@Path('id') id: number, @Path('extraId') extraId: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  @DELETE("/trashtemplates/{id}/")
+  deleteTrashTemplate(@Path('id') id: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     addTrashContainerBuilding: function () {
-      router.push({name: 'create_building'});
+      router.push({name: 'addBuildingsToTrashTemplate', params: {id: this.id}});
     }
   },
   async beforeMount() {
