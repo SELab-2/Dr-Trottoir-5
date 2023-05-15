@@ -10,9 +10,11 @@ from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission
-from trashtemplates.models import Status
 
 from .util import *
+from ronde.models import LocatieEnum
+
+from trashtemplates.models import Status
 
 
 @api_view(["GET"])
@@ -431,7 +433,6 @@ def student_templates_view(request):
     if request.method == "POST":
         """
         Maakt een nieuwe StudentTemplate aan.
-        TODO checks
         """
         data = request.data
         current_year, current_week = get_current_time()
@@ -439,8 +440,10 @@ def student_templates_view(request):
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
         handler.check_not_blank_required(data.get("name"), "name")
-        handler.check_time_value_required(data.get("start_hour"), "start_hour")
-        handler.check_time_value_required(data.get("end_hour"), "end_hour")
+        handler.check_not_blank_required(data.get("start_hour"), "start_hour")
+        handler.check_time_value(data.get("start_hour"), "start_hour")
+        handler.check_not_blank_required(data.get("end_hour"), "end_hour")
+        handler.check_time_value(data.get("end_hour"), "end_hour")
         handler.check_boolean_required(data.get("even"), "even")
         handler.check()
 
