@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import Building from "@/api/models/Building";
+import BuildingContainer from '@/api/models/BuildingContainer'
 import BuildingService from "@/api/services/BuildingService";
 import { RequestHandler } from "@/api/RequestHandler";
 import router from "@/router";
@@ -59,20 +59,12 @@ export default {
   components: {},
   props: {
     data: {
-      /**
-       * Object of type:
-       * {
-       *   building: Building,
-       *   trash_ids: Number[]
-       * }
-       * **/
-      type: Object
+      type: BuildingContainer
     }
   },
   data: () => ({
     status: '',
     building: null
-
   }),
   methods: {
     downloadDocument: function () {

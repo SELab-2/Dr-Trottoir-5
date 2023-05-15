@@ -44,7 +44,6 @@ import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import trashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
-import Container from "@/api/models/Container";
 import BuildingContainer from "@/api/models/BuildingContainer";
 
 export default {
@@ -55,10 +54,8 @@ export default {
     permanent: true,
     building: <BuildingContainer>null,
     trash_ids: [],
-    container_choices: <Container[]>[]
+    container_choices: []
   }),
-  async mounted() {
-  },
   async beforeMount() {
     this.building = await RequestHandler.handle(
       trashTemplateService.getBuildingOfTemplate(this.$route.params.id, this.$route.params.gebouwId), {

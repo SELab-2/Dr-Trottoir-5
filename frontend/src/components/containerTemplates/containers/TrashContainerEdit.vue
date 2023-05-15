@@ -121,11 +121,3 @@ export default {
   }
 }
 </script>
-<style>
-.text_field {
-  height: 40px;
-  max-width: 350px;
-  padding-left: 5px;
-  padding-top: 5px;
-}
-</style>
