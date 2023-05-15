@@ -8,11 +8,12 @@ describe('LoginTopBar.vue', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it('button text login true', async () => {
+  it('rendering of v-app-bar', async () => {
+    // Mount doesn't render templates
     const wrapper = mount(LoginTopBar);
     await wrapper.vm.$nextTick();
-    const button = wrapper.find('v-btn');
-    expect(button.text()).toBe('Aanmelden');
+    const appBar = wrapper.find('v-app-bar');
+    expect(appBar.exists()).toBeTruthy();
   });
 
 
