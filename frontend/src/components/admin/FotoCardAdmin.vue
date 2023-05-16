@@ -1,6 +1,6 @@
 <template>
   <div fluid>
-    <v-card max-width="900px" min-width="500px" class="container-border">
+    <v-card max-width="900px" class="container-border">
       <v-card-text>
         <v-row align-end>
           <v-col align="left" cols="8">
