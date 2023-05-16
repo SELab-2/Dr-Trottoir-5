@@ -36,7 +36,7 @@
       </v-card-title>
       <v-divider style="width: 90%;" class="mt-4"></v-divider>
       <v-card-text class="mt-3">
-        <RoundViewCard v-for="round in show" :data="{round: round, date: date}" />
+        <RoundViewCard v-for="round in show" :data="{round: round, date: date}" :key="round.id" />
         <NormalButton v-if="rounds.length === 0" text="Nieuwe planning" v-bind:parent-function="plan" />
       </v-card-text>
     </v-card>
@@ -68,24 +68,20 @@ export default {
     }).catch(() => null);
   },
   methods: {
+
     plan() {
       router.push({name: 'add_studenttemplate'});
     },
-    changed() {
+    async changed() {
       const date = new Date(this.date);
-      const week = getWeek(this.date);
-
-      RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
+      const week = getWeek(date);
+      const rounds = await RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',
         style: 'NONE'
-      }).then(rounds => {
-        this.rounds = rounds;
-        this.show = rounds;
-        this.filter();
-      }).catch(() => {
-        this.rounds = [];
-        this.show = [];
-      });
+      }).then(rounds => rounds).catch(() => []);
+      this.rounds = rounds;
+      this.show = rounds;
+      this.filter();
     },
     getWeek(d) {
       const date = new Date(d);

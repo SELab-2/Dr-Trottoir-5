@@ -87,7 +87,7 @@ export default defineComponent({
       RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
         style: "NONE"
-      }).then(infos => this.info = infos[building_index].id).catch(() => null);
+      }).then(infos => { this.info = infos[building_index].id }).catch(() => null);
 
       const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
         id: "getContainersError",
@@ -113,19 +113,13 @@ export default defineComponent({
   }),
   methods: {
     clickArrival() {
-      router.push({name: 'student_post_view', query: {
-        info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year, week: this.week
-      }});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year, week: this.week}});
     },
     clickStorage() {
-      router.push({name: 'student_post_view', query: {
-        info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year, week: this.week
-      }});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year, week: this.week}});
     },
     clickDeparture() {
-      router.push({name: 'student_post_view', query: {
-        info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year, week: this.week
-      }});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year, week: this.week}});
     },
     buildingInfo() {
       router.push({name: 'building_info', query: {building: this.building.id}});

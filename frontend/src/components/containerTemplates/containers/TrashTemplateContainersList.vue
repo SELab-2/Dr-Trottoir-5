@@ -15,7 +15,7 @@ import TrashContainerHeader from "@/components/containerTemplates/containers/Tra
 
 export default {
   name: "TrashTemplateContainersList",
-  components: {ListPage, TrashContainerCard, TrashContainerHeader},
+  components: {ListPage},
   props: {
     id: Number
   },

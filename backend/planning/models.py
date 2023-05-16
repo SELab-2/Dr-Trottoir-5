@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.db import models
 from pickupdays.models import PickUpDay
-from ronde.models import LocatieEnum
-from ronde.models import Ronde
+from ronde.models import LocatieEnum, Building, Ronde
 from trashtemplates.models import TrashContainerTemplate, Status
 
 
@@ -135,11 +134,16 @@ class InfoPerBuilding(models.Model):
 
     dagPlanning : models.ForeignKey
         The associated DagPlanning
+
+    building : models.Foreignkey
+        The associated Building
     """
 
     remark = models.TextField(default="")
 
     dagPlanning = models.ForeignKey(DagPlanning, on_delete=models.CASCADE)
+
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class BuildingPicture(models.Model):
