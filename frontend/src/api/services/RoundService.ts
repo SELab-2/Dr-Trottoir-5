@@ -93,6 +93,14 @@ class RoundService extends EchoService {
     return {} as EchoPromise<any>
   }
 
+  /**
+   * Get a building by its UUID
+   */
+  @GET('/ronde/building/uuid/{id}/')
+  getBuildingByUUID(@Path('id') id: string): EchoPromise<Building> {
+    return {} as EchoPromise<Building>
+  }
+
 }
 
 export default new EchoServiceBuilder()

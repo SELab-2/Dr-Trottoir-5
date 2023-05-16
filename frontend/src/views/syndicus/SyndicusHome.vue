@@ -148,7 +148,7 @@ export default {
         style: 'NONE'
       }).then(() => {
         location.reload();
-      })
+      }).catch(() => {})
     },
     printQR() {
       const iframe = document.createElement('iframe');

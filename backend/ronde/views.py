@@ -1,3 +1,5 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 from .models import *
 from .serializers import *
 
@@ -176,6 +178,7 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class BuildingUUIDRetrieveView(generics.RetrieveAPIView):
     serializer_class = BuildingSerializerFull
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         id = kwargs["buildingid"]

@@ -21,7 +21,7 @@
           <v-col align="left">
             <p style="font-size: 16px">{{ new Date(data.time).toLocaleString() }}</p>
           </v-col>
-          <v-col>
+          <v-col v-if="!('admin' in data)">
             <v-row justify="end" class="row-margin">
               <v-icon class="row-margin" v-on:click="goToMailPage" dark size="30px">mdi-email-outline</v-icon>
             </v-row>
