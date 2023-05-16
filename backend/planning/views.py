@@ -44,22 +44,21 @@ def student_dayplan(request, year, week, day):
 def planning_status(request, year, week, pk):
     if request.method == "GET":
         try:
-            dayplan = DagPlanning.objects.get(pk=pk)
+            DagPlanning.objects.get(pk=pk)
         except DagPlanning.DoesNotExist:
             return Response(status=404)
 
-        buildings = [building.id for building in dayplan.ronde.buildings.all()]
         infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
         status = {}
         for index, info in enumerate(infos):
             pictures = BuildingPicture.objects.filter(infoPerBuilding=info.id,
                                                       time__year=year,
                                                       time__week=week)
-            if buildings[index] not in status:
-                status[buildings[index]] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
+            if info.building.id not in status:
+                status[info.building.id] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
 
             for picture in pictures:
-                status[buildings[index]][picture.pictureType] += 1
+                status[info.building.id][picture.pictureType] += 1
 
         return Response(status)
 
@@ -226,15 +225,12 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
 
         if infoPerBuilding is not None and year is not None and week is not None:
             try:
-                print(week)
-                print(self.queryset.values_list())
                 InfoPerBuilding.objects.get(pk=infoPerBuilding)
                 self.queryset = BuildingPicture.objects.filter(
                     infoPerBuilding=infoPerBuilding,
                     time__year=year,
                     time__week=week
                 )
-                print(self.queryset)
             except Exception:
                 raise serializers.ValidationError(
                     {

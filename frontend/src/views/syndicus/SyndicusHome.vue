@@ -114,6 +114,7 @@ export default {
     }).then(buildings => {
       this.buildings = buildings;
       if (buildings.length > 0) this.building = buildings[0];
+      this.changed();
     }).catch(() => null);
   },
   methods: {
