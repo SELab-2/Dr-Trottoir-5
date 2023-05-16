@@ -8,7 +8,7 @@ from rest_framework import generics, status, serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission
+    SuperstudentPermission, SyndicusPermission
 
 from .models import LocatieEnum, Manual, Building, Ronde
 
@@ -127,7 +127,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 
 class ManualRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -265,6 +265,30 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         handler.check()
         return super().patch(request, *args, **kwargs)
 
+
+class BuildingUUIDRetrieveView(generics.RetrieveAPIView):
+    serializer_class = BuildingSerializerFull
+
+    def get(self, request, *args, **kwargs):
+        id = kwargs["buildingid"]
+        buildings = Building.objects.filter(buildingID=id)
+        if buildings.exists():
+            serializer = self.get_serializer(buildings.get())
+            return Response(serializer.data)
+        return Response(status=404)
+
+class BuildingUUIDResetView(generics.RetrieveAPIView):
+    permission_classes = \
+        [SyndicusPermission | AdminPermission | SuperstudentPermission]
+    def get(self, request, *args, **kwargs):
+        id = kwargs["buildingid"]
+        buildings = Building.objects.filter(buildingID=id)
+        if buildings.exists():
+            building = buildings.get()
+            building.buildingID = uuid.uuid4()
+            building.save()
+            return Response({"message": "success"})
+        return Response(status=404)
 
 class RondeListCreateView(generics.ListCreateAPIView):
     queryset = Ronde.objects.all()
