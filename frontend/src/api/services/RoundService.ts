@@ -85,6 +85,14 @@ class RoundService extends EchoService {
     return {} as EchoPromise<Round>
   }
 
+  /**
+   * Reset the UUID for a building
+   */
+  @GET('/ronde/building/uuid/{id}/reset/')
+  resetBuilding(@Path('id') id: string): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
 }
 
 export default new EchoServiceBuilder()

@@ -433,7 +433,7 @@ class WeekplanningView(generics.RetrieveAPIView):
 
 
 class StudentTemplateRondeView(generics.RetrieveAPIView):
-    permission_classes = [AdminPermission | SuperstudentPermission]
+    permission_classes = [AdminPermission | SuperstudentPermission | SyndicusPermission]
 
     def get(self, request, *args, **kwargs):
         year, week, day, location = kwargs["year"], kwargs["week"], kwargs[

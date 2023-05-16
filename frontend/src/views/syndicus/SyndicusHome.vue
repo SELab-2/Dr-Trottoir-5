@@ -143,7 +143,12 @@ export default {
       this.getStudentPosts();
     },
     resetQR() {
-      // TODO
+      RequestHandler.handle(RoundService.resetBuilding(this.building.buildingID), {
+        id: 'resetBuildingError',
+        style: 'NONE'
+      }).then(() => {
+        location.reload();
+      })
     },
     printQR() {
       const iframe = document.createElement('iframe');

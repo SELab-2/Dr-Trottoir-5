@@ -40,12 +40,10 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton.vue";
-import QRCodeVue3 from "qrcode-vue3";
 
 export default {
   name: "BuildingView",
-  components: {QRCodeVue3, NormalButton},
+  components: {},
   props: {id: String},
   data: () => ({
     building: null,
