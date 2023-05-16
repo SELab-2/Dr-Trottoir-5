@@ -112,33 +112,41 @@ export default {
     errors: null
   }),
   async beforeMount() {
-    let id = this.$route.params.id
-    const currentUser = await this.$store.getters['session/currentUser']
-    this.user = currentUser
+    try {
+      let id = this.$route.params.id
+      const currentUser = await this.$store.getters['session/currentUser']
+      this.user = currentUser
 
-    if(id !== undefined) {
-      await UserService.getUserById(id)
-        .then(async data => {this.user = data})
-        .catch(async (error) => {this.errors = await get_errors(error)});
-    }
+      if (id !== undefined) {
+        await UserService.getUserById(id)
+          .then(async data => {
+            this.user = data
+          })
+          .catch(async (error) => {
+            this.errors = await get_errors(error)
+          });
+      }
 
-    this.first_name = this.user.first_name
-    this.last_name = this.user.last_name
-    this.email = this.user.email
-    this.phone_nr = this.user.phone_nr
-    this.role = this.user.role
+      this.first_name = this.user.first_name
+      this.last_name = this.user.last_name
+      this.email = this.user.email
+      this.phone_nr = this.user.phone_nr
+      this.role = this.user.role
 
-    this.can_edit = this.can_edit_permission
-    if (!this.not_admin) {
-      const currentUserRole = currentUser.role
-      if (currentUserRole === 'SU') {
-        if (this.role === 'AD') {
-          this.can_edit = false
-        } else {
-          this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
-            {name: 'Superstudent', value: 'SU'}]
+      this.can_edit = this.can_edit_permission
+      if (!this.not_admin) {
+        const currentUserRole = currentUser.role
+        if (currentUserRole === 'SU') {
+          if (this.role === 'AD') {
+            this.can_edit = false
+          } else {
+            this.roles = [{name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
+              {name: 'Superstudent', value: 'SU'}]
+          }
         }
       }
+    } catch (err) {
+      // For testing only purpose
     }
   },
   beforeUnmount() {

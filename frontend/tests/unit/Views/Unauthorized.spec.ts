@@ -1,5 +1,5 @@
 import Unauthorized from '../../../src/views/Unauthorized.vue';
-import {shallowMount} from "@vue/test-utils";
+import {mount} from "@vue/test-utils";
 import NormalButton from "@/components/NormalButton.vue";
 
 describe("Unauthorized.vue", () => {
@@ -7,7 +7,7 @@ describe("Unauthorized.vue", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(Unauthorized);
+    wrapper = mount(Unauthorized);
   });
 
   it('render the component', () => {
