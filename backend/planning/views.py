@@ -222,8 +222,7 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
     permission_classes = [
-        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission
-        | IsAuthenticatedOrReadOnly
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | IsAuthenticatedOrReadOnly
     ]
 
     # TODO: a user can only see the pictures that he added (?)
@@ -309,8 +308,7 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     queryset = InfoPerBuilding.objects.all()
     serializer_class = InfoPerBuildingSerializer
     permission_classes = [
-        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission
-        | IsAuthenticatedOrReadOnly
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | IsAuthenticatedOrReadOnly
     ]
 
     # TODO: a user can only see the info per building that he added (?)
