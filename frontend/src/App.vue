@@ -22,7 +22,7 @@ const emitter = require('tiny-emitter/instance')
 export default defineComponent({
   name: 'App',
   async beforeCreate() {
-    const noLogin = ['login', 'register', 'forgot'];  // Pages that can be accessed without logging in
+    const noLogin = ['login', 'register', 'forgot', 'building_page'];  // Pages that can be accessed without logging in
     const router = useRouter();
 
     router.beforeEach( async (to, from, next) => {
@@ -44,6 +44,7 @@ export default defineComponent({
       } else {
         if (user !== null) {
           this.navbar = true;
+          if (to.name.toString() === 'building_page') return next();
           return next({path: '/'});
         }
         this.navbar = false;
