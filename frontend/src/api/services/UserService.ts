@@ -58,15 +58,6 @@ class UserService extends EchoService {
   }
 
   /**
-   * Update the current user
-   * TODO Backend support
-   */
-  @PATCH("/user/")
-  update(@Body() body: InputFields): EchoPromise<User> {
-    return {} as EchoPromise<User>;
-  }
-
-  /**
    * Get the role of the logged in user.
    */
   @GET("/role/")
