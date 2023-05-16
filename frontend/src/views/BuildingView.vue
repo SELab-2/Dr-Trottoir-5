@@ -124,7 +124,7 @@ export default {
     }).then(building => {
       this.building = building;
       this.changed();
-    }).catch(() => {})
+    }).catch(() => null)
   },
   methods: {
     changed() {
