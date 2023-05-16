@@ -127,7 +127,7 @@ class ManualListCreateView(generics.ListCreateAPIView):
 
 
 class ManualRetrieveUpdateDestroyAPIView(
-    generics.RetrieveUpdateDestroyAPIView):
+        generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManualSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -277,9 +277,11 @@ class BuildingUUIDRetrieveView(generics.RetrieveAPIView):
             return Response(serializer.data)
         return Response(status=404)
 
+
 class BuildingUUIDResetView(generics.RetrieveAPIView):
     permission_classes = \
         [SyndicusPermission | AdminPermission | SuperstudentPermission]
+
     def get(self, request, *args, **kwargs):
         id = kwargs["buildingid"]
         buildings = Building.objects.filter(buildingID=id)
@@ -289,6 +291,7 @@ class BuildingUUIDResetView(generics.RetrieveAPIView):
             building.save()
             return Response({"message": "success"})
         return Response(status=404)
+
 
 class RondeListCreateView(generics.ListCreateAPIView):
     queryset = Ronde.objects.all()
