@@ -37,6 +37,34 @@
             </v-row>
           </v-col>
         </v-row>
+
+         <v-col cols="4">
+          <v-row justify="center" class="text-center">
+            <v-col cols="12"><h1>Berging</h1></v-col>
+            <br>
+            <ul>
+              <li v-for="(el) in this.storages" :key="el">
+                <v-col cols="12">
+                  <FotoCardAdmin v-bind:data="el"/>
+                </v-col>
+              </li>
+            </ul>
+          </v-row>
+        </v-col>
+
+         <v-col cols="4">
+          <v-row justify="center" class="text-center">
+            <v-col cols="12"><h1>Vertrek</h1></v-col>
+            <br>
+            <ul>
+              <li v-for="(el) in this.departs" :key="el">
+                <v-col cols="12">
+                  <FotoCardAdmin v-bind:data="el"/>
+                </v-col>
+              </li>
+            </ul>
+          </v-row>
+        </v-col>
        </v-card-text>
      </v-card>
   </v-container>
@@ -100,20 +128,16 @@ export default {
         id: 'getRoundsError',
         style: 'NONE'
       }).then(async rounds => {
-        console.log(rounds, this.building.id)
         for(const round of rounds){
           if(round.ronde.buildings.map(building => building.id).includes(this.building.id)){
-            console.log('INCLUDES!')
             await RequestHandler.handle(PlanningService.getInfoOfBuilding(round.id, this.building.id), {
               id: 'getInfoOfBuildingError',
               style: 'NONE'
             }).then(async info => {
-              console.log(info)
               await RequestHandler.handle(PlanningService.getPictures(info[0].id, date.getFullYear(), week), {
                 id: 'getPicturesError',
                 style: 'NONE'
               }).then(async pictures => {
-                console.log(pictures)
                 this.arrivals = []
                 this.departs = []
                 this.storages = []

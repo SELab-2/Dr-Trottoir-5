@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <div fluid>
     <v-card max-width="900px" min-width="500px" class="container-border">
       <v-card-text>
         <v-row align-end>
@@ -8,13 +8,18 @@
           </v-col>
           <v-col class="d-flex align-center" cols="4">
             <v-row justify="end" class="image-margin">
-              <v-img :src="data.image" :max-width="300" :max-height="300"></v-img>
+              <v-img :src="data.image" :max-width="300" :max-height="300" @click="overlay = !overlay"></v-img>
+              <v-overlay v-model="overlay">
+                <div>
+                  <img :src="data.image" />
+                </div>
+              </v-overlay>
             </v-row>
           </v-col>
         </v-row>
         <v-row align="end">
           <v-col align="left">
-            <p style="font-size: 16px">{{ data.time.split('.')[0] }}</p>
+            <p style="font-size: 16px">{{ new Date(data.time).toLocaleString() }}</p>
           </v-col>
           <v-col>
             <v-row justify="end" class="row-margin">
@@ -24,7 +29,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -44,6 +49,9 @@ export default {
       default: () => ({ time: 'Empty', remark: 'Empty', image: 'empty' })
     }
   },
+  data: () => ({
+    overlay: false
+  }),
   methods: {
     goToMailPage: function () {
       // TODO
