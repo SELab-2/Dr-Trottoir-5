@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from rest_framework import serializers
-from trashtemplates.models import Status
 from django.db import models
+from rest_framework.serializers import ValidationError
+
+from trashtemplates.models import Status
 
 
 class ExceptionHandler:
@@ -31,9 +32,9 @@ class ExceptionHandler:
     def check(self):
         self.checked = True
         if len(self.errors) > 0:
-            raise serializers.ValidationError({
+            raise ValidationError({
                 "errors": self.errors
-            })
+            }, code='invalid')
 
     def __del__(self):
         if not self.checked:

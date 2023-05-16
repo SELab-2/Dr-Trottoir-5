@@ -177,8 +177,7 @@ class RondeListCreateView(generics.ListCreateAPIView):
         handler.check_not_blank_required(data.get("name"), "name")
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
-        handler.check_not_blank_required(data.get("buildings"), "buildings")
-        # TODO fix building list check
+        # TODO fix building list check ook put en patch
         handler.check()
         return super().post(request, *args, **kwargs)
 
@@ -202,7 +201,7 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_primary_key_value_required(data.get("location"),
                                                  "location", LocatieEnum)
         # handler.check_primary_key_value_required(data.get("buildings"),
-        #                                         "buildings", Building)
+        # "buildings", Building)
         handler.check()
         return super().put(request, *args, **kwargs)
 
@@ -212,6 +211,7 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_not_blank("name")
         handler.check_primary_key(data.get("location"), "location",
                                   LocatieEnum)
-        handler.check_primary_key(data.get("buildings"), "buildings", Building)
+        # handler.check_primary_key(data.get("buildings"), "buildings",
+        # Building)
         handler.check()
         return super().put(request, *args, **kwargs)
