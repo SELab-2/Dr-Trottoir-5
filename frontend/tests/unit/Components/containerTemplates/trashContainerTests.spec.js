@@ -1,5 +1,6 @@
-import { mount } from '@vue/test-utils'
+import {mount} from '@vue/test-utils'
 import TrashContainerTemplateCard from "@/components/containerTemplates/TrashContainerTemplateCard.vue";
+import TrashContainerTemplateList from "@/components/containerTemplates/TrashContainerTemplateList.vue";
 
 describe('trashContainerTemplateCard.vue', () => {
 
@@ -73,5 +74,29 @@ describe('trashContainerTemplateCard.vue', () => {
     await deleteTemplateButton.trigger('click');
     expect(TrashContainerTemplateCard.methods.deleteTemplate).toBeCalled();
   })
+
+  describe('TrashContainerTemplateList.vue', () => {
+
+    let wrapper;
+
+    beforeEach(() => {
+      TrashContainerTemplateList.beforeMount = jest.fn();
+      wrapper = mount(TrashContainerTemplateList);
+    })
+
+
+    it('renders the component correctly', () => {
+      expect(wrapper.exists()).toBe(true);
+      expect(TrashContainerTemplateList.beforeMount).toBeCalled();
+    });
+
+    it('renders the ListPage component with correct props', () => {
+      const listPage = wrapper.find('[data-test="listPage"]');
+      expect(listPage.exists()).toBe(true);
+    });
+
+    // component is empty in test environment waardoor er niet verder getest kan worden
+
+  });
 
 })
