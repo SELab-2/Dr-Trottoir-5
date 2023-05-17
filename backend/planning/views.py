@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, QueryDict
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -44,9 +44,9 @@ class StudentDayPlan(generics.RetrieveAPIView):
                 if plan.time.day == day_name and request.user in plan.students.all():
                     dayplans.append(plan)
 
-        if dayplan is None:
+        if len(dayplans) == 0:
             return HttpResponseNotFound()
-
+        return Response(dayplans)
 
 @api_view(["GET"])
 @permission_classes(
@@ -190,7 +190,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-        generics.RetrieveUpdateDestroyAPIView):
+    generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [
@@ -624,12 +624,16 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
         dag_planningen = []
 
-        data["start_hour"] = template.start_hour
-        data["end_hour"] = template.end_hour
-        data["students"] = []
+        data_copy = dict(data)
+
+        data_copy["ronde"] = int(data["ronde"])
+
+        data_copy["start_hour"] = template.start_hour
+        data_copy["end_hour"] = template.end_hour
+        data_copy["students"] = []
         for day in WeekDayEnum:
-            data["day"] = day
-            dag_planning = make_dag_planning(data)
+            data_copy["day"] = day
+            dag_planning = make_dag_planning(data_copy)
             dag_planningen.append(dag_planning)
 
         response = {"message": "Success"}
@@ -641,7 +645,7 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
             copy.rondes.add(ronde)
             copy.dag_planningen.add(*dag_planningen)
             remove_if_match(get_current_week_planning().student_templates,
-                            template, current_week)
+                            template)
             add_if_match(get_current_week_planning().student_templates, copy,
                          current_week)
             response["new_id"] = copy.id
@@ -751,17 +755,18 @@ class DagPlanningView(generics.RetrieveUpdateDestroyAPIView):
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
         permanent = kwargs["permanent"]
-        data["day"] = dag_planning.time.day
-        if "start_hour" not in data:
-            data["start_hour"] = dag_planning.time.start_hour
-        if "end_hour" not in data:
-            data["end_hour"] = dag_planning.time.end_hour
-        if "ronde" not in data:
-            data["ronde"] = dag_planning.ronde.id
-        if "students" not in data:
-            data["students"] = dag_planning.students.all()
+        data_copy = dict(data)
+        data_copy["day"] = dag_planning.time.day
+        if "start_hour" not in data_copy:
+            data_copy["start_hour"] = dag_planning.time.start_hour
+        if "end_hour" not in data_copy:
+            data_copy["end_hour"] = dag_planning.time.end_hour
+        if "ronde" not in data_copy:
+            data_copy["ronde"] = dag_planning.ronde.id
+        if "students" not in data_copy:
+            data_copy["students"] = dag_planning.students.all()
 
-        new_dag_planning = make_dag_planning(data)
+        new_dag_planning = make_dag_planning(data_copy)
 
         response = update(
             template,

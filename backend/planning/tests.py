@@ -1,4 +1,5 @@
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APITestCase, APIRequestFactory, \
+    force_authenticate, APIClient
 from .views import *
 from .models import *
 from users.models import User
@@ -7,16 +8,20 @@ from io import BytesIO
 from PIL import Image
 from model_bakery import baker
 
+from django.test import Client
+
 
 class CreateTest(APITestCase):
     def setUp(self) -> None:
         self.dp = baker.make(DagPlanning)
         self.ronde = baker.make(Ronde)
         self.ronde.save()
-        self.ipb = InfoPerBuilding.objects.create(remark="test", dagPlanning=self.dp)
+        self.ipb = InfoPerBuilding.objects.create(remark="test",
+                                                  dagPlanning=self.dp)
         self.user = User.objects.create(role="SU")
         self.location = LocatieEnum.objects.create(name="Gent")
-        self.student = User.objects.create(role="ST", username="student", email="s@s.s")
+        self.student = User.objects.create(role="ST", username="student",
+                                           email="s@s.s")
 
     def testCreateStudentTemplate(self):
         # Create a student template
@@ -30,86 +35,116 @@ class CreateTest(APITestCase):
             "even": date.week % 2 == 0
         })
         force_authenticate(request, user=self.user)
-        response = student_templates_view(request).data
+        response = StudentTemplateView.as_view()(request).data
         self.assertIn("new_id", response)
         template_id = response["new_id"]
 
         # Get the newly created template
         request = factory.get(f'/api/studenttemplates/{template_id}/')
         force_authenticate(request, user=self.user)
-        response = student_template_view(request, template_id).data
-        self.assertIn("id", response)
+        response = StudentTemplateView.as_view()(request, template_id).data
+        self.assertIn("id", response[0])
 
         # Add a round to the template
-        request = factory.post(f'/api/studenttemplates/{template_id}/rondes/', {
-            "ronde": self.ronde.id
-        })
+        request = factory.post(f'/api/studenttemplates/{template_id}/rondes/',
+                               {
+                                   "ronde": self.ronde.id
+                               })
         force_authenticate(request, user=self.user)
-        response = rondes_view(request, template_id).data
+
+        response = RondesView.as_view()(request, template_id=template_id).data
+
+
         self.assertEqual(response["message"], "Success")
 
         request = factory.get(f'/api/studenttemplates/{template_id}/rondes/')
         force_authenticate(request, user=self.user)
-        response = rondes_view(request, template_id).data
+
+        response = RondesView.as_view()(request, template_id=template_id).data
+
         self.assertIn("buildings", response[0])
 
         # Get the dayplans for this template
         days = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"]
-        request = factory.get(f'/api/studenttemplates/{template_id}/rondes/{self.ronde.id}/dagplanningen/')
+        request = factory.get(
+            f'/api/studenttemplates/{template_id}/rondes/{self.ronde.id}/dagplanningen/')
         force_authenticate(request, user=self.user)
-        response = dagplanningen_view(request, template_id, self.ronde.id).data
-        today = [x for x in response if x["time"]["day"] == days[date.weekday - 1]]
+        response = DagPlanningenView.as_view()(request,
+                                               template_id=template_id,
+                                               ronde_id=self.ronde.id).data
+        today = [x for x in response if
+                 x["time"]["day"] == days[date.weekday - 1]]
         self.assertNotEquals(today, [])
         today = today[0]
 
         # Add a student to a dayplan of the template
-        request = factory.patch(f'/api/studenttemplates/{template_id}/dagplanningen/{today["id"]}/', {
-            "students": [self.student.id]
-        })
+        request = factory.patch(
+            f'/api/studenttemplates/{template_id}/dagplanningen/{today["id"]}/',
+            {
+                "students": [self.student.id]
+            })
         force_authenticate(request, user=self.user)
-        response = dagplanning_view(request, template_id, today["id"], True).data
+        response = DagPlanningView.as_view()(request, template_id=template_id,
+                                             dag_id=today["id"],
+                                             permanent=True).data
         self.assertEqual(response["message"], "Success")
 
         request = factory.get(f'/api/weekplanning/{date.year}/{date.week}/')
         force_authenticate(request, user=self.user)
-        response = week_planning_view(request, date.year, date.week)
+        response = WeekplanningView.as_view()(request, year=date.year,
+                                              week=date.week)
         self.assertEqual(response.status_code, 200)
 
         # Find the dayplan for a certain time
-        request = factory.get(f'/api/dagplanning/{date.year}/{date.week}/{date.weekday}/')
+        request = factory.get(
+            f'/api/dagplanning/{date.year}/{date.week}/{date.weekday}/')
         force_authenticate(request, user=self.student)
-        response = student_dayplan(request, date.year, date.week, date.weekday).data
-        self.assertIn("id", response[0])
-        self.assertEqual(student_dayplan(request, date.year, date.week, 8).status_code, 400)
+        response = StudentDayPlan.as_view()(request, year=date.year,
+                                            week=date.week,
+                                            day=date.weekday).data
+        self.assertEqual(len(response), 1)
+        self.assertEqual(
+            StudentDayPlan.as_view()(request, year=date.year, week=date.week, \
+                                     day=8).status_code,
+            400)
 
-        request = factory.get(f'studenttemplates/rondes/{date.year}/{date.week}/{date.weekday}/6/')
+        request = factory.get(
+            f'studenttemplates/rondes/{date.year}/{date.week}/{date.weekday}/6/')
         force_authenticate(request, user=self.user)
-        student_templates_rondes_view(request, date.year, date.week, date.weekday, 6)
+        StudentTemplateRondeView.as_view()(request, year=date.year,
+                                           week=date.week,
+                                           day=date.weekday, location=6)
 
-        request = factory.patch(f'/api/studenttemplates/{template_id}/dagplanningen/{today["id"]}/eenmalig/', {
-            "students": []
-        })
-        force_authenticate(request, user=self.user)
-        dagplanning_view(request, template_id, today["id"], False)
-
-        request = factory.get('/api/studenttemplates/')
-        force_authenticate(request, user=self.user)
-        templates = student_templates_view(request).data
-        for template in templates:
-            request = factory.patch(f'/api/studenttemplates/{template["id"]}/', {
-                "start_hour": "11:00",
-                "end_hour": "14:00"
+        request = factory.patch(
+            f'/api/studenttemplates/{template_id}/dagplanningen/{today["id"]}/eenmalig/',
+            {
+                "students": []
             })
-            force_authenticate(request, user=self.user)
-            student_template_view(request, template["id"])
+        force_authenticate(request, user=self.user)
+        DagPlanningView.as_view()(request, template_id=template_id,
+                                  dag_id=today["id"],
+                                  permanent=False)
 
         request = factory.get('/api/studenttemplates/')
         force_authenticate(request, user=self.user)
-        templates = student_templates_view(request).data
+        templates = StudentTemplateView.as_view()(request).data
         for template in templates:
-            request = factory.delete(f'/api/studenttemplates/{template["id"]}/')
+            request = factory.patch(f'/api/studenttemplates/{template["id"]}/',
+                                    {
+                                        "start_hour": "11:00",
+                                        "end_hour": "14:00"
+                                    })
             force_authenticate(request, user=self.user)
-            student_template_view(request, template["id"])
+            StudentTemplateView.as_view()(request, template["id"])
+
+        request = factory.get('/api/studenttemplates/')
+        force_authenticate(request, user=self.user)
+        templates = StudentTemplateView.as_view()(request).data
+        for template in templates:
+            request = factory.delete(
+                f'/api/studenttemplates/{template["id"]}/')
+            force_authenticate(request, user=self.user)
+            StudentTemplateView.as_view()(request, template["id"])
 
     def testInfoPerBuilding(self):
         # An error should be returned if an invalid dayplanning query is given
@@ -149,7 +184,8 @@ class CreateTest(APITestCase):
         force_authenticate(request, user=self.user)
         response = BuildingPictureCreateAndListAPIView.as_view()(request).data
         self.assertIn("id", response[0])
-        request = factory.get('/api/buildingpicture?infoPerBuilding=9&year=2002&week=11')
+        request = factory.get(
+            '/api/buildingpicture?infoPerBuilding=9&year=2002&week=11')
         force_authenticate(request, user=self.user)
         response = BuildingPictureCreateAndListAPIView.as_view()(request).data
         self.assertIn("errors", response)
@@ -159,7 +195,8 @@ class CreateTest(APITestCase):
             "remark": "testRemark 2",
         })
         force_authenticate(request, user=self.user)
-        response = BuildingPictureRUDAPIView.as_view()(request, pk=picture_id).data
+        response = BuildingPictureRUDAPIView.as_view()(request,
+                                                       pk=picture_id).data
         self.assertIn("id", response)
 
         # Put the uploaded picture
@@ -176,5 +213,6 @@ class CreateTest(APITestCase):
             "infoPerBuilding": self.ipb.pk
         })
         force_authenticate(request, user=self.user)
-        response = BuildingPictureRUDAPIView.as_view()(request, pk=picture_id).data
+        response = BuildingPictureRUDAPIView.as_view()(request,
+                                                       pk=picture_id).data
         self.assertIn("id", response)
