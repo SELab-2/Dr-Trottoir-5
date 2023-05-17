@@ -198,7 +198,7 @@ class CreateTest(APITestCase):
         response = BuildingPictureRUDAPIView.as_view()(request,
                                                        pk=picture_id).data
         self.assertIn("id", response)
-
+        self.assertEqual(response["remark"], "testRemark 2")
         # Put the uploaded picture
         file = BytesIO()
         image = Image.new('RGBA', size=(10, 10), color=(155, 0, 0))
