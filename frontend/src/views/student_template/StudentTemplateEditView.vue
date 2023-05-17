@@ -14,10 +14,10 @@
           <v-text-field v-model='name' label='Naam' :readonly="!edit" required></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='status' label='Status' readonly required></v-text-field>
+          <v-text-field variant="solo" v-model='status' label='Status' readonly ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-checkbox label="Even" v-model="even" :readonly="!edit"></v-checkbox>
+          <v-text-field variant="solo" readonly > {{ even ? "Even" : "Oneven" }}</v-text-field>
         </v-col>
       </v-row>
       <v-row class="justify-space-between mx-auto">
@@ -152,7 +152,6 @@ export default {
       this.edit = false
       const body = {
         name: this.name,
-        even: this.even,
         start_hour: this.start_hour,
         end_hour: this.end_hour,
         location: this.location.id
