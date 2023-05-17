@@ -63,10 +63,7 @@ class SyndicusPermission(permissions.BasePermission):
 
 class BewonerPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        user = request.user
-        if not user or user.is_anonymous:
-            return False
-        return user.role == 'BE'
+        return request.method in permissions.SAFE_METHODS
 
 
 class AanvragerPermission(permissions.BasePermission):

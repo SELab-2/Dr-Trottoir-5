@@ -32,8 +32,24 @@
             imgclass="qr"
             :key="building.id"
            />
-           <normal-button text="Reset QR-Code" :parent-function="resetQR"></normal-button><br>
+           <normal-button text="Reset QR-Code" :parent-function="() => dialog = true"></normal-button><br>
            <normal-button text="QR-Code uitprinten" :parent-function="printQR" class="mt-2"></normal-button>
+
+           <v-dialog
+            v-model="dialog"
+            width="auto"
+           >
+            <v-card>
+              <v-card-text>
+                Weet u zeker dat u de QR-Code wilt resetten?<br>
+                De vorige QR-Codes zullen hierdoor niet langer werken.
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="dialog = false">Annuleren</v-btn>
+                <v-btn color="warning" @click="() => { dialog = false; resetQR() }">Resetten</v-btn>
+              </v-card-actions>
+            </v-card>
+           </v-dialog>
          </v-card>
       </v-card-title>
       <v-divider style="width: 90%;" class="mt-4"></v-divider>
@@ -110,6 +126,7 @@ export default {
     departs: [],
     storages: [],
     building: null,
+    dialog: false,
     masks: { modelValue: 'YYYY-MM-DD' },
     attrs: [
       {

@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotFound
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from exceptions.exceptionHandler import ExceptionHandler
@@ -10,7 +9,8 @@ from pickupdays.models import WeekDayEnum
 from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission, StudentPermission, SyndicusPermission
+    SuperstudentPermission, StudentPermission, SyndicusPermission, \
+    BewonerPermission
 from .util import *
 from ronde.models import LocatieEnum, Building, Ronde
 from trashtemplates.models import Status
@@ -222,7 +222,7 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
     permission_classes = [
-        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | IsAuthenticatedOrReadOnly
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | BewonerPermission
     ]
 
     # TODO: a user can only see the pictures that he added (?)
@@ -308,7 +308,7 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     queryset = InfoPerBuilding.objects.all()
     serializer_class = InfoPerBuildingSerializer
     permission_classes = [
-        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | IsAuthenticatedOrReadOnly
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | BewonerPermission
     ]
 
     # TODO: a user can only see the info per building that he added (?)
@@ -437,7 +437,7 @@ class WeekplanningView(generics.RetrieveAPIView):
 
 
 class StudentTemplateRondeView(generics.RetrieveAPIView):
-    permission_classes = [AdminPermission | SuperstudentPermission | SyndicusPermission | IsAuthenticatedOrReadOnly]
+    permission_classes = [AdminPermission | SuperstudentPermission | SyndicusPermission | BewonerPermission]
 
     def get(self, request, *args, **kwargs):
         year, week, day, location = kwargs["year"], kwargs["week"], kwargs[
