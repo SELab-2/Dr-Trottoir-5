@@ -30,8 +30,16 @@ class CreateTest(APITestCase):
                                                               week=1,
                                                               start_hour="19:13",
                                                               end_hour="19:14")
-        self.weekPlanning = WeekPlanning.objects.create(week=1, year=2023)
 
+        self.weekPlanning = WeekPlanning.objects.create(week=1, year=2023)
+        self.pickupday = PickUpDay.objects.create(day="SU",
+                                                  start_hour="19:13",
+                                                  end_hour="19:14")
+        self.dagPlanning = DagPlanning.objects.create(ronde=self.ronde,
+                                                      time=self.pickupday)
+        self.dagPlanning.students.set([self.student, self.user])
+        self.studentTemplate.dag_planningen.set([self.dagPlanning])
+        self.weekPlanning.student_templates.set([self.studentTemplate])
 
     def testCreateStudentTemplate(self):
         # Create a student template
@@ -232,4 +240,12 @@ class CreateTest(APITestCase):
         force_authenticate(request, user=self.user)
         response = WeekplanningView.as_view()(request, year=2023, week=1).data
         # geen studenttemplates die bij de ronde horen
-        self.assertEqual(len(response), 0)
+        self.assertEqual(len(response), 1)
+
+    def testGetDagPlanning(self):
+        factory = APIRequestFactory()
+        request = factory.get("/api/dagplanning/2023/1/1/")
+        force_authenticate(request, self.student)
+        response = StudentDayPlan.as_view()(request, year=2023, week=1,
+                                            day=0).data
+        self.assertEqual(len(response), 1)
