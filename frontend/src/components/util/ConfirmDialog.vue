@@ -17,10 +17,10 @@
           </p>
         </v-col>
         <v-col md="6" lg="6" class="d-flex align-center justify-end pb-10">
-          <normal-button text="Ja" @click="confirm_function"></normal-button>
+          <v-btn data-test="confirm_button" @click="confirm_function">Ja</v-btn>
         </v-col>
         <v-col md="6" lg="6" class="d-flex align-center justify-start pb-10">
-          <normal-button text="Nee" @click="dialog = false"></normal-button>
+          <v-btn data-test="close_button" @click="dialog = false">Nee</v-btn>
         </v-col>
       </v-row>
     </v-card>
