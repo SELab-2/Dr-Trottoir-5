@@ -113,6 +113,8 @@ class Ronde(models.Model):
              The location of the ronde
          building : models.ManyToManyField
              The different buildings that need te be visited in a ronde
+        is_active: models.BooleanField
+            Tells if the round is replaced or not
     """
 
     name = models.TextField()
@@ -122,3 +124,4 @@ class Ronde(models.Model):
         verbose_name="Locatie"
     )
     buildings = models.ManyToManyField(Building, blank=True)
+    is_active = models.BooleanField(default=True)

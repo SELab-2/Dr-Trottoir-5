@@ -100,9 +100,9 @@ export default defineComponent({
           name: this.name,
           location: this.location,
           buildings: this.selected
-        }).then(b => {
+        }).then(() => {
           this.$store.dispatch("snackbar/open", {
-            message: `Ronde ${b.name} is aangepast.`,
+            message: `Ronde ${this.name} is aangepast.`,
             color: "success"
           });
           router.push({ name: 'rounds' });
