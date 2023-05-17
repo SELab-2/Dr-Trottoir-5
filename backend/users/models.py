@@ -6,17 +6,6 @@ import random
 import string
 
 
-class Registration(models.Model):
-    """
-        Model that is used to serialize a registration.
-    """
-    email = models.EmailField(unique=True)
-    first_name = models.TextField(default="")
-    last_name = models.TextField(default="")
-    phone_nr = models.TextField(default="")
-    password = models.CharField(max_length=30, default=None)
-
-
 class Roles(models.TextChoices):
     """
           All the roles users can have.

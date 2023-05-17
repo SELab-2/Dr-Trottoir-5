@@ -36,7 +36,6 @@
 </template>
 
 <script lang="ts">
-import NormalButton from '@/components/NormalButton.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import {ContainerType} from "@/api/models/ContainerType";
@@ -44,14 +43,13 @@ import {Weekday} from "@/api/models/Weekday";
 
 export default {
   name: 'CreateTrashContainerView',
-  components: {NormalButton},
   props: {
     id: Number,
     containerId: Number
   },
   data: () => {
     return {
-      id: null,
+      id_: null,
       type: '',
       day: '',
       start_hour: '',
@@ -76,9 +74,9 @@ export default {
     }
   },
   beforeMount() {
-    this.id = this.$route.params.id
+    this.id_ = this.$route.params.id
     RequestHandler.handle(
-      TrashTemplateService.getTrashContainersOfTemplateByExtraId(this.id, this.$route.params.containerId),
+      TrashTemplateService.getTrashContainersOfTemplateByExtraId(this.id_, this.$route.params.containerId),
       {
         id: 'getContainerforeditError',
         style: 'SNACKBAR'
@@ -93,7 +91,7 @@ export default {
   methods: {
     editContainer() {
       RequestHandler.handle(
-        TrashTemplateService.updateContainerTemplate(this.id, this.$route.params.containerId, {
+        TrashTemplateService.updateContainerTemplate(this.id_, this.$route.params.containerId, {
           type: this.type,
           collection_day: {
             day: this.day,
