@@ -237,14 +237,14 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
         old = Ronde.objects.get(id=id)
 
-        if not "name" in data:
+        if "name" not in data:
             data["name"] = old.name
-        if not "location" in data:
+        if "location" not in data:
             data["location"] = old.location
         else:
             data["location"] = LocatieEnum.objects.get(id=data["location"])
 
-        if not "buildings" in data:
+        if "buildings" not in data:
             data["buildings"] = old.buildings
 
         new_ronde = Ronde.objects.create(
