@@ -26,7 +26,6 @@ describe('CreateEditMailTemplate.vue', () => {
   })
 
   it('sets the v-model for the textfield of the name of the template', async () => {
-      console.log(wrapper.html())
 
     const textField = wrapper.find('v-text-field')
     textField.element.value = 'test';
