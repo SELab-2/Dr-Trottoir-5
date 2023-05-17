@@ -22,6 +22,16 @@ class CreateTest(APITestCase):
         self.location = LocatieEnum.objects.create(name="Gent")
         self.student = User.objects.create(role="ST", username="student",
                                            email="s@s.s")
+        self.studentTemplate = StudentTemplate.objects.create(name="test",
+                                                              even=True,
+                                                              location=self.location,
+                                                              status=Status.EENMALIG,
+                                                              year=2023,
+                                                              week=1,
+                                                              start_hour="19:13",
+                                                              end_hour="19:14")
+        self.weekPlanning = WeekPlanning.objects.create(week=1, year=2023)
+
 
     def testCreateStudentTemplate(self):
         # Create a student template
@@ -53,7 +63,6 @@ class CreateTest(APITestCase):
         force_authenticate(request, user=self.user)
 
         response = RondesView.as_view()(request, template_id=template_id).data
-
 
         self.assertEqual(response["message"], "Success")
 
@@ -216,3 +225,11 @@ class CreateTest(APITestCase):
         response = BuildingPictureRUDAPIView.as_view()(request,
                                                        pk=picture_id).data
         self.assertIn("id", response)
+
+    def testGetWeekPlanning(self):
+        factory = APIRequestFactory()
+        request = factory.get("/api/weekplanning/2023/1")
+        force_authenticate(request, user=self.user)
+        response = WeekplanningView.as_view()(request, year=2023, week=1).data
+        # geen studenttemplates die bij de ronde horen
+        self.assertEqual(len(response), 0)
