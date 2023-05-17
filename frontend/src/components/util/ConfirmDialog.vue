@@ -28,11 +28,9 @@
 </template>
 
 <script>
-import NormalButton from "@/components/NormalButton";
 
 export default {
   name: "ConfirmDialog.vue",
-  components: {NormalButton},
   props: {
     text: { type: String },
     confirm_function: { type: Function }
