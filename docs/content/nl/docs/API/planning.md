@@ -7,22 +7,28 @@ date: 2023-03-14
 description: >
   Deze pagina geeft meer info over de verschillende **planning** endpoints
 ---
-## De /planning/ urls
+## Planning endpoints
 
-Hier kan u uitleg vinden over alle endpoints die met de planning te maken hebben
+Hier kan u uitleg vinden over alle endpoints die met de planning te maken hebben.
 
-### De /planning/ endpoints
+### buildingpicture/
 
-### De /planning/dagplanning/<**int**> endpoints
+Geeft via een GET request alle buildingpicture objecten terug. Deze horen bij een infoperbuilding en bevatten een link naar een foto.
 
-### De /planning/buildingpicture/ endpoints
-
-### De /planning/buildingpicture/<**int**> endpoints
-
-### De /planning/infoperbuilding/ endpoints
-
-### De /planning/infoperbuilding/<**int**> endpoints
-
-### De /planning/weekplanning/ endpoints
-
-### De /planning/weekplanning/<**int**> endpoints
+### buildingpicture/\<int:pk\>/
+### infoperbuilding/
+### infoperbuilding/\<int:pk\>/
+### weekplanning/\<int:year\>/\<int:week\>/
+### dagplanning/\<int:year\>/\<int:week\>/\<int:day\>
+### dagplanning/\<int:pk\>/
+### dagplanning/\<int:year\>/\<int:week\>/\<int:pk\>/status/
+### dagplanning/\<int:year\>/\<int:week\>/\<int:pk\>/pictures/
+### studenttemplates/find/planning/\<int:pk\>/
+### studenttemplates/rondes/\<int:year\>/\<int:week\>/\<int:day\>/\<int:location\>/
+### studenttemplates/
+### studenttemplates/\<int:template_id\>
+### studenttemplates/\<int:template_id\>/rondes/
+### studenttemplates/\<int:template_id\>/rondes/\<int:ronde_id\>
+### studenttemplates/\<int:template_id\>/rondes/\<int:ronde_id""\>/dagplanningen/
+### studenttemplates/\<int:template_id\>/dagplanningen/\<int:dag_id\>/
+### studenttemplates/\<int:template_id\>/dagplanningen/\<int:dag_id\>/eenmalig/
