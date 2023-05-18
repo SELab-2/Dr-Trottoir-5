@@ -4,6 +4,7 @@ import TrashContainerCreate from "@/components/containerTemplates/containers/Tra
 import TrashContainerEdit from "@/components/containerTemplates/containers/TrashContainerEdit.vue";
 import TrashContainerHeader from "@/components/containerTemplates/containers/TrashContainerHeader.vue";
 import {triggerInput} from "../../../utils/testHelper";
+import TrashTemplateContainersList from "@/components/containerTemplates/containers/TrashTemplateContainersList.vue";
 
 
 describe('trashContainerCard.vue', () => {
@@ -221,4 +222,29 @@ describe('TrashContainerHeader', () => {
 
     expect(wrapper.props('round')).toBe(false);
   });
+});
+
+
+describe('TrashContainerTemplateList.vue', () => {
+
+  let wrapper;
+
+  beforeEach(() => {
+    TrashTemplateContainersList.beforeMount = jest.fn();
+    wrapper = mount(TrashTemplateContainersList);
+  })
+
+
+  it('renders the component correctly', () => {
+    expect(wrapper.exists()).toBe(true);
+    expect(TrashTemplateContainersList.beforeMount).toBeCalled();
+  });
+
+  it('renders the ListPage component with correct props', () => {
+    const listPage = wrapper.find('[data-test="listPage"]');
+    expect(listPage.exists()).toBe(true);
+  });
+
+  // component is empty in test environment waardoor er niet verder getest kan worden
+
 });
