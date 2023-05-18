@@ -2,6 +2,7 @@ import {mount} from '@vue/test-utils';
 import TrashContainerCard from "@/components/containerTemplates/containers/TrashContainerCard.vue";
 import TrashContainerCreate from "@/components/containerTemplates/containers/TrashContainerCreate.vue";
 import TrashContainerEdit from "@/components/containerTemplates/containers/TrashContainerEdit.vue";
+import TrashContainerHeader from "@/components/containerTemplates/containers/TrashContainerHeader.vue";
 import {triggerInput} from "../../../utils/testHelper";
 
 
@@ -183,3 +184,41 @@ describe('trashContainerEdit.vue', () => {
     expect(vSelects.length).toBe(2);
   })
 })
+
+describe('TrashContainerHeader', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(TrashContainerHeader, {
+      propsData: {
+        round: true,
+      },
+    });
+  });
+
+
+  it('renders the component correctly', () => {
+    expect(wrapper.exists()).toBe(true);
+
+    expect(wrapper.find('.border').exists()).toBe(true);
+    expect(wrapper.find('.col').exists()).toBe(true);
+    expect(wrapper.findAll('.col').length).toBe(4);
+
+    expect(wrapper.find('.col:nth-child(1) p[title="Dag"]').exists()).toBe(true);
+    expect(wrapper.find('.col:nth-child(2) p[title="Uren"]').exists()).toBe(true);
+    expect(wrapper.find('.col:nth-child(3) p[title="Type"]').exists()).toBe(true);
+
+    expect(wrapper.find('.text-right').exists()).toBe(true);
+    expect(wrapper.find('.text-right').text()).toBe('Acties');
+  });
+
+  it('sets the "round" prop correctly', async () => {
+    expect(wrapper.props('round')).toBe(true);
+
+    await wrapper.setProps({
+      round: false,
+    });
+
+    expect(wrapper.props('round')).toBe(false);
+  });
+});
