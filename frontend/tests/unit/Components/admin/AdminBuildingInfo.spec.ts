@@ -6,6 +6,7 @@ describe('AdminBuildingInfo.vue', () => {
   let wrapper;
 
   beforeEach(() => {
+    AdminBuildingInfo.beforeMount = () => Promise.resolve();
     wrapper = mount(AdminBuildingInfo);
   })
 

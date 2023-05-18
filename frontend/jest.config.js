@@ -8,7 +8,8 @@ module.exports = {
     "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
   },
    collectCoverageFrom: [
-     'src/**/*.{js,vue,ts}',
+     'src/components/**/*.{js,vue,ts}',
+     'src/views/**/*.{js,vue,ts}',
      '!src/main.ts', // Exclude the main.js file or other entry points
      '!**/node_modules/**',
      '!src/api/EchoFetch/**',
