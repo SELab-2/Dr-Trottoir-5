@@ -5,30 +5,30 @@
         <p>{{ this.data.name }}</p>
       </v-col>
       <v-col cols="2">
-        <p class="text-style-url" @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
+        <p data-test="goToTrashTemplateContainersPage" class="text-style-url" @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
       </v-col>
       <v-col cols="2">
-        <p class="text-style-url" @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
+        <p data-test="goToTrashTemplateBuildingsPage" class="text-style-url" @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
       </v-col>
-      <v-col cols="1">
+      <v-col data-test="year" cols="1">
         {{ this.data.year }}
       </v-col>
-      <v-col cols="1">
+      <v-col data-test="week" cols="1">
         {{ this.data.week }}
       </v-col>
-      <v-col cols="1">
+      <v-col data-test="location" cols="1">
         {{ this.locatie }}
       </v-col>
-      <v-col cols="1">
+      <v-col data-test="even" cols="1">
         {{ this.data.even }}
       </v-col>
       <v-col class="text-right" cols="1">
-        <v-btn class="button-style" icon v-on:click="editTemplate">
+        <v-btn data-test="editTemplate" class="button-style" icon v-on:click="editTemplate">
           <EditIcon/>
         </v-btn>
       </v-col>
       <v-col class="text-right" cols="1">
-        <v-btn class="button-style" icon v-on:click="deleteTemplate">
+        <v-btn data-test="deleteTemplate" class="button-style" icon v-on:click="deleteTemplate">
           <DeleteIcon/>
         </v-btn>
       </v-col>
