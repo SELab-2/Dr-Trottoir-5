@@ -14,12 +14,12 @@
       </v-col>
       <v-col cols="4"/>
       <v-col class="text-right" cols="1">
-        <v-btn class="button-style" icon v-on:click="editContainer">
+        <v-btn data-test="edit" class="button-style" icon v-on:click="editContainer">
           <EditIcon/>
         </v-btn>
       </v-col>
       <v-col class="text-right" cols="1">
-        <v-btn class="button-style" icon v-on:click="deleteContainer">
+        <v-btn data-test="delete" class="button-style" icon v-on:click="deleteContainer">
           <DeleteIcon/>
         </v-btn>
       </v-col>
