@@ -2,15 +2,15 @@
   <v-card color="white" :class="`mx-auto my-10 py-5 w-75`">
     <v-row class="justify-space-between mx-auto">
       <v-col cols='12' sm='6' md='6'>
-        <v-text-field v-model='name' :readonly="!edit" :error-messages="check_errors(this.errors, 'name')" label='Naam' required></v-text-field>
+        <v-text-field data-test='name' v-model='name' :readonly="!edit" :error-messages="check_errors(this.errors, 'name')" label='Naam' required></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6">
-        <v-text-field :readonly="!edit" :error-messages="check_errors(this.errors, 'adres')" v-model="adres" label="Adres"></v-text-field>
+        <v-text-field data-test="adres" :readonly="!edit" :error-messages="check_errors(this.errors, 'adres')" v-model="adres" label="Adres"></v-text-field>
       </v-col>
     </v-row>
     <v-row class="justify-space-between mx-auto">
       <v-col cols='12' sm='6' md='6'>
-        <v-select label="Locatie"
+        <v-select data-test="location" label="Locatie"
                   :readonly="!edit"
                   :error-messages="check_errors(this.errors, 'location')"
                   variant="solo"
@@ -21,7 +21,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" sm="6" md="6">
-        <v-text-field :readonly="!edit" label="Klanten nummer" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model="ivago_klantnr"></v-text-field>
+        <v-text-field data-test="client-nr" :readonly="!edit" label="Klanten nummer" :error-messages="check_errors(this.errors, 'ivago_klantnr')" v-model="ivago_klantnr"></v-text-field>
       </v-col>
     </v-row>
     <v-row class="justify-space-between mx-auto">
@@ -32,8 +32,11 @@
                   v-model="manual.manualStatus"
         ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="6">
-        <v-file-input label="Handleiding" :readonly="!edit" v-model="manual" :error-messages="check_errors(this.errors, 'manual')" prepend-icon="mdi-file-upload-outline" ></v-file-input>
+      <v-col v-if="edit" cols="12" sm="6" md="6">
+        <v-file-input label="Handleiding" :readonly="!edit" v-model="new_manual" :error-messages="check_errors(this.errors, 'manual')" prepend-icon="mdi-file-upload-outline" ></v-file-input>
+      </v-col>
+      <v-col class="d-flex align-center pl-5 pb-10" v-if="!edit" cols="12" sm="6 md=6">
+        <normal-button text="Handleiding" :parent-function="open_manual"></normal-button>
       </v-col>
     </v-row>
     <v-col v-if="edit" class="d-flex justify-center align-center py-5">
@@ -80,6 +83,9 @@ export default {
     this.getBuildingInformation()
   },
   methods: {
+    open_manual() {
+      window.open(this.manual.file)
+    },
     check_errors,
     goEditPage() {
       router.push({name: 'admin_edit_building', params: {id: this.$route.params.id}})
@@ -100,7 +106,7 @@ export default {
         this.adres = result.adres
         this.ivago_klantnr = result.ivago_klantnr
         this.selectedLocation = result.location
-
+        console.log(result.manual);
         if (result.manual != null) {
           this.manual = result.manual;
           this.manual.file = this.manual.file.substring(this.manual.file.indexOf('/api/'))
