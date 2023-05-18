@@ -36,19 +36,19 @@
         <v-file-input label="Handleiding" :readonly="!edit" v-model="new_manual" :error-messages="check_errors(this.errors, 'manual')" prepend-icon="mdi-file-upload-outline" ></v-file-input>
       </v-col>
       <v-col class="d-flex align-center pl-5 pb-10" v-if="!edit" cols="12" sm="6 md=6">
-        <normal-button text="Handleiding" :parent-function="open_manual"></normal-button>
+        <normal-button data-test="manual-button" text="Handleiding" :parent-function="open_manual"></normal-button>
       </v-col>
     </v-row>
     <v-col v-if="edit" class="d-flex justify-center align-center py-5">
-      <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
-      <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
+      <normal-button data-test="save-button" text='Aanpassingen opslaan' :parent-function="save"/>
+      <normal-button data-test="cancel-button" text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
     </v-col>
     <v-col v-if="!edit" class="d-flex justify-center align-center py-5">
-      <normal-button text="Afvalcontainer toevoegen" :parent-function="addPlanning"></normal-button>
-      <normal-button text="Aanpassen" :parent-function="goEditPage" class="ml-2"></normal-button>
+      <normal-button data-test="afval-button" text="Afvalcontainer toevoegen" :parent-function="addPlanning"></normal-button>
+      <normal-button data-test="edit-button" text="Aanpassen" :parent-function="goEditPage" class="ml-2"></normal-button>
     </v-col>
   </v-card>
-  <ConfirmDialog ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?"
+  <ConfirmDialog data-test="dialog" ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?"
                  :confirm_function="deleteBuilding"></ConfirmDialog>
 </template>
 
@@ -106,7 +106,6 @@ export default {
         this.adres = result.adres
         this.ivago_klantnr = result.ivago_klantnr
         this.selectedLocation = result.location
-        console.log(result.manual);
         if (result.manual != null) {
           this.manual = result.manual;
           this.manual.file = this.manual.file.substring(this.manual.file.indexOf('/api/'))
