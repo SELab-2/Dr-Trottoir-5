@@ -109,7 +109,6 @@ export default {
     },
   },
   async beforeMount() {
-    /*
     await RequestHandler.handle(BuildingService.getManualById(this.data.id), {
       id: 'BuildingCardGetManual',
       style: 'SNACKBAR'
@@ -117,7 +116,6 @@ export default {
       this.status = result.manualStatus
       this.manual = result.file.substring(result.file.indexOf('/api/'))
     })
-     */
   }
 }
 </script>
