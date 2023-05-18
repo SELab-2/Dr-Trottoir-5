@@ -33,7 +33,7 @@
             :multiple="true"
             item-title="name"
             item-value="id"
-            label="Kies gebowen"
+            label="Kies gebouwen"
           ></v-select>
         </v-col>
       </v-row>

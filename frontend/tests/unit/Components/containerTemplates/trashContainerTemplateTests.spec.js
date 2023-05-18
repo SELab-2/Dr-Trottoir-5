@@ -1,8 +1,10 @@
 import {mount} from '@vue/test-utils'
 import TrashContainerTemplateCard from "@/components/containerTemplates/TrashContainerTemplateCard.vue";
 import TrashContainerTemplateList from "@/components/containerTemplates/TrashContainerTemplateList.vue";
-import trashContainerTemplateCreate from "@/components/containerTemplates/TrashContainerTemplateCreate.vue";
+import TrashContainerTemplateCreate from "@/components/containerTemplates/TrashContainerTemplateCreate.vue";
+import TrashContainerTemplateEdit from "@/components/containerTemplates/TrashContainerTemplateEdit.vue";
 import {triggerInput} from "../../../utils/testHelper";
+import TrashContainerTemplateHeader from "@/components/containerTemplates/TrashContainerTemplateHeader.vue";
 
 describe('trashContainerTemplateCard.vue', () => {
 
@@ -109,13 +111,13 @@ describe('trashContainerTemplateCreate.vue', () => {
   let wrapper;
 
   beforeEach(() => {
-    trashContainerTemplateCreate.beforeMount = jest.fn();
-    wrapper = mount(trashContainerTemplateCreate);
+    TrashContainerTemplateCreate.beforeMount = jest.fn();
+    wrapper = mount(TrashContainerTemplateCreate);
   })
 
   it('renders the component correctly', () => {
     expect(wrapper.exists()).toBe(true);
-    expect(trashContainerTemplateCreate.beforeMount).toBeCalled();
+    expect(TrashContainerTemplateCreate.beforeMount).toBeCalled();
   })
 
   it('sets textfield correctly', async () => {
@@ -142,11 +144,11 @@ describe('trashContainerTemplateCreate.vue', () => {
   })
 
   it('create button is called', async () => {
-    trashContainerTemplateCreate.methods.create = jest.fn();
-    wrapper = mount(trashContainerTemplateCreate);
+    TrashContainerTemplateCreate.methods.create = jest.fn();
+    wrapper = mount(TrashContainerTemplateCreate);
     const createButton = wrapper.find('[data-test="create"]');
     await createButton.trigger('click');
-    expect(trashContainerTemplateCreate.methods.create).toBeCalled();
+    expect(TrashContainerTemplateCreate.methods.create).toBeCalled();
   })
 
   it('v-select exists', () => {
@@ -156,4 +158,99 @@ describe('trashContainerTemplateCreate.vue', () => {
     expect(vSelect.at(0).attributes('label')).toBe('Locatie');
     expect(vSelect.at(1).attributes('label')).toBe('Kies gebouwen');
   })
+})
+
+describe('trashContainerTemplateEdit.vue', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    TrashContainerTemplateEdit.beforeMount = jest.fn();
+    wrapper = mount(TrashContainerTemplateEdit)
+  })
+
+  it('renders the component correctly', () => {
+    expect(wrapper.exists()).toBe(true);
+    expect(TrashContainerTemplateEdit.beforeMount).toBeCalled();
+  })
+
+  it('sets textfield correctly', async () => {
+    const textField = wrapper.find('v-text-field');
+    textField.element.value = 'test';
+    const activator = (x) => {
+      return {name: x}
+    }
+    await triggerInput(textField, wrapper, activator);
+    expect(wrapper.vm.name).toBe('test');
+    expect(textField.attributes('label')).toBe('Naam');
+  })
+
+  it('sets checkbox correctly', async () => {
+    const checkboxs = wrapper.findAll('v-checkbox');
+    const checkbox = checkboxs.at(0);
+    const checkbox2 = checkboxs.at(1);
+    const activator = (x) => {
+      return {even: x}
+    }
+    expect(wrapper.vm.even).toBe(true);
+    checkbox.element.value = false;
+    triggerInput(checkbox, wrapper, activator);
+    expect(wrapper.vm.even).toBe(false);
+    expect(checkbox.attributes('label')).toBe('Even');
+
+    const activator2 = (x) => {
+      return {permanent: x}
+    }
+    expect(wrapper.vm.permanent).toBe(true);
+    checkbox2.element.value = false;
+    triggerInput(checkbox2, wrapper, activator2);
+    expect(wrapper.vm.permanent).toBe(false);
+    expect(checkbox2.attributes('label')).toBe('Permanent');
+  })
+
+  it('create button is called', async () => {
+    TrashContainerTemplateCreate.methods.create = jest.fn();
+    wrapper = mount(TrashContainerTemplateCreate);
+    const createButton = wrapper.find('[data-test="create"]');
+    await createButton.trigger('click');
+    expect(TrashContainerTemplateCreate.methods.create).toBeCalled();
+  })
+
+  it('v-select exists', () => {
+    const vSelect = wrapper.findAll('v-select');
+    expect(vSelect.length).toBe(2);
+
+    expect(vSelect.at(0).attributes('label')).toBe('Locatie');
+    expect(vSelect.at(1).attributes('label')).toBe('Kies gebouwen');
+  })
+})
+
+describe('TrashContainerTemplateHeader.vue', () => {
+
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(TrashContainerTemplateHeader);
+  })
+
+  it('renders the component correctly with the right text', () => {
+    expect(wrapper.exists()).toBe(true);
+
+    expect(wrapper.find('v-container.border').exists()).toBe(true);
+    expect(wrapper.find('v-row[align="center"][justify="center"]').exists()).toBe(true);
+    expect(wrapper.findAll('v-col.col').length).toBe(7);
+
+    expect(wrapper.find('v-col.col:nth-child(1) p[title="Naam"]').text()).toBe('Naam');
+    expect(wrapper.find('v-col.col:nth-child(2) p[title="Vuilnisbakken"]').text()).toBe('Vuilnisbakken');
+    expect(wrapper.find('v-col.col:nth-child(3) p[title="Gebouwen"]').text()).toBe('Gebouwen');
+    expect(wrapper.find('v-col.col:nth-child(4) p[title="Jaar"]').text()).toBe('Jaar');
+    expect(wrapper.find('v-col.col:nth-child(5) p[title="Week"]').text()).toBe('Week');
+    expect(wrapper.find('v-col.col:nth-child(6) p[title="Locatie"]').text()).toBe('Locatie');
+    expect(wrapper.find('v-col.col:nth-child(7) p[title="Even"]').text()).toBe('Even');
+    expect(wrapper.find('v-col.text-right').text()).toBe('Acties');
+
+    expect(wrapper.props().round).toBe(false);
+
+    expect(wrapper.vm.$options.name).toBe('TrashContainerTemplateHeader');
+  });
+
 })
