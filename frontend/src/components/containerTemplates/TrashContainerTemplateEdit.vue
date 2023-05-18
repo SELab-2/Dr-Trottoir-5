@@ -39,7 +39,7 @@
       </v-row>
       <v-row class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
-          <v-btn class="overflow-hidden" @click="create()">Aanpassen</v-btn>
+          <v-btn data-test="create" class="overflow-hidden" @click="create()">Aanpassen</v-btn>
         </v-col>
       </v-row>
     </v-form>

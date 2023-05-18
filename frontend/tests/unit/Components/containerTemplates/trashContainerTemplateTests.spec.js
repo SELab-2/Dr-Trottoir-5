@@ -208,11 +208,11 @@ describe('trashContainerTemplateEdit.vue', () => {
   })
 
   it('create button is called', async () => {
-    TrashContainerTemplateCreate.methods.create = jest.fn();
-    wrapper = mount(TrashContainerTemplateCreate);
+    TrashContainerTemplateEdit.methods.create = jest.fn();
+    wrapper = mount(TrashContainerTemplateEdit);
     const createButton = wrapper.find('[data-test="create"]');
     await createButton.trigger('click');
-    expect(TrashContainerTemplateCreate.methods.create).toBeCalled();
+    expect(TrashContainerTemplateEdit.methods.create).toBeCalled();
   })
 
   it('v-select exists', () => {

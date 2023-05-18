@@ -1,6 +1,7 @@
 import {mount} from '@vue/test-utils';
 import TrashContainerCard from "@/components/containerTemplates/containers/TrashContainerCard.vue";
 import TrashContainerCreate from "@/components/containerTemplates/containers/TrashContainerCreate.vue";
+import TrashContainerEdit from "@/components/containerTemplates/containers/TrashContainerEdit.vue";
 import {triggerInput} from "../../../utils/testHelper";
 
 
@@ -107,8 +108,8 @@ describe('trashContainerCreate.vue', () => {
     beginUur.element.value = '10 AM';
     eindUur.element.value = '12 PM';
 
-    await triggerInput(beginUur, wrapper,activator1);
-    await triggerInput(eindUur, wrapper,activator2);
+    await triggerInput(beginUur, wrapper, activator1);
+    await triggerInput(eindUur, wrapper, activator2);
 
     expect(wrapper.vm.start_hour).toBe('10 AM');
     expect(wrapper.vm.end_hour).toBe('12 PM');
@@ -120,4 +121,65 @@ describe('trashContainerCreate.vue', () => {
     expect(vSelects.length).toBe(2);
   })
 
+})
+
+describe('trashContainerEdit.vue', () => {
+  let wrapper;
+
+  beforeEach(() => {
+    TrashContainerEdit.beforeMount = jest.fn();
+    wrapper = mount(TrashContainerEdit);
+  })
+
+  it('renders the component correctly', () => {
+    expect(wrapper.exists()).toBe(true);
+
+    expect(wrapper.find('.justify-center.my-10').exists()).toBe(true);
+    expect(wrapper.find('.text-h2').text()).toBe('Pas de container aan');
+
+    expect(wrapper.find('v-form[fast-fail]').exists()).toBe(true);
+    expect(wrapper.findAll('.justify-space-between.mx-auto v-col').length).toBe(4);
+
+    expect(wrapper.find('v-col:nth-child(1) v-select[label="containerType"]').exists()).toBe(true);
+    expect(wrapper.find('v-col:nth-child(2) v-select[label="containerType"]').exists()).toBe(true);
+    expect(wrapper.find('v-col:nth-child(3) v-text-field[label="Beginuur"]').exists()).toBe(true);
+    expect(wrapper.find('v-col:nth-child(4) v-text-field[label="Einduur"]').exists()).toBe(true);
+
+    expect(wrapper.find('.overflow-hidden').text()).toBe('Aanpassen');
+  });
+
+  it('editContainer is called', async () => {
+    TrashContainerEdit.methods.editContainer = jest.fn();
+    wrapper = mount(TrashContainerEdit);
+    const createButton = wrapper.find('.overflow-hidden');
+    await createButton.trigger('click');
+    expect(TrashContainerEdit.methods.editContainer).toBeCalled();
+  })
+
+  it('sets textfield values correctly', async () => {
+    const beginUur = wrapper.find('v-col:nth-child(3) v-text-field[label="Beginuur"]');
+    const eindUur = wrapper.find('v-col:nth-child(4) v-text-field[label="Einduur"]');
+
+    const activator1 = (x) => {
+      return {start_hour: x}
+    }
+
+    const activator2 = (x) => {
+      return {end_hour: x}
+    }
+    beginUur.element.value = '10 AM';
+    eindUur.element.value = '12 PM';
+
+    await triggerInput(beginUur, wrapper, activator1);
+    await triggerInput(eindUur, wrapper, activator2);
+
+    expect(wrapper.vm.start_hour).toBe('10 AM');
+    expect(wrapper.vm.end_hour).toBe('12 PM');
+  })
+
+  it('check v-select is rendered correctly', () => {
+    const vSelects = wrapper.findAll('v-select');
+
+    expect(vSelects.length).toBe(2);
+  })
 })
