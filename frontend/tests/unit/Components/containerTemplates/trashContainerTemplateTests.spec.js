@@ -4,6 +4,7 @@ import TrashContainerTemplateList from "@/components/containerTemplates/TrashCon
 import TrashContainerTemplateCreate from "@/components/containerTemplates/TrashContainerTemplateCreate.vue";
 import TrashContainerTemplateEdit from "@/components/containerTemplates/TrashContainerTemplateEdit.vue";
 import {triggerInput} from "../../../utils/testHelper";
+import TrashContainerTemplateHeader from "@/components/containerTemplates/TrashContainerTemplateHeader.vue";
 
 describe('trashContainerTemplateCard.vue', () => {
 
@@ -221,4 +222,35 @@ describe('trashContainerTemplateEdit.vue', () => {
     expect(vSelect.at(0).attributes('label')).toBe('Locatie');
     expect(vSelect.at(1).attributes('label')).toBe('Kies gebouwen');
   })
+})
+
+describe('TrashContainerTemplateHeader.vue', () => {
+
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(TrashContainerTemplateHeader);
+  })
+
+  it('renders the component correctly with the right text', () => {
+    expect(wrapper.exists()).toBe(true);
+
+    expect(wrapper.find('v-container.border').exists()).toBe(true);
+    expect(wrapper.find('v-row[align="center"][justify="center"]').exists()).toBe(true);
+    expect(wrapper.findAll('v-col.col').length).toBe(7);
+
+    expect(wrapper.find('v-col.col:nth-child(1) p[title="Naam"]').text()).toBe('Naam');
+    expect(wrapper.find('v-col.col:nth-child(2) p[title="Vuilnisbakken"]').text()).toBe('Vuilnisbakken');
+    expect(wrapper.find('v-col.col:nth-child(3) p[title="Gebouwen"]').text()).toBe('Gebouwen');
+    expect(wrapper.find('v-col.col:nth-child(4) p[title="Jaar"]').text()).toBe('Jaar');
+    expect(wrapper.find('v-col.col:nth-child(5) p[title="Week"]').text()).toBe('Week');
+    expect(wrapper.find('v-col.col:nth-child(6) p[title="Locatie"]').text()).toBe('Locatie');
+    expect(wrapper.find('v-col.col:nth-child(7) p[title="Even"]').text()).toBe('Even');
+    expect(wrapper.find('v-col.text-right').text()).toBe('Acties');
+
+    expect(wrapper.props().round).toBe(false);
+
+    expect(wrapper.vm.$options.name).toBe('TrashContainerTemplateHeader');
+  });
+
 })
