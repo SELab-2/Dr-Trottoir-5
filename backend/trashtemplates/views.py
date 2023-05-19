@@ -8,8 +8,6 @@ from ronde.models import LocatieEnum, Building
 from planning.models import WeekPlanning
 from .util import *
 
-import datetime
-
 
 class BuildingTrashPlan(generics.ListAPIView):
     permission_classes = [BewonerPermission | SyndicusPermission | StudentPermission]
