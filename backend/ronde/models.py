@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
+from sortedm2m.fields import SortedManyToManyField
 import uuid
 
 
@@ -121,4 +122,4 @@ class Ronde(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name="Locatie"
     )
-    buildings = models.ManyToManyField(Building, blank=True)
+    buildings = SortedManyToManyField(Building, blank=True)

@@ -50,7 +50,7 @@ export default defineComponent({
     locations: [],
     buildings: [],
     location: null,
-    selected: null,
+    selected: [],
     name: '',
     errors: null
   }),

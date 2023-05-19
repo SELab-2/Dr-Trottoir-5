@@ -10,3 +10,4 @@ model_bakery
 djangorestframework-simplejwt
 requests
 django-cors-headers
+django-sortedm2m
