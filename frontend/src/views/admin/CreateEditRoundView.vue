@@ -19,7 +19,7 @@
           </v-col>
           <v-col cols='12' sm='6' md='6'>
             <v-autocomplete
-              label="Gebouwen" :items="buildings" :error-messages="check_errors(this.errors, 'buildings')" multiple item-title="name" item-value="id"
+              label="Gebouwen" :items="buildings.filter(building => building.location === this.location)" :error-messages="check_errors(this.errors, 'buildings')" multiple item-title="name" item-value="id"
               v-model="selected" variant="outlined"
             ></v-autocomplete>
           </v-col>
@@ -55,17 +55,17 @@ export default defineComponent({
     errors: null
   }),
   async beforeCreate() {
-    RequestHandler.handle(RoundService.getLocations(), {
+    await RequestHandler.handle(RoundService.getLocations(), {
       id: 'getLocationsError',
       style: 'none'
     }).then(l => {
       this.locations = l;
     }).catch(() => null);
 
-    RequestHandler.handle(RoundService.getBuildings(), {
+    await RequestHandler.handle(RoundService.getBuildings(), {
       id: 'getBuildingsError',
       style: 'none'
-    }).then(b => {
+    }).then(async b => {
       this.buildings = b;
     }).catch(() => null);
 
@@ -100,9 +100,9 @@ export default defineComponent({
           name: this.name,
           location: this.location,
           buildings: this.selected
-        }).then(b => {
+        }).then(() => {
           this.$store.dispatch("snackbar/open", {
-            message: `Ronde ${b.name} is aangepast.`,
+            message: `Ronde ${this.name} is aangepast.`,
             color: "success"
           });
           router.push({ name: 'rounds' });

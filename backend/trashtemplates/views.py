@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
-from planning.util import filter_templates, get_current_week_planning
+from planning.util import filter_templates, get_current_week_planning, get_current_time
 from users.permissions import *
 from .util import *
 
@@ -56,7 +56,7 @@ class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         planning = get_current_week_planning()
 
         data = request.data
@@ -115,7 +115,7 @@ class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
         was terug actief gezet worden.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         planning = get_current_week_planning()
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden

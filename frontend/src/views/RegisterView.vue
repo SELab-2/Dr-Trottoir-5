@@ -26,7 +26,13 @@
             </v-col>
             <v-col cols="12">
               <v-autocomplete
-                label="Locatie" :items="['Gent']" :error-messages="check_errors(this.errors, 'location')"
+                label="Locaties"
+                multiple
+                :items="locations"
+                item-title="name"
+                item-value="id"
+                v-model="selected_locations"
+                :error-messages="check_errors(this.errors, 'locations')"
               ></v-autocomplete>
             </v-col>
             <v-col cols="12">
@@ -55,6 +61,8 @@ import NormalButton from '@/components/NormalButton.vue';
 import LoginTopBar from "@/components/LoginTopBar.vue";
 import router from '@/router';
 import {check_errors, get_errors} from "@/error_handling";
+import {RequestHandler} from "@/api/RequestHandler";
+import RoundService from "@/api/services/RoundService";
 
 export default defineComponent({
   name: 'RegisterView',
@@ -71,8 +79,18 @@ export default defineComponent({
     password: '',
     password2: '',
     phone_nr: '',
+    locations: [],
+    selected_locations: null,
     errors: null
   }),
+  beforeCreate() {
+    RequestHandler.handle(RoundService.getLocations(), {
+      id: 'getLocationsError',
+      style: 'SNACKBAR'
+    }).then(l => {
+      this.locations = l;
+    }).catch(() => null);
+  },
   methods: {
     check_errors,
     async apiRegister () {
@@ -82,7 +100,8 @@ export default defineComponent({
         this.password2,
         this.firstname,
         this.lastname,
-        this.phone_nr
+        this.phone_nr,
+        this.selected_locations
       );
 
       AuthService.register(wrapper).then(async () => {
