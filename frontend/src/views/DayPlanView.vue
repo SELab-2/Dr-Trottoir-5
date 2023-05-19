@@ -49,11 +49,13 @@ export default defineComponent({
       id: "getDayplanningError",
       style: "NONE"
     }).then(plannings => {
+      console.log(plannings)
       plannings.forEach(planning => {
         RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
           id: `getStatus${planning.id}Error`,
           style: "NONE"
         }).then(statuses => {
+          console.log(statuses)
           const buildings = Object(planning.ronde.buildings);
           for (let building of buildings)
             building.status = statuses[building.id].AR === 0 ? 'Niet begonnen' : statuses[building.id].DE > 0 ? 'Voltooid' : 'Bezig';

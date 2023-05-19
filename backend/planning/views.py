@@ -43,8 +43,13 @@ class StudentDayPlan(generics.RetrieveAPIView):
                 if plan.time.day == day_name and request.user in plan.students.all():
                     dayplans.append(plan)
 
-        if dayplan is None:
+        if len(dayplans)  == 0:
             return HttpResponseNotFound()
+
+        data = []
+        for dayplan in dayplans:
+            data.append(DagPlanningSerializerFull(dayplan).data)
+        return Response(data)
 
 
 @api_view(["GET"])

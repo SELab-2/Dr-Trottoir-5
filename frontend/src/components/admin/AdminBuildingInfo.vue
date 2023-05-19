@@ -107,7 +107,7 @@
           <ul>
             <li v-for="(el) in this.departs" :key="el">
               <v-col cols="12">
-                <FotoCardAdmin v-bind:data="el"/>
+                <FotoCardAdmin v-bind:data="el" :syndici="0" building="1"/>
               </v-col>
             </li>
           </ul>
@@ -156,14 +156,15 @@ export default {
       new_manual: null,
       selectedLocation: null,
       locations: [],
-      errors: null
+      errors: null,
+      // syndici: 0
     }
   },
 
-  beforeMount() {
-    this.getBuildingInformation(this.$route.params.id).then(() => this.getStudentPosts())
-    this.getTrashPickUps()
-    RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
+  async beforeMount() {
+    await this.getBuildingInformation(this.$route.params.id).then(() => this.getStudentPosts())
+    await this.getTrashPickUps()
+    await RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
       .then(async result => {
         this.buildings = result
       })
@@ -184,6 +185,7 @@ export default {
         this.location = result.location
         this.ivago_klantnr = result.ivago_klantnr
         this.selectedLocation = result.location
+        // this.syndici = result.syndicus.length()
 
         if (result.manual != null) {
           this.manual = result.manual;
@@ -194,6 +196,7 @@ export default {
             color: "error"
           })
         }
+        console.log(this.id)
       }).catch(async () => {
         await router.push({name: 'buildings'})
       })
