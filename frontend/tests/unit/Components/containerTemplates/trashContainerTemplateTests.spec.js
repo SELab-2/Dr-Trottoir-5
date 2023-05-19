@@ -17,8 +17,6 @@ describe('trashContainerTemplateCard.vue', () => {
         data: {
           id: 1,
           name: 'Template 1',
-          year: 2023,
-          week: 20,
           location: 1,
           even: true,
         }
@@ -33,8 +31,6 @@ describe('trashContainerTemplateCard.vue', () => {
 
   it('displays the props', () => {
     expect(wrapper.find('p').text()).toBe('Template 1');
-    expect(wrapper.find('[data-test="year"]').text()).toBe("2023");
-    expect(wrapper.find('[data-test="week"]').text()).toBe("20");
     expect(wrapper.find('[data-test="even"]').text()).toBe("true");
   });
 
@@ -152,11 +148,10 @@ describe('trashContainerTemplateCreate.vue', () => {
   })
 
   it('v-select exists', () => {
-    const vSelect = wrapper.findAll('v-select');
-    expect(vSelect.length).toBe(2);
+    const vSelect = wrapper.find('v-select');
+    expect(vSelect.exists()).toBeTruthy()
 
-    expect(vSelect.at(0).attributes('label')).toBe('Locatie');
-    expect(vSelect.at(1).attributes('label')).toBe('Kies gebouwen');
+    expect(vSelect.attributes('label')).toBe('Locatie');
   })
 })
 
@@ -185,9 +180,8 @@ describe('trashContainerTemplateEdit.vue', () => {
   })
 
   it('sets checkbox correctly', async () => {
-    const checkboxs = wrapper.findAll('v-checkbox');
-    const checkbox = checkboxs.at(0);
-    const checkbox2 = checkboxs.at(1);
+    const checkbox = wrapper.find('v-checkbox');
+
     const activator = (x) => {
       return {even: x}
     }
@@ -197,30 +191,11 @@ describe('trashContainerTemplateEdit.vue', () => {
     expect(wrapper.vm.even).toBe(false);
     expect(checkbox.attributes('label')).toBe('Even');
 
-    const activator2 = (x) => {
-      return {permanent: x}
-    }
-    expect(wrapper.vm.permanent).toBe(true);
-    checkbox2.element.value = false;
-    triggerInput(checkbox2, wrapper, activator2);
-    expect(wrapper.vm.permanent).toBe(false);
-    expect(checkbox2.attributes('label')).toBe('Permanent');
-  })
-
-  it('create button is called', async () => {
-    TrashContainerTemplateEdit.methods.create = jest.fn();
-    wrapper = mount(TrashContainerTemplateEdit);
-    const createButton = wrapper.find('[data-test="create"]');
-    await createButton.trigger('click');
-    expect(TrashContainerTemplateEdit.methods.create).toBeCalled();
   })
 
   it('v-select exists', () => {
-    const vSelect = wrapper.findAll('v-select');
-    expect(vSelect.length).toBe(2);
-
-    expect(vSelect.at(0).attributes('label')).toBe('Locatie');
-    expect(vSelect.at(1).attributes('label')).toBe('Kies gebouwen');
+    const vSelect = wrapper.find('v-select');
+    expect(vSelect.attributes('label')).toBe('Locatie');
   })
 })
 
@@ -237,15 +212,14 @@ describe('TrashContainerTemplateHeader.vue', () => {
 
     expect(wrapper.find('v-container.border').exists()).toBe(true);
     expect(wrapper.find('v-row[align="center"][justify="center"]').exists()).toBe(true);
-    expect(wrapper.findAll('v-col.col').length).toBe(7);
+    expect(wrapper.findAll('v-col.col').length).toBe(6);
 
     expect(wrapper.find('v-col.col:nth-child(1) p[title="Naam"]').text()).toBe('Naam');
     expect(wrapper.find('v-col.col:nth-child(2) p[title="Vuilnisbakken"]').text()).toBe('Vuilnisbakken');
     expect(wrapper.find('v-col.col:nth-child(3) p[title="Gebouwen"]').text()).toBe('Gebouwen');
-    expect(wrapper.find('v-col.col:nth-child(4) p[title="Jaar"]').text()).toBe('Jaar');
-    expect(wrapper.find('v-col.col:nth-child(5) p[title="Week"]').text()).toBe('Week');
-    expect(wrapper.find('v-col.col:nth-child(6) p[title="Locatie"]').text()).toBe('Locatie');
-    expect(wrapper.find('v-col.col:nth-child(7) p[title="Even"]').text()).toBe('Even');
+    expect(wrapper.find('v-col.col:nth-child(4) p[title="Jaar"]').text()).toBe('Status');
+    expect(wrapper.find('v-col.col:nth-child(5) p[title="Locatie"]').text()).toBe('Locatie');
+    expect(wrapper.find('v-col.col:nth-child(6) p[title="Even"]').text()).toBe('Even');
     expect(wrapper.find('v-col.text-right').text()).toBe('Acties');
 
     expect(wrapper.props().round).toBe(false);

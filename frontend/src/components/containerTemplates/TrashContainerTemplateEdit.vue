@@ -23,7 +23,7 @@
           />
         </v-col>
       </v-row>
-      <StateButtons :status="status" :eenmalig="() => update()" :permanent="() => update()"/>
+      <StateButtons data-test="state" :status="status" :eenmalig="() => update()" :permanent="() => update()"/>
     </v-form>
   </v-card>
 </template>
