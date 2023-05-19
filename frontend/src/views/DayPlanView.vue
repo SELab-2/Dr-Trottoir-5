@@ -69,6 +69,7 @@ export default defineComponent({
                   return container.collection_day.day === day;
                 });
               }
+              return false;
             });
             this.rondes.push(planning);
           }).catch(() => null);
