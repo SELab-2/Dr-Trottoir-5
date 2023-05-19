@@ -1,5 +1,6 @@
 import BuildingManual from "@/api/models/BuildingManual";
 
+// TODO fix, object not correct with what backend sends
 export default class Building {
   name: string;
   id: number;

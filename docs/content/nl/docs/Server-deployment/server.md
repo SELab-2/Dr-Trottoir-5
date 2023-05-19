@@ -14,6 +14,8 @@ description: >
 * python 3.11
 * git
 * postgresql
+* nodejs
+* bindfs
 
 Deze pakketten zijn op de volgende manier te installeren:
 ```bash
@@ -21,6 +23,8 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install software-properties-common -y
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt install python3.11 nginx git postgresql postgresql-contrib
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&\
+sudo apt-get install -y nodejs bindfs
 ```
 
 Clone vervolgens de [github repo](https://github.com/SELab-2/Dr-Trottoir-5):

@@ -20,7 +20,7 @@ export default {
       childComponent: TrashContainerTemplateCard,
       elements: [],
       headComponent: TrashContainerTemplateHeader,
-      keys: ['name', 'year', 'week', 'location']
+      keys: ['name', 'location']
     }
   },
   methods: {
@@ -38,6 +38,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>
