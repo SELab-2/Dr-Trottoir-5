@@ -28,20 +28,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.col {
-  display: inline-block;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.col:hover {
-  white-space: normal;
-}
-
-.border {
-  border: 1px solid #E3e3e3;
-}
-</style>

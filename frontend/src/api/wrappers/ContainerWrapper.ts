@@ -3,5 +3,5 @@ import {ContainerType} from "@/api/models/ContainerType";
 
 export default class ContainerWrapper {
   collection_day: ContainerCollectionDay;
-  type: ContainerType;
+  type: String;
 }
