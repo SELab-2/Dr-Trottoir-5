@@ -2,27 +2,27 @@
   <v-navigation-drawer v-model="drawer" :class="smallScreen ? 'h-75' : 'py-10'" :location="smallScreen ? 'bottom' : 'right'" temporary
                        touchless>
     <v-spacer></v-spacer>
-    <v-list density="compact" nav>
-      <v-list-item v-if="!this.isAdminOrSu" prepend-icon="mdi-home-account" title="Home" to="/"
+    <v-list data-test="list" density="compact" nav>
+      <v-list-item data-test="home" v-if="!this.isAdminOrSu" prepend-icon="mdi-home-account" title="Home" to="/"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{name: 'admin_home'}"
+      <v-list-item data-test="dashboard" v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{name: 'admin_home'}"
                    value="dashboard"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" :to="{name: 'studenttemplates'}"
+      <v-list-item data-test="templates" v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" :to="{name: 'studenttemplates'}"
                    value="studenten templates"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-city" title="Locaties" :to="{name: 'locations'}"
+      <v-list-item data-test="locations" v-if="this.isAdminOrSu" prepend-icon="mdi-city" title="Locaties" :to="{name: 'locations'}"
                    value="locaties"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-bike" title="Rondes" :to="{name: 'rounds'}"
+      <v-list-item data-test="rounds" v-if="this.isAdminOrSu" prepend-icon="mdi-bike" title="Rondes" :to="{name: 'rounds'}"
                    value="rondes"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-office-building" title="Gebouwen" :to="{name: 'buildings'}"
+      <v-list-item data-test="buildings" v-if="this.isAdminOrSu" prepend-icon="mdi-office-building" title="Gebouwen" :to="{name: 'buildings'}"
                    value="gebouwen"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" :to="{name: 'students'}"
+      <v-list-item data-test="student" v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" :to="{name: 'students'}"
                    value="studenten"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" :to="{name: 'syndici'}"
+      <v-list-item data-test="syndicus" v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" :to="{name: 'syndici'}"
                    value="syndicussen"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" :to="{name: 'mailtemplates'}"
+      <v-list-item data-test="emails" v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" :to="{name: 'mailtemplates'}"
                    value="email templates"></v-list-item>
-      <v-list-item prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
-      <v-list-item prepend-icon="mdi-logout" @click="this.logout()" title="Logout" value="logout"></v-list-item>
+      <v-list-item data-test="account" prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
+      <v-list-item data-test="logout" prepend-icon="mdi-logout" @click="this.logout()" title="Logout" value="logout"></v-list-item>
     </v-list>
     <v-divider></v-divider>
   </v-navigation-drawer>
