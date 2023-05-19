@@ -72,10 +72,10 @@ export default {
     async aanpassen(eenmalig) {
 
       /* Al de gebouwen die niet in de originele lijst zaten en dus nieuw toegevoegd moeten worden. */
-      this.building_chosen.forEach(building_id => {
+      for (const building_id of this.building_chosen) {
         if (!this.building_originals.includes(building_id)) {
           if (!eenmalig) {
-            RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
+            await RequestHandler.handle(TrashTemplateService.newBuildingToTemplate(this.$route.params.id, {
               building: building_id,
               selection: []
             }), {
@@ -83,7 +83,7 @@ export default {
               style: 'SNACKBAR'
             })
           } else {
-            RequestHandler.handle(TrashTemplateService.newBuildingToTemplateEenmalig(this.$route.params.id, {
+            await RequestHandler.handle(TrashTemplateService.newBuildingToTemplateEenmalig(this.$route.params.id, {
               building: building_id,
               selection: []
             }), {
@@ -92,16 +92,16 @@ export default {
             })
           }
         }
-      })
+      }
       /* Al de gebouwen die niet in de geselecteerde lijst zitten en dus verwijderd moeten worden. */
-      this.building_originals.forEach((building) => {
+      for (const building of this.building_originals) {
         if (!this.building_chosen.includes(building)) {
           RequestHandler.handle(TrashTemplateService.deleteBuildingTemplate(this.$route.params.id, building), {
             id: 'deletebuildingError',
             style: 'SNACKBAR'
           })
         }
-      })
+      }
       return await router.push({name: 'trashtemplateBuildings', params: {id: this.$route.params.id}})
     }
   }
