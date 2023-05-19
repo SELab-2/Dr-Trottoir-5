@@ -17,7 +17,7 @@ from planning.util import get_current_week_planning, make_copy
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
     queryset = LocatieEnum.objects.all()
     serializer_class = LocatieEnumSerializer
-    permission_classes = [ AllowAnyReadOnly ]
+    permission_classes = [AllowAnyReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
         data = request.data
