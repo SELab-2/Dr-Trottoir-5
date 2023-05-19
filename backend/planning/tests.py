@@ -40,6 +40,7 @@ class CreateTest(APITestCase):
         self.dagPlanning.students.set([self.student, self.user])
         self.studentTemplate.dag_planningen.set([self.dagPlanning])
         self.weekPlanning.student_templates.set([self.studentTemplate])
+        self.studentTemplate.rondes.set([self.ronde])
 
     def testCreateStudentTemplate(self):
         # Create a student template
@@ -249,3 +250,125 @@ class CreateTest(APITestCase):
         response = StudentDayPlan.as_view()(request, year=2023, week=1,
                                             day=0).data
         self.assertEqual(len(response), 1)
+
+    def testGetDagPlanning(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/dagplanning/{self.dagPlanning.pk}/")
+        force_authenticate(request, self.user)
+        response = DagPlanningRetrieveUpdateAPIView.as_view()(request,
+                                                              pk=self.dagPlanning.pk).data
+
+        self.assertIn("id", response)
+
+    def testGetPlanningStatus(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/dagplanning/2023/1/"
+                              f"{self.dagPlanning.pk}/status/")
+        force_authenticate(request, self.user)
+        response = planning_status(request, year=2023,
+                                   week=1,
+                                   pk=self.dagPlanning.pk).data
+        self.assertEqual(type(response), dict)
+
+    def testGetPlanningPictures(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/dagplanning/2023/1/"
+                              f"{self.dagPlanning.pk}/pictures/")
+        force_authenticate(request, self.user)
+        response = planning_pictures(request, year=2023,
+                                     week=1,
+                                     pk=self.dagPlanning.pk).data
+        self.assertEqual(type(response), dict)
+
+    def testGetTemplateForPlanning(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/find/planning/"
+                              f"{self.dagPlanning.pk}/")
+        force_authenticate(request, self.user)
+        response = template_for_planning(request, pk=self.dagPlanning.pk).data
+        self.assertIn("template_id", response)
+
+    def testStudentTemplateRondeTime(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/rondes/2023/1/1/"
+                              f"{self.location.pk}")
+        force_authenticate(request, self.user)
+        response = StudentTemplateRondeView.as_view()(request, year=2023,
+                                                      week=1, day=1,
+                                                      location=self.location.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def testStudentTemplates(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/")
+        force_authenticate(request, self.user)
+        response = StudentTemplateView.as_view()(request).data
+        # template is niet actief
+        self.assertEqual(len(response), 0)
+
+    def testStudentTemplate(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/"
+                              f"{self.studentTemplate.pk}/")
+        force_authenticate(request, self.user)
+        response = StudentTemplateDetailView.as_view()(request,
+                                                       template_id=self.studentTemplate.pk)
+        self.assertEqual(response.data["id"], self.studentTemplate.id)
+
+    def testStudentTemplatesRondes(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/"
+                              f"{self.studentTemplate.pk}/rondes")
+        force_authenticate(request, self.user)
+        response = RondesView.as_view()(request,
+                                        template_id=self.studentTemplate.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["id"], self.ronde.id)
+
+    def testStudentTemplateRonde(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/"
+                              f"{self.studentTemplate.pk}/rondes/"
+                              f"{self.ronde.pk}/")
+        force_authenticate(request, self.user)
+        response = RondeView.as_view()(request,
+                                       template_id=self.studentTemplate.pk,
+                                       ronde_id=self.ronde.pk)
+        # get not supported
+        self.assertEqual(response.status_code, 405)
+
+    def testStudentTemplateDagPlanningen(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/"
+                              f"{self.studentTemplate.pk}/"
+                              f"rondes/{self.ronde.pk}/"
+                              f"dagplanningen/")
+        force_authenticate(request, self.user)
+        response = DagPlanningenView.as_view()(request, template_id=
+        self.studentTemplate.pk, ronde_id=self.ronde.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["id"], self.dagPlanning.pk)
+
+    def testStudentTemplateDagPlanningPermanent(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/"
+                              f"{self.studentTemplate.pk}/dagplanningen/"
+                              f"{self.dagPlanning.pk}/")
+        force_authenticate(request, self.user)
+        response = DagPlanningView.as_view()(request,
+                                             template_id=self.studentTemplate.pk,
+                                             dag_id=self.dagPlanning.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], self.dagPlanning.pk)
+
+    def testStudentTemplateDagPlanningNonPermanent(self):
+        factory = APIRequestFactory()
+        request = factory.get(f"/api/studenttemplates/"
+                              f"{self.studentTemplate.pk}/dagplanningen/"
+                              f"{self.dagPlanning.pk}/eenmalig/")
+        force_authenticate(request, self.user)
+        response = DagPlanningView.as_view()(request,
+                                             template_id=self.studentTemplate.pk,
+                                             dag_id=self.dagPlanning.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], self.dagPlanning.pk)
