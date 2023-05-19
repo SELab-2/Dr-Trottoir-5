@@ -70,8 +70,8 @@ export default {
       await RequestHandler.handle(trashTemplateService.deleteContainerFromTemplate(this.id, this.data.extra_id), {
         id: 'deleteContainerFromTemplateError',
         style: 'SNACKBAR'
-      })
-      await router.push({name: this.$route.name, params: this.$route.params})
+      }).then(() => null).catch(() => null);
+      window.location.reload()
     },
   },
   async beforeMount() {
