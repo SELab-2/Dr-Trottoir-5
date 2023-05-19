@@ -9,7 +9,7 @@ from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission, SyndicusPermission
+    SuperstudentPermission, SyndicusPermission, AllowAnyReadOnly
 from trashtemplates.util import update
 from planning.util import get_current_week_planning, make_copy
 
@@ -17,8 +17,7 @@ from planning.util import get_current_week_planning, make_copy
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
     queryset = LocatieEnum.objects.all()
     serializer_class = LocatieEnumSerializer
-    permission_classes = [
-        StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [ AllowAnyReadOnly ]
 
     def post(self, request, *args, **kwargs):
         data = request.data

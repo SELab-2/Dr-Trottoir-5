@@ -542,11 +542,6 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         if "name" not in data:
             data["name"] = template.name
 
-        if "location" not in data:
-            data["location"] = template.location
-        else:
-            data["location"] = LocatieEnum.objects.get(id=data["location"])
-
         if "start_hour" not in data:
             data["start_hour"] = template.start_hour
         else:
@@ -566,7 +561,6 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
-            template.location = data["location"]
             template.start_hour = data["start_hour"]
             template.end_hour = data["end_hour"]
             template.save()
@@ -576,7 +570,7 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
             name=data["name"],
             even=template.even,
             status=template.status,
-            location=data["location"],
+            location=template.location,
             start_hour=data["start_hour"],
             end_hour=data["end_hour"],
             year=current_year,

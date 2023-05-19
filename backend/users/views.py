@@ -114,6 +114,7 @@ def registration_view(request):
         handler.check_not_blank_required(data.get("password2"), "password2")
         handler.check_integer_required(data.get("phone_nr"), "phone_nr")
         handler.check_equal(data.get("password"), data.get("password2"), "password2")
+        handler.check_required(data.get("locations"), "locations")
         handler.check()
 
         if get_user_model().objects.filter(email=data["email"]).exists():
@@ -130,6 +131,8 @@ def registration_view(request):
             request.data['phone_nr'],
             request.data['password']
         )
+        user.locations.set(request.data['locations'])
+
         refresh = RefreshToken.for_user(user)
         response.set_cookie(
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],

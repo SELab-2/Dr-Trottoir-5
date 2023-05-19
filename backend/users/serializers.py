@@ -27,7 +27,8 @@ class UserPublicSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'phone_nr',
-            'role'
+            'role',
+            'locations'
         ]
 
 
