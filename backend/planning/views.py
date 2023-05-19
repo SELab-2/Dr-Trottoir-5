@@ -20,9 +20,9 @@ class StudentDayPlan(generics.RetrieveAPIView):
     permission_classes = [StudentPermission]
 
     def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        week = kwargs["week"]
-        day = kwargs["day"]
+        year = kwargs.get("year")
+        week = kwargs.get("week")
+        day = kwargs.get("day")
         if day < 0 or day > 6:
             raise ValidationError({
                 "errors": [

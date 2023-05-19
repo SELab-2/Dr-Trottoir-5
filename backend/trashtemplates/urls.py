@@ -23,5 +23,7 @@ urlpatterns = [
          {'permanent': True}),
     path('<int:template_id>/buildings/<int:building_id>/eenmalig/',
          views.BuildingView.as_view(),
-         {'permanent': False})
+         {'permanent': False}),
+    path("<int:year>/<int:week>/<int:day>/",
+         views.BuildingTrashPlan.as_view()),
 ]

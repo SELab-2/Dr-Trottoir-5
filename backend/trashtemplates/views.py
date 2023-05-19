@@ -2,9 +2,46 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 
-from planning.util import filter_templates, get_current_week_planning
+from planning.util import filter_templates, get_current_week_planning, get_current_time
 from users.permissions import *
+from ronde.models import LocatieEnum, Building
 from .util import *
+
+import datetime
+
+
+class BuildingTrashPlan(generics.ListAPIView):
+    permission_classes = [BewonerPermission | SyndicusPermission | StudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        """
+        Geeft de vuilnisplanning voor een bepaalde datum
+        """
+        year = kwargs.get("year")
+        week = kwargs.get("week")
+        day = kwargs.get("day")
+        if day < 0 or day > 6:
+            raise ValidationError({
+                "errors": [
+                    {"message": "bad day"}
+                ]
+            }, code='invalid')
+        days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+        day_name = days[day]
+
+        templates = TrashContainerTemplate.objects.filter(year=year, week=week)
+        result = {}
+        for template in templates:
+            buildings = template.buildings.all()
+            for building in buildings:
+                if building.id not in result:
+                    result[building.id] = {}
+                #containers = TrashContainerIdWrapper.objects.filter(extra_id__in=building.trash_ids.all())
+                print(building.trash_ids)
+                # print([(x.building, x.trash_ids) for x in template.buildings.all()])
+        #result = filter_templates(templates)
+        #data = TrashContainerTemplateSerializer(result, many=True).data
+        return Response(result)
 
 
 class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
