@@ -9,10 +9,6 @@ from exceptions.exceptionHandler import ExceptionHandler
 
 from ronde.models import LocatieEnum
 
-from trashcontainers.models import TrashContainer
-
-from pickupdays.models import WeekDayEnum
-
 
 class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
     permission_classes = [SuperstudentPermission | AdminPermission]
