@@ -5,7 +5,9 @@
         <v-row>
           <v-col md="6" sm="6">
             <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                        :first-day-of-week="1" :masks="masks" :attributes="attrs" view="weekly" v-on:dayclick="changed" />
+                        :first-day-of-week="1" :masks="masks" :attributes="attrs" view="weekly" v-on:dayclick="changed"
+                        v-on:did-move="(e) => {setWeek(e); getContainers()}"
+            />
           </v-col>
           <v-col sm="6" align="left" class="text-wrap">
             <h4 class="text-h4">
@@ -15,7 +17,7 @@
             <v-autocomplete
               label="Gebouw" :items="buildings" class="mt-4" style="width: 50%;"
               v-model="building" item-title="name" return-object
-              variant="outlined" v-on:update:modelValue="changed"
+              variant="outlined" v-on:update:modelValue="() => {changed(); getContainers()}"
             ></v-autocomplete>
           </v-col>
         </v-row>
@@ -115,12 +117,14 @@ import { getWeek } from "@/api/DateUtil";
 import PlanningService from "@/api/services/PlanningService";
 import QRCodeVue3 from "qrcode-vue3";
 import NormalButton from "@/components/NormalButton.vue";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default {
   name: "SyndicusHome",
   components: {NormalButton, FotoCardAdmin, DatePicker, QRCodeVue3},
   data: () => ({
     date: new Date().toISOString().split('T')[0],
+    week: new Date(),
     buildings: [],
     arrivals: [],
     departs: [],
@@ -128,22 +132,23 @@ export default {
     building: null,
     dialog: false,
     masks: { modelValue: 'YYYY-MM-DD' },
-    attrs: [
-      {
-        dates: new Date(),
-        popover: {
-          label: 'Glas'
-        },
-        dot: 'yellow'
-      },
-      {
-        dates: new Date(),
-        popover: {
-          label: 'GFT'
-        },
-        dot: 'green'
-      }
-    ]
+    mapping: {
+      GL: {type: 'GLAS', color: 'yellow'},
+      GF: {type: 'GFT', color: 'green'},
+      PM: {type: 'PMD', color: 'orange'},
+      PK: {type: 'PK', color: 'blue'},
+      RE: {type: 'REST', color: 'gray'}
+    },
+    day_map: {
+      MO: 1,
+      TU: 2,
+      WE: 3,
+      TH: 4,
+      FR: 5,
+      SA: 6,
+      SU: 0,
+    },
+    attrs: []
   }),
   beforeMount() {
     RequestHandler.handle(RoundService.getBuildingsForSyndicus(), {
@@ -153,11 +158,15 @@ export default {
       this.buildings = buildings;
       if (buildings.length > 0) this.building = buildings[0];
       this.changed();
+      this.getContainers();
     }).catch(() => null);
   },
   methods: {
     changed() {
       this.getStudentPosts();
+    },
+    setWeek(e) {
+      this.week = new Date(e[0].viewDays[1].id);
     },
     resetQR() {
       RequestHandler.handle(RoundService.resetBuilding(this.building.buildingID), {
@@ -199,6 +208,29 @@ export default {
       iframe.contentWindow.addEventListener('afterprint', function () {
           iframe.parentNode.removeChild(iframe);
       });
+    },
+    getContainers() {
+      let week = getWeek(this.week);
+      if (this.week.getUTCDay() === 0) week -= 1;
+      RequestHandler.handle(TrashTemplateService.getContainers(this.week.getFullYear(), week), {
+        id: "getContainersError",
+        style: "NONE"
+      }).then(containers => {
+        if (this.building !== null && this.building.id.toString() in containers) {
+          const cs = containers[this.building.id.toString()];
+          this.attrs = cs.map(container => {
+            const container_date = new Date(this.week);
+            const dist = this.day_map[container.collection_day.day] - container_date.getDay();
+            container_date.setDate(container_date.getDate() + dist);
+            return {
+              dates: container_date,
+              popover: {
+                label: this.mapping[container.type].type
+              },
+              dot: this.mapping[container.type].color
+          }});
+        }
+      }).catch(() => null);
     },
     async getStudentPosts(){
       const date = new Date(this.date)

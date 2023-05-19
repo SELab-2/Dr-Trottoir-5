@@ -1,10 +1,11 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-
+from trashcontainers.serializers import TrashContainerSerializer
 from planning.util import filter_templates, get_current_week_planning, get_current_time
 from users.permissions import *
 from ronde.models import LocatieEnum, Building
+from planning.models import WeekPlanning
 from .util import *
 
 import datetime
@@ -15,33 +16,52 @@ class BuildingTrashPlan(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Geeft de vuilnisplanning voor een bepaalde datum
+        Geeft de vuilnisplanning voor een bepaalde week
         """
         year = kwargs.get("year")
         week = kwargs.get("week")
-        day = kwargs.get("day")
-        if day < 0 or day > 6:
-            raise ValidationError({
-                "errors": [
-                    {"message": "bad day"}
-                ]
-            }, code='invalid')
-        days = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
-        day_name = days[day]
-
-        templates = TrashContainerTemplate.objects.filter(year=year, week=week)
+        templates = get_trash_templates(year, week)
+        active_exists = 'A' in [t.status for t in templates]
         result = {}
         for template in templates:
-            buildings = template.buildings.all()
-            for building in buildings:
-                if building.id not in result:
-                    result[building.id] = {}
-                #containers = TrashContainerIdWrapper.objects.filter(extra_id__in=building.trash_ids.all())
-                print(building.trash_ids)
-                # print([(x.building, x.trash_ids) for x in template.buildings.all()])
-        #result = filter_templates(templates)
-        #data = TrashContainerTemplateSerializer(result, many=True).data
+            if (active_exists and template.status == 'A') or not active_exists:
+                buildings = template.buildings.all()
+                for building in buildings:
+                    containers = TrashContainerIdWrapper.objects.filter(extra_id__in=building.trash_ids.all())
+                    result[building.building.id] = TrashContainerSerializer([c.trash_container for c in containers], many=True).data
+                break
         return Response(result)
+
+
+def get_trash_templates(year, week):
+    current_year, current_week = get_current_time()
+
+    if year > current_year or (current_year == year and week > current_week):
+        # dit is een week die nog moet komen dus geven we alleen de actieve of nu tijdelijk vervangen templates terug
+        # buiten als de template vervangen is voor de volgende week
+        trash_templates_actief = TrashContainerTemplate.objects.filter(
+            status=Status.ACTIEF)
+        trash_templates_vervangen = TrashContainerTemplate.objects.filter(
+            status=Status.VERVANGEN).exclude(week=week, year=year)
+        trash_templates_eenmalig = TrashContainerTemplate.objects.filter(
+            status=Status.EENMALIG, week=week, year=year)
+
+        even = week % 2 == 0
+        trash_templates = trash_templates_actief | trash_templates_vervangen | trash_templates_eenmalig
+        trash_templates = trash_templates.filter(even=even)
+    else:
+        # weekplanning is al voorbij of bezig
+        get_current_week_planning()  # nodig voor moest de weekplanning nog niet gemaakt zijn
+        try:
+            week_planning = WeekPlanning.objects.get(
+                week=week,
+                year=year
+            )
+            trash_templates = week_planning.trash_templates.all()
+        except WeekPlanning.DoesNotExist:
+            trash_templates = []
+
+    return trash_templates
 
 
 class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
@@ -167,13 +187,13 @@ class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
             add_if_match(planning.trash_templates, original, current_week)
 
             # verwijder de oude uit de huidige planning
-            remove_if_match(planning.trash_templates, template, current_week)
+            remove_if_match(planning.trash_templates, template)
             # verwijder hem ook uit de database omdat hij eenmalig was en dus niet nodig is voor de geschiedenis
             template.delete()
         else:
             template.status = Status.INACTIEF
             template.save()
-            remove_if_match(planning.trash_templates, template, current_week)
+            remove_if_match(planning.trash_templates, template)
 
         return Response({"message": "Success"})
 

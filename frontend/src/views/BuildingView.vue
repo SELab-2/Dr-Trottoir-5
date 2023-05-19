@@ -3,7 +3,9 @@
     <v-card v-if="building !== null">
       <v-card-title class="mt-2">
         <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                        :first-day-of-week="1" :masks="masks" :attributes="attrs" view="weekly" v-on:dayclick="changed" />
+                    :first-day-of-week="1" :masks="masks" :attributes="attrs" view="weekly" v-on:dayclick="changed"
+                    v-on:did-move="(e) => {setWeek(e); getContainers()}"
+        />
         <h4 class="text-h4 my-2 text-wrap">
           Opmerkingen voor {{building.name}} op
           {{new Date(date).toLocaleDateString('nl-BE', {weekday: 'long', day: 'numeric', month: 'long'})}}
@@ -88,6 +90,7 @@ import {DatePicker} from "v-calendar";
 import FotoCardAdmin from "@/components/admin/FotoCardAdmin.vue";
 import {getWeek} from "@/api/DateUtil";
 import PlanningService from "@/api/services/PlanningService";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default {
   name: "BuildingView",
@@ -97,25 +100,27 @@ export default {
     building: null,
     masks: { modelValue: 'YYYY-MM-DD' },
     date: new Date().toISOString().split('T')[0],
+    week: new Date(),
     arrivals: [],
     departs: [],
     storages: [],
-    attrs: [
-      {
-        dates: new Date(),
-        popover: {
-          label: 'Glas'
-        },
-        dot: 'yellow'
-      },
-      {
-        dates: new Date(),
-        popover: {
-          label: 'GFT'
-        },
-        dot: 'green'
-      }
-    ]
+    attrs: [],
+    mapping: {
+      GL: {type: 'GLAS', color: 'yellow'},
+      GF: {type: 'GFT', color: 'green'},
+      PM: {type: 'PMD', color: 'orange'},
+      PK: {type: 'PK', color: 'blue'},
+      RE: {type: 'REST', color: 'gray'}
+    },
+    day_map: {
+      MO: 1,
+      TU: 2,
+      WE: 3,
+      TH: 4,
+      FR: 5,
+      SA: 6,
+      SU: 0,
+    }
   }),
   beforeMount() {
     RequestHandler.handle(RoundService.getBuildingByUUID(this.id), {
@@ -124,11 +129,38 @@ export default {
     }).then(building => {
       this.building = building;
       this.changed();
+      this.getContainers();
     }).catch(() => null)
   },
   methods: {
     changed() {
       this.getStudentPosts();
+    },
+    setWeek(e) {
+      this.week = new Date(e[0].viewDays[1].id);
+    },
+    getContainers() {
+      let week = getWeek(this.week);
+      if (this.week.getUTCDay() === 0) week -= 1;
+      RequestHandler.handle(TrashTemplateService.getContainers(this.week.getFullYear(), week), {
+        id: "getContainersError",
+        style: "NONE"
+      }).then(containers => {
+        if (this.building !== null && this.building.id.toString() in containers) {
+          const cs = containers[this.building.id.toString()];
+          this.attrs = cs.map(container => {
+            const container_date = new Date(this.week);
+            const dist = this.day_map[container.collection_day.day] - container_date.getDay();
+            container_date.setDate(container_date.getDate() + dist);
+            return {
+              dates: container_date,
+              popover: {
+                label: this.mapping[container.type].type
+              },
+              dot: this.mapping[container.type].color
+          }});
+        }
+      }).catch(() => null);
     },
     async getStudentPosts(){
       const date = new Date(this.date)

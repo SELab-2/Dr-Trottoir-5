@@ -17,10 +17,10 @@
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="trash_ids"
-            :items="container_choices"
+            :items="container_choices.map(c => ({container: c, t: mapping[c.trash_container.type]}))"
             chips
-            item-title="trash_container.type"
-            item-value="extra_id"
+            item-title="t"
+            item-value="container.extra_id"
             label="Kies containers voor dit gebouw"
             multiple
           />
@@ -35,7 +35,6 @@
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
-import BuildingContainer from "@/api/models/BuildingContainer";
 import StateButtons from "@/components/StateButtons.vue";
 
 export default {
@@ -43,10 +42,17 @@ export default {
   components: {StateButtons},
   data() {
     return {
-      building: BuildingContainer,
+      building: null,
       trash_ids: [],
       container_choices: [],
-      status: "I"
+      status: "I",
+      mapping: {
+        GL: 'GLAS',
+        GF: 'GFT',
+        PM: 'PMD',
+        PK: 'PK',
+        RE: 'REST'
+      }
     }
   },
   async beforeMount() {
