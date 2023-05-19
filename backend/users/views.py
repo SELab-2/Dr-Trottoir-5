@@ -46,7 +46,7 @@ def user_view(request):
 def login_view(request):
     data = request.data
     response = Response()
-    email = data.get('email', None)
+    email = data.get('email', None).lower()
     password = data.get('password', None)
 
     handler = ExceptionHandler()
@@ -124,7 +124,7 @@ def registration_view(request):
                 }]})
 
         user = get_user_model().objects.create_user(
-            request.data['email'],
+            request.data['email'].lower(),
             request.data['first_name'],
             request.data['last_name'],
             request.data['phone_nr'],
@@ -162,7 +162,7 @@ def forgot_password(request):
     """
 
     data = request.data
-    email = data["email"]
+    email = data["email"].lower()
 
     handler = ExceptionHandler()
     handler.check_not_blank_required(email, "email")
@@ -188,7 +188,7 @@ def reset_password(request):
         Reset the password with the otp that is received via email.
     """
     data = request.data
-    email = data.get("email")
+    email = data.get("email").lower()
     otp = data.get("otp")
     password = data.get("password")
     password2 = data.get("password2")
@@ -235,7 +235,7 @@ def role_assignment_view(request):
 
             try:
                 user = get_user_model().objects.get(
-                    email=request.data['email'])
+                    email=request.data['email'].lower())
             except get_user_model().DoesNotExist:
                 user = None
 
@@ -277,7 +277,7 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
 
         user = get_user_model().objects.get(id=id)
 
-        if user.email != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
+        if user.email.lower() != data.get("email").lower() and get_user_model().objects.filter(email=data["email"].lower()).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
