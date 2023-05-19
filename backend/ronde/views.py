@@ -1,18 +1,15 @@
-from django.http import HttpResponseNotFound
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
-from .models import *
-from .serializers import *
-
-from exceptions.exceptionHandler import ExceptionHandler
 import os
 
-from django.conf import settings
+from exceptions.exceptionHandler import ExceptionHandler
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, SyndicusPermission
+
+from .models import *
+from .serializers import *
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
