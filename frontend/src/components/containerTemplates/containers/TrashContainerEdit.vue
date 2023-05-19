@@ -127,7 +127,7 @@ export default {
           color: "success"
         })
         router.replace({name: 'trashtemplates'})
-      }).catch(async (error) => this.errors = await get_errors(error))
+      }).catch(async (error) => {this.errors = await get_errors(error)})
       } else {
         TrashTemplateService.updateContainerTemplate(this.id_, this.$route.params.containerId, {
           type: container_to_api(this.type),
@@ -143,7 +143,7 @@ export default {
           color: "success"
         })
         router.replace({name: 'trashtemplateContainers', params: {id: this.id_}})
-      }).catch(async (error) => this.errors = await get_errors(error))
+      }).catch(async (error) => {this.errors = await get_errors(error)})
       }
     },
   }

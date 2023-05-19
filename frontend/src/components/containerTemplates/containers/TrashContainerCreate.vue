@@ -113,7 +113,7 @@ export default {
             color: "success"
           })
           router.push({name: 'trashtemplateContainers', params: {id: this.id}})
-        }).catch(async (error) => this.errors = await get_errors(error))
+        }).catch(async (error) => {this.errors = await get_errors(error)})
 
     },
   }

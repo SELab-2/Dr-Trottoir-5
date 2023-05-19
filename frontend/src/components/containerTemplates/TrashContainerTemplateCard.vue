@@ -39,7 +39,7 @@ import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default {
   name: 'TrashContainerTemplateCard',
-  components: {EditIcon, DeleteIcon},
+  components: {DeleteIcon},
   props: {
     data: {
       type: TrashTemplate,
