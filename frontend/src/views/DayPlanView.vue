@@ -71,7 +71,7 @@ export default defineComponent({
               }
               return false;
             });
-            this.rondes.push(planning);
+            if (planning.ronde.buildings.length > 0) this.rondes.push(planning);
           }).catch(() => null);
         });
       }).catch(() => null);
