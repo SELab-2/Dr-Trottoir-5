@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="drawer" :class="smallScreen ? 'h-75' : 'py-10'" :location="smallScreen ? 'bottom' : 'right'" temporary
+  <v-navigation-drawer data-test="drawer" v-model="drawer" :class="smallScreen ? 'h-75' : 'py-10'" :location="smallScreen ? 'bottom' : 'right'" temporary
                        touchless>
     <v-spacer></v-spacer>
     <v-list data-test="list" density="compact" nav>
@@ -26,7 +26,7 @@
     </v-list>
     <v-divider></v-divider>
   </v-navigation-drawer>
-  <v-app-bar color="primary">
+  <v-app-bar data-test="bar" color="primary">
     <template v-slot:prepend>
       <v-app-bar-nav-icon v-if="smallScreen" color="secondary" icon="mdi-arrow-left"
                           @click="this.goBack()"></v-app-bar-nav-icon>

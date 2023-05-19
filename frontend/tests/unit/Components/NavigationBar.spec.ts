@@ -56,5 +56,13 @@ describe('NavigationBar.vue', () => {
     expect(logout).toHaveBeenCalled();
   });
 
+  it('rendering of bar', () => {
+    expect(wrapper.find('[data-test="bar"]').exists()).toBeTruthy()
+  });
+
+  it('check for mount of drawer', () => {
+    expect(wrapper.find('[data-test="drawer"]').exists()).toBeTruthy();
+  });
+
 
 });
