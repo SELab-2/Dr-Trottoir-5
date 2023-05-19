@@ -88,8 +88,8 @@ export default {
         "PM": "PMD",
         "GL": "GLAS",
         "GF": "GFT",
-        "RE": "Rest",
-        "PK": "Papier & Karton"
+        "RE": "REST",
+        "PK": "PK"
       }
       if(!Number.isInteger(container)) {
         return `${format_type[container.trash_container.type]} ${format_day[container.trash_container.collection_day.day]}`

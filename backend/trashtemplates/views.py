@@ -5,6 +5,13 @@ from rest_framework.serializers import ValidationError
 from planning.util import filter_templates, get_current_week_planning, get_current_time
 from users.permissions import *
 from .util import *
+from exceptions.exceptionHandler import ExceptionHandler
+
+from ronde.models import LocatieEnum
+
+from trashcontainers.models import TrashContainer
+
+from pickupdays.models import WeekDayEnum
 
 
 class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
@@ -22,9 +29,14 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         """
         Maakt een nieuwe TrashContainerTemplate aan.
-        TODO checks
         """
         data = request.data
+        handler = ExceptionHandler()
+        handler.check_not_blank_required(data.get("name"), "name")
+        handler.check_boolean_required(data.get("even"), "even")
+        handler.check_primary_key_value_required(data.get("location"), "location", LocatieEnum)
+        handler.check()
+
         current_year, current_week = get_current_time()
         location = LocatieEnum.objects.get(id=data["location"])
 
@@ -43,70 +55,12 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
         return Response({"id": new_template.id})
 
 
-class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
+class TrashTemplateView(generics.RetrieveDestroyAPIView):
     permission_classes = [SuperstudentPermission | AdminPermission]
 
     def get(self, request, *args, **kwargs):
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         return Response(TrashContainerTemplateSerializerFull(template).data)
-
-    def patch(self, request, *args, **kwargs):
-        """
-        Past de TrashContainerTemplate aan.
-        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
-        """
-        template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
-        current_year, current_week = get_current_time()
-        planning = get_current_week_planning()
-
-        data = request.data
-        permanent = data["permanent"]
-
-        if "name" in data:
-            pass
-            # checks
-        else:
-            data["name"] = template.name
-
-        if "even" in data:
-            pass
-            # checks
-        else:
-            data["even"] = template.even
-
-        if "location" in data:
-            data["location"] = LocatieEnum.objects.get(id=data["location"])
-            # checks
-        else:
-            data["location"] = template.location
-
-        if no_copy(template, permanent, current_year, current_week):
-            template.name = data["name"]
-            template.even = data["even"]
-            template.location = data["location"]
-            template.save()
-            add_if_match(planning.trash_templates, template, current_week)
-            return Response({"message": "Success"})
-
-        new_template = TrashContainerTemplate.objects.create(
-            name=data["name"],
-            even=data["even"],
-            status=Status.ACTIEF,
-            location=data["location"],
-            year=current_year,
-            week=current_week
-        )
-        add_if_match(planning.trash_templates, new_template, current_week)
-
-        # oude template op inactief zetten
-        template.status = Status.INACTIEF
-        template.save()
-        remove_if_match(planning.trash_templates, template)
-
-        return Response({"message": "Success"})
-
-    def put(self, request, *args, **kwargs):
-        raise ValidationError("no PUT allowed")
 
     def delete(self, request, *args, **kwargs):
         """
@@ -203,22 +157,22 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
         permanent = kwargs["permanent"]
         data = request.data
 
+        if "collection_day" not in data:
+            data["collection_day"] = {}
+
         if "day" not in data:
-            data["day"] = tc_id_wrapper.trash_container.collection_day.day
+            data["collection_day"]["day"] = tc_id_wrapper.trash_container.collection_day.day
 
-        if "start_hour" not in data:
-            data[
-                "start_hour"] = tc_id_wrapper.trash_container.collection_day.start_hour
+        if "start_hour" not in data.get("collection_day"):
+            data["collection_day"]["start_hour"] = tc_id_wrapper.trash_container.collection_day.start_hour
 
-        if "end_hour" not in data:
-            data[
-                "end_hour"] = tc_id_wrapper.trash_container.collection_day.end_hour
+        if "end_hour" not in data.get("collection_day"):
+            data["collection_day"]["end_hour"] = tc_id_wrapper.trash_container.collection_day.end_hour
 
-        if "type" not in data:
+        if "type" not in data.get("collection_day"):
             data["type"] = tc_id_wrapper.trash_container.type
 
-        new_tc_id_wrapper = make_new_tc_id_wrapper(data,
-                                                   tc_id_wrapper.extra_id)
+        new_tc_id_wrapper = make_new_tc_id_wrapper(data, tc_id_wrapper.extra_id)
 
         update(
             template,

@@ -6,16 +6,17 @@
     <v-form fast-fail @submit.prevent>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' md='6' sm='6'>
-          <v-text-field v-model='name' label='Naam' required></v-text-field>
+          <v-text-field v-model='name' label='Naam' :error-messages="check_errors(this.errors, 'name')" required></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="6">
-          <v-checkbox v-model="even" label="Even"></v-checkbox>
+          <v-checkbox v-model="even" :error-messages="check_errors(this.errors, 'even')" label="Even"></v-checkbox>
         </v-col>
       </v-row>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="location"
+            :error-messages="check_errors(this.errors, 'location')"
             :items="locations"
             item-title="name"
             item-value="id"
@@ -37,6 +38,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
+import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: "TrashContainerTemplateCreateView",
@@ -44,6 +46,7 @@ export default {
     name: '',
     even: true,
     location: null,
+    errors: null,
     locations: []
   }),
 
@@ -55,17 +58,16 @@ export default {
     }).then(result => result).catch(() => []);
   },
   methods: {
+    check_errors,
     async create() {
       const body = {
         name: this.name,
         even: this.even,
         location: this.location
       }
-      const response = await RequestHandler.handle(TrashTemplateService.newTrashTemplate(body), {
-        id: 'CreateNewTrashTemplateError',
-        style: 'SNACKBAR'
-      })
-      return await router.push({name: 'trashtemplates'})
+      TrashTemplateService.newTrashTemplate(body)
+        .then(async () => {await router.push({name: 'trashtemplates'})})
+        .catch(async (error) => {this.errors = await get_errors(error)})
     }
   }
 }
