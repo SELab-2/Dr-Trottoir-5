@@ -71,6 +71,8 @@ class StudentTemplate(models.Model):
     def __getitem__(self, item):
         if item == "dag_planningen":
             return self.dag_planningen
+        if item == "rondes":
+            return self.rondes
 
     name = models.TextField()
     even = models.BooleanField()

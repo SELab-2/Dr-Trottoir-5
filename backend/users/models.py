@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from rest_framework import serializers
+from ronde.models import LocatieEnum
 
 import random
 import string
@@ -33,15 +33,6 @@ class RoleAssignment(models.Model):
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, phone_nr, password):
-        if not email:
-            raise serializers.ValidationError(
-                {
-                    "errors": [
-                        {
-                            "message": "email is required", "field": "email"
-                        }
-                    ]
-                }, code='invalid')
 
         user = self.model(
             email=self.normalize_email(email),
@@ -100,6 +91,7 @@ class User(AbstractUser):
         max_length=25,
         default=""
     )
+    locations = models.ManyToManyField(LocatieEnum)
 
     objects = CustomUserManager()
 

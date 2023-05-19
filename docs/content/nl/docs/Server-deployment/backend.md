@@ -46,11 +46,12 @@ sudo vim /etc/nginx/sites-available/default
 ```
 Hier zal in het server block het volgende moeten worden toegevoegd:
 ```bash
+location / {
+    root /var/www/html/dist;
+    try_files $uri /index.html;
+}
 location /static/ {
     alias /var/www/html/static/;
-}
-location /media/ {
-    alias /var/www/html/media/;
 }
 location /api {
     include proxy_params;

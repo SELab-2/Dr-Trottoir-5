@@ -13,6 +13,7 @@ from exceptions.exceptionHandler import ExceptionHandler
 from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
 from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
+from ronde.models import LocatieEnum
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -105,7 +106,6 @@ def registration_view(request):
     if request.method == "POST":
         response = Response()
         data = request.data
-
         handler = ExceptionHandler()
         handler.check_not_blank_required(data.get("email"), "email")
         handler.check_not_blank_required(data.get("first_name"), "firstname")
@@ -114,6 +114,7 @@ def registration_view(request):
         handler.check_not_blank_required(data.get("password2"), "password2")
         handler.check_integer_required(data.get("phone_nr"), "phone_nr")
         handler.check_equal(data.get("password"), data.get("password2"), "password2")
+        handler.check_required(data.get("locations"), "locations")
         handler.check()
 
         if get_user_model().objects.filter(email=data["email"]).exists():
@@ -124,12 +125,16 @@ def registration_view(request):
                 }]})
 
         user = get_user_model().objects.create_user(
-            request.data['email'],
-            request.data['first_name'],
-            request.data['last_name'],
-            request.data['phone_nr'],
-            request.data['password']
+            data['email'],
+            data['first_name'],
+            data['last_name'],
+            data['phone_nr'],
+            data['password']
         )
+
+        locations = [LocatieEnum.objects.get(id=pk) for pk in data.getlist("locations")]
+        user.locations.set(locations)
+
         refresh = RefreshToken.for_user(user)
         response.set_cookie(
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],

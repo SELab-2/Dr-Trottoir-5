@@ -27,7 +27,8 @@ class UserPublicSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'phone_nr',
-            'role'
+            'role',
+            'locations'
         ]
 
 
@@ -41,5 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
             'date_joined',
             'phone_nr',
             'id',
-            'role'
+            'role',
+            'locations'
         ]
