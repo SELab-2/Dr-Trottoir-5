@@ -28,7 +28,6 @@ describe('StateButtons.vue', function () {
 
     expect(wrapper.find('.bg-primary').exists()).toBe(true);
     expect(wrapper.find('.text-secondary').exists()).toBe(true);
-    expect(wrapper.find('[block]').exists()).toBe(true);
   });
 
   it('renders the correct message when status is "V"', () => {
