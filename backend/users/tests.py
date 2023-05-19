@@ -19,9 +19,7 @@ class UserTestCase(APITestCase):
         self.register = {"email": "test@test.com", "first_name": "First",
                          "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0",
                          "locations": [self.loc1.id, self.loc2.id]}
-        #print(self.loc1)
-        #print(self.loc2)
-        #print(self.register)
+
         self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
         self.su = User.objects.create(role="SU", username="su")
