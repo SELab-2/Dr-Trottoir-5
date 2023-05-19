@@ -555,19 +555,11 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         data = request.data
 
         if "name" not in data:
             data["name"] = template.name
-
-        if "even" not in data:
-            data["even"] = template.even
-
-        if "location" not in data:
-            data["location"] = template.location
-        else:
-            data["location"] = LocatieEnum.objects.get(id=data["location"])
 
         if "start_hour" not in data:
             data["start_hour"] = template.start_hour
@@ -588,30 +580,27 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
-            template.even = data["even"]
-            template.location = data["location"]
-            # template.start_hour = data["start_hour"]
-            # template.end_hour = data["end_hour"],
+            template.start_hour = data["start_hour"]
+            template.end_hour = data["end_hour"]
             template.save()
-            add_if_match(planning.student_templates, template, current_week)
             return Response(response)
 
         new_template = StudentTemplate.objects.create(
             name=data["name"],
-            even=data["even"],
-            status=Status.ACTIEF,
-            location=data["location"],
+            even=template.even,
+            status=template.status,
+            location=template.location,
             start_hour=data["start_hour"],
             end_hour=data["end_hour"],
             year=current_year,
-            week=current_week
+            week=template.week
         )
         add_if_match(planning.student_templates, new_template, current_week)
 
         # oude template op inactief zetten
         template.status = Status.INACTIEF
         template.save()
-        remove_if_match(planning.student_templates, template, current_week)
+        remove_if_match(planning.student_templates, template)
         response["new_id"] = new_template.id
         return Response(response)
 
@@ -660,7 +649,7 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
             copy.rondes.add(ronde)
             copy.dag_planningen.add(*dag_planningen)
             remove_if_match(get_current_week_planning().student_templates,
-                            template, current_week)
+                            template)
             add_if_match(get_current_week_planning().student_templates, copy,
                          current_week)
             response["new_id"] = copy.id
@@ -676,7 +665,7 @@ class RondeView(generics.DestroyAPIView):
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         ronde = Ronde.objects.get(id=kwargs["ronde_id"])
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         to_remove = template.dag_planningen.filter(ronde=ronde)
 
         response = {"message": "Success"}
@@ -688,7 +677,7 @@ class RondeView(generics.DestroyAPIView):
             copy.dag_planningen.remove(*to_remove)
             copy.rondes.remove(ronde)
             remove_if_match(get_current_week_planning().student_templates,
-                            template, current_week)
+                            template)
             add_if_match(get_current_week_planning().student_templates,
                          copy,
                          current_week)
@@ -714,7 +703,6 @@ class DagPlanningenView(generics.RetrieveAPIView, generics.CreateAPIView):
         data = request.data
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         ronde_id = kwargs["ronde_id"]
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         data["ronde"] = ronde_id
         validate_dag_planning_data(data)
