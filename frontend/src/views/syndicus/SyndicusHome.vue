@@ -254,7 +254,7 @@ export default {
                 this.departs = []
                 this.storages = []
                 for(const picture of pictures){
-                  picture.admin = false;
+                  picture.admin = false
                   if(picture.pictureType === "AR"){
                     this.arrivals.push(picture)
                   } else if(picture.pictureType === "DE"){
