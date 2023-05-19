@@ -60,7 +60,7 @@
       <v-col class="d-flex" cols='12' sm='6' md='6'>
         <v-autocomplete
           label="Rondes"
-          :items="all_rondes"
+          :items="all_rondes.filter(r => r.location.id === this.location.id)"
           item-title="name"
           item-value="id"
           v-model="add_id"
