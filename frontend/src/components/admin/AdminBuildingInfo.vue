@@ -113,10 +113,9 @@
           </ul>
         </v-row>
       </v-col>
-
-
     </v-row>
   </v-col>
+
 </template>
 
 <script>
@@ -126,12 +125,12 @@ import router from "@/router";
 import {DatePicker} from "v-calendar";
 import PlanningService from "@/api/services/PlanningService";
 import {getWeek} from "@/api/DateUtil";
-import RoundBuildingCard from "@/components/admin/RoundBuildingCard.vue";
 import FotoCardAdmin from "@/components/admin/FotoCardAdmin.vue";
 import NormalButton from "@/components/NormalButton.vue";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 import EditIcon from "@/components/icons/EditIcon.vue";
 import TrashPickupCard from "@/components/admin/TrashPickupCard.vue";
+
 
 export default {
   name: "AdminBuildingInfo",
@@ -152,6 +151,12 @@ export default {
       storages: [],
       garbageCollections: [],
       search: false,
+      // time: 0,  TODO <- milestone 3
+      planningen: [],
+      new_manual: null,
+      selectedLocation: null,
+      locations: [],
+      errors: null
     }
   },
 
@@ -178,6 +183,7 @@ export default {
         this.adres = result.adres
         this.location = result.location
         this.ivago_klantnr = result.ivago_klantnr
+        this.selectedLocation = result.location
 
         if (result.manual != null) {
           this.manual = result.manual;

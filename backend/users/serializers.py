@@ -1,13 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Registration, RoleAssignment
-
-
-class RegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Registration
-        fields = '__all__'
+from .models import RoleAssignment
 
 
 class RoleAssignmentSerializer(serializers.ModelSerializer):

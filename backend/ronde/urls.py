@@ -10,5 +10,10 @@ urlpatterns = [
     path('building/manual/', views.ManualListCreateView.as_view()),
     path('building/manual/<int:pk>/', views.ManualRetrieveUpdateDestroyAPIView.as_view()),
     path('building/', views.BuildingListCreateView.as_view()),
-    path('building/<int:pk>/', views.BuildingRetrieveDestroyView.as_view())
+    path('building/<int:pk>/', views.BuildingRetrieveDestroyView.as_view()),
+    path('building/uuid/<uuid:buildingid>/',
+         views.BuildingUUIDRetrieveView.as_view()),
+    path('building/uuid/<uuid:buildingid>/reset/',
+         views.BuildingUUIDResetView.as_view())
+
 ]
