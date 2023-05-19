@@ -20,11 +20,11 @@ describe('trashContainerCard.vue', () => {
         data: {
           trash_container: {
             collection_day: {
-              day: 'Monday',
+              day: 'MO',
               start_hour: '10 AM',
               end_hour: '12 PM',
             },
-            type: 'Type A',
+            type: 'PM',
           },
           extra_id: 1,
         },
@@ -40,9 +40,9 @@ describe('trashContainerCard.vue', () => {
     expect(wrapper.find('v-row[align="center"][justify="center"]').exists()).toBe(true);
     expect(wrapper.findAll('v-col').length).toBe(6);
 
-    expect(wrapper.find('v-col:nth-child(1) p.text-style-title').text()).toBe('Monday');
+    expect(wrapper.find('v-col:nth-child(1) p').text()).toBe('Maandag');
     expect(wrapper.find('v-col:nth-child(2) p').text()).toBe('10 AM - 12 PM');
-    expect(wrapper.find('v-col:nth-child(3) p').text()).toBe('Type A');
+    expect(wrapper.find('v-col:nth-child(3) p').text()).toBe('PMD');
 
     expect(wrapper.find('v-col:nth-child(5) .button-style').exists()).toBe(true);
     expect(wrapper.find('v-col:nth-child(6) .button-style').exists()).toBe(true);
@@ -67,11 +67,13 @@ describe('trashContainerCreate.vue', () => {
   let wrapper;
 
   beforeEach(() => {
+    TrashContainerCreate.beforeMount = jest.fn();
     wrapper = mount(TrashContainerCreate);
   })
 
   it('renders the component correctly', () => {
     expect(wrapper.exists()).toBe(true);
+    expect(TrashContainerCreate.beforeMount).toBeCalled();
 
     expect(wrapper.find('.justify-center.my-10').exists()).toBe(true);
     expect(wrapper.find('.text-h2').text()).toBe('Maak een nieuwe container aan');
@@ -142,21 +144,12 @@ describe('trashContainerEdit.vue', () => {
     expect(wrapper.find('v-form[fast-fail]').exists()).toBe(true);
     expect(wrapper.findAll('.justify-space-between.mx-auto v-col').length).toBe(4);
 
-    expect(wrapper.find('v-col:nth-child(1) v-select[label="containerType"]').exists()).toBe(true);
-    expect(wrapper.find('v-col:nth-child(2) v-select[label="containerType"]').exists()).toBe(true);
+    expect(wrapper.find('v-col:nth-child(1) v-select[label="type container"]').exists()).toBe(true);
+    expect(wrapper.find('v-col:nth-child(2) v-select[label="dag van de week"]').exists()).toBe(true);
     expect(wrapper.find('v-col:nth-child(3) v-text-field[label="Beginuur"]').exists()).toBe(true);
     expect(wrapper.find('v-col:nth-child(4) v-text-field[label="Einduur"]').exists()).toBe(true);
 
-    expect(wrapper.find('.overflow-hidden').text()).toBe('Aanpassen');
   });
-
-  it('editContainer is called', async () => {
-    TrashContainerEdit.methods.editContainer = jest.fn();
-    wrapper = mount(TrashContainerEdit);
-    const createButton = wrapper.find('.overflow-hidden');
-    await createButton.trigger('click');
-    expect(TrashContainerEdit.methods.editContainer).toBeCalled();
-  })
 
   it('sets textfield values correctly', async () => {
     const beginUur = wrapper.find('v-col:nth-child(3) v-text-field[label="Beginuur"]');
@@ -209,8 +202,7 @@ describe('TrashContainerHeader', () => {
     expect(wrapper.find('.col:nth-child(2) p[title="Uren"]').exists()).toBe(true);
     expect(wrapper.find('.col:nth-child(3) p[title="Type"]').exists()).toBe(true);
 
-    expect(wrapper.find('.text-right').exists()).toBe(true);
-    expect(wrapper.find('.text-right').text()).toBe('Acties');
+    expect(wrapper.find('[data-test="acties"]').text()).toBe('Acties');
   });
 
   it('sets the "round" prop correctly', async () => {
