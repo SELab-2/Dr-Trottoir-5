@@ -23,7 +23,7 @@
             <h2>Gebouw: {{ name }}</h2>
           </v-col>
           <v-col lg="12" md="12" class="d-flex align-center justify-center">
-            <button @click="() => {this.search = !this.search}" class="text-decoration-underline">Change building</button>
+            <button @click="() => {this.search = !this.search}" class="text-decoration-underline">Verander gebouw</button>
           </v-col>
           <v-col lg="12" md="12" class="d-flex align-center justify-center" v-if="this.search">
             <v-autocomplete
