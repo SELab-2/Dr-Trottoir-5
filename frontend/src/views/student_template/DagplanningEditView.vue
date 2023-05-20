@@ -10,6 +10,7 @@
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' sm='6' md='6'>
           <v-select
+            :error-messages="check_errors(this.errors, 'students')"
             :readonly="this.status === 'Vervangen'"
             label="Studenten"
             :items="all_students.filter(student => student.role !== 'AA' && student.locations.includes(this.location.id))"
@@ -21,10 +22,10 @@
           ></v-select>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='start_hour' label='Startuur' :readonly="this.status === 'Vervangen'" required></v-text-field>
+          <v-text-field v-model='start_hour' :error-messages="check_errors(this.errors, 'start_hour')" label='Startuur' :readonly="this.status === 'Vervangen'" required></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='end_hour' label='Einduur' :readonly="this.status === 'Vervangen'" required></v-text-field>
+          <v-text-field v-model='end_hour' :error-messages="check_errors(this.errors, 'end_hour')" label='Einduur' :readonly="this.status === 'Vervangen'" required></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="this.status === 'Actief'" class="px-5 justify-center mx-auto">
@@ -50,6 +51,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import UserService from "@/api/services/UserService";
 import router from "@/router";
+import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: "DagplanningEditView",
@@ -57,13 +59,14 @@ export default {
     template_id: 0,
     dag_id: 0,
     ronde_id: 0,
-    day: 'MO',
+    day: null,
     status: '',
     start_hour: "",
     end_hour: "",
     students: [],
     all_students: [],
     location: null,
+    errors: null,
     state_mapping: {
       "A": "Actief",
       "E": "Eenmalig",
@@ -103,6 +106,7 @@ export default {
 
   },
   methods: {
+    check_errors,
     format_day(day) {
       const day_mapping = {
           "MO": "Maandag",
@@ -127,16 +131,15 @@ export default {
         end_hour: this.end_hour
       }
 
-      const response = await RequestHandler.handle(StudentTemplateService.editDagPlanning(this.template_id, this.dag_id, body), {
-        id: "getDagPlanningError",
-        style: "SNACKBAR"
-      }).then(res => res).catch(() => null);
+      StudentTemplateService.editDagPlanning(this.template_id, this.dag_id, body)
+        .then(async response => {
+          if (response["new_id"] !== undefined) {
+            await this.copy_taken(response["new_id"], response["new_dag_id"])
+          } else {
+            await this.copy_taken(this.template_id, response["new_dag_id"])
+          }
+        }).catch(async (error) => {this.errors = await get_errors(error)});
 
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"], response["new_dag_id"])
-      } else {
-        await this.copy_taken(this.template_id, response["new_dag_id"])
-      }
     },
     async save_edit_eenmalig() {
 
@@ -146,16 +149,14 @@ export default {
         end_hour: this.end_hour
       }
 
-      const response = await RequestHandler.handle(StudentTemplateService.editDagPlanningEenmalig(this.template_id, this.dag_id, body), {
-        id: "getDagPlanningError",
-        style: "SNACKBAR"
-      }).then(res => res).catch(() => null);
-
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"])
-      } else {
-        await this.copy_taken(this.template_id)
-      }
+      StudentTemplateService.editDagPlanningEenmalig(this.template_id, this.dag_id, body)
+        .then(async response => {
+          if (response["new_id"] !== undefined) {
+            await this.copy_taken(response["new_id"])
+          } else {
+            await this.copy_taken(this.template_id)
+          }
+        }).catch(async (error) => {this.errors = await get_errors(error)});
     }
   }
 }
