@@ -24,7 +24,7 @@
 
          <v-card v-if="building !== null" elevation="0">
            <h6 class="text-h6 mb-1">QR-code voor gebouw {{building.name}}</h6>
-           <QRCodeVue3
+           <!--<QRCodeVue3
             :value="`https://sel2-5.ugent.be/gebouw/${building.buildingID}`"
             :width="200"
             :height="200"
@@ -33,7 +33,14 @@
             :cornersSquareOptions="{ type: 'square' }"
             imgclass="qr"
             :key="building.id"
-           />
+           />-->
+           <figure class="qrcode">
+             <vue-qrcode
+               :value="`https://sel2-5.ugent.be/gebouw/${building.buildingID}`"
+               :options="{ width: 200, errorCorrectionLevel: 'H' }"
+               :key="building.id"
+             ></vue-qrcode>
+           </figure>
            <normal-button text="Reset QR-Code" :parent-function="() => dialog = true"></normal-button><br>
            <normal-button text="QR-Code uitprinten" :parent-function="printQR" class="mt-2"></normal-button>
 
@@ -115,13 +122,13 @@ import RoundService from "@/api/services/RoundService";
 import FotoCardAdmin from "@/components/admin/FotoCardAdmin.vue";
 import { getWeek } from "@/api/DateUtil";
 import PlanningService from "@/api/services/PlanningService";
-import QRCodeVue3 from "qrcode-vue3";
 import NormalButton from "@/components/NormalButton.vue";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
+import VueQrcode from '@chenfengyuan/vue-qrcode';
 
 export default {
   name: "SyndicusHome",
-  components: {NormalButton, FotoCardAdmin, DatePicker, QRCodeVue3},
+  components: {NormalButton, FotoCardAdmin, DatePicker, VueQrcode},
   data: () => ({
     date: new Date().toISOString().split('T')[0],
     week: new Date(),
@@ -186,8 +193,10 @@ export default {
 
       iframe.addEventListener('load', function () {
           // Clone the image
-          const image = document.getElementsByClassName('qr')[0].cloneNode();
-          image.style.width = '80vw';
+          const url = document.getElementsByTagName('canvas')[0].toDataURL();
+          const image = document.createElement('img');
+          image.src = url;
+          image.style.width = '70vw';
 
           // Add text to page
           const text = document.createElement('h1');
