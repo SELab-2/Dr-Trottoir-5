@@ -24,8 +24,8 @@
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" sm="6" md="6">
-            <normal-button v-if="id === undefined" text="Aanmaken" :parent-function="createRound"></normal-button>
-            <normal-button v-if="id !== undefined" text="Opslaan" :parent-function="createRound"></normal-button>
+            <normal-button data-test="create" v-if="id === undefined" text="Aanmaken" :parent-function="createRound"></normal-button>
+            <normal-button data-test="save" v-if="id !== undefined" text="Opslaan" :parent-function="createRound"></normal-button>
           </v-col>
         </v-form>
       </v-card-text>
