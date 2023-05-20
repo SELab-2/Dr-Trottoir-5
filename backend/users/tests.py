@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from .views import registration_view, logout_view, UserListAPIView, forgot_password, reset_password, \
     role_assignment_view, login_view
 from .models import User
+from ronde.models import LocatieEnum
 
 
 class UserTestCase(APITestCase):
@@ -12,8 +13,13 @@ class UserTestCase(APITestCase):
     """
 
     def setUp(self):
+        self.loc1 = LocatieEnum.objects.create(name="Gent")
+        self.loc2 = LocatieEnum.objects.create(name="Antwerpen")
+
         self.register = {"email": "test@test.com", "first_name": "First",
-                         "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0"}
+                         "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0",
+                         "locations": [self.loc1.id, self.loc2.id]}
+
         self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
         self.su = User.objects.create(role="SU", username="su")
@@ -22,6 +28,7 @@ class UserTestCase(APITestCase):
         factory = APIRequestFactory()
         request = factory.post("/api/register/", self.register)
         response = registration_view(request).data
+
         self.assertEqual(response["email"], "test@test.com")
         self.assertIn("role", response)
 
@@ -39,6 +46,7 @@ class UserTestCase(APITestCase):
     def testUserLogin(self):
         factory = APIRequestFactory()
         request = factory.post("/api/register/", self.register)
+
         registration_view(request)
 
         # Login to the newly made account

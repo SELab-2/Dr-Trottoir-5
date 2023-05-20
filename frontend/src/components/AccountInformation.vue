@@ -193,6 +193,7 @@ export default {
       }
       handle.then(() => {
         this.edit = !this.edit
+        this.email = this.email.toLowerCase()
         this.errors = null
       }).catch(async (error) => {
         this.errors = await get_errors(error)

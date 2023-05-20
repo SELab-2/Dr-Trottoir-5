@@ -14,6 +14,7 @@ from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, Stud
     SyndicusPermission
 from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
+from ronde.models import LocatieEnum
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -59,6 +60,8 @@ def login_view(request):
     data = request.data
     response = Response()
     email = data.get('email', None)
+    if email is not None:
+        email = email.lower()
     password = data.get('password', None)
 
     handler = ExceptionHandler()
@@ -117,7 +120,6 @@ def registration_view(request):
     if request.method == "POST":
         response = Response()
         data = request.data
-
         handler = ExceptionHandler()
         handler.check_not_blank_required(data.get("email"), "email")
         handler.check_not_blank_required(data.get("first_name"), "firstname")
@@ -126,9 +128,10 @@ def registration_view(request):
         handler.check_not_blank_required(data.get("password2"), "password2")
         handler.check_integer_required(data.get("phone_nr"), "phone_nr")
         handler.check_equal(data.get("password"), data.get("password2"), "password2")
+        handler.check_required(data.get("locations"), "locations")
         handler.check()
 
-        if get_user_model().objects.filter(email=data["email"]).exists():
+        if get_user_model().objects.filter(email=data["email"].lower()).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
@@ -136,12 +139,16 @@ def registration_view(request):
                 }]})
 
         user = get_user_model().objects.create_user(
-            request.data['email'],
-            request.data['first_name'],
-            request.data['last_name'],
-            request.data['phone_nr'],
-            request.data['password']
+            data['email'].lower(),
+            data['first_name'],
+            data['last_name'],
+            data['phone_nr'],
+            data['password']
         )
+
+        locations = [LocatieEnum.objects.get(id=pk) for pk in data.getlist("locations")]
+        user.locations.set(locations)
+
         refresh = RefreshToken.for_user(user)
         response.set_cookie(
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],
@@ -178,6 +185,7 @@ def forgot_password(request):
 
     handler = ExceptionHandler()
     handler.check_not_blank_required(email, "email")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
@@ -210,10 +218,11 @@ def reset_password(request):
     handler.check_not_blank_required(otp, "otp")
     handler.check_not_blank_required(password, "password")
     handler.check_not_blank_required(password2, "password2")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
-    user = get_user_model().objects.get(email=data['email'])
+    user = get_user_model().objects.get(email=data['email'].lower())
 
     handler.check_equal(password, password2, "password2")
     handler.check_equal(otp, user.otp, "otp")
@@ -247,7 +256,7 @@ def role_assignment_view(request):
 
             try:
                 user = get_user_model().objects.get(
-                    email=request.data['email'])
+                    email=request.data['email'].lower())
             except get_user_model().DoesNotExist:
                 user = None
 
@@ -287,9 +296,10 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_integer(data.get("phone_nr"), "phone_nr")
         handler.check()
 
+        data["email"] = data.get("email").lower()
         user = get_user_model().objects.get(id=id)
 
-        if user.email != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
+        if user.email.lower() != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
