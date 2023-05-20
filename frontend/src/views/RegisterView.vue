@@ -80,7 +80,7 @@ export default defineComponent({
     password2: '',
     phone_nr: '',
     locations: [],
-    selected_locations: null,
+    selected_locations: [],
     errors: null
   }),
   beforeCreate() {
