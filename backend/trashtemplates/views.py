@@ -249,6 +249,12 @@ class BuildingView(generics.RetrieveUpdateDestroyAPIView):
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         building_list = template.buildings.get(building=kwargs["building_id"])
+        new_list = []
+        for trash_id in building_list.trash_ids.all():
+            if template.trash_containers.filter(extra_id=trash_id).exists():
+                new_list.append(trash_id)
+        building_list.trash_ids.set(new_list)
+
         data = BuildingTrashContainerListSerializer(building_list).data
         return Response(data)
 
