@@ -1,5 +1,13 @@
 # Dr-trottoir django backend
 
+## Info
+The django backend works with these extra modules
+
+- django rest framework
+  - Easily making REST API's
+- simpleJWT
+  - simple json web tokens for the cookies and authentication
+
 ## Setup
 
 The first thing to do is to clone the repository:
