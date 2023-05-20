@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Syndicusen" :head-component="headComponent" :keys="keys"/>
+  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Syndici" :head-component="headComponent" :keys="keys"/>
 </template>
 
 <script>

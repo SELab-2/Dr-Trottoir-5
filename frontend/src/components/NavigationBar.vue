@@ -19,8 +19,8 @@
                    value="gebouwen"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" :to="{name: 'students'}"
                    value="studenten"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" :to="{name: 'syndici'}"
-                   value="syndicussen"></v-list-item>
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndici" :to="{name: 'syndici'}"
+                   value="syndici"></v-list-item>
       <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" :to="{name: 'mailtemplates'}"
                    value="email templates"></v-list-item>
       <v-list-item prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
