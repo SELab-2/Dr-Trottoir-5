@@ -47,7 +47,9 @@ def user_view(request):
 def login_view(request):
     data = request.data
     response = Response()
-    email = data.get('email', None).lower()
+    email = data.get('email', None)
+    if email is not None:
+        email = email.lower()
     password = data.get('password', None)
 
     handler = ExceptionHandler()
@@ -107,7 +109,7 @@ def registration_view(request):
         response = Response()
         data = request.data
         handler = ExceptionHandler()
-        handler.check_not_blank_required(data.get("email").lower(), "email")
+        handler.check_not_blank_required(data.get("email"), "email")
         handler.check_not_blank_required(data.get("first_name"), "firstname")
         handler.check_not_blank_required(data.get("last_name"), "lastname")
         handler.check_not_blank_required(data.get("password"), "password")
@@ -117,7 +119,7 @@ def registration_view(request):
         handler.check_required(data.get("locations"), "locations")
         handler.check()
 
-        if get_user_model().objects.filter(email=data["email"]).exists():
+        if get_user_model().objects.filter(email=data["email"].lower()).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
@@ -167,10 +169,11 @@ def forgot_password(request):
     """
 
     data = request.data
-    email = data["email"].lower()
+    email = data["email"]
 
     handler = ExceptionHandler()
     handler.check_not_blank_required(email, "email")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
@@ -193,7 +196,7 @@ def reset_password(request):
         Reset the password with the otp that is received via email.
     """
     data = request.data
-    email = data.get("email").lower()
+    email = data.get("email")
     otp = data.get("otp")
     password = data.get("password")
     password2 = data.get("password2")
@@ -203,10 +206,11 @@ def reset_password(request):
     handler.check_not_blank_required(otp, "otp")
     handler.check_not_blank_required(password, "password")
     handler.check_not_blank_required(password2, "password2")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
-    user = get_user_model().objects.get(email=data['email'])
+    user = get_user_model().objects.get(email=data['email'].lower())
 
     handler.check_equal(password, password2, "password2")
     handler.check_equal(otp, user.otp, "otp")
@@ -269,7 +273,6 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         data = request.data
-        data["email"] = data.get("email").lower()
 
         id = kwargs['pk']
         handler = ExceptionHandler()
@@ -281,6 +284,7 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_integer(data.get("phone_nr"), "phone_nr")
         handler.check()
 
+        data["email"] = data.get("email").lower()
         user = get_user_model().objects.get(id=id)
 
         if user.email.lower() != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
