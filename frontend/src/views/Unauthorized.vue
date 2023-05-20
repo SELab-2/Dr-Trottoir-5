@@ -18,7 +18,7 @@
             <div class="mx-1">U heeft onvoldoende rechten om deze pagina te bezoeken.</div>
           </v-row>
           <v-row class="my-4 justify-center">
-            <normal-button text="Ga terug" v-bind:parent-function="goBack" block class="mt-2"></normal-button>
+            <normal-button data-test="goBack" text="Ga terug" v-bind:parent-function="goBack" block class="mt-2"></normal-button>
           </v-row>
         </v-card-text>
       </v-card>
