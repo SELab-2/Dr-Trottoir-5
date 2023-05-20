@@ -107,7 +107,7 @@ def registration_view(request):
         response = Response()
         data = request.data
         handler = ExceptionHandler()
-        handler.check_not_blank_required(data.get("email"), "email")
+        handler.check_not_blank_required(data.get("email").lower(), "email")
         handler.check_not_blank_required(data.get("first_name"), "firstname")
         handler.check_not_blank_required(data.get("last_name"), "lastname")
         handler.check_not_blank_required(data.get("password"), "password")
@@ -125,7 +125,7 @@ def registration_view(request):
                 }]})
 
         user = get_user_model().objects.create_user(
-            data['email'],
+            data['email'].lower(),
             data['first_name'],
             data['last_name'],
             data['phone_nr'],
@@ -269,6 +269,7 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         data = request.data
+        data["email"] = data.get("email").lower()
 
         id = kwargs['pk']
         handler = ExceptionHandler()
@@ -282,7 +283,7 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
 
         user = get_user_model().objects.get(id=id)
 
-        if user.email.lower() != data.get("email").lower() and get_user_model().objects.filter(email=data["email"].lower()).exists():
+        if user.email.lower() != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
