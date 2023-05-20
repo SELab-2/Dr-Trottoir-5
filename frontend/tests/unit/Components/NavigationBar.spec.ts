@@ -41,6 +41,7 @@ describe('NavigationBar.vue', () => {
     expect(wrapper.find('[data-test="dashboard"]').exists()).toBeTruthy();
     expect(wrapper.find('[data-test="templates"]').exists()).toBeTruthy();
     expect(wrapper.find('[data-test="locations"]').exists()).toBeTruthy();
+    expect(wrapper.find('[data-test="afval-templates"]').exists()).toBeTruthy();
     expect(wrapper.find('[data-test="rounds"]').exists()).toBeTruthy();
     expect(wrapper.find('[data-test="buildings"]').exists()).toBeTruthy();
     expect(wrapper.find('[data-test="student"]').exists()).toBeTruthy();

@@ -9,7 +9,7 @@
                    value="dashboard"></v-list-item>
       <v-list-item data-test="templates" v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" :to="{name: 'studenttemplates'}"
                    value="studenten templates"></v-list-item>
-      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-trash-can-outline" title="Afval Templates" :to="{name: 'trashtemplates'}"
+      <v-list-item data-test="afval-templates" v-if="this.isAdminOrSu" prepend-icon="mdi-trash-can-outline" title="Afval Templates" :to="{name: 'trashtemplates'}"
                    value="afval templates"></v-list-item>
       <v-list-item data-test="locations" v-if="this.isAdminOrSu" prepend-icon="mdi-city" title="Locaties" :to="{name: 'locations'}"
                    value="locaties"></v-list-item>
