@@ -1,17 +1,17 @@
-from .models import *
-from .serializers import *
-
-from exceptions.exceptionHandler import ExceptionHandler
 import os
 
-from django.conf import settings
+from exceptions.exceptionHandler import ExceptionHandler
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, SyndicusPermission, AllowAnyReadOnly
 from trashtemplates.util import update
 from planning.util import get_current_week_planning, make_copy
+
+from .models import *
+from .serializers import *
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
@@ -113,6 +113,15 @@ class ManualRetrieveUpdateDestroyAPIView(
         return super().patch(request, *args, **kwargs)
 
 
+class SyndicusBuildingListView(generics.ListAPIView):
+    permission_classes = [SyndicusPermission]
+    serializer_class = BuildingSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = Building.objects.filter(syndicus__in=[request.user])
+        return super().get(request, *args, **kwargs)
+
+
 class BuildingListCreateView(generics.ListCreateAPIView):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
@@ -168,6 +177,7 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class BuildingUUIDRetrieveView(generics.RetrieveAPIView):
     serializer_class = BuildingSerializerFull
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         id = kwargs["buildingid"]

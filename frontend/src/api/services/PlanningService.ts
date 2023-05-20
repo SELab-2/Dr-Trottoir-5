@@ -69,11 +69,41 @@ class PlanningService extends EchoService {
     return {} as EchoPromise<[Round]>;
   }
 
+  @GET("/studenttemplates/rondes/{year}/{week}/{day}/{location}/")
+  getRoundFromBuilding(
+            @Path('year') year: number,
+            @Path('week') week: number,
+            @Path('day') day: number,
+            @Path('location') location: number,
+            building: number): EchoPromise<Round> {
+    return {} as EchoPromise<Round>;
+  }
+
+
   /**
    * Get building info for a day planning
    */
   @GET("/infoperbuilding/")
   getInfo(@Query('dagPlanning') dagPlanning: number): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>;
+  }
+
+
+  /**
+   *Get building info for a day planning and building
+   */
+  @GET("/infoperbuilding/")
+  getInfoOfBuilding(@Query('dagPlanning') dagPlanning: number,
+                    @Query('building') building: number): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>
+  }
+
+
+  /**
+   * Get building info for a building and date
+   */
+  @GET("/infoperbuilding/")
+  getInfoFromBuilding(@Query('building') building: number, @Query('date') date: string): EchoPromise<BuildingInfo> {
     return {} as EchoPromise<BuildingInfo>;
   }
 

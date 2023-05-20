@@ -1,6 +1,6 @@
 from rest_framework import generics
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission
+    SuperstudentPermission, SyndicusPermission, BewonerPermission
 from .serializers import *
 from .serializers import TrashContainerSerializer
 from exceptions.exceptionHandler import ExceptionHandler
@@ -15,7 +15,7 @@ class TrashContainerListCreateView(generics.ListCreateAPIView):
     queryset = TrashContainer.objects.all()
     serializer_class = TrashContainerSerializer
     permission_classes = [
-        StudentReadOnly | AdminPermission | SuperstudentPermission]
+        StudentReadOnly | AdminPermission | SuperstudentPermission | SyndicusPermission | BewonerPermission]
 
     def get(self, request, *args, **kwargs):
         building = request.query_params['building'] if 'building' in request.query_params else None

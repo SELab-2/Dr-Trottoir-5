@@ -49,6 +49,10 @@ import TrashContainerEdit from '@/components/containerTemplates/containers/Trash
 import LocationList from "@/views/listViews/LocationList";
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminRoundView from "@/views/admin/AdminRoundView.vue";
+import BuildingFollowUp from "@/components/admin/AdminBuildingInfo.vue";
+import AdminBuildingInfo from "@/components/admin/AdminBuildingInfoEdit.vue";
+import SyndicusHome from "@/views/syndicus/SyndicusHome.vue";
+import BuildingView from "@/views/BuildingView.vue";
 
 const routes = [
   {
@@ -64,7 +68,13 @@ const routes = [
   {
     path: '/syndicus',
     name: 'syndicus_home',
-    component: RegisterDone
+    component: SyndicusHome
+  },
+  {
+    path: '/gebouw/:id',
+    name: 'building_page',
+    component: BuildingView,
+    props: true
   },
   {
     path: '/admin',

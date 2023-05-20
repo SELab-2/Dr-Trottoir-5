@@ -96,8 +96,8 @@ def make_dag_planning(data):
         time=pickup_day
     )
 
-    for _ in ronde.buildings.all():
-        InfoPerBuilding(dagPlanning=dag_planning).save()
+    for building in ronde.buildings.all():
+        InfoPerBuilding(dagPlanning=dag_planning, building=building).save()
 
     dag_planning.students.set(data["students"])
     dag_planning.save()
