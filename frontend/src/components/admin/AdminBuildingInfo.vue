@@ -203,7 +203,6 @@ export default {
             color: "error"
           })
         }
-        console.log(this.id)
       }).catch(async () => {
         await router.push({name: 'buildings'})
       })
@@ -311,7 +310,6 @@ export default {
               },
               dot: this.mapping[container.type].color
             }});
-          console.log(this.attrs)
         }
       }).catch(() => null);
     },
