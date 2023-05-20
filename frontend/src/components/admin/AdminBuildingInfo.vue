@@ -8,12 +8,12 @@
           <DeleteIcon/>
         </v-btn>
     </v-row>
-    <v-row justify="center">
+    <v-row justify="center" align="center">
       <v-col cols="3">
         <v-card flat class="datecard">
           <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
                       :first-day-of-week="1" :masks="masks" :attributes="attrs" v-on:dayclick="changed"
-                      v-on:did-move="(e) => {setWeek(e); getContainers()}"
+                      v-on:did-move="(e) => {setWeek(e); getContainers()}" class="datepicker"
           />
         </v-card>
       </v-col>
@@ -40,6 +40,10 @@
           <v-col md="12" lg="12" class="d-flex align-center justify-center">
             <h2>Adres: {{ adres }}</h2>
           </v-col>
+        </v-row>
+      </v-col>
+      <v-col cols="3">
+        <v-row justify="center">
           <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
             <normal-button text="Handleiding" :parent-function="getManual"></normal-button>
           </v-col>
@@ -50,26 +54,9 @@
           <v-col md="12" lg="12" class="d-flex align-center justify-center">
             <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
           </v-col>
-          <v-col md="12" lg="12" class="d-flex align-center justify-center">
-            <h2>Vuilnis planning:</h2>
-          </v-col>
-          <!-- TODO Add list of planning cards -->
-          <v-col md="12" lg="12" class="d-flex align-center justify-center pb-10">
-            <normal-button text="Nieuwe ophaling" :parent-function="addPlanning"></normal-button>
-          </v-col>
         </v-row>
       </v-col>
-      <v-col cols="6">
-        <v-row justify="center" class="text-center">
-          <ul>
-            <li v-for="(el) in this.garbageCollections" :key="el">
-              <v-col cols="12">
-                <TrashPickupCard v-bind:data="el"/>
-              </v-col>
-            </li>
-          </ul>
-        </v-row>
-      </v-col>
+      <v-col cols="3"/>
     </v-row>
     <v-row/>
     <br>
