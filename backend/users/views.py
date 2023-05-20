@@ -48,6 +48,8 @@ def login_view(request):
     data = request.data
     response = Response()
     email = data.get('email', None)
+    if email is not None:
+        email = email.lower()
     password = data.get('password', None)
 
     handler = ExceptionHandler()
@@ -117,7 +119,7 @@ def registration_view(request):
         handler.check_required(data.get("locations"), "locations")
         handler.check()
 
-        if get_user_model().objects.filter(email=data["email"]).exists():
+        if get_user_model().objects.filter(email=data["email"].lower()).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
@@ -125,7 +127,7 @@ def registration_view(request):
                 }]})
 
         user = get_user_model().objects.create_user(
-            data['email'],
+            data['email'].lower(),
             data['first_name'],
             data['last_name'],
             data['phone_nr'],
@@ -171,6 +173,7 @@ def forgot_password(request):
 
     handler = ExceptionHandler()
     handler.check_not_blank_required(email, "email")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
@@ -203,10 +206,11 @@ def reset_password(request):
     handler.check_not_blank_required(otp, "otp")
     handler.check_not_blank_required(password, "password")
     handler.check_not_blank_required(password2, "password2")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
-    user = get_user_model().objects.get(email=data['email'])
+    user = get_user_model().objects.get(email=data['email'].lower())
 
     handler.check_equal(password, password2, "password2")
     handler.check_equal(otp, user.otp, "otp")
@@ -240,7 +244,7 @@ def role_assignment_view(request):
 
             try:
                 user = get_user_model().objects.get(
-                    email=request.data['email'])
+                    email=request.data['email'].lower())
             except get_user_model().DoesNotExist:
                 user = None
 
@@ -280,9 +284,10 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_integer(data.get("phone_nr"), "phone_nr")
         handler.check()
 
+        data["email"] = data.get("email").lower()
         user = get_user_model().objects.get(id=id)
 
-        if user.email != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
+        if user.email.lower() != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
