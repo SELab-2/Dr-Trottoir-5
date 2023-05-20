@@ -3,7 +3,7 @@
     <h1 align="center">Mail versturen</h1>
     <FotoCardSyndicus align="center" :data="this.post"/>
     <label data-test="aan" class="black-text">Aan</label>
-    <v-text-field class="black-text" readonly>{{ this.emails.toString().replaceAll(',', ', ') }}</v-text-field>
+    <v-text-field data-test="email" class="black-text" readonly>{{ this.emails.toString().replaceAll(',', ', ') }}</v-text-field>
     <label data-test="template" class="black-text">Template</label>
     <v-autocomplete
       clearable

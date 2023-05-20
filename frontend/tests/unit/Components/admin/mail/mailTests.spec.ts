@@ -125,6 +125,7 @@ describe('Sendmail.vue', () => {
   }
 
   beforeEach(() => {
+    SendMail.beforeMount = jest.fn()
     SendMail.mounted = jest.fn()
     wrapper = mount(SendMail)
   })
@@ -141,10 +142,12 @@ describe('Sendmail.vue', () => {
     expect(wrapper.find('[data-test="aan"]').text()).toMatch('Aan')
   })
 
-  it('Render name sender', () => {
-    const testEmail = 'test@test.be'
-    wrapper.setData({data: {syndicusEmail: testEmail}})
-    expect(wrapper.find('v-text-field').text()).toMatch(testEmail)
+  it('Render name sender', async () => {
+    const testEmail = ['test@test.be']
+    wrapper.setData({emails: testEmail})
+    await wrapper.vm.$nextTick()
+    const emailField = wrapper.find('[data-test="email"]')
+    expect(wrapper.find('[data-test="email"]').text()).toMatch(testEmail.toString())
   })
 
   it('Render template label', () => {

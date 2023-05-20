@@ -39,7 +39,7 @@ describe('RegisterView.vue', () => {
     expect(wrapper.find('v-text-field[label="E-mail"]').exists()).toBe(true);
     expect(wrapper.find('v-text-field[label="Wachtwoord"]').exists()).toBe(true);
     expect(wrapper.find('v-text-field[label="Bevestig wachtwoord"]').exists()).toBe(true);
-    expect(wrapper.find('v-autocomplete[label="Locatie"]').exists()).toBe(true);
+    expect(wrapper.find('v-autocomplete[label="Locaties"]').exists()).toBe(true);
     expect(wrapper.find('v-text-field[label="GSM-nummer"]').exists()).toBe(true);
     expect(wrapper.find('div[class="mx-1"]').exists()).toBe(true);
   })
