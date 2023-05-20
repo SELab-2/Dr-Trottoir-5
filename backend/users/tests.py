@@ -113,31 +113,31 @@ class UserTestCase(APITestCase):
         registration_view(request)
 
         # Test permission for role assignment
-        request = factory.post("/api/role/", {"role": "AD", "email": ""})
+        request = factory.patch("/api/role/", {"role": "AD", "email": ""})
         force_authenticate(request, user=self.user)
         response = role_assignment_view(request).data
         self.assertEqual(response["detail"].code, "permission_denied")
 
         # Test if error is returned when email is empty
-        request = factory.post("/api/role/", {"role": "AD", "email": ""})
+        request = factory.patch("/api/role/", {"role": "AD", "email": ""})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertEqual(response["email"][0], "This field may not be blank.")
 
         # Make sure a superstudent can't promote a user to admin
-        request = factory.post("/api/role/", {"role": "AD", "email": "test@test.com"})
+        request = factory.patch("/api/role/", {"role": "AD", "email": "test@test.com"})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertIn("errors", response)
 
         # Make sure a non-existent user cannot be promoted
-        request = factory.post("/api/role/", {"role": "ST", "email": "test2@test.com"})
+        request = factory.patch("/api/role/", {"role": "ST", "email": "test2@test.com"})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertIn("errors", response)
 
         # Make sure a non-existent user cannot be promoted
-        request = factory.post("/api/role/", {"role": "ST", "email": "test@test.com"})
+        request = factory.patch("/api/role/", {"role": "ST", "email": "test@test.com"})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertEqual(response["message"], "test@test.com is nu een Student")
