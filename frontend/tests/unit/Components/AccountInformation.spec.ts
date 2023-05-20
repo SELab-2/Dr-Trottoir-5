@@ -16,6 +16,7 @@ describe('AccountInformation.vue', () => {
   let wrapper;
 
   beforeEach(() => {
+    AccountInformation.beforeMount = () => Promise.resolve();
     wrapper = mount(AccountInformation)
   });
 
