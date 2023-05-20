@@ -233,6 +233,7 @@ export default {
       }).catch(() => null);
     },
     async getStudentPosts(){
+      if (this.building === null) return;
       const date = new Date(this.date)
       let week = getWeek(date)
       if (date.getUTCDay() === 0) week -= 1;
