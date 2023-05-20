@@ -11,25 +11,23 @@
     <v-form fast-fail @submit.prevent>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' sm='6' md='6'>
-          <v-text-field v-model='name' label='Naam' :readonly="!edit" required></v-text-field>
+          <v-text-field
+            readonly
+            variant="solo"
+            label="Locatie"
+            v-model="location.name"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='status' label='Status' readonly required></v-text-field>
+          <v-text-field variant="solo" v-model='status' label='Status' readonly ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-checkbox label="Even" v-model="even" :readonly="!edit"></v-checkbox>
+          <v-text-field variant="solo" readonly > {{ even ? "Even" : "Oneven" }}</v-text-field>
         </v-col>
       </v-row>
       <v-row class="justify-space-between mx-auto">
-        <v-col cols='12' sm='6' md='6'>
-          <v-select
-            :readonly="!edit"
-            label="Locatie"
-            :items="locations"
-            item-title="name"
-            item-value="id"
-            v-model="location"
-          ></v-select>
+         <v-col cols='12' sm='6' md='6'>
+          <v-text-field v-model='name' label='Naam' :readonly="!edit" required></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
           <v-text-field v-model='start_hour' label='Standaard Startuur' :readonly="!edit" required></v-text-field>
@@ -60,7 +58,7 @@
       <v-col class="d-flex" cols='12' sm='6' md='6'>
         <v-autocomplete
           label="Rondes"
-          :items="all_rondes"
+          :items="all_rondes.filter(r => r.location.id === this.location.id)"
           item-title="name"
           item-value="id"
           v-model="add_id"
@@ -81,7 +79,6 @@
 <script>
 import NormalButton from '@/components/NormalButton.vue';
 import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import TemplateRondeCard from "@/components/admin/student_template/TemplateRondeCard.vue";
 import RoundService from "@/api/services/RoundService";
@@ -103,7 +100,6 @@ export default {
     location: 0,
     start_hour: "",
     end_hour: "",
-    locations: [],
     rondes: [],
     all_rondes: [],
     add_id: null,
@@ -122,12 +118,6 @@ export default {
       id: 'getLocationsError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => null);
-
-    // get all possible locations
-    this.locations = await RequestHandler.handle(LocationService.getLocations(), {
-      id: 'getLocationsError',
-      style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
 
     // get all rounds
     this.all_rondes = await RequestHandler.handle(RoundService.getRounds(), {
@@ -152,10 +142,8 @@ export default {
       this.edit = false
       const body = {
         name: this.name,
-        even: this.even,
         start_hour: this.start_hour,
-        end_hour: this.end_hour,
-        location: this.location.id
+        end_hour: this.end_hour
       }
 
       const response = await RequestHandler.handle(StudentTemplateService.updateStudentTemplate(this.template_id, body), {

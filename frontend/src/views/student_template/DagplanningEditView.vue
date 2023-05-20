@@ -12,7 +12,7 @@
           <v-select
             :readonly="this.status === 'Vervangen'"
             label="Studenten"
-            :items="all_students"
+            :items="all_students.filter(student => student.role !== 'AA' && student.locations.includes(this.location.id))"
             item-title="first_name"
             item-value="id"
             multiple
@@ -63,6 +63,7 @@ export default {
     end_hour: "",
     students: [],
     all_students: [],
+    location: null,
     state_mapping: {
       "A": "Actief",
       "E": "Eenmalig",
@@ -92,13 +93,13 @@ export default {
       style: 'SNACKBAR'
     }).then(result => result).catch(() => null);
     this.status = this.state_mapping[template.status]
+    this.location = template.location
 
     // get all users
     this.all_students = await RequestHandler.handle(UserService.getUsers(), {
       id: 'getUsersError',
       style: 'SNACKBAR'
     }).then(result => result).catch(() => []);
-
 
   },
   methods: {
