@@ -8,11 +8,13 @@
           <DeleteIcon/>
         </v-btn>
     </v-row>
-    <v-row justify="center">
+    <v-row justify="center" align="center">
       <v-col cols="3">
         <v-card flat class="datecard">
-          <DatePicker v-model.string="date" color="yellow" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                      :first-day-of-week="1" v-on:dayclick="changed" :masks="masks" class="datepicker"/>
+          <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
+                      :first-day-of-week="1" :masks="masks" :attributes="attrs" v-on:dayclick="changed"
+                      v-on:did-move="(e) => {setWeek(e); getContainers()}" class="datepicker"
+          />
         </v-card>
       </v-col>
       <v-col cols="3">
@@ -21,7 +23,7 @@
             <h2>Gebouw: {{ name }}</h2>
           </v-col>
           <v-col lg="12" md="12" class="d-flex align-center justify-center">
-            <button @click="() => {this.search = !this.search}" class="text-decoration-underline">Change building</button>
+            <button @click="() => {this.search = !this.search}" class="text-decoration-underline">Verander gebouw</button>
           </v-col>
           <v-col lg="12" md="12" class="d-flex align-center justify-center" v-if="this.search">
             <v-autocomplete
@@ -32,12 +34,16 @@
               item-title="name"
               item-value="id"
               v-model="this.name"
-              v-on:update:modelValue="(el) => this.buildingChange(el)"
+              v-on:update:modelValue="(el) => {this.buildingChange(el); this.getContainers()}"
             ></v-autocomplete>
           </v-col>
           <v-col md="12" lg="12" class="d-flex align-center justify-center">
             <h2>Adres: {{ adres }}</h2>
           </v-col>
+        </v-row>
+      </v-col>
+      <v-col cols="3">
+        <v-row justify="center">
           <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
             <normal-button text="Handleiding" :parent-function="getManual"></normal-button>
           </v-col>
@@ -48,26 +54,9 @@
           <v-col md="12" lg="12" class="d-flex align-center justify-center">
             <h2>Klanten nummer: {{ ivago_klantnr }}</h2>
           </v-col>
-          <v-col md="12" lg="12" class="d-flex align-center justify-center">
-            <h2>Vuilnis planning:</h2>
-          </v-col>
-          <!-- TODO Add list of planning cards -->
-          <v-col md="12" lg="12" class="d-flex align-center justify-center pb-10">
-            <normal-button text="Nieuwe ophaling" :parent-function="addPlanning"></normal-button>
-          </v-col>
         </v-row>
       </v-col>
-      <v-col cols="6">
-        <v-row justify="center" class="text-center">
-          <ul>
-            <li v-for="(el) in this.garbageCollections" :key="el">
-              <v-col cols="12">
-                <TrashPickupCard v-bind:data="el"/>
-              </v-col>
-            </li>
-          </ul>
-        </v-row>
-      </v-col>
+      <v-col cols="3"/>
     </v-row>
     <v-row/>
     <br>
@@ -107,35 +96,35 @@
           <ul>
             <li v-for="(el) in this.departs" :key="el">
               <v-col cols="12">
-                <FotoCardAdmin v-bind:data="el"/>
+                <FotoCardAdmin v-bind:data="el" :syndici="0" building="1"/>
               </v-col>
             </li>
           </ul>
         </v-row>
       </v-col>
-
-
     </v-row>
   </v-col>
+
 </template>
 
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
+import 'v-calendar/dist/style.css';
 import router from "@/router";
 import {DatePicker} from "v-calendar";
 import PlanningService from "@/api/services/PlanningService";
 import {getWeek} from "@/api/DateUtil";
-import RoundBuildingCard from "@/components/admin/RoundBuildingCard.vue";
 import FotoCardAdmin from "@/components/admin/FotoCardAdmin.vue";
 import NormalButton from "@/components/NormalButton.vue";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 import EditIcon from "@/components/icons/EditIcon.vue";
-import TrashPickupCard from "@/components/admin/TrashPickupCard.vue";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
+
 
 export default {
   name: "AdminBuildingInfo",
-  components: {TrashPickupCard, EditIcon, DeleteIcon, NormalButton, FotoCardAdmin, DatePicker},
+  components: {EditIcon, DeleteIcon, NormalButton, FotoCardAdmin, DatePicker},
   data: () => {
     return {
       id: 0,
@@ -145,6 +134,7 @@ export default {
       manual: {file: '', fileType: '', manualStatus: ''},
       ivago_klantnr: 0,
       date: new Date().toISOString().split('T')[0],
+      week: new Date(),
       masks: { modelValue: 'YYYY-MM-DD' },
       buildings: [],
       arrivals: [],
@@ -152,16 +142,41 @@ export default {
       storages: [],
       garbageCollections: [],
       search: false,
+      // time: 0,  TODO <- milestone 3
+      planningen: [],
+      new_manual: null,
+      selectedLocation: null,
+      locations: [],
+      errors: null,
+      attrs: [],
+      mapping: {
+      GL: {type: 'GLAS', color: 'yellow'},
+      GF: {type: 'GFT', color: 'green'},
+      PM: {type: 'PMD', color: 'orange'},
+      PK: {type: 'PK', color: 'blue'},
+      RE: {type: 'REST', color: 'gray'}
+    },
+      day_map: {
+        MO: 1,
+        TU: 2,
+        WE: 3,
+        TH: 4,
+        FR: 5,
+        SA: 6,
+        SU: 0,
+      }
     }
   },
 
-  beforeMount() {
-    this.getBuildingInformation(this.$route.params.id).then(() => this.getStudentPosts())
-    this.getTrashPickUps()
-    RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
+  async beforeMount() {
+    await this.getBuildingInformation(this.$route.params.id).then(() => this.getStudentPosts())
+    await this.getTrashPickUps()
+    await RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
       .then(async result => {
         this.buildings = result
-      })
+        this.getContainers()
+      }).catch(() => null)
+
   },
   methods: {
     changed() {
@@ -172,12 +187,12 @@ export default {
         id: 'getBuildingError',
         style: 'SNACKBAR'
       }).then(async result => {
-        console.log(result)
         this.id = result.id
         this.name = result.name
         this.adres = result.adres
         this.location = result.location
         this.ivago_klantnr = result.ivago_klantnr
+        this.selectedLocation = result.location
 
         if (result.manual != null) {
           this.manual = result.manual;
@@ -242,7 +257,6 @@ export default {
                   id: 'getPicturesError',
                   style: 'NONE'
                 }).then(async pictures => {
-                  console.log(pictures)
                   this.arrivals = []
                   this.departs = []
                   this.storages = []
@@ -272,7 +286,33 @@ export default {
         this.departs = []
         this.storages = []
       });
-    }
+    },
+    setWeek(e) {
+      this.week = new Date(e[0].viewDays[1].id);
+    },
+    getContainers() {
+      let week = getWeek(this.week);
+      if (this.week.getUTCDay() === 0) week -= 1;
+      RequestHandler.handle(TrashTemplateService.getContainers(this.week.getFullYear(), week), {
+        id: "getContainersError",
+        style: "NONE"
+      }).then(containers => {
+        if (this.id.toString() in containers) {
+          const cs = containers[this.id.toString()];
+          this.attrs = cs.map(container => {
+            const container_date = new Date(this.week);
+            const dist = this.day_map[container.collection_day.day] - container_date.getDay();
+            container_date.setDate(container_date.getDate() + dist);
+            return {
+              dates: container_date,
+              popover: {
+                label: this.mapping[container.type].type
+              },
+              dot: this.mapping[container.type].color
+            }});
+        }
+      }).catch(() => null);
+    },
   }
 }
 </script>

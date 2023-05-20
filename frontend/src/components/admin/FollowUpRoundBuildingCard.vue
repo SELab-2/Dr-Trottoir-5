@@ -27,9 +27,7 @@
   </v-container>
 </template>
 
-<script>
-
-/**
+<script>/**
  * FollowUpRoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String
  * state: String
@@ -38,6 +36,8 @@
  * location: String
  * optimalDuration: Number (is de optimale tijd voor een gebouw)
  */
+
+import router from "@/router";
 
 export default {
   name: 'FollowUpRoundBuildingCard',
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     goToBuildingPage: function () {
-      // TODO
+      router.push({name: 'admin_info_building', params: {id: this.data.building.id}});
     }
   },
   async mounted() {
