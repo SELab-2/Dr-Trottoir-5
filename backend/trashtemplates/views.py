@@ -156,7 +156,7 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
         if "collection_day" not in data:
             data["collection_day"] = {}
 
-        if "day" not in data:
+        if "day" not in data.get("collection_day"):
             data["collection_day"]["day"] = tc_id_wrapper.trash_container.collection_day.day
 
         if "start_hour" not in data.get("collection_day"):
@@ -165,7 +165,7 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
         if "end_hour" not in data.get("collection_day"):
             data["collection_day"]["end_hour"] = tc_id_wrapper.trash_container.collection_day.end_hour
 
-        if "type" not in data.get("collection_day"):
+        if "type" not in data:
             data["type"] = tc_id_wrapper.trash_container.type
 
         new_tc_id_wrapper = make_new_tc_id_wrapper(data, tc_id_wrapper.extra_id)
