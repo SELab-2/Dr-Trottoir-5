@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from .views import registration_view, logout_view, UserListAPIView, forgot_password, reset_password, \
     role_assignment_view, login_view
 from .models import User
+from ronde.models import LocatieEnum
 
 
 class UserTestCase(APITestCase):
@@ -12,8 +13,13 @@ class UserTestCase(APITestCase):
     """
 
     def setUp(self):
+        self.loc1 = LocatieEnum.objects.create(name="Gent")
+        self.loc2 = LocatieEnum.objects.create(name="Antwerpen")
+
         self.register = {"email": "test@test.com", "first_name": "First",
-                         "last_name": "Last", "password": "Pass", "phone_nr": "0"}
+                         "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0",
+                         "locations": [self.loc1.id, self.loc2.id]}
+
         self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
         self.su = User.objects.create(role="SU", username="su")
@@ -22,6 +28,7 @@ class UserTestCase(APITestCase):
         factory = APIRequestFactory()
         request = factory.post("/api/register/", self.register)
         response = registration_view(request).data
+
         self.assertEqual(response["email"], "test@test.com")
         self.assertIn("role", response)
 
@@ -39,6 +46,7 @@ class UserTestCase(APITestCase):
     def testUserLogin(self):
         factory = APIRequestFactory()
         request = factory.post("/api/register/", self.register)
+
         registration_view(request)
 
         # Login to the newly made account
@@ -60,7 +68,7 @@ class UserTestCase(APITestCase):
         # Test if no email is sent if it does not exist in database
         request = factory.post("/api/forgot/", {"email": "test2@test.com"})
         response = forgot_password(request).data
-        self.assertEqual(response["message"], "Dit email adres bestaat niet.")
+        self.assertIn("errors", response)
 
     def testUserResetPassword(self):
         factory = APIRequestFactory()
@@ -79,13 +87,13 @@ class UserTestCase(APITestCase):
 
         # Make sure new password isn't empty
         otp = User.objects.get(email="test@test.com").otp
-        request = factory.post("/api/reset/", {"email": "test@test.com", "otp": otp, "new_password": ""})
+        request = factory.post("/api/reset/", {"email": "test@test.com", "otp": otp, "password": ""})
         response = reset_password(request).data
         self.assertIn("errors", response)
 
         # Test if we can reset password
         otp = User.objects.get(email="test@test.com").otp
-        request = factory.post("/api/reset/", {"email": "test@test.com", "otp": otp, "new_password": "Pass"})
+        request = factory.post("/api/reset/", {"email": "test@test.com", "otp": otp, "password": "Pass", "password2": "Pass"})
         response = reset_password(request).data
         self.assertEqual(response["message"], "New password is created")
 

@@ -1,5 +1,6 @@
 import {TrashTemplateStatus} from "@/api/models/TrashTemplateStatus";
 import Building from "@/api/models/Building";
+import BuildingContainer from "@/api/models/BuildingContainer";
 
 export default class TrashTemplate {
   id: number = 1;
@@ -9,5 +10,5 @@ export default class TrashTemplate {
   year: number = 2000;
   week: number = 1;
   location: number = 0;
-  buildings: Building[]
+  buildings: BuildingContainer[]
 }

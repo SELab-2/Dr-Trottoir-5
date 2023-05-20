@@ -6,10 +6,10 @@
     <v-form fast-fail @submit.prevent>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' sm='6' md='6'>
-          <v-text-field v-model='name' label='Naam' required></v-text-field>
+          <v-text-field v-model='name' :error-messages="check_errors(this.errors, 'name')" label='Naam' required></v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="6">
-          <v-checkbox label="Even" v-model="even"></v-checkbox>
+          <v-checkbox label="Even" :error-messages="check_errors(this.errors, 'even')" v-model="even"></v-checkbox>
         </v-col>
       </v-row>
       <v-row class="justify-space-between mx-auto">
@@ -20,13 +20,14 @@
             item-title="name"
             item-value="id"
             v-model="location"
+            :error-messages="check_errors(this.errors, 'location')"
           ></v-select>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='start_hour' label='Standaard Startuur' required></v-text-field>
+          <v-text-field v-model='start_hour' :error-messages="check_errors(this.errors, 'start_hour')" label='Standaard Startuur' required></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='end_hour' label='Standaard Einduur' required></v-text-field>
+          <v-text-field v-model='end_hour' :error-messages="check_errors(this.errors, 'end_hour')" label='Standaard Einduur' required></v-text-field>
         </v-col>
       </v-row>
       <v-row class="px-5 justify-center mx-auto">
@@ -44,6 +45,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import router from "@/router";
+import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: "StudentTemplateAddView",
@@ -53,7 +55,8 @@ export default {
     location: null,
     start_hour: "",
     end_hour: "",
-    locations: []
+    locations: [],
+    errors: null
   }),
   async mounted() {
     // get all possible locations
@@ -63,6 +66,7 @@ export default {
     }).then(result => result).catch(() => []);
   },
   methods: {
+    check_errors,
     async create() {
       const body = {
         name: this.name,
@@ -72,11 +76,12 @@ export default {
         location: this.location
       }
 
-      const response = await RequestHandler.handle(StudentTemplateService.addStudentTemplate(body),{
-        id: 'createStudentTemplateError',
-        style: 'SNACKBAR'
-      }).then(result => result);
-      return await router.push({name: 'studenttemplates', params: {id: response["new_id"]}})
+      StudentTemplateService.addStudentTemplate(body)
+        .then(response => {
+          this.errors = null;
+          router.push({name: 'studenttemplates', params: {id: response["new_id"]}})
+        })
+        .catch(async (error) => {this.errors = await get_errors(error)});
     }
   }
 }

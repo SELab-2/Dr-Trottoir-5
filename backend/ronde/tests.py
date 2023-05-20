@@ -40,7 +40,7 @@ class TestApi(TestCase):
         force_authenticate(request, user=self.user)
         response = LocatieEnumListCreateView.as_view()(request).data
 
-        self.assertEqual(response["succes"]["name"], "Oostende")
+        self.assertEqual(response["name"], "Oostende")
 
     def testGetLocations(self):
         """
@@ -59,10 +59,10 @@ class TestApi(TestCase):
         response = LocatieEnumListCreateView.as_view()(request).data
 
         request = factory.get(
-            f'/api/ronde/locatie/{response["succes"]["id"]}/')
+            f'/api/ronde/locatie/{response["id"]}/')
         force_authenticate(request, user=self.user)
         response = LocatieEnumRetrieveDestroyView\
-            .as_view()(request, pk=response["succes"]["id"]).data
+            .as_view()(request, pk=response["id"]).data
         self.assertEqual(response["name"], "Oostende")
 
     def testGetRondes(self):
@@ -90,7 +90,7 @@ class TestApi(TestCase):
                                 "file": file})
         force_authenticate(request, user=self.user)
         response = ManualListCreateView.as_view()(request).data
-        self.assertEqual(response["succes"]["manualStatus"], "Klaar")
+        self.assertEqual(response["manualStatus"], "Klaar")
 
         # Test upload with missing argument
         request = factory.post('/api/building/manual/',

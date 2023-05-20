@@ -38,6 +38,8 @@ import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue"
 import CreateSyndicusView from "@/views/admin/CreateSyndicusView";
 import AdjustSyndicusView from "@/views/admin/AdjustSyndicusView";
 import TrashTemplateBuildingsList from '@/components/containerTemplates/buildings/TrashTemplateBuildingsList.vue'
+import TrashTemplateBuildingEdit from '@/components/containerTemplates/buildings/TrashTemplateBuildingEdit.vue'
+import TrashTemplateBuildingAdd from '@/components/containerTemplates/buildings/TrashTemplateBuildingAdd.vue'
 import TrashTemplateContainersList from '@/components/containerTemplates/containers/TrashTemplateContainersList.vue'
 import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
 import TrashContainerCreate from '@/components/containerTemplates/containers/TrashContainerCreate.vue'
@@ -47,6 +49,10 @@ import TrashContainerEdit from '@/components/containerTemplates/containers/Trash
 import LocationList from "@/views/listViews/LocationList";
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminRoundView from "@/views/admin/AdminRoundView.vue";
+import BuildingFollowUp from "@/components/admin/AdminBuildingInfo.vue";
+import AdminBuildingInfo from "@/components/admin/AdminBuildingInfoEdit.vue";
+import SyndicusHome from "@/views/syndicus/SyndicusHome.vue";
+import BuildingView from "@/views/BuildingView.vue";
 
 const routes = [
   {
@@ -62,7 +68,13 @@ const routes = [
   {
     path: '/syndicus',
     name: 'syndicus_home',
-    component: RegisterDone
+    component: SyndicusHome
+  },
+  {
+    path: '/gebouw/:id',
+    name: 'building_page',
+    component: BuildingView,
+    props: true
   },
   {
     path: '/admin',
@@ -309,6 +321,18 @@ const routes = [
     path: '/admin/afvaltemplate/:id/gebouwen',
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
+    props: true
+  },
+  {
+    path: '/admin/afvaltemplate/:id/gebouw/:gebouwId/aanpassen',
+    name: 'editTrashtemplateBuilding',
+    component: TrashTemplateBuildingEdit,
+    props: true
+  },
+  {
+    path: '/admin/afvaltemplate/:id/gebouw/toevoegen',
+    name: 'addBuildingsToTrashTemplate',
+    component: TrashTemplateBuildingAdd,
     props: true
   },
   {

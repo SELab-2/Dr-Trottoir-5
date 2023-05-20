@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
+from sortedm2m.fields import SortedManyToManyField
 import uuid
 
 
@@ -113,6 +114,8 @@ class Ronde(models.Model):
              The location of the ronde
          building : models.ManyToManyField
              The different buildings that need te be visited in a ronde
+        is_active: models.BooleanField
+            Tells if the round is replaced or not
     """
 
     name = models.TextField()
@@ -121,4 +124,5 @@ class Ronde(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name="Locatie"
     )
-    buildings = models.ManyToManyField(Building, blank=True)
+    is_active = models.BooleanField(default=True)
+    buildings = SortedManyToManyField(Building, blank=True)
