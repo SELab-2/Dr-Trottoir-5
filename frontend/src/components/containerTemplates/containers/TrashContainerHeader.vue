@@ -11,7 +11,7 @@
         <p title="Type"> Type </p>
       </v-col>
       <v-col class="col" cols="4"/>
-      <v-col class="text-right" cols="2">
+      <v-col cols="2">
         Acties
       </v-col>
     </v-row>

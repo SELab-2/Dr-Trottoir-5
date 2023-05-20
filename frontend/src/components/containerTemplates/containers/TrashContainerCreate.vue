@@ -8,14 +8,14 @@
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="type"
-            :items="types"
+            :items="types.map(type => ContainerType[type])"
             label="type container"
           ></v-select>
         </v-col>
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="day"
-            :items="days"
+            :items="days.map(day => Weekday[day])"
             label="Dag van de week"
           ></v-select>
         </v-col>
@@ -26,11 +26,12 @@
           <v-text-field v-model='end_hour' label='Einduur' required></v-text-field>
         </v-col>
       </v-row>
-      <v-row class="px-5 justify-center mx-auto">
+      <v-row v-if="status !== 'V'" class="px-5 justify-center mx-auto">
         <v-col class="d-flex justify-center ml-auto mx-auto" cols="12" md="3" sm="3">
           <v-btn class="overflow-hidden" @click="createContainer()">Aanmaken</v-btn>
         </v-col>
       </v-row>
+        <div v-if="status === 'V'" class="px-3 text-caption">Om deze template aan te passen moeten eerst de eenmalige aanpassingen ongedaan worden.</div>
     </v-form>
   </v-card>
 </template>
@@ -38,11 +39,20 @@
 <script lang="ts">
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
-import {ContainerType} from "@/api/models/ContainerType";
-import {Weekday} from "@/api/models/Weekday";
+import {container_to_api, ContainerType} from "@/api/models/ContainerType";
+import {Weekday, weekday_to_api} from "@/api/models/Weekday";
+import router from "@/router";
 
 export default {
   name: 'CreateTrashContainerView',
+  computed: {
+    Weekday() {
+      return Weekday
+    },
+    ContainerType() {
+      return ContainerType
+    }
+  },
   props: {
     id: Number
   },
@@ -53,6 +63,7 @@ export default {
       start_hour: '',
       end_hour: '',
       smallScreen: false,
+      status: "I",
       types: [
         ContainerType.GFT,
         ContainerType.PMD,
@@ -61,23 +72,35 @@ export default {
         ContainerType.REST,
       ],
       days: [
-        Weekday.SUNDAY,
-        Weekday.MONDAY,
-        Weekday.TUESDAY,
-        Weekday.WEDNESDAY,
-        Weekday.THURSDAY,
-        Weekday.FRIDAY,
-        Weekday.SATURDAY,
+        Weekday.Zondag,
+        Weekday.Maandag,
+        Weekday.Dinsdag,
+        Weekday.Woensdag,
+        Weekday.Donderdag,
+        Weekday.Vrijdag,
+        Weekday.Zaterdag,
       ]
     }
   },
+  beforeMount() {
+    RequestHandler.handle(
+      TrashTemplateService.getTrashTemplate(this.id),
+      {
+        id: 'getTrashtemplateError',
+        style: 'SNACKBAR'
+      }
+    ).then(result => {
+      this.status = result.status
+    })
+  },
   methods: {
     createContainer() {
+
       RequestHandler.handle(
         TrashTemplateService.newContainerToTemplate(this.id, {
-          type: this.type,
+          type: container_to_api(this.type),
           collection_day: {
-            day: this.day,
+            day: weekday_to_api(this.day),
             start_hour: this.start_hour,
             end_hour: this.end_hour
           },
@@ -85,20 +108,15 @@ export default {
           id: 'createContainerTemplateError',
           style: 'SNACKBAR'
         }
-      ).then(() =>
-        this.$store.dispatch("snackbar/open", {
-          message: "De container is aangemaakt",
-          color: "success"
-        }))
+      ).then(() => {
+          this.$store.dispatch("snackbar/open", {
+            message: "De container is aangemaakt",
+            color: "success"
+          })
+          router.push({name: 'trashtemplateContainers', params: {id: this.id}})
+        }
+      )
     },
   }
 }
 </script>
-<style>
-.text_field {
-  height: 40px;
-  max-width: 350px;
-  padding-left: 5px;
-  padding-top: 5px;
-}
-</style>
