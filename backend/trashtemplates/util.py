@@ -21,7 +21,6 @@ def get_trash_template(template_id):
 def make_new_tc_id_wrapper(data, extra_id):
     """
         Maakt nieuwe TrashContainerIdWrapper aan.
-        TODO checks
     """
     handler = ExceptionHandler()
     handler.check_time_value_required(data.get("collection_day").get("start_hour"), "start_hour")

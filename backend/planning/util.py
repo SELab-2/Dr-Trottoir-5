@@ -6,6 +6,8 @@ from exceptions.exceptionHandler import ExceptionHandler
 
 from ronde.models import Ronde
 
+from pickupdays.models import WeekDayEnum
+
 
 def get_current_time():
     current_year = datetime.datetime.utcnow().strftime("%Y")
@@ -85,6 +87,13 @@ def make_dag_planning(data):
     """
     Maakt een nieuwe DagPlanning aan.
     """
+    handler = ExceptionHandler()
+    handler.check_time_value_required(data.get("start_hour"), "start_hour")
+    handler.check_time_value_required(data.get("end_hour"), "end_hour")
+    handler.check_enum_value_required(data.get("day"), "day", WeekDayEnum)
+    handler.check_required(data.get("ronde"), "ronde")
+    handler.check()
+
     pickup_day, _ = PickUpDay.objects.get_or_create(
         day=data["day"],
         start_hour=data["start_hour"],
