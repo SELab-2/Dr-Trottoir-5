@@ -14,7 +14,7 @@
             :readonly="this.status === 'Vervangen'"
             label="Studenten"
             :items="all_students.filter(student => student.role !== 'AA' && student.locations.includes(this.location.id))"
-            item-title="first_name"
+            :item-title="getTitle"
             item-value="id"
             multiple
             chips
@@ -107,6 +107,9 @@ export default {
   },
   methods: {
     check_errors,
+    getTitle(item) {
+      return `${item.first_name} ${item.last_name}`
+    },
     format_day(day) {
       const day_mapping = {
           "MO": "Maandag",
