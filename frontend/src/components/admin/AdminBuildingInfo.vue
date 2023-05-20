@@ -11,8 +11,10 @@
     <v-row justify="center">
       <v-col cols="3">
         <v-card flat class="datecard">
-          <DatePicker v-model.string="date" color="yellow" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                      :first-day-of-week="1" v-on:dayclick="changed" :masks="masks" class="datepicker"/>
+          <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
+                      :first-day-of-week="1" :masks="masks" attributes="attrs" v-on:dayclick="changed"
+                      v-on:did-move="(e) => {setWeek(e); getContainers()}"
+          />
         </v-card>
       </v-col>
       <v-col cols="3">
@@ -32,7 +34,7 @@
               item-title="name"
               item-value="id"
               v-model="this.name"
-              v-on:update:modelValue="(el) => this.buildingChange(el)"
+              v-on:update:modelValue="(el) => {this.buildingChange(el); this.getContainers()}"
             ></v-autocomplete>
           </v-col>
           <v-col md="12" lg="12" class="d-flex align-center justify-center">
@@ -121,6 +123,7 @@
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
+import 'v-calendar/dist/style.css';
 import router from "@/router";
 import {DatePicker} from "v-calendar";
 import PlanningService from "@/api/services/PlanningService";
@@ -145,6 +148,7 @@ export default {
       manual: {file: '', fileType: '', manualStatus: ''},
       ivago_klantnr: 0,
       date: new Date().toISOString().split('T')[0],
+      week: new Date(),
       masks: { modelValue: 'YYYY-MM-DD' },
       buildings: [],
       arrivals: [],
@@ -158,6 +162,14 @@ export default {
       selectedLocation: null,
       locations: [],
       errors: null,
+      attrs: [],
+      mapping: {
+      GL: {type: 'GLAS', color: 'yellow'},
+      GF: {type: 'GFT', color: 'green'},
+      PM: {type: 'PMD', color: 'orange'},
+      PK: {type: 'PK', color: 'blue'},
+      RE: {type: 'REST', color: 'gray'}
+    },
       day_map: {
         MO: 1,
         TU: 2,
@@ -177,9 +189,9 @@ export default {
     await RequestHandler.handle(BuildingService.getBuildings(), {id: 'getBuildingsError', style: 'SNACKBAR'})
       .then(async result => {
         this.buildings = result
-      })
-    const containers = await this.getContainers()
-    console.log(containers)
+        this.getContainers()
+      }).catch(() => null)
+
   },
   methods: {
     changed() {
@@ -262,7 +274,6 @@ export default {
                   id: 'getPicturesError',
                   style: 'NONE'
                 }).then(async pictures => {
-                  console.log(pictures)
                   this.arrivals = []
                   this.departs = []
                   this.storages = []
@@ -293,22 +304,20 @@ export default {
         this.storages = []
       });
     },
-    async getContainers() {
-      const date = new Date(this.date)
-      let week = getWeek(date)
-
-      if (date.getUTCDay() === 0) {
-        week -= 1;
-      }
-      await RequestHandler.handle(TrashTemplateService.getContainers(date.getFullYear(), week), {
+    setWeek(e) {
+      this.week = new Date(e[0].viewDays[1].id);
+    },
+    getContainers() {
+      let week = getWeek(this.week);
+      if (this.week.getUTCDay() === 0) week -= 1;
+      RequestHandler.handle(TrashTemplateService.getContainers(this.week.getFullYear(), week), {
         id: "getContainersError",
         style: "NONE"
       }).then(containers => {
-        console.log(containers)
         if (this.id.toString() in containers) {
           const cs = containers[this.id.toString()];
           this.attrs = cs.map(container => {
-            const container_date = new Date(week);
+            const container_date = new Date(this.week);
             const dist = this.day_map[container.collection_day.day] - container_date.getDay();
             container_date.setDate(container_date.getDate() + dist);
             return {
@@ -317,7 +326,8 @@ export default {
                 label: this.mapping[container.type].type
               },
               dot: this.mapping[container.type].color
-          }});
+            }});
+          console.log(this.attrs)
         }
       }).catch(() => null);
     },
