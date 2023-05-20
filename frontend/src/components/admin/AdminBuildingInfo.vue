@@ -130,6 +130,7 @@ import NormalButton from "@/components/NormalButton.vue";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 import EditIcon from "@/components/icons/EditIcon.vue";
 import TrashPickupCard from "@/components/admin/TrashPickupCard.vue";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 
 export default {
@@ -157,6 +158,15 @@ export default {
       selectedLocation: null,
       locations: [],
       errors: null,
+      day_map: {
+        MO: 1,
+        TU: 2,
+        WE: 3,
+        TH: 4,
+        FR: 5,
+        SA: 6,
+        SU: 0,
+      }
       // syndici: 0
     }
   },
@@ -168,6 +178,8 @@ export default {
       .then(async result => {
         this.buildings = result
       })
+    const containers = await this.getContainers()
+    console.log(containers)
   },
   methods: {
     changed() {
@@ -178,7 +190,6 @@ export default {
         id: 'getBuildingError',
         style: 'SNACKBAR'
       }).then(async result => {
-        console.log(result)
         this.id = result.id
         this.name = result.name
         this.adres = result.adres
@@ -281,7 +292,35 @@ export default {
         this.departs = []
         this.storages = []
       });
-    }
+    },
+    async getContainers() {
+      const date = new Date(this.date)
+      let week = getWeek(date)
+
+      if (date.getUTCDay() === 0) {
+        week -= 1;
+      }
+      await RequestHandler.handle(TrashTemplateService.getContainers(date.getFullYear(), week), {
+        id: "getContainersError",
+        style: "NONE"
+      }).then(containers => {
+        console.log(containers)
+        if (this.id.toString() in containers) {
+          const cs = containers[this.id.toString()];
+          this.attrs = cs.map(container => {
+            const container_date = new Date(week);
+            const dist = this.day_map[container.collection_day.day] - container_date.getDay();
+            container_date.setDate(container_date.getDate() + dist);
+            return {
+              dates: container_date,
+              popover: {
+                label: this.mapping[container.type].type
+              },
+              dot: this.mapping[container.type].color
+          }});
+        }
+      }).catch(() => null);
+    },
   }
 }
 </script>
