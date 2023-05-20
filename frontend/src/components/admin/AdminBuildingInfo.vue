@@ -119,13 +119,12 @@ import FotoCardAdmin from "@/components/admin/FotoCardAdmin.vue";
 import NormalButton from "@/components/NormalButton.vue";
 import DeleteIcon from "@/components/icons/DeleteIcon.vue";
 import EditIcon from "@/components/icons/EditIcon.vue";
-import TrashPickupCard from "@/components/admin/TrashPickupCard.vue";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 
 export default {
   name: "AdminBuildingInfo",
-  components: {TrashPickupCard, EditIcon, DeleteIcon, NormalButton, FotoCardAdmin, DatePicker},
+  components: {EditIcon, DeleteIcon, NormalButton, FotoCardAdmin, DatePicker},
   data: () => {
     return {
       id: 0,
