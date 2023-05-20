@@ -33,7 +33,7 @@
       <v-app-bar-nav-icon v-if="smallScreen" color="secondary" icon="mdi-arrow-left"
                           @click="this.goBack()"></v-app-bar-nav-icon>
       <v-app-bar-title>
-        <v-img height="75px" src="../assets/logo.png" width="150px"/>
+        <v-img height="75px" src="../assets/logo.png" width="150px" @click="this.goHome"/>
       </v-app-bar-title>
     </template>
     <template v-slot:append>
@@ -85,6 +85,11 @@ export default defineComponent({
       smallScreen,
       goBack,
       logout
+    }
+  },
+  methods : {
+    goHome() {
+      router.push('/')
     }
   }
 })
