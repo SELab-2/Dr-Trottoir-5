@@ -26,7 +26,6 @@ export default {
       .then(async result => {
         for (const user of result) {
           if (user.role === "SY"){
-            console.log(user)
             this.elements.push(user)
           }
         }

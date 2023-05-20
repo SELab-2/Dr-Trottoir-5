@@ -112,7 +112,6 @@ export default {
       const regex = new RegExp(this.searchFilter, 'ig')
       if (this.key !== 'roundName') {
         for (const el of this.buildings) {
-          console.log(el)
           const value = el[this.key].toString()
           if (!(filtered.includes(value)) && (this.searchFilter.length < 1 || value.match(regex))) {
             filtered.push(value)
@@ -166,7 +165,6 @@ export default {
     }
   },
   updated() {
-    console.log(this.elements)
     for (const round of this.elements) {
       for (const id of round.buildings) {
         RequestHandler.handle(BuildingService.getBuildingById(id)).then(async result => this.buildings.push(result))
