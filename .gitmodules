@@ -1,3 +1,6 @@
 [submodule "frontend/src/api/EchoFetch"]
 	path = frontend/src/api/EchoFetch
 	url = git@github.com:DeruytterA/EchoFetch.git
+[submodule "docs/themes/docsy"]
+	path = docs/themes/docsy
+	url = https://github.com/google/docsy
