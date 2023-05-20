@@ -10,7 +10,9 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="first_name" :error-messages="check_errors(this.errors, 'first_name')" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="first_name" :error-messages="check_errors(this.errors, 'first_name')"
+                      :readonly="!edit || !not_admin"
+                      variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -19,7 +21,9 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="last_name" :error-messages="check_errors(this.errors, 'last_name')" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="last_name" :error-messages="check_errors(this.errors, 'last_name')"
+                      :readonly="!edit || !not_admin"
+                      variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
@@ -28,7 +32,9 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="email" :error-messages="check_errors(this.errors, 'email')" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="email" :error-messages="check_errors(this.errors, 'email')"
+                      :readonly="!edit || !not_admin"
+                      variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -38,7 +44,9 @@
       </v-col>
       <v-col cols="12" sm="6" md="6" lg="6"
              class="d-flex justify-center justify-md-start justify-lg-start align-center">
-        <v-text-field v-model="phone_nr" :error-messages="check_errors(this.errors, 'phone_nr')" :readonly="!edit" variant="outlined"
+        <v-text-field v-model="phone_nr" :error-messages="check_errors(this.errors, 'phone_nr')"
+                      :readonly="!edit || !not_admin"
+                      variant="outlined"
                       style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-text-field>
       </v-col>
@@ -46,21 +54,12 @@
         <h1>Rol</h1>
       </v-col>
       <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pb-10">
-        <v-select variant="outlined" :items="roles" :error-messages="check_errors(this.errors, 'role')" item-title="name" item-value="value" v-model="role"
+        <v-select variant="outlined" :items="roles" :error-messages="check_errors(this.errors, 'role')"
+                  item-title="name" item-value="value" v-model="role"
                   :readonly="!edit || not_admin"
                   style="height: 40px; max-width: 350px; padding-left: 5px; padding-top: 5px">
         </v-select>
       </v-col>
-      <!-- TODO Milestone 3
-      <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center pt-10">
-        <h1>Rondes</h1>
-      </v-col>
-      <v-col cols="12" sm="12" md="12" lg="12" class="d-flex justify-center align-center">
-        <template v-for="ronde in ['Ronde 1']" :key="ronde">
-          <v-checkbox :model-value="data.rondes && ronde in data.rondes" readonly :label="ronde"></v-checkbox>
-        </template>
-      </v-col>
-      ---->
       <div v-if="can_edit">
         <v-col v-if="!edit" class="d-flex justify-center align-center pb-10" cols="12" sm="12" md="12" lg="12">
           <normal-button text='Pas aan' :parent-function='() => {this.edit = !this.edit}'/>
@@ -85,6 +84,8 @@ import NormalButton from '@/components/NormalButton'
 import ConfirmDialog from '@/components/util/ConfirmDialog'
 import UserService from "@/api/services/UserService";
 import {check_errors, get_errors} from "@/error_handling";
+import AuthService from "@/api/services/AuthService";
+import {RequestHandler} from "@/api/RequestHandler";
 
 export default {
   name: 'AccountInformation',
@@ -102,9 +103,9 @@ export default {
     role: '',
     rondes: [],
     roles: [
-        {name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
-        {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'},
-        {name: 'Syndicus', value: 'SY'}
+      {name: 'Aanvrager', value: 'AA'}, {name: 'Student', value: 'ST'},
+      {name: 'Superstudent', value: 'SU'}, {name: 'Admin', value: 'AD'},
+      {name: 'Syndicus', value: 'SY'}
     ],
     edit: false,
     smallScreen: false,
@@ -116,10 +117,14 @@ export default {
     const currentUser = await this.$store.getters['session/currentUser']
     this.user = currentUser
 
-    if(id !== undefined) {
+    if (id !== undefined) {
       await UserService.getUserById(id)
-        .then(async data => {this.user = data})
-        .catch(async (error) => {this.errors = await get_errors(error)});
+        .then(async data => {
+          this.user = data
+        })
+        .catch(async (error) => {
+          this.errors = await get_errors(error)
+        });
     }
 
     this.first_name = this.user.first_name
@@ -163,17 +168,36 @@ export default {
       this.role = this.user.role
     },
     async save() {
-      UserService.updateUserById(this.user.id, {
-        first_name: this.first_name,
-        last_name: this.last_name,
-        email: this.email,
-        role: this.role,
-        phone_nr: this.phone_nr
-      }).then(() => {
+      let id = this.$route.params.id
+
+      let handle
+      if (id !== undefined) {
+        handle = RequestHandler.handle(AuthService.updateRoleOfUser({
+          role: this.role,
+          email: this.email
+        }), {
+          id: 'updateRoleOfUserAccountInformation',
+          style: 'SNACKBAR',
+        }).then()
+      } else {
+        handle = RequestHandler.handle(UserService.patchLoggedInUser({
+          first_name: this.first_name,
+          last_name: this.last_name,
+          email: this.email,
+          role: this.role,
+          phone_nr: this.phone_nr
+        }), {
+          id: 'patchLoggedInUserAccountInformation',
+          style: 'SNACKBAR'
+        })
+      }
+      handle.then(() => {
         this.edit = !this.edit
         this.email = this.email.toLowerCase()
         this.errors = null
-      }).catch(async (error) => {this.errors = await get_errors(error)});
+      }).catch(async (error) => {
+        this.errors = await get_errors(error)
+      })
     },
     delete_current() {
       UserService.deleteUserById(this.id)
