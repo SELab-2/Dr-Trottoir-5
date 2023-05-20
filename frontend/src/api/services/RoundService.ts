@@ -4,7 +4,7 @@ import {
   EchoService,
   EchoServiceBuilder,
   GET,
-  Path, POST, PUT
+  Path, POST, PATCH
 } from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
@@ -35,6 +35,14 @@ class RoundService extends EchoService {
   @GET("/ronde/building")
   getBuildings(): EchoPromise<any> {
     return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Get all buildings for a syndicus
+   */
+  @GET("/ronde/building/syndicus")
+  getBuildingsForSyndicus(): EchoPromise<[Building]> {
+    return {} as EchoPromise<[Building]>;
   }
 
   /**
@@ -72,9 +80,25 @@ class RoundService extends EchoService {
   /**
    * Update round by ID
    */
-  @PUT('/ronde/{id}/')
+  @PATCH('/ronde/{id}/')
   updateRoundById(@Path('id') id: number, @Body() body: RoundWrapper): EchoPromise<Round> {
     return {} as EchoPromise<Round>
+  }
+
+  /**
+   * Reset the UUID for a building
+   */
+  @GET('/ronde/building/uuid/{id}/reset/')
+  resetBuilding(@Path('id') id: string): EchoPromise<any> {
+    return {} as EchoPromise<any>
+  }
+
+  /**
+   * Get a building by its UUID
+   */
+  @GET('/ronde/building/uuid/{id}/')
+  getBuildingByUUID(@Path('id') id: string): EchoPromise<Building> {
+    return {} as EchoPromise<Building>
   }
 
 }

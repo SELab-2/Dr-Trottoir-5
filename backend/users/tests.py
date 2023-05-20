@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from .views import registration_view, logout_view, UserListAPIView, forgot_password, reset_password, \
     role_assignment_view, login_view
 from .models import User
+from ronde.models import LocatieEnum
 
 
 class UserTestCase(APITestCase):
@@ -12,8 +13,13 @@ class UserTestCase(APITestCase):
     """
 
     def setUp(self):
+        self.loc1 = LocatieEnum.objects.create(name="Gent")
+        self.loc2 = LocatieEnum.objects.create(name="Antwerpen")
+
         self.register = {"email": "test@test.com", "first_name": "First",
-                         "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0"}
+                         "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0",
+                         "locations": [self.loc1.id, self.loc2.id]}
+
         self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
         self.su = User.objects.create(role="SU", username="su")
@@ -22,6 +28,7 @@ class UserTestCase(APITestCase):
         factory = APIRequestFactory()
         request = factory.post("/api/register/", self.register)
         response = registration_view(request).data
+
         self.assertEqual(response["email"], "test@test.com")
         self.assertIn("role", response)
 
@@ -39,6 +46,7 @@ class UserTestCase(APITestCase):
     def testUserLogin(self):
         factory = APIRequestFactory()
         request = factory.post("/api/register/", self.register)
+
         registration_view(request)
 
         # Login to the newly made account
@@ -113,31 +121,31 @@ class UserTestCase(APITestCase):
         registration_view(request)
 
         # Test permission for role assignment
-        request = factory.post("/api/role/", {"role": "AD", "email": ""})
+        request = factory.patch("/api/role/", {"role": "AD", "email": ""})
         force_authenticate(request, user=self.user)
         response = role_assignment_view(request).data
         self.assertEqual(response["detail"].code, "permission_denied")
 
         # Test if error is returned when email is empty
-        request = factory.post("/api/role/", {"role": "AD", "email": ""})
+        request = factory.patch("/api/role/", {"role": "AD", "email": ""})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertEqual(response["email"][0], "This field may not be blank.")
 
         # Make sure a superstudent can't promote a user to admin
-        request = factory.post("/api/role/", {"role": "AD", "email": "test@test.com"})
+        request = factory.patch("/api/role/", {"role": "AD", "email": "test@test.com"})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertIn("errors", response)
 
         # Make sure a non-existent user cannot be promoted
-        request = factory.post("/api/role/", {"role": "ST", "email": "test2@test.com"})
+        request = factory.patch("/api/role/", {"role": "ST", "email": "test2@test.com"})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertIn("errors", response)
 
         # Make sure a non-existent user cannot be promoted
-        request = factory.post("/api/role/", {"role": "ST", "email": "test@test.com"})
+        request = factory.patch("/api/role/", {"role": "ST", "email": "test@test.com"})
         force_authenticate(request, user=self.su)
         response = role_assignment_view(request).data
         self.assertEqual(response["message"], "test@test.com is nu een Student")

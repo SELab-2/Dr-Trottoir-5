@@ -3,6 +3,7 @@ import {
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
+  PATCH,
   POST,
 } from 'echofetch';
 import { ErrorHandler } from "@/api/error/ErrorHandler";
@@ -95,7 +96,7 @@ class AuthService extends EchoService {
   /**
    * Change the role of a user
    */
-  @POST('/role/')
+  @PATCH('/role/')
   updateRoleOfUser(@Body() body : {}) : EchoPromise<string> {
     return {} as EchoPromise<string>
   }

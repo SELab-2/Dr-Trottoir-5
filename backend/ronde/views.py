@@ -1,22 +1,23 @@
-from .models import *
-from .serializers import *
-
-from exceptions.exceptionHandler import ExceptionHandler
 import os
 
-from django.conf import settings
+from exceptions.exceptionHandler import ExceptionHandler
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission, SyndicusPermission
+    SuperstudentPermission, SyndicusPermission, AllowAnyReadOnly
+from trashtemplates.util import update
+from planning.util import get_current_week_planning, make_copy
+
+from .models import *
+from .serializers import *
 
 
 class LocatieEnumListCreateView(generics.ListCreateAPIView):
     queryset = LocatieEnum.objects.all()
     serializer_class = LocatieEnumSerializer
-    permission_classes = [
-        StudentReadOnly | AdminPermission | SuperstudentPermission]
+    permission_classes = [AllowAnyReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -112,6 +113,15 @@ class ManualRetrieveUpdateDestroyAPIView(
         return super().patch(request, *args, **kwargs)
 
 
+class SyndicusBuildingListView(generics.ListAPIView):
+    permission_classes = [SyndicusPermission]
+    serializer_class = BuildingSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = Building.objects.filter(syndicus__in=[request.user])
+        return super().get(request, *args, **kwargs)
+
+
 class BuildingListCreateView(generics.ListCreateAPIView):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
@@ -167,6 +177,7 @@ class BuildingRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class BuildingUUIDRetrieveView(generics.RetrieveAPIView):
     serializer_class = BuildingSerializerFull
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         id = kwargs["buildingid"]
@@ -193,7 +204,7 @@ class BuildingUUIDResetView(generics.RetrieveAPIView):
 
 
 class RondeListCreateView(generics.ListCreateAPIView):
-    queryset = Ronde.objects.all()
+    queryset = Ronde.objects.filter(is_active=True)
     serializer_class = RondeSerializer
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
@@ -221,24 +232,55 @@ class RondeRetrieveDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
-    def put(self, request, *args, **kwargs):
-        data = request.data
-        handler = ExceptionHandler()
-        handler.check_not_blank_required(data.get("name"), "name")
-        handler.check_primary_key_value_required(data.get("location"),
-                                                 "location", LocatieEnum)
-        # handler.check_primary_key_value_required(data.get("buildings"),
-        # "buildings", Building)
-        handler.check()
-        return super().put(request, *args, **kwargs)
-
     def patch(self, request, *args, **kwargs):
         data = request.data
         handler = ExceptionHandler()
-        handler.check_not_blank("name")
+        handler.check_not_blank("name", "name")
         handler.check_primary_key(data.get("location"), "location",
                                   LocatieEnum)
         # handler.check_primary_key(data.get("buildings"), "buildings",
         # Building)
         handler.check()
-        return super().put(request, *args, **kwargs)
+
+        id = kwargs["pk"]
+
+        old = Ronde.objects.get(id=id)
+
+        if "name" not in data:
+            data["name"] = old.name
+        if "location" not in data:
+            data["location"] = old.location
+        else:
+            data["location"] = LocatieEnum.objects.get(id=data["location"])
+
+        if "buildings" not in data:
+            data["buildings"] = old.buildings
+
+        new_ronde = Ronde.objects.create(
+            name=data["name"],
+            location=data["location"]
+        )
+        new_ronde.buildings.set(data["buildings"])
+
+        old.is_active = False
+        old.save()
+
+        student_templates = get_current_week_planning().student_templates
+
+        template = None
+        for student_template in student_templates.all():
+            for ronde in student_template.rondes.all():
+                if ronde.id == id:
+                    template = student_template
+
+        if template is not None:
+            update(
+                template,
+                "rondes",
+                old,
+                new_ronde,
+                True,
+                student_templates,
+                copy_template=make_copy
+            )
+        return Response({"message": "success"})
