@@ -680,7 +680,7 @@ class DagPlanningenView(generics.RetrieveAPIView, generics.CreateAPIView):
         ronde_id = kwargs["ronde_id"]
 
         data["ronde"] = ronde_id
-        validate_dag_planning_data(data)
+
         new_dag_planning = make_dag_planning(data)
 
         response = update(

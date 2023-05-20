@@ -160,8 +160,3 @@ def validate_student_template_data(data):
     handler.check_time_value_required(data.get("start_hour"), "start_hour")
     handler.check_time_value_required(data.get("end_hour"), "end_hour")
     handler.check()
-
-
-def validate_dag_planning_data(data):
-    # TODO error handling
-    pass
