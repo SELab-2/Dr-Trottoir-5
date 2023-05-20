@@ -12,7 +12,7 @@
       <v-col cols="3">
         <v-card flat class="datecard">
           <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                      :first-day-of-week="1" :masks="masks" attributes="attrs" v-on:dayclick="changed"
+                      :first-day-of-week="1" :masks="masks" :attributes="attrs" v-on:dayclick="changed"
                       v-on:did-move="(e) => {setWeek(e); getContainers()}"
           />
         </v-card>
@@ -179,7 +179,6 @@ export default {
         SA: 6,
         SU: 0,
       }
-      // syndici: 0
     }
   },
 
@@ -208,7 +207,6 @@ export default {
         this.location = result.location
         this.ivago_klantnr = result.ivago_klantnr
         this.selectedLocation = result.location
-        // this.syndici = result.syndicus.length()
 
         if (result.manual != null) {
           this.manual = result.manual;

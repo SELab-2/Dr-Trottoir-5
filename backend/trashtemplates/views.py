@@ -185,13 +185,13 @@ class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
             add_if_match(planning.trash_templates, original, current_week)
 
             # verwijder de oude uit de huidige planning
-            remove_if_match(planning.trash_templates, template, current_week)
+            remove_if_match(planning.trash_templates, template)
             # verwijder hem ook uit de database omdat hij eenmalig was en dus niet nodig is voor de geschiedenis
             template.delete()
         else:
             template.status = Status.INACTIEF
             template.save()
-            remove_if_match(planning.trash_templates, template, current_week)
+            remove_if_match(planning.trash_templates, template)
 
         return Response({"message": "Success"})
 

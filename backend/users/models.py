@@ -45,6 +45,12 @@ class CustomUserManager(BaseUserManager):
         user.save()
         return user
 
+    def create_superuser(self, **args):
+        user = self.create_user(**args, first_name='admin', last_name='admin', phone_nr='')
+        user.role = 'AD'
+        user.save()
+        return user
+
 
 class User(AbstractUser):
     """
