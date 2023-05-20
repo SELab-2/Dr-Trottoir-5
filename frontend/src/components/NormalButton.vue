@@ -37,7 +37,7 @@ export default defineComponent({
   props: {
     text: { type: String },
     dropdown: { type: Boolean, default: false },
-    parentFunction: { type: Function }
+    parentFunction: { type: Function, default: () => null }
   }
 })
 </script>

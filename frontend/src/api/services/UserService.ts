@@ -24,11 +24,11 @@ class UserService extends EchoService {
   }
 
   /**
-   * Patch user by id
+   * Patch data of logged-in user
    */
-  @PATCH("/user/{id}/")
-  updateUserById(@Path('id') id: number, @Body() body: {}): EchoPromise<User> {
-    return {} as EchoPromise<User>
+  @PATCH("/user/")
+  patchLoggedInUser(@Body() body : {}) : EchoPromise<void> {
+    return {} as EchoPromise<void>
   }
 
   /**
@@ -41,7 +41,6 @@ class UserService extends EchoService {
 
 
   /**
-   * Get the logged in user.
    * Get all users.
    */
   @GET("/users/")

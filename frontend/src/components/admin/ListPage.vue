@@ -62,7 +62,7 @@ export default {
     },
     addFunction: {
       type: Function,
-      default: null,
+      default: () => null,
       required: true
     },
     headComponent: {
@@ -90,7 +90,8 @@ export default {
       default: false
     },
     refresh_function: {
-      type: Function
+      type: Function,
+      default: () => null
     },
     search: {
       type: Boolean,

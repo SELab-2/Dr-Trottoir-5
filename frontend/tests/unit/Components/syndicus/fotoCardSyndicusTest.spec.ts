@@ -19,15 +19,15 @@ describe("FotoCardSyndicus.vue", () => {
   })
 
   it("renders the props data", async () => {
-    const dataSyndicus = {timeStamp: new Date(), description: "test Description", imageURL: "test"}
+    const dataSyndicus = {time: new Date(), remark: "test Description", image: "test"}
     await wrapper.setProps({data: dataSyndicus})
     await wrapper.vm.$nextTick();
     const description = wrapper.find('[data-test="description"]');
     const image = wrapper.find('[data-test="image"]');
     const time = wrapper.find('[data-test="time"]');
-    expect(description.text()).toMatch(dataSyndicus.description)
-    expect(image.attributes().src).toMatch(dataSyndicus.imageURL)
-    expect(time.text()).toMatch(dataSyndicus.timeStamp.toString())
+    expect(description.text()).toMatch(dataSyndicus.remark)
+    expect(image.attributes().src).toMatch(dataSyndicus.image)
+    expect(time.text()).toMatch(dataSyndicus.time.toString())
   })
 
 })

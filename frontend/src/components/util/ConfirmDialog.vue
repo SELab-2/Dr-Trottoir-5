@@ -33,7 +33,7 @@ export default {
   name: "ConfirmDialog.vue",
   props: {
     text: { type: String },
-    confirm_function: { type: Function }
+    confirm_function: { type: Function, default: () => null }
   },
   data: () => {
     return {
