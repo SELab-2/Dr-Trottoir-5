@@ -73,8 +73,10 @@ export default {
         style: "NONE"
       }).then(t => { this.template = t.template_id }).catch(() => null);
 
+      let week = getWeek(this.date);
+      const pictureWeek = this.date.getUTCDay() === 0 ? week - 1 : week;
       RequestHandler.handle(PlanningService.getStatusPictures(this.date.getFullYear(),
-        getWeek(this.date), this.$route.query.planning), {
+        pictureWeek, this.$route.query.planning), {
         id: `getPicturesError`,
         style: "SNACKBAR"
       }).then(pictures => {

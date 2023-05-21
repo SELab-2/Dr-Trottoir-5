@@ -45,9 +45,6 @@ export default defineComponent({
     const date = new Date(this.date);
     this.year = date.getFullYear();
     this.week = getWeek(date);
-    if(date.getUTCDay() === 0){
-      this.week -= 1
-    }
     const day = this.daymap[date.getUTCDay()];
 
     RequestHandler.handle(PlanningService.get(this.year, this.week, date.getUTCDay()), {
@@ -59,7 +56,8 @@ export default defineComponent({
         style: "NONE"
       }).then(containers => {
         plannings.forEach(planning => {
-          RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
+          const pictureWeek = date.getUTCDay() === 0 ? this.week - 1 : this.week;
+          RequestHandler.handle(PlanningService.getStatus(this.year, pictureWeek, planning.id), {
             id: `getStatus${planning.id}Error`,
             style: "NONE"
           }).then(statuses => {

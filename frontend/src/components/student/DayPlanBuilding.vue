@@ -45,7 +45,8 @@ export default defineComponent({
   methods: {
     buildingClicked () {
       router.push({name: 'building_student', query: {
-        building: this.data.building.id, planning: this.data.planning, year: this.data.year, week: this.data.week
+        building: this.data.building.id, planning: this.data.planning, year: this.data.year, week: this.data.week,
+          date: this.date
       }});
     }
   }
