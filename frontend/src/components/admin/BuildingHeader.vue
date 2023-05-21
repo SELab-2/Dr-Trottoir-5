@@ -2,19 +2,19 @@
   <v-container class="border">
     <v-row align="center" justify="center">
       <v-col cols="2" class="col">
-        <p title="Gebouw"> Gebouw </p>
+        <p data-test="title" title="Gebouw"> Gebouw </p>
       </v-col>
       <v-col cols="2" class="col">
-        <p title="Adres"> Adres </p>
+        <p data-test="adres" title="Adres"> Adres </p>
       </v-col>
       <v-col cols="1" class="col">
-        <p v-if="!round" title="Efficiëntie"> Efficiëntie </p>
+        <p data-test="round" v-if="!round" title="Efficiëntie"> Efficiëntie </p>
       </v-col>
       <v-col cols="2" class="col">
-        <p title="Handleiding"> Handleiding </p>
+        <p data-test="manual" title="Handleiding"> Handleiding </p>
       </v-col>
       <v-col cols="3" class="col">
-        <p title="Document status"> Document status </p>
+        <p data-test="status" title="Document status"> Document status </p>
       </v-col>
       <v-col cols="2" class="text-right">
       </v-col>
