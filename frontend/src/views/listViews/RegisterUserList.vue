@@ -1,7 +1,7 @@
 <template>
   <ListPage :refresh="true" :refresh_function="get_data" :child-component="childComponent" :elements="elements"
             title="Registreer gebruikers"
-            :keys="keys"
+            :keys="keys" :map-keys="mapKeys"
             :add-function="() => {}"></ListPage>
 </template>
 
@@ -18,7 +18,13 @@ export default {
     return {
       childComponent: StudentCard,
       elements: [],
-      keys: ['first_name', 'last_name', 'phone_nr', 'email']
+      keys: ['first_name', 'last_name', 'phone_nr', 'email'],
+      mapKeys: {
+        'first_name': 'voornaam',
+        'last_name': 'achternaam',
+        'phone_nr': 'gsm_nummer',
+        'email': 'email'
+      }
     }
   },
   async beforeMount() {

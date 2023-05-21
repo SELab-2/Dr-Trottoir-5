@@ -25,7 +25,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col v-if="this.search" cols="12">
-        <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..."
+        <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..." :mapKeys="mapKeys"
                         v-on:keyChange="onKeyChange" v-on:selected="onSearch"/>
       </v-col>
       <v-col/>
@@ -83,6 +83,11 @@ export default {
     keys: {
       type: Array,
       default: () => ['default'],
+      required: true
+    },
+    mapKeys: {
+      type: Map,
+      default: () => {},
       required: true
     },
     refresh: {

@@ -4,7 +4,7 @@
       <NormalButton text="Studenten registreren" :parent-function="goToRegister"></NormalButton>
     </v-col>
   </v-row>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Studenten" :head-component="headComponent" :keys="keys"/>
+  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Studenten" :head-component="headComponent" :keys="keys" :map-keys="mapKeys"/>
 </template>
 
 <script>
@@ -24,6 +24,12 @@ export default {
       childComponent: StudentCard,
       elements: [],
       keys: ['first_name', 'last_name', 'phone_nr', 'email'],
+      mapKeys: {
+        'first_name': 'voornaam',
+        'last_name': 'achternaam',
+        'phone_nr': 'gsm_nummer',
+        'email': 'email'
+      },
       headComponent: PersonHeader
     }
   },

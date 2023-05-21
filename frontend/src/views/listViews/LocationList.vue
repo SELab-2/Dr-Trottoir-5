@@ -1,7 +1,7 @@
 <template>
   <ListPage @removed="removedUpdate" :add-function="addLocation" :child-component="childComponent"
             :elements="elements" title="Locaties"
-            :head-component="headComponent" :keys="keys"></ListPage>
+            :head-component="headComponent" :keys="keys" :map-keys="mapKeys"></ListPage>
 </template>
 
 <script>
@@ -20,7 +20,8 @@ export default {
       childComponent: LocationCard,
       elements: [],
       headComponent: LocationHeader,
-      keys: ['name']
+      keys: ['name'],
+      mapKeys: {'name': 'naam'}
     }
   },
   methods: {
