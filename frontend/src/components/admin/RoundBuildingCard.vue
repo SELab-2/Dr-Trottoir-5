@@ -37,12 +37,10 @@
 </template>
 
 <script>
-import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
 import Building from "@/api/models/Building";
 import router from "@/router";
-import RoundService from "@/api/services/RoundService";
 /**
  * RoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String
@@ -52,7 +50,6 @@ import RoundService from "@/api/services/RoundService";
 
 export default {
   name: 'RoundBuildingCard',
-  components: { DeleteIcon },
   props: {
     data: {
       type: Building

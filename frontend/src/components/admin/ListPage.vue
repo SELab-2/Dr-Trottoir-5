@@ -87,7 +87,7 @@ export default {
     },
     mapKeys: {
       type: Map,
-      default: () => {},
+      default: {},
       required: true
     },
     refresh: {
