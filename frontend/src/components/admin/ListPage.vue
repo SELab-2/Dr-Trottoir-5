@@ -25,7 +25,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col v-if="this.search" cols="12">
-        <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..." :mapKeys="mapKeys"
+        <SearchDropdown :elements="elements" :keys="keys" placeholder="Zoeken ..." :mapKeys="mapKeys"
                         v-on:keyChange="onKeyChange" v-on:selected="onSearch"/>
       </v-col>
       <v-col/>

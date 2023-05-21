@@ -20,7 +20,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col cols="12">
-        <RoundSearchDropdown placeholder="Search ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements" :keys="this.keys" :map-keys="mapKeys"/>
+        <RoundSearchDropdown placeholder="Zoeken ..." v-on:selected="onSearch" v-on:key="onKeyChange" :elements="elements" :keys="this.keys" :map-keys="mapKeys"/>
       </v-col>
       <v-col/>
       <v-col cols="12">

@@ -80,7 +80,7 @@ export default {
     placeholder: {
       type: String,
       required: false,
-      default: 'Search ...'
+      default: 'Zoeken ...'
     },
     keys: {
       type: Array,

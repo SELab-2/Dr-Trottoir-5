@@ -22,7 +22,7 @@ export default {
       mapKeys: {
         'first_name': 'voornaam',
         'last_name': 'achternaam',
-        'phone_nr': 'gsm_nummer',
+        'phone_nr': 'gsm-nummer',
         'email': 'email'
       }
     }
