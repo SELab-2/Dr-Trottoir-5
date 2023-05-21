@@ -1,5 +1,5 @@
 <template>
-  <ListPage @removed="removedUpdate" :add-function="addLocation" :child-component="childComponent"
+  <ListPage :add-function="addLocation" :child-component="childComponent"
             :elements="elements" title="Locaties"
             :head-component="headComponent" :keys="keys" :map-keys="mapKeys"></ListPage>
 </template>
@@ -33,9 +33,6 @@ export default {
         id: 'locationListGetLocations',
         style: 'SNACKBAR'
       })
-    },
-    removedUpdate() {
-      console.log("removed")
     }
   },
   beforeMount() {
