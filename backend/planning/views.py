@@ -13,6 +13,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission, SyndicusPermission, \
     BewonerPermission
 from .util import *
+from exceptions.exceptionHandler import ExceptionHandler
 
 
 class StudentDayPlan(generics.RetrieveAPIView):
@@ -531,6 +532,11 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         planning = get_current_week_planning()
 
+        handler = ExceptionHandler()
+        handler.check_vervangen(template)
+        handler.check_not_inactive(template, "template")
+        handler.check()
+
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
             original = StudentTemplate.objects.get(
@@ -559,6 +565,9 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         current_year, current_week = get_current_time()
         data = request.data
 
@@ -620,6 +629,9 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
         Voegt een nieuwe Ronde toe aan de template.
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         data = request.data
         current_year, current_week = get_current_time()
         handler = ExceptionHandler()
@@ -666,6 +678,9 @@ class RondeView(generics.DestroyAPIView):
         Verwijderd een ronde en al zijn dagplanningen uit de template.
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         ronde = Ronde.objects.get(id=kwargs["ronde_id"])
         current_year, current_week = get_current_time()
         to_remove = template.dag_planningen.filter(ronde=ronde)
@@ -704,6 +719,9 @@ class DagPlanningenView(generics.RetrieveAPIView, generics.CreateAPIView):
         """
         data = request.data
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         ronde_id = kwargs["ronde_id"]
 
         data["ronde"] = ronde_id
@@ -738,6 +756,9 @@ class DagPlanningView(generics.RetrieveUpdateDestroyAPIView):
         """
 
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
         permanent = kwargs["permanent"]
         response = update(
@@ -758,6 +779,10 @@ class DagPlanningView(generics.RetrieveUpdateDestroyAPIView):
     def patch(self, request, *args, **kwargs):
         data = request.data
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
+
         dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
         permanent = kwargs["permanent"]
         data_copy = dict(data)

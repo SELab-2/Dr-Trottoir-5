@@ -23,7 +23,7 @@ class ExceptionHandler:
     boolean_error = "Veld moet een Boolse waarde zijn."
     wrong_email_error = "Verkeerd email adres."
     not_equal_error = "Waarde komt niet overeen."
-    inactive_error = "Object is verwijderd."
+    inactive_error = "Dit is een inactieve versie."
     vervangen_error = "Kan geen aanpassingen doen aan vervangen template"
 
     def __init__(self):
