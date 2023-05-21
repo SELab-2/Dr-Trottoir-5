@@ -44,7 +44,6 @@ import TrashTemplateContainersList from '@/components/containerTemplates/contain
 import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
 import TrashContainerCreate from '@/components/containerTemplates/containers/TrashContainerCreate.vue'
 import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
-import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 import LocationList from "@/views/listViews/LocationList";
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
@@ -291,12 +290,6 @@ const routes = [
     path: '/admin/afvaltemplates',
     name: 'trashtemplates',
     component: TrashContainerTemplateList
-  },
-  {
-    path: '/admin/afvaltemplate/:id/aanpassen',
-    name: 'editTrashtemplates',
-    component: TrashContainerTemplateEdit,
-    props: true
   },
   {
     path: '/admin/afvaltemplate/aanmaken',

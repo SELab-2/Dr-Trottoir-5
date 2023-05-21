@@ -19,12 +19,7 @@
       <v-col cols="1">
         {{ this.data.even }}
       </v-col>
-      <v-col class="text-right" cols="1">
-        <v-btn class="button-style" icon v-on:click="editTemplate">
-          <EditIcon/>
-        </v-btn>
-      </v-col>
-      <v-col class="text-right" cols="1">
+      <v-col class="text-right" cols="2">
         <v-btn class="button-style" icon v-on:click="deleteTemplate">
           <DeleteIcon/>
         </v-btn>
@@ -44,7 +39,7 @@ import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default {
   name: 'TrashContainerTemplateCard',
-  components: {EditIcon, DeleteIcon},
+  components: {DeleteIcon},
   props: {
     data: {
       type: TrashTemplate,
