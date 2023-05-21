@@ -7,6 +7,7 @@ from users.permissions import *
 from ronde.models import LocatieEnum, Building
 from planning.models import WeekPlanning
 from .util import *
+from exceptions.exceptionHandler import ExceptionHandler
 
 
 class BuildingTrashPlan(generics.ListAPIView):
@@ -77,9 +78,14 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         """
         Maakt een nieuwe TrashContainerTemplate aan.
-        TODO checks
         """
         data = request.data
+        handler = ExceptionHandler()
+        handler.check_not_blank_required(data.get("name"), "name")
+        handler.check_boolean_required(data.get("even"), "even")
+        handler.check_primary_key_value_required(data.get("location"), "location", LocatieEnum)
+        handler.check()
+
         current_year, current_week = get_current_time()
         location = LocatieEnum.objects.get(id=data["location"])
 
@@ -98,70 +104,12 @@ class TrashTemplatesView(generics.RetrieveAPIView, generics.CreateAPIView):
         return Response({"id": new_template.id})
 
 
-class TrashTemplateView(generics.RetrieveUpdateDestroyAPIView):
+class TrashTemplateView(generics.RetrieveDestroyAPIView):
     permission_classes = [SuperstudentPermission | AdminPermission]
 
     def get(self, request, *args, **kwargs):
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         return Response(TrashContainerTemplateSerializerFull(template).data)
-
-    def patch(self, request, *args, **kwargs):
-        """
-        Past de TrashContainerTemplate aan.
-        Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
-        """
-        template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
-        current_year, current_week = get_current_time()
-        planning = get_current_week_planning()
-
-        data = request.data
-        permanent = data["permanent"]
-
-        if "name" in data:
-            pass
-            # checks
-        else:
-            data["name"] = template.name
-
-        if "even" in data:
-            pass
-            # checks
-        else:
-            data["even"] = template.even
-
-        if "location" in data:
-            data["location"] = LocatieEnum.objects.get(id=data["location"])
-            # checks
-        else:
-            data["location"] = template.location
-
-        if no_copy(template, permanent, current_year, current_week):
-            template.name = data["name"]
-            template.even = data["even"]
-            template.location = data["location"]
-            template.save()
-            add_if_match(planning.trash_templates, template, current_week)
-            return Response({"message": "Success"})
-
-        new_template = TrashContainerTemplate.objects.create(
-            name=data["name"],
-            even=data["even"],
-            status=Status.ACTIEF,
-            location=data["location"],
-            year=current_year,
-            week=current_week
-        )
-        add_if_match(planning.trash_templates, new_template, current_week)
-
-        # oude template op inactief zetten
-        template.status = Status.INACTIEF
-        template.save()
-        remove_if_match(planning.trash_templates, template)
-
-        return Response({"message": "Success"})
-
-    def put(self, request, *args, **kwargs):
-        raise ValidationError("no PUT allowed")
 
     def delete(self, request, *args, **kwargs):
         """
@@ -258,22 +206,22 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
         permanent = kwargs["permanent"]
         data = request.data
 
-        if "day" not in data:
-            data["day"] = tc_id_wrapper.trash_container.collection_day.day
+        if "collection_day" not in data:
+            data["collection_day"] = {}
 
-        if "start_hour" not in data:
-            data[
-                "start_hour"] = tc_id_wrapper.trash_container.collection_day.start_hour
+        if "day" not in data.get("collection_day"):
+            data["collection_day"]["day"] = tc_id_wrapper.trash_container.collection_day.day
 
-        if "end_hour" not in data:
-            data[
-                "end_hour"] = tc_id_wrapper.trash_container.collection_day.end_hour
+        if "start_hour" not in data.get("collection_day"):
+            data["collection_day"]["start_hour"] = tc_id_wrapper.trash_container.collection_day.start_hour
+
+        if "end_hour" not in data.get("collection_day"):
+            data["collection_day"]["end_hour"] = tc_id_wrapper.trash_container.collection_day.end_hour
 
         if "type" not in data:
             data["type"] = tc_id_wrapper.trash_container.type
 
-        new_tc_id_wrapper = make_new_tc_id_wrapper(data,
-                                                   tc_id_wrapper.extra_id)
+        new_tc_id_wrapper = make_new_tc_id_wrapper(data, tc_id_wrapper.extra_id)
 
         update(
             template,
@@ -340,7 +288,7 @@ class BuildingsView(generics.CreateAPIView, generics.RetrieveAPIView):
             None,
             new_building_list,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().trash_templates
         )
         return Response({"message": "Success"})
 
@@ -354,6 +302,12 @@ class BuildingView(generics.RetrieveUpdateDestroyAPIView):
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
         building_list = template.buildings.get(building=kwargs["building_id"])
+        new_list = []
+        for trash_id in building_list.trash_ids.all():
+            if template.trash_containers.filter(extra_id=trash_id).exists():
+                new_list.append(trash_id)
+        building_list.trash_ids.set(new_list)
+
         data = BuildingTrashContainerListSerializer(building_list).data
         return Response(data)
 
@@ -371,7 +325,7 @@ class BuildingView(generics.RetrieveUpdateDestroyAPIView):
             building_list,
             None,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().trash_templates
         )
 
         return Response({"message": "Success"})
@@ -394,7 +348,7 @@ class BuildingView(generics.RetrieveUpdateDestroyAPIView):
             building_list,
             new_building_list,
             permanent,
-            get_current_week_planning().student_templates
+            get_current_week_planning().trash_templates
         )
         return Response({"message": "Success"})
 

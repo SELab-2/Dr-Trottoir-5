@@ -568,15 +568,9 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         if "start_hour" not in data:
             data["start_hour"] = template.start_hour
-        else:
-            start_hour = [int(t) for t in data["start_hour"].split(":")]
-            data["start_hour"] = datetime.time(start_hour[0], start_hour[1])
 
         if "end_hour" not in data:
             data["end_hour"] = template.end_hour
-        else:
-            end_hour = [int(t) for t in data["end_hour"].split(":")]
-            data["end_hour"] = datetime.time(end_hour[0], end_hour[1])
 
         validate_student_template_data(data)
 
@@ -637,8 +631,8 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
         dag_planningen = []
 
-        data["start_hour"] = template.start_hour
-        data["end_hour"] = template.end_hour
+        data["start_hour"] = str(template.start_hour)
+        data["end_hour"] = str(template.end_hour)
         data["students"] = []
         for day in WeekDayEnum:
             data["day"] = day
@@ -710,7 +704,7 @@ class DagPlanningenView(generics.RetrieveAPIView, generics.CreateAPIView):
         ronde_id = kwargs["ronde_id"]
 
         data["ronde"] = ronde_id
-        validate_dag_planning_data(data)
+
         new_dag_planning = make_dag_planning(data)
 
         response = update(
