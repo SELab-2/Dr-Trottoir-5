@@ -118,6 +118,11 @@ class TrashTemplateView(generics.RetrieveDestroyAPIView):
         was terug actief gezet worden.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
+
+        handler = ExceptionHandler()
+        handler.check_vervangen(template)
+        handler.check()
+
         current_year, current_week = get_current_time()
         planning = get_current_week_planning()
         if template.status == Status.EENMALIG:

@@ -13,6 +13,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission, SyndicusPermission, \
     BewonerPermission
 from .util import *
+from exceptions.exceptionHandler import ExceptionHandler
 
 
 class StudentDayPlan(generics.RetrieveAPIView):
@@ -530,6 +531,10 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         planning = get_current_week_planning()
+
+        handler = ExceptionHandler()
+        handler.check_vervangen(template)
+        handler.check()
 
         if template.status == Status.EENMALIG:
             # template was eenmalig dus de originele template moet terug actief gemaakt worden
