@@ -112,11 +112,12 @@ export default {
       if (!this.imageCheck()) return;
       const input = document.getElementById("input");
       const image = input.files[0];
+      const date = new Date().toISOString().split('T')
       await RequestHandler.handle(PlanningService.uploadPicture(
         image,
         this.data.info,
         this.data.type === 'Aankomst' ? 'AR' : this.data.type === 'Berging' ? 'ST' : this.data.type === 'Extra' ? 'EX' : 'DE',
-        new Date().toISOString(),
+        `${date[0]} ${date[1].split(':')[0]}:${date[1].split(':')[1]}`,
         this.description
       ), {
         id: "uploadImageError",
