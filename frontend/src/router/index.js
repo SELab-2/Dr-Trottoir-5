@@ -334,7 +334,7 @@ const routes = [
     props: true
   },
   {
-    path: '/admin/round',
+    path: '/admin/ronde',
     name: 'adminRoundView',
     component: AdminRoundView
   }

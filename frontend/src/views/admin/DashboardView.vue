@@ -75,9 +75,6 @@ export default {
     async changed() {
       const date = new Date(this.date);
       let week = getWeek(date);
-      if(date.getUTCDay() === 0){
-        week -= 1
-      }
       const rounds = await RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.location.id), {
         id: 'getRoundsError',
         style: 'NONE'

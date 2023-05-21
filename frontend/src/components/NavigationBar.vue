@@ -7,6 +7,8 @@
                    value="dashboard"></v-list-item>
       <v-list-item data-test="dashboard" v-if="this.isAdminOrSu" prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{name: 'admin_home'}"
                    value="dashboard"></v-list-item>
+      <v-list-item v-if="this.isAdminOrSu" prepend-icon="mdi-notebook-outline" title="Mijn planning" :to="{name: 'student_home'}"
+                   value="student dashboard"></v-list-item>
       <v-list-item data-test="templates" v-if="this.isAdminOrSu" prepend-icon="mdi-calendar-blank" title="Studenten Templates" :to="{name: 'studenttemplates'}"
                    value="studenten templates"></v-list-item>
       <v-list-item data-test="afval-templates" v-if="this.isAdminOrSu" prepend-icon="mdi-trash-can-outline" title="Afval Templates" :to="{name: 'trashtemplates'}"

@@ -141,7 +141,6 @@ export default {
     },
     getContainers() {
       let week = getWeek(this.week);
-      if (this.week.getUTCDay() === 0) week -= 1;
       RequestHandler.handle(TrashTemplateService.getContainers(this.week.getFullYear(), week), {
         id: "getContainersError",
         style: "NONE"
@@ -165,7 +164,6 @@ export default {
     async getStudentPosts(){
       const date = new Date(this.date)
       let week = getWeek(date)
-      if (date.getUTCDay() === 0) week -= 1;
       await RequestHandler.handle(PlanningService.getRounds(date.getFullYear(), week, date.getUTCDay(), this.building.location.id), {
         id: 'getRoundsError',
         style: 'NONE'
@@ -176,7 +174,8 @@ export default {
               id: 'getInfoOfBuildingError',
               style: 'NONE'
             }).then(async info => {
-              await RequestHandler.handle(PlanningService.getPictures(info[0].id, date.getFullYear(), week), {
+              const pictureWeek = date.getUTCDay() === 0 ? week - 1 : week;
+              await RequestHandler.handle(PlanningService.getPictures(info[0].id, date.getFullYear(), pictureWeek), {
                 id: 'getPicturesError',
                 style: 'NONE'
               }).then(async pictures => {

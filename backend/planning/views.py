@@ -17,7 +17,7 @@ from trashtemplates.models import Status
 
 
 class StudentDayPlan(generics.RetrieveAPIView):
-    permission_classes = [StudentPermission]
+    permission_classes = [StudentPermission | SuperstudentPermission | AdminPermission]
 
     def get(self, request, *args, **kwargs):
         year = kwargs.get("year")

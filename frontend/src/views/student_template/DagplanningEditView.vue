@@ -13,7 +13,7 @@
             :error-messages="check_errors(this.errors, 'students')"
             :readonly="this.status === 'Vervangen'"
             label="Studenten"
-            :items="all_students.filter(student => student.role !== 'AA' && student.locations.includes(this.location.id))"
+            :items="all_students.filter(student => student.role !== 'AA' && student.role !== 'SY' && student.locations.includes(this.location.id))"
             :item-title="getTitle"
             item-value="id"
             multiple

@@ -69,6 +69,7 @@ export default defineComponent({
     if ('planning' in this.$route.query) this.planning = this.$route.query.planning;
     if ('year' in this.$route.query) this.year = this.$route.query.year;
     if ('week' in this.$route.query) this.week = this.$route.query.week;
+    if ('date' in this.$route.query) this.date = this.$route.query.date;
     if ('building' in this.$route.query) {
       const planning = await RequestHandler.handle(PlanningService.getPlanning(this.planning), {
         id: "getDayplanningError",
@@ -76,7 +77,8 @@ export default defineComponent({
       }).then(planning => planning).catch(() => null);
       if (!planning) return;
 
-      RequestHandler.handle(PlanningService.getStatus(this.year, this.week, planning.id), {
+      const pictureWeek = new Date(this.date).getUTCDay() === 0 ? this.week - 1 : this.week;
+      RequestHandler.handle(PlanningService.getStatus(this.year, pictureWeek, planning.id), {
         id: `getStatus${planning.id}Error`,
         style: "NONE"
       }).then(statuses => {
@@ -109,17 +111,27 @@ export default defineComponent({
     info: '',
     planning: '',
     year: null,
-    week: null
+    week: null,
+    date: new Date().toISOString().split('T')[0]
   }),
   methods: {
     clickArrival() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year, week: this.week}});
+      router.push({name: 'student_post_view', query: {
+        info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year,
+        week: this.week, date: this.date
+      }});
     },
     clickStorage() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year, week: this.week}});
+      router.push({name: 'student_post_view', query: {
+        info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year,
+        week: this.week, date: this.date
+      }});
     },
     clickDeparture() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year, week: this.week}});
+      router.push({name: 'student_post_view', query: {
+        info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year,
+        week: this.week, date: this.date
+      }});
     },
     buildingInfo() {
       router.push({name: 'building_info', query: {building: this.building.id}});
