@@ -5,19 +5,19 @@
         <h2>Naam</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start pt-5">
-        <v-text-field class="text_field" v-model:model-value="name" variant="solo"></v-text-field>
+        <v-text-field data-test="name" class="text_field" v-model:model-value="name" variant="solo"></v-text-field>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
         <h2>Adres</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" v-model:model-value="adres" variant="solo"></v-text-field>
+        <v-text-field data-test="adres" class="text_field" v-model:model-value="adres" variant="solo"></v-text-field>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-end pt-10">
         <h2>Klanten nummer</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex align-center justify-start">
-        <v-text-field class="text_field" v-model:model-value="ivago_klantnr" variant="solo"></v-text-field>
+        <v-text-field data-test="client-nr" class="text_field" v-model:model-value="ivago_klantnr" variant="solo"></v-text-field>
       </v-col>
       <!---
         TODO For milestone 3
@@ -42,16 +42,16 @@
         <h2>Nieuwe handleiding</h2>
       </v-col>
       <v-col md="6" lg="6" class="d-flex justify-start align-center">
-        <v-file-input v-model="new_manual" prepend-icon="mdi-file-upload-outline" class="text_field"
+        <v-file-input data-test="manual" v-model="new_manual" prepend-icon="mdi-file-upload-outline" class="text_field"
                       variant="solo"></v-file-input>
       </v-col>
       <v-col class="d-flex justify-center align-center pt-5 pb-10" cols="12" sm="12" md="12" lg="12">
-        <normal-button text='Aanpassingen opslaan' :parent-function="save"/>
-        <normal-button text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
+        <normal-button data-test="save-button" text='Aanpassingen opslaan' :parent-function="save"/>
+        <normal-button data-test="cancel-button" text='Annuleer' :parent-function="cancel_save" class="ml-2"/>
       </v-col>
     </v-row>
   </v-card>
-  <ConfirmDialog ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?"
+  <ConfirmDialog data-test="dialog" ref="confirm" text="Bent u zeker dat u dit gebouw wilt verwijderen?"
                  :confirm_function="deleteBuilding"></ConfirmDialog>
 </template>
 

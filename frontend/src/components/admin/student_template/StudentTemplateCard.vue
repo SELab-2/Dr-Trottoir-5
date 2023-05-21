@@ -7,31 +7,31 @@
     <v-card-item>
       <div>
         <v-row class="px-3 my-1 justify-space-between">
-          <div class="text-overline">
+          <div data-test="location" class="text-overline">
             {{ data.location }}
           </div>
-          <div class="text-overline">
+          <div data-test="even" class="text-overline">
             {{ data.even ? "even" : "oneven" }}
           </div>
         </v-row>
         <v-row class="px-3 my-1 justify-space-between">
-          <div class="text-h6">
+          <div data-test="name" class="text-h6">
             {{ data.name }}
           </div>
-          <div class="text-caption">{{ data.status }}</div>
+          <div data-test="status" class="text-caption">{{ data.status }}</div>
         </v-row>
       </div>
     </v-card-item>
 
     <v-card-actions v-if="this.data.status !== 'Vervangen'" class="px-3 my-1 justify-space-between">
-      <v-btn variant="outlined" :to="{name: 'studenttemplate', params: {id: data.template_id}}">
+      <v-btn data-test="edit" variant="outlined" :to="{name: 'studenttemplate', params: {id: data.template_id}}">
         Aanpassen
       </v-btn>
-      <v-btn variant="outlined" @click.prevent="delete_template()">
+      <v-btn data-test="delete-button" variant="outlined" @click.prevent="delete_template()">
         Verwijderen
       </v-btn>
     </v-card-actions>
-    <div v-if="this.data.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst de eenmalige aanpassingen ongedaan worden.</div>
+    <div data-test="message" v-if="this.data.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst de eenmalige aanpassingen ongedaan worden.</div>
   </v-card>
 
 </template>

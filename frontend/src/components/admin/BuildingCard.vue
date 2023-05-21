@@ -2,10 +2,10 @@
   <v-container class="container-border">
     <v-row align="center" justify="center">
       <v-col cols="2">
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.name }}</p>
+        <p data-test="name"  @click="goToBuildingPage" class="text-style-building">{{ this.data.name }}</p>
       </v-col>
       <v-col cols="2">
-        <p>{{ this.data.adres }}</p>
+        <p data-test="adres">{{ this.data.adres }}</p>
       </v-col>
       <v-col cols="1">
         <p :style="{
@@ -26,7 +26,7 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item value="download" @click="downloadDocument">
+            <v-list-item data-test="manual" value="download" @click="downloadDocument">
               <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
               Handleiding
             </v-list-item>
@@ -39,10 +39,10 @@
           }}</p>
       </v-col>
       <v-col cols="2" class="d-flex align-center justify-end">
-        <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditBuilding">
+        <v-btn data-test="edit" icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditBuilding">
           <EditIcon/>
         </v-btn>
-        <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
+        <v-btn data-test="delete" icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
           <DeleteIcon/>
         </v-btn>
       </v-col>

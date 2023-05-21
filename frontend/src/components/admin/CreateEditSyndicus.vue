@@ -42,8 +42,8 @@
         </template>
       </v-autocomplete>
     </v-form>
-    <normal-button v-if="!edit" text="Voeg syndicus toe" :parent-function="addSyndicus"/>
-    <normal-button v-else text="Pas syndicus aan" :parent-function="editSyndicus"/>
+    <normal-button data-test="add" v-if="!edit" text="Voeg syndicus toe" :parent-function="addSyndicus"/>
+    <normal-button data-test="edit" v-else text="Pas syndicus aan" :parent-function="editSyndicus"/>
   </v-container>
 
 </template>

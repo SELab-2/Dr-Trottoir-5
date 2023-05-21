@@ -40,7 +40,7 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col class="d-flex ml-auto" cols="12">
-              <normal-button text="Registreer" v-bind:parent-function="apiRegister" block></normal-button>
+              <normal-button data-test="register" text="Registreer" v-bind:parent-function="apiRegister" block></normal-button>
             </v-col>
           </v-row>
         </v-form>

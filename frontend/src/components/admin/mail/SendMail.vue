@@ -2,9 +2,9 @@
   <v-container>
     <h1 align="center">Mail versturen</h1>
     <FotoCardSyndicus align="center" :data="this.post"/>
-    <label class="black-text">Aan</label>
-    <v-text-field class="black-text" readonly>{{ this.emails.toString().replaceAll(',', ', ') }}</v-text-field>
-    <label class="black-text">Template</label>
+    <label data-test="aan" class="black-text">Aan</label>
+    <v-text-field data-test="email" class="black-text" readonly>{{ this.emails.toString().replaceAll(',', ', ') }}</v-text-field>
+    <label data-test="template" class="black-text">Template</label>
     <v-autocomplete
       clearable
       outlined
@@ -17,7 +17,7 @@
     <div v-if="this.description !== null">
       <div v-if="this.inputArguments.length !== 0">
         <h2>Argumenten</h2>
-        <div v-for="(arg, index) in this.positionsArguments" :key="index">
+        <div v-for="(arg, index) in this.nameOfArguments" :key="index">
           <label>{{ arg.substring(1, arg.length - 1) }}</label>
           <v-text-field v-model="this.inputArguments[index]"></v-text-field>
         </div>
@@ -28,7 +28,7 @@
       <v-container v-html="formattedText" style="white-space: pre-wrap; font-size: 16px" class="container-border"/>
     </div>
     <v-container align="center">
-      <NormalButton text="Stuur email" :parent-function="sendMail"/>
+      <NormalButton data-test="send-button" text="Stuur email" :parent-function="sendMail"/>
     </v-container>
   </v-container>
 
@@ -67,8 +67,8 @@ export default {
     },
     description: null,
     templates: [],
-    positionsArguments: [],
-    inputArguments: [],
+    nameOfArguments: [], // lijst van alle argumenten die kunnen worden ingevuld
+    inputArguments: [], // lijst van alle argumenten die zijn ingevuld
     subject: ''
   }),
   async beforeMount() {
@@ -105,28 +105,28 @@ export default {
         encodeURIComponent("\n\nStudent:\nOpmerking student: " + this.post.remark + "\nTijdstip: " + this.post.time.toString() + "\nZie bijlage voor foto.\n\n").replace(/%0A/g, '%0D%0A');
     },
     updateArguments() {
-      this.positionsArguments = [];
+      this.nameOfArguments = [];
 
       const regex = /(#\w+#)/g;
       let match;
 
       while ((match = regex.exec(this.description)) !== null) {
         const argument = match[1];
-        if (!this.positionsArguments.includes(argument)) {
-          this.positionsArguments.push(argument);
+        if (!this.nameOfArguments.includes(argument)) {
+          this.nameOfArguments.push(argument);
         }
       }
-      if (this.positionsArguments.length !== 0) {
-        this.inputArguments = new Array(this.positionsArguments.length).fill('');
+      if (this.nameOfArguments.length !== 0) {
+        this.inputArguments = new Array(this.nameOfArguments.length).fill('');
       } else {
         this.inputArguments = [];
       }
     },
     getDescriptionWithArguments() {
       let description = this.description;
-      for (let i = 0; i < this.positionsArguments.length; i++) {
+      for (let i = 0; i < this.nameOfArguments.length; i++) {
         if (this.inputArguments[i] !== '') {
-          description = description.replaceAll(this.positionsArguments[i], this.inputArguments[i]);
+          description = description.replaceAll(this.nameOfArguments[i], this.inputArguments[i]);
         }
       }
       return description;
