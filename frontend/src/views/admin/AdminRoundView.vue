@@ -32,7 +32,8 @@
           <v-col cols="2"><h5 class="text-h5 font-weight-bold">Totaal</h5></v-col>
           <v-col cols="2"><h5 class="text-h5">{{status}}</h5></v-col>
           <v-col cols="2"><h5 class="text-h5" v-if="pictures !== null">
-            {{Object.keys(pictures).filter(p => pictures[p].remark !== '').length}} opmerkingen</h5></v-col>
+            {{Object.keys(pictures).reduce((s, a) => s + pictures[a].filter(p => p.remark !== '').length, 0)}}
+            opmerkingen</h5></v-col>
           <v-col cols="1"><h5 class="text-h5" v-if="duration !== null">{{duration}}</h5></v-col>
         </v-row>
       </v-card>

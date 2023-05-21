@@ -1,8 +1,8 @@
 <template>
-  <ListPage :add-function="addTrashContainerBuilding" :child-component="childComponent" :elements="elements"
+  <ListPage data-test="listPage" :add-function="addTrashContainerBuilding" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
-            :search="false"
-            :keys="keys" title="Gebouwen voor deze vuilnis planning"/>
+            :keys="keys" :map-keys="mapKeys"
+            :search="false" title="Gebouwen voor deze vuilnis planning"/>
 </template>
 
 <script lang="ts">
@@ -24,16 +24,20 @@ export default {
       childComponent: TrashTemplateBuildingCard,
       elements: [],
       headComponent: TrashTemplateBuildingHeader,
-      keys: ['name', 'address', 'manual']
+      keys: ['name', 'address', 'manual'],
+      mapKeys: {
+        'name': 'naam',
+        'address': 'adres',
+        'manual': 'handleiding'
+      }
     }
   },
   methods: {
     addTrashContainerBuilding: function () {
-      router.push({name: 'create_building'});
+      router.push({name: 'addBuildingsToTrashTemplate', params: {id: this.id}});
     }
   },
   async beforeMount() {
-    // TODO Add Manual
     await RequestHandler.handle(TrashTemplateService.getBuildingsOfTemplate(this.id), {
       id: 'getTrashBuildingsListError',
       style: 'SNACKBAR'
@@ -43,7 +47,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

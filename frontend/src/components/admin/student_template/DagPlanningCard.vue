@@ -7,20 +7,20 @@
     <v-card-item>
       <div>
         <v-row class="px-3 my-1 justify-space-between">
-          <div class="text-h6">
+          <div data-test="students" class="text-h6">
             {{
               data.students.length > 0 ? data.students.map(student => student.first_name).join(", ") : 'Er zijn geen studenten aangewezen'
             }}
           </div>
-          <div class="text-overline">
+          <div data-test="format" class="text-overline">
             {{ format_day(data.day) }}
           </div>
         </v-row>
         <v-row class="px-3 my-1 justify-start">
-          <div class="text-overline">
+          <div data-test="start-hour" class="text-overline">
             {{ data.start_hour + '    -   ' }}
           </div>
-          <div class="text-overline">
+          <div data-test="end-hour" class="text-overline">
             {{ data.end_hour }}
           </div>
         </v-row>
@@ -28,15 +28,15 @@
     </v-card-item>
 
     <v-card-actions v-if="this.data.status !== 'Vervangen'" class="px-3 my-1 justify-space-between">
-      <v-btn variant="outlined"
+      <v-btn data-test="edit" variant="outlined"
              :to="{name: 'dagplanning_edit', params: {template_id: data.template_id, ronde_id: data.ronde_id, dag_id: data.dag_id}}">
         Dagplanning aanpassen
       </v-btn>
-      <v-btn @click.prevent="remove_dagplanning" variant="outlined">
+      <v-btn data-test="remove-button" @click.prevent="remove_dagplanning" variant="outlined">
         Verwijderen
       </v-btn>
     </v-card-actions>
-    <div v-if="this.data.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst
+    <div data-test="message" v-if="this.data.status === 'Vervangen'" class="px-3 text-caption">Om deze template aan te passen moeten eerst
       de eenmalige aanpassingen ongedaan worden.
     </div>
   </v-card>

@@ -6,6 +6,8 @@ from exceptions.exceptionHandler import ExceptionHandler
 
 from ronde.models import Ronde
 
+from pickupdays.models import WeekDayEnum
+
 
 def get_current_time():
     current_year = datetime.datetime.utcnow().strftime("%Y")
@@ -85,6 +87,13 @@ def make_dag_planning(data):
     """
     Maakt een nieuwe DagPlanning aan.
     """
+    handler = ExceptionHandler()
+    handler.check_time_value_required(data.get("start_hour"), "start_hour")
+    handler.check_time_value_required(data.get("end_hour"), "end_hour")
+    handler.check_enum_value_required(data.get("day"), "day", WeekDayEnum)
+    handler.check_required(data.get("ronde"), "ronde")
+    handler.check()
+
     pickup_day, _ = PickUpDay.objects.get_or_create(
         day=data["day"],
         start_hour=data["start_hour"],
@@ -96,8 +105,8 @@ def make_dag_planning(data):
         time=pickup_day
     )
 
-    for _ in ronde.buildings.all():
-        InfoPerBuilding(dagPlanning=dag_planning).save()
+    for building in ronde.buildings.all():
+        InfoPerBuilding(dagPlanning=dag_planning, building=building).save()
 
     dag_planning.students.set(data["students"])
     dag_planning.save()
@@ -146,10 +155,8 @@ def delete_old_dag_planning(old_dag_planningen, day, template):
 
 
 def validate_student_template_data(data):
-    # TODO error handling
-    pass
-
-
-def validate_dag_planning_data(data):
-    # TODO error handling
-    pass
+    handler = ExceptionHandler()
+    handler.check_not_blank_required(data.get("name"), "name")
+    handler.check_time_value_required(data.get("start_hour"), "start_hour")
+    handler.check_time_value_required(data.get("end_hour"), "end_hour")
+    handler.check()

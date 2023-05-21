@@ -20,10 +20,6 @@
           <v-col>
             <p>email</p>
           </v-col>
-          <v-col>
-            <p v-if="student">Groepen</p>
-            <p v-else>Gebouwen</p>
-          </v-col>
         </v-row>
       </v-col>
       <v-col cols="3" class="d-flex align-center justify-end">
@@ -34,8 +30,7 @@
 
 <script>
 export default {
-  name: 'PersonHeader',
-  props: { student: { type: Boolean, default: true } }
+  name: 'PersonHeader'
 }
 </script>
 

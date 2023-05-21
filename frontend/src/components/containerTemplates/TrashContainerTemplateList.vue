@@ -1,7 +1,7 @@
 <template>
-  <ListPage :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
+  <ListPage data-test="listPage" :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
-            :keys="keys" title="Vuilnis plannings"/>
+            :keys="keys" :map-keys="mapKeys" title="Vuilnis plannings"/>
 </template>
 
 <script lang="ts">
@@ -20,7 +20,11 @@ export default {
       childComponent: TrashContainerTemplateCard,
       elements: [],
       headComponent: TrashContainerTemplateHeader,
-      keys: ['name', 'year', 'week', 'location']
+      keys: ['name', 'location'],
+      mapKeys: {
+        'name': 'naam',
+        'location': 'locaties'
+      }
     }
   },
   methods: {
@@ -38,6 +42,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

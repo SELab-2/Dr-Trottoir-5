@@ -11,10 +11,7 @@
         <p title="Gebouwen"> Gebouwen </p>
       </v-col>
       <v-col class="col" cols="1">
-        <p title="Jaar"> Jaar </p>
-      </v-col>
-      <v-col class="col" cols="1">
-        <p title="Week"> Week </p>
+        <p title="Jaar"> Status </p>
       </v-col>
       <v-col class="col" cols="1">
         <p title="Locatie"> Locatie </p>

@@ -1,7 +1,8 @@
-import {Body, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, Path, POST} from "@/api/EchoFetch";
+import {Body, DELETE, EchoPromise, EchoService, EchoServiceBuilder, GET, PATCH, Path, POST} from "@/api/EchoFetch";
 import config from "@/config";
 import {AuthInterceptor} from "@/api/interceptors/AuthInterceptor";
 import TrashTemplate from "@/api/models/TrashTemplate";
+import BuildingContainer from "@/api/models/BuildingContainer";
 import Container from "@/api/models/Container";
 import Building from "@/api/models/Building";
 import {TrashTemplateWrapper} from "@/api/wrappers/TrashTemplateWrapper";
@@ -18,6 +19,11 @@ class TrashTemplateService extends EchoService {
   @GET("/trashtemplates/{id}/")
   getTrashTemplate(@Path('id') id: number): EchoPromise<TrashTemplate> {
     return {} as EchoPromise<TrashTemplate>;
+  }
+
+  @GET("/trashtemplates/{year}/{week}/")
+  getContainers(@Path('year') year: number, @Path('week') week: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
   }
 
   @GET("/trashtemplates/{id}/trashcontainers/")
@@ -41,8 +47,8 @@ class TrashTemplateService extends EchoService {
   }
 
   @GET("/trashtemplates/{id}/buildings/")
-  getBuildingsOfTemplate(@Path('id') id: number): EchoPromise<Building[]> {
-    return {} as EchoPromise<Building[]>;
+  getBuildingsOfTemplate(@Path('id') id: number): EchoPromise<BuildingContainer[]> {
+    return {} as EchoPromise<BuildingContainer[]>;
   }
 
   @GET("/trashtemplates/{id}/buildings/eenmalig/")
@@ -51,8 +57,8 @@ class TrashTemplateService extends EchoService {
   }
 
   @GET("/trashtemplates/{id}/buildings/{buildingId}/")
-  getBuildingOfTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number): EchoPromise<Building> {
-    return {} as EchoPromise<Building>;
+  getBuildingOfTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number): EchoPromise<BuildingContainer> {
+    return {} as EchoPromise<BuildingContainer>;
   }
 
   @GET("/trashtemplates/{id}/buildings/{buildingId}/eenmalig/")
@@ -73,7 +79,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @POST("/trashtemplates/{id}/trashcontainers/eenmalig/")
-  newContainerToTemplateEenmalig(@Path('id') id: number, @Body() body: Container): EchoPromise<any> {
+  newContainerToTemplateEenmalig(@Path('id') id: number, @Body() body: ContainerWrapper): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -83,7 +89,7 @@ class TrashTemplateService extends EchoService {
   }
 
   @POST("/trashtemplates/{id}/buildings/eenmalig/")
-  newBuildingToTemplateEenmalig(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  newBuildingToTemplateEenmalig(@Path('id') id: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -100,17 +106,34 @@ class TrashTemplateService extends EchoService {
   }
 
   @PATCH("/trashtemplates/{id}/trashcontainers/{containerId}/eenmalig/")
-  updateContainerTemplateEenmalig(@Path('id') id: number, @Path('containerId') containerId: number, @Body() body: Container): EchoPromise<any> {
+  updateContainerTemplateEenmalig(@Path('id') id: number, @Path('containerId') containerId: number, @Body() body: ContainerWrapper): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
-  @PATCH("/trashtemplates/{id}/buildings/")
-  updateBuildingTemplate(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  @PATCH("/trashtemplates/{id}/buildings/{buildingId}/")
+  updateBuildingTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number, @Body() body: Object): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
-  @PATCH("/trashtemplates/{id}/buildings/eenmalig/")
-  updateBuildingTemplateEenmalig(@Path('id') id: number, @Body() body: Building): EchoPromise<any> {
+  @PATCH("/trashtemplates/{id}/buildings/{buildingId}/eenmalig/")
+  updateBuildingTemplateEenmalig(@Path('id') id: number, @Path('buildingId') buildingId: number, @Body() body: Object): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /* All the needed DELETE requests */
+
+  @DELETE("/trashtemplates/{id}/buildings/{buildingId}/")
+  deleteBuildingTemplate(@Path('id') id: number, @Path('buildingId') buildingId: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  @DELETE("/trashtemplates/{id}/trashcontainers/{extraId}/")
+  deleteContainerFromTemplate(@Path('id') id: number, @Path('extraId') extraId: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  @DELETE("/trashtemplates/{id}/")
+  deleteTrashTemplate(@Path('id') id: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 

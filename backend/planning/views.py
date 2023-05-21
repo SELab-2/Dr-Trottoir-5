@@ -4,17 +4,15 @@ from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-
 from exceptions.exceptionHandler import ExceptionHandler
 from pickupdays.models import WeekDayEnum
 from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission, StudentPermission
-
+    SuperstudentPermission, StudentPermission, SyndicusPermission, \
+    BewonerPermission
 from .util import *
-from ronde.models import LocatieEnum
-
+from ronde.models import Building, LocatieEnum, Ronde
 from trashtemplates.models import Status
 
 
@@ -22,9 +20,9 @@ class StudentDayPlan(generics.RetrieveAPIView):
     permission_classes = [StudentPermission]
 
     def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        week = kwargs["week"]
-        day = kwargs["day"]
+        year = kwargs.get("year")
+        week = kwargs.get("week")
+        day = kwargs.get("day")
         if day < 0 or day > 6:
             raise ValidationError({
                 "errors": [
@@ -46,7 +44,12 @@ class StudentDayPlan(generics.RetrieveAPIView):
 
         if len(dayplans) == 0:
             return HttpResponseNotFound()
-        return Response(dayplans)
+
+        data = []
+        for dayplan in dayplans:
+            data.append(DagPlanningSerializerFull(dayplan).data)
+        return Response(data)
+
 
 @api_view(["GET"])
 @permission_classes(
@@ -54,22 +57,21 @@ class StudentDayPlan(generics.RetrieveAPIView):
 def planning_status(request, year, week, pk):
     if request.method == "GET":
         try:
-            dayplan = DagPlanning.objects.get(pk=pk)
+            DagPlanning.objects.get(pk=pk)
         except DagPlanning.DoesNotExist:
             return Response(status=404)
 
-        buildings = [building.id for building in dayplan.ronde.buildings.all()]
         infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
         status = {}
         for index, info in enumerate(infos):
             pictures = BuildingPicture.objects.filter(infoPerBuilding=info.id,
                                                       time__year=year,
                                                       time__week=week)
-            if buildings[index] not in status:
-                status[buildings[index]] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
+            if info.building.id not in status:
+                status[info.building.id] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
 
             for picture in pictures:
-                status[buildings[index]][picture.pictureType] += 1
+                status[info.building.id][picture.pictureType] += 1
 
         return Response(status)
 
@@ -123,6 +125,72 @@ class DagPlanningRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
         StudentPermission | AdminPermission | SuperstudentPermission]
 
 
+class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
+    queryset = DagPlanning.objects.all()
+    serializer_class = DagPlanningSerializer
+    permission_classes = [
+        StudentReadOnly | AdminPermission | SuperstudentPermission]
+
+    def get(self, request, *args, **kwargs):
+        student = request.query_params[
+            'student'] if 'student' in request.query_params else None
+        date = request.query_params[
+            'date'] if 'date' in request.query_params else None
+
+        if student is not None and date is not None:
+            try:
+                dagPlanning = DagPlanning.objects.get(student=student,
+                                                      date=date)
+                return Response(DagPlanningSerializerFull(dagPlanning).data)
+            except DagPlanning.DoesNotExist:
+                raise ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db",
+                                "field": "dagPlanning"
+                            }
+                        ]
+                    }, code='invalid')
+        elif student is not None:
+            try:
+                dagPlanning = DagPlanning.objects.get(student=student)
+                return Response(DagPlanningSerializerFull(dagPlanning).data)
+            except DagPlanning.DoesNotExist:
+                raise ValidationError(
+                    {
+                        "errors": [
+                            {
+                                "message": "referenced pk not in db",
+                                "field": "dagPlanning"
+                            }
+                        ]
+                    }, code='invalid')
+        return super().get(request=request, args=args, kwargs=kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        handler = ExceptionHandler()
+        handler.check_primary_key_value_required(data.get("weekPlanning"),
+                                                 "weekPlanning",
+                                                 WeekPlanning)
+        handler.check_date_value_required(data.get("date"), "date")
+        handler.check_primary_key_value_required(data.get("student"),
+                                                 "student", get_user_model())
+        handler.check_primary_key_value_required(data.get("ronde"), "ronde",
+                                                 Ronde)
+        handler.check()
+        WeekPlanning.objects.get(pk=request.data["weekPlanning"])
+        ronde = Ronde.objects.get(pk=request.data["ronde"])
+        response = super().post(request=request, args=args, kwargs=kwargs)
+        dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
+        for building in ronde.buildings.all():
+            InfoPerBuilding(dagPlanning=dagPlanning, building=building).save()
+            dagPlanning.status.append('NS')
+        dagPlanning.save()
+        return response
+
+
 class DagPlanningRetrieveUpdateDestroyAPIView(
     generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
@@ -159,7 +227,8 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
     permission_classes = [
-        StudentPermission | AdminPermission | SuperstudentPermission]
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | BewonerPermission
+    ]
 
     # TODO: a user can only see the pictures that he added (?)
 
@@ -244,7 +313,8 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     queryset = InfoPerBuilding.objects.all()
     serializer_class = InfoPerBuildingSerializer
     permission_classes = [
-        StudentPermission | AdminPermission | SuperstudentPermission]
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | BewonerPermission
+    ]
 
     # TODO: a user can only see the info per building that he added (?)
 
@@ -252,11 +322,30 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
         dagPlanning = request.query_params[
             'dagPlanning'] if 'dagPlanning' in request.query_params else None
 
+        building = request.query_params[
+            'building'] if 'building' in request.query_params else None
+
         if dagPlanning is not None:
             try:
                 DagPlanning.objects.get(pk=dagPlanning)
                 self.queryset = InfoPerBuilding.objects.filter(
                     dagPlanning=dagPlanning)
+                if building is not None:
+                    try:
+                        Building.objects.get(pk=building)
+                        self.queryset = self.queryset.filter(
+                            building=building)
+                    except Exception:
+                        raise serializers.ValidationError(
+                            {
+                                "errors": [
+                                    {
+                                        "message": "referenced pk not in db",
+                                        "field": "building"
+                                    }
+                                ]
+                            }, code='invalid')
+
             except Exception:
                 raise serializers.ValidationError(
                     {
@@ -266,7 +355,8 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
                                 "field": "dagPlanning"
                             }
                         ]
-                    }, code='invalid')
+                    }
+                )
 
         return super().get(request=request, args=args, kwargs=kwargs)
 
@@ -352,7 +442,7 @@ class WeekplanningView(generics.RetrieveAPIView):
 
 
 class StudentTemplateRondeView(generics.RetrieveAPIView):
-    permission_classes = [AdminPermission | SuperstudentPermission]
+    permission_classes = [AdminPermission | SuperstudentPermission | SyndicusPermission | BewonerPermission]
 
     def get(self, request, *args, **kwargs):
         year, week, day, location = kwargs["year"], kwargs["week"], kwargs[
@@ -470,31 +560,17 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         data = request.data
 
         if "name" not in data:
             data["name"] = template.name
 
-        if "even" not in data:
-            data["even"] = template.even
-
-        if "location" not in data:
-            data["location"] = template.location
-        else:
-            data["location"] = LocatieEnum.objects.get(id=data["location"])
-
         if "start_hour" not in data:
             data["start_hour"] = template.start_hour
-        else:
-            start_hour = [int(t) for t in data["start_hour"].split(":")]
-            data["start_hour"] = datetime.time(start_hour[0], start_hour[1])
 
         if "end_hour" not in data:
             data["end_hour"] = template.end_hour
-        else:
-            end_hour = [int(t) for t in data["end_hour"].split(":")]
-            data["end_hour"] = datetime.time(end_hour[0], end_hour[1])
 
         validate_student_template_data(data)
 
@@ -503,30 +579,27 @@ class StudentTemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
         response = {"message": "Success"}
         if no_copy(template, True, current_year, current_week):
             template.name = data["name"]
-            template.even = data["even"]
-            template.location = data["location"]
-            # template.start_hour = data["start_hour"]
-            # template.end_hour = data["end_hour"],
+            template.start_hour = data["start_hour"]
+            template.end_hour = data["end_hour"]
             template.save()
-            add_if_match(planning.student_templates, template, current_week)
             return Response(response)
 
         new_template = StudentTemplate.objects.create(
             name=data["name"],
-            even=data["even"],
-            status=Status.ACTIEF,
-            location=data["location"],
+            even=template.even,
+            status=template.status,
+            location=template.location,
             start_hour=data["start_hour"],
             end_hour=data["end_hour"],
             year=current_year,
-            week=current_week
+            week=template.week
         )
         add_if_match(planning.student_templates, new_template, current_week)
 
         # oude template op inactief zetten
         template.status = Status.INACTIEF
         template.save()
-        remove_if_match(planning.student_templates, template, current_week)
+        remove_if_match(planning.student_templates, template)
         response["new_id"] = new_template.id
         return Response(response)
 
@@ -558,13 +631,10 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
         dag_planningen = []
 
-        data_copy = dict(data)
 
-        data_copy["ronde"] = int(data["ronde"])
-
-        data_copy["start_hour"] = template.start_hour
-        data_copy["end_hour"] = template.end_hour
-        data_copy["students"] = []
+        data["start_hour"] = str(template.start_hour)
+        data["end_hour"] = str(template.end_hour)
+        data["students"] = []
         for day in WeekDayEnum:
             data_copy["day"] = day
             dag_planning = make_dag_planning(data_copy)
@@ -595,7 +665,7 @@ class RondeView(generics.DestroyAPIView):
         """
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         ronde = Ronde.objects.get(id=kwargs["ronde_id"])
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
+        current_year, current_week = get_current_time()
         to_remove = template.dag_planningen.filter(ronde=ronde)
 
         response = {"message": "Success"}
@@ -607,7 +677,7 @@ class RondeView(generics.DestroyAPIView):
             copy.dag_planningen.remove(*to_remove)
             copy.rondes.remove(ronde)
             remove_if_match(get_current_week_planning().student_templates,
-                            template, current_week)
+                            template)
             add_if_match(get_current_week_planning().student_templates,
                          copy,
                          current_week)
@@ -633,10 +703,9 @@ class DagPlanningenView(generics.RetrieveAPIView, generics.CreateAPIView):
         data = request.data
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         ronde_id = kwargs["ronde_id"]
-        current_year, current_week, _ = datetime.datetime.utcnow().isocalendar()
 
         data["ronde"] = ronde_id
-        validate_dag_planning_data(data)
+
         new_dag_planning = make_dag_planning(data)
 
         response = update(

@@ -38,15 +38,19 @@ import DagplanningAddView from "@/views/student_template/DagplanningAddView.vue"
 import CreateSyndicusView from "@/views/admin/CreateSyndicusView";
 import AdjustSyndicusView from "@/views/admin/AdjustSyndicusView";
 import TrashTemplateBuildingsList from '@/components/containerTemplates/buildings/TrashTemplateBuildingsList.vue'
+import TrashTemplateBuildingEdit from '@/components/containerTemplates/buildings/TrashTemplateBuildingEdit.vue'
+import TrashTemplateBuildingAdd from '@/components/containerTemplates/buildings/TrashTemplateBuildingAdd.vue'
 import TrashTemplateContainersList from '@/components/containerTemplates/containers/TrashTemplateContainersList.vue'
 import TrashContainerTemplateList from '@/components/containerTemplates/TrashContainerTemplateList.vue'
 import TrashContainerCreate from '@/components/containerTemplates/containers/TrashContainerCreate.vue'
 import TrashContainerTemplateCreate from '@/components/containerTemplates/TrashContainerTemplateCreate.vue'
-import TrashContainerTemplateEdit from '@/components/containerTemplates/TrashContainerTemplateEdit.vue'
 import TrashContainerEdit from '@/components/containerTemplates/containers/TrashContainerEdit.vue'
 import LocationList from "@/views/listViews/LocationList";
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminRoundView from "@/views/admin/AdminRoundView.vue";
+import SendMailView from "@/views/admin/SendMailView.vue";
+import SyndicusHome from "@/views/syndicus/SyndicusHome.vue";
+import BuildingView from "@/views/BuildingView.vue";
 
 const routes = [
   {
@@ -62,7 +66,13 @@ const routes = [
   {
     path: '/syndicus',
     name: 'syndicus_home',
-    component: RegisterDone
+    component: SyndicusHome
+  },
+  {
+    path: '/gebouw/:id',
+    name: 'building_page',
+    component: BuildingView,
+    props: true
   },
   {
     path: '/admin',
@@ -259,6 +269,12 @@ const routes = [
     component: TemplateList
   },
   {
+    path: '/admin/send_mail/:id/post/:postId',
+    name: 'send_mail',
+    props: true,
+    component: SendMailView
+  },
+  {
     path: '/admin/gebruiker/:id',
     name: 'admin_info_user',
     props: true,
@@ -274,12 +290,6 @@ const routes = [
     path: '/admin/afvaltemplates',
     name: 'trashtemplates',
     component: TrashContainerTemplateList
-  },
-  {
-    path: '/admin/afvaltemplate/:id/aanpassen',
-    name: 'editTrashtemplates',
-    component: TrashContainerTemplateEdit,
-    props: true
   },
   {
     path: '/admin/afvaltemplate/aanmaken',
@@ -309,6 +319,18 @@ const routes = [
     path: '/admin/afvaltemplate/:id/gebouwen',
     name: 'trashtemplateBuildings',
     component: TrashTemplateBuildingsList,
+    props: true
+  },
+  {
+    path: '/admin/afvaltemplate/:id/gebouw/:gebouwId/aanpassen',
+    name: 'editTrashtemplateBuilding',
+    component: TrashTemplateBuildingEdit,
+    props: true
+  },
+  {
+    path: '/admin/afvaltemplate/:id/gebouw/toevoegen',
+    name: 'addBuildingsToTrashTemplate',
+    component: TrashTemplateBuildingAdd,
     props: true
   },
   {

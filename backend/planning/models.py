@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from ronde.models import Ronde
+from pickupdays.models import PickUpDay
+from ronde.models import LocatieEnum, Building, Ronde
 from trashtemplates.models import TrashContainerTemplate, Status
 from pickupdays.models import PickUpDay
 from ronde.models import LocatieEnum
@@ -75,6 +77,8 @@ class StudentTemplate(models.Model):
     def __getitem__(self, item):
         if item == "dag_planningen":
             return self.dag_planningen
+        if item == "rondes":
+            return self.rondes
 
     name = models.TextField()
     even = models.BooleanField()
@@ -142,11 +146,16 @@ class InfoPerBuilding(models.Model):
 
     dagPlanning : models.ForeignKey
         The associated DagPlanning
+
+    building : models.Foreignkey
+        The associated Building
     """
 
     remark = models.TextField(default="")
 
     dagPlanning = models.ForeignKey(DagPlanning, on_delete=models.CASCADE)
+
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class BuildingPicture(models.Model):

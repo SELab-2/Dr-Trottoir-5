@@ -2,6 +2,11 @@ from rest_framework import permissions
 from planning.models import InfoPerBuilding, DagPlanning
 
 
+class AllowAnyReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.method in permissions.SAFE_METHODS
+
+
 class ReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.method in permissions.SAFE_METHODS and request.user and not request.user.is_anonymous
@@ -63,10 +68,7 @@ class SyndicusPermission(permissions.BasePermission):
 
 class BewonerPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        user = request.user
-        if not user or user.is_anonymous:
-            return False
-        return user.role == 'BE'
+        return request.method in permissions.SAFE_METHODS
 
 
 class AanvragerPermission(permissions.BasePermission):

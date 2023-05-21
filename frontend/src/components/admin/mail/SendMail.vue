@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <h1 align="center">Mail versturen</h1>
-    <FotoCardSyndicus align="center" :data="data.post"/>
-    <label class="black-text">Aan</label>
-    <v-text-field class="black-text" readonly>{{ data.syndicusEmail }}</v-text-field>
-    <label class="black-text">Template</label>
+    <FotoCardSyndicus align="center" :data="this.post"/>
+    <label data-test="aan" class="black-text">Aan</label>
+    <v-text-field data-test="email" class="black-text" readonly>{{ this.emails.toString().replaceAll(',', ', ') }}</v-text-field>
+    <label data-test="template" class="black-text">Template</label>
     <v-autocomplete
       clearable
       outlined
@@ -17,7 +17,7 @@
     <div v-if="this.description !== null">
       <div v-if="this.inputArguments.length !== 0">
         <h2>Argumenten</h2>
-        <div v-for="(arg, index) in this.positionsArguments" :key="index">
+        <div v-for="(arg, index) in this.nameOfArguments" :key="index">
           <label>{{ arg.substring(1, arg.length - 1) }}</label>
           <v-text-field v-model="this.inputArguments[index]"></v-text-field>
         </div>
@@ -28,7 +28,7 @@
       <v-container v-html="formattedText" style="white-space: pre-wrap; font-size: 16px" class="container-border"/>
     </div>
     <v-container align="center">
-      <NormalButton text="Stuur email" :parent-function="sendMail"/>
+      <NormalButton data-test="send-button" text="Stuur email" :parent-function="sendMail"/>
     </v-container>
   </v-container>
 
@@ -49,72 +49,84 @@ import FotoCardSyndicus from "@/components/syndicus/FotoCardSyndicus.vue";
 import NormalButton from "@/components/NormalButton.vue";
 import {RequestHandler} from "@/api/RequestHandler";
 import MailTemplateService from "@/api/services/MailTemplateService";
+import UserService from "@/api/services/UserService";
+import PlanningService from "@/api/services/PlanningService";
+import RoundService from "@/api/services/RoundService";
 
 export default {
   name: 'SendMail',
-  props: {
-    data: {
-      default: () => ({
-        syndicusEmail: 'test@test.be',
-        post: {
-          timeStamp: new Date(),
-          description: '',
-          imageURL: ''
-        }
-      })
-    }
-  },
   data: () => ({
+    emails: [],
+    post: {
+      id: 0,
+      pictureType: "Empty",
+      image: "Empty",
+      time: "Empty",
+      remark: "Empty",
+      infoPerBuilding: 0
+    },
     description: null,
     templates: [],
-    positionsArguments: [],
-    inputArguments: [],
+    nameOfArguments: [], // lijst van alle argumenten die kunnen worden ingevuld
+    inputArguments: [], // lijst van alle argumenten die zijn ingevuld
     subject: ''
   }),
+  async beforeMount() {
+    await RequestHandler.handle(RoundService.getBuilding(this.$route.params.id)).then((building) => {
+      building.syndicus.forEach(async (sy) => {
+        await RequestHandler.handle(UserService.getUserById(sy)).then((syndicus) => {
+          this.emails.push(syndicus.email)
+        })
+      })
+    })
+    await RequestHandler.handle(PlanningService.getPicture(this.$route.params.postId)).then((post) => {
+      this.post = post
+    })
+  },
   methods: {
     sendMail() {
-      const email = this.$props.data.syndicusEmail;
       const subject = this.subject;
       const body = this.getMailBody();
 
-      if (!(email && subject && body)) {
+      if (!(subject && body)) {
         this.$store.dispatch("snackbar/open", {
           message: "Vul alle velden in",
           color: "error"
         })
         return
       }
-
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      this.emails.forEach(email => {
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      })
 
     },
     getMailBody() {
       return encodeURIComponent(this.getDescriptionWithArguments()).replace(/%0A/g, '%0D%0A') +
-        encodeURIComponent("\n\nStudent:\nOpmerking student: " + this.$props.data.post.description + "\nTijdstip: " + this.$props.data.post.timeStamp.toString() + "\nZie bijlage voor foto.\n\n").replace(/%0A/g, '%0D%0A');
+        encodeURIComponent("\n\nStudent:\nOpmerking student: " + this.post.remark + "\nTijdstip: " + this.post.time.toString() + "\nZie bijlage voor foto.\n\n").replace(/%0A/g, '%0D%0A');
     },
     updateArguments() {
-      this.positionsArguments = [];
+      this.nameOfArguments = [];
 
       const regex = /(#\w+#)/g;
       let match;
 
       while ((match = regex.exec(this.description)) !== null) {
         const argument = match[1];
-        if (!this.positionsArguments.includes(argument)) {
-          this.positionsArguments.push(argument);
+        if (!this.nameOfArguments.includes(argument)) {
+          this.nameOfArguments.push(argument);
         }
       }
-      if (this.positionsArguments.length !== 0) {
-        this.inputArguments = new Array(this.positionsArguments.length).fill('');
+      if (this.nameOfArguments.length !== 0) {
+        this.inputArguments = new Array(this.nameOfArguments.length).fill('');
       } else {
         this.inputArguments = [];
       }
     },
     getDescriptionWithArguments() {
       let description = this.description;
-      for (let i = 0; i < this.positionsArguments.length; i++) {
+      for (let i = 0; i < this.nameOfArguments.length; i++) {
         if (this.inputArguments[i] !== '') {
-          description = description.replaceAll(this.positionsArguments[i], this.inputArguments[i]);
+          description = description.replaceAll(this.nameOfArguments[i], this.inputArguments[i]);
         }
       }
       return description;

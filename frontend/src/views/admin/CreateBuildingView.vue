@@ -41,7 +41,7 @@
       </v-col>
       ---->
       <v-col col="12" lg="12" class="d-flex justify-center align-center">
-        <normal-button text="Maak gebouw aan" :parent-function="createBuilding"></normal-button>
+        <normal-button date-test="create" text="Maak gebouw aan" :parent-function="createBuilding"></normal-button>
       </v-col>
       <v-col class="pt-5"></v-col>
     </v-row>
@@ -88,7 +88,7 @@ export default {
       // TODO Milestone 3 Add geschatte tijd
       const manual = await this.createManual()
 
-      BuildingService.createBuilding({
+      await BuildingService.createBuilding({
         name: this.name,
         adres: this.adres,
         ivago_klantnr: this.klant_nr,

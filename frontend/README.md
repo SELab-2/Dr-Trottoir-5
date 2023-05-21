@@ -1,5 +1,12 @@
 # frontend
 
+## Extra vue plugins
+
+This project uses these extra plugins within Vue:
+- [Vuetify](https://vuetifyjs.com/en/) A material design component library for Vue
+- [Vue Router](https://router.vuejs.org/) A configurable router for routing within Vue
+- [Vuex](https://vuex.vuejs.org/) A state management pattern + library for Vue
+
 ## Project setup
 ```
 npm install

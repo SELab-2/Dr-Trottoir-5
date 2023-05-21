@@ -1,13 +1,13 @@
 <template>
   <v-container class="container-border">
     <v-row align="center" justify="center">
-      <v-col cols="2" class="d-flex align-center">
-        <p @click="goToBuildingPage" class="text-style-building">{{ this.data.name }}</p>
+      <v-col cols="2">
+        <p data-test="name"  @click="goToBuildingPage" class="text-style-building">{{ this.data.name }}</p>
       </v-col>
-      <v-col cols="2" class="d-flex align-center">
-        <p>{{ this.data.adres }}</p>
+      <v-col cols="2">
+        <p data-test="adres">{{ this.data.adres }}</p>
       </v-col>
-      <v-col cols="1" class="d-flex align-center">
+      <v-col cols="1">
         <p :style="{
     color:
       this.data.efficiency < 50 ? '#FF1F00' :
@@ -15,7 +15,7 @@
       '#39AE68'
   }">{{ this.data.efficiency }}%</p>
       </v-col>
-      <v-col cols="1" class="d-flex align-center">
+      <v-col cols="2">
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn
@@ -26,28 +26,23 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item value="download" @click="downloadDocument">
+            <v-list-item data-test="manual" value="download" @click="downloadDocument">
               <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
               Handleiding
             </v-list-item>
           </v-list>
         </v-menu>
       </v-col>
-      <v-col cols="1"/>
-      <v-col cols="2" class="d-flex align-center">
-        <v-menu>
-          <template>
-            <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
-                status
-              }}</span>
-          </template>
-        </v-menu>
+      <v-col cols="3">
+        <p :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
+            this.status
+          }}</p>
       </v-col>
-      <v-col cols="3" class="d-flex align-center justify-end">
-        <v-btn icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditBuilding">
+      <v-col cols="2" class="d-flex align-center justify-end">
+        <v-btn data-test="edit" icon tile class="button-margin" style="max-height: 35px; max-width: 35px;" v-on:click="goToEditBuilding">
           <EditIcon/>
         </v-btn>
-        <v-btn icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
+        <v-btn data-test="delete" icon tile style="max-height: 35px; max-width: 35px;" v-on:click="deletePost">
           <DeleteIcon/>
         </v-btn>
       </v-col>

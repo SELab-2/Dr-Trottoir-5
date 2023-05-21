@@ -6,13 +6,16 @@ export class AuthRegisterWrapper {
   public last_name: string;
   public phone_nr: string;
 
-  constructor(email: string, password: string, password2: string, first_name: string, last_name: string, phone_nr: string) {
+  public locations: [];
+
+  constructor(email: string, password: string, password2: string, first_name: string, last_name: string, phone_nr: string, locations: []) {
     this.email = email;
     this.password = password;
     this.password2 = password2;
     this.first_name = first_name;
     this.last_name = last_name;
     this.phone_nr = phone_nr;
+    this.locations = locations;
   }
 }
 

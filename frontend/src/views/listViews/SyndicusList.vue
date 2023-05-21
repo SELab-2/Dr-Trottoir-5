@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Syndicusen" :head-component="headComponent" :keys="keys"/>
+  <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Syndici" :head-component="headComponent" :keys="keys" :map-keys="mapKeys"/>
 </template>
 
 <script>
@@ -17,16 +17,20 @@ export default {
       childComponent: SyndicusCard,
       elements: [],
       keys: ['first_name', 'last_name', 'phone_nr', 'email'],
+      mapKeys: {
+        'first_name': 'voornaam',
+        'last_name': 'achternaam',
+        'phone_nr': 'gsm-nummer',
+        'email': 'email'
+      },
       headComponent: PersonHeader
     }
   },
   async beforeMount () {
-    this.headComponent.props.student = false
     await RequestHandler.handle(UserService.getUsers(), {id: 'getUsers', style: 'SNACKBAR'})
       .then(async result => {
         for (const user of result) {
           if (user.role === "SY"){
-            console.log(user)
             this.elements.push(user)
           }
         }

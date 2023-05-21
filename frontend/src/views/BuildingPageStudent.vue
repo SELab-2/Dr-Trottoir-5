@@ -27,7 +27,7 @@
               :title="trashMap[item.type]"
               :subtitle="item.special_actions"
               align="left"
-              active-color="primary"
+              color="primary"
             >
               <template v-slot:prepend>
                 <v-icon icon="mdi-trash-can" color="green"></v-icon>
@@ -58,6 +58,7 @@ import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton";
 import ContainerService from "@/api/services/ContainerService";
 import router from "@/router";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default defineComponent({
   name: "BuildingPageStudent",
@@ -87,21 +88,20 @@ export default defineComponent({
       RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
         style: "NONE"
-      }).then(infos => { this.info = infos[building_index].id }).catch(() => null);
+      }).then(infos => { this.info = infos.find(i => i.building === this.building.id).id }).catch(() => null);
 
-      const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
+      const containers = await RequestHandler.handle(TrashTemplateService.getContainers(this.year, this.week), {
         id: "getContainersError",
         style: "NONE"
-      }).then(c => c).catch(() => null);
+      }).then(containers => {
+        if (this.building.id.toString() in containers) return containers[this.building.id.toString()];
+        return [];
+      }).catch(() => null);
       if (!containers) return;
-
-      const weekDays = ['SU','MO','TU','WE','TH','FR','SA'];
-      const day = weekDays[new Date(this.date).getDay()];
-      this.containers = containers.filter(c => c.collection_day.day === day);
+      this.containers = containers.filter(c => c.collection_day.day === planning.time.day);
     }
   },
   data: () => ({
-    date: new Date().toISOString().split('T')[0],
     building: {location: {name: ''}, adres: '', id: ''},
     trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
     containers: [],
@@ -113,13 +113,13 @@ export default defineComponent({
   }),
   methods: {
     clickArrival() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year, week: this.week}});
     },
     clickStorage() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year, week: this.week}});
     },
     clickDeparture() {
-      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year, week: this.week}});
     },
     buildingInfo() {
       router.push({name: 'building_info', query: {building: this.building.id}});

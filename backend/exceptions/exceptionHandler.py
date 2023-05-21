@@ -24,6 +24,7 @@ class ExceptionHandler:
     wrong_email_error = "Verkeerd email adres."
     not_equal_error = "Waarde komt niet overeen."
     inactive_error = "Object is verwijderd."
+    vervangen_error = "Kan geen aanpassingen doen aan vervangen template"
 
     def __init__(self):
         self.errors = []
@@ -83,8 +84,13 @@ class ExceptionHandler:
         self.checked = False
         if value is None:
             return True
-        return self.check_time_format(value, fieldname, "%H:%M",
-                                      ExceptionHandler.time_format_error)
+        if not self.check_time_format(value, fieldname, "%H:%M", ExceptionHandler.time_format_error):
+            if self.check_time_format(value, fieldname, "%H:%M:%S", ExceptionHandler.time_format_error):
+                self.errors.pop()
+                return True
+            else:
+                return False
+        return True
 
     def check_time_value_required(self, value, fieldname):
         if not self.check_required(value, fieldname):
@@ -248,5 +254,17 @@ class ExceptionHandler:
             self.errors.append({
                 "message": ExceptionHandler.inactive_error,
                 "field": fieldname
+            })
+            return False
+
+    def check_vervangen(self, template):
+        self.checked = False
+        if template is None:
+            return True
+
+        if template.status == Status.VERVANGEN:
+            self.errors.append({
+                "message": ExceptionHandler.vervangen_error,
+                "field": "template"
             })
             return False
