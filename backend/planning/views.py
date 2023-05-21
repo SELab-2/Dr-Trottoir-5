@@ -12,7 +12,7 @@ from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission, SyndicusPermission, \
     BewonerPermission
 from .util import *
-from ronde.models import LocatieEnum, Building, Ronde
+from ronde.models import Building, LocatieEnum, Ronde
 from trashtemplates.models import Status
 
 
@@ -42,7 +42,12 @@ class StudentDayPlan(generics.RetrieveAPIView):
                 if plan.time.day == day_name and request.user in plan.students.all():
                     dayplans.append(plan)
 
-        data = DagPlanningSerializerFull(dayplans, many=True).data
+        if len(dayplans) == 0:
+            return HttpResponseNotFound()
+
+        data = []
+        for dayplan in dayplans:
+            data.append(DagPlanningSerializerFull(dayplan).data)
         return Response(data)
 
 

@@ -1,4 +1,9 @@
 <template>
+  <v-row class="pa-5">
+    <v-col cols="12" sm="12" md="12" lg="12" class="d-flex align-center pl-16">
+      <NormalButton text="Studenten registreren" :parent-function="goToRegister"></NormalButton>
+    </v-col>
+  </v-row>
   <ListPage :add-function="() => {}" :child-component="childComponent" :elements="elements" title="Studenten" :head-component="headComponent" :keys="keys"/>
 </template>
 
@@ -8,16 +13,23 @@ import PersonHeader from '@/components/admin/PersonHeader'
 import StudentCard from '@/components/admin/StudentCard'
 import {RequestHandler} from "@/api/RequestHandler";
 import UserService from "@/api/services/UserService";
+import NormalButton from "@/components/NormalButton";
+import router from "@/router";
 
 export default {
   name: 'StudentList',
-  components: { ListPage },
+  components: {NormalButton, ListPage },
   data () {
     return {
       childComponent: StudentCard,
       elements: [],
       keys: ['first_name', 'last_name', 'phone_nr', 'email'],
       headComponent: PersonHeader
+    }
+  },
+  methods: {
+    async goToRegister() {
+      await router.push({name: 'admin_user_register'});
     }
   },
   async beforeMount() {

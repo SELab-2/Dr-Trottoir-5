@@ -10,7 +10,7 @@ from .util import *
 
 
 class BuildingTrashPlan(generics.ListAPIView):
-    permission_classes = [BewonerPermission | SyndicusPermission | StudentPermission]
+    permission_classes = [BewonerPermission | SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission]
 
     def get(self, request, *args, **kwargs):
         """

@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from exceptions.exceptionHandler import ExceptionHandler
-from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, StudentPermission, \
+    SyndicusPermission
 from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
 from ronde.models import LocatieEnum
@@ -30,16 +31,27 @@ def get_tokens_for_user(user):
     }
 
 
-@api_view(['GET'])
-@permission_classes([ReadOnly])
+@api_view(['GET', 'PATCH'])
+@permission_classes([SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission])
 def user_view(request):
     response = Response()
-    if request.user.is_authenticated:
-        response.data = UserSerializer(request.user).data
-        return response
-    else:
-        response.data = "{'error': 'no user'}"
-        return response
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            response.data = UserSerializer(request.user).data
+        else:
+            response.data = "{'error': 'no user'}"
+    elif request.method == 'PATCH':
+        if request.user.is_authenticated:
+            data = request.data
+            serializer = UserSerializer(request.user, data=data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                response.data = serializer.data
+            else:
+                response.data = serializer.errors
+        else:
+            response.data = "{'error': 'no user'}"
+    return response
 
 
 @api_view(['POST'])
@@ -221,13 +233,13 @@ def reset_password(request):
     return Response({'message': 'New password is created'})
 
 
-@api_view(['POST', 'GET'])
+@api_view(['PATCH', 'GET'])
 @permission_classes([AdminPermission | SuperstudentPermission | ReadOnly])
 def role_assignment_view(request):
     if request.method == "GET":  # return role of user
         return Response({'role': request.user.role})
 
-    if request.method == "POST":  # change the role of a user
+    if request.method == "PATCH":  # change the role of a user
         serializer = RoleAssignmentSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
 

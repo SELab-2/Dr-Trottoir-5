@@ -88,6 +88,13 @@ class PlanningService extends EchoService {
     return {} as EchoPromise<BuildingInfo>;
   }
 
+  /**
+   * Get building info by id
+   */
+  @GET("/infoperbuilding/{id}/")
+  getInfoById(@Path('id') id: number): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>
+  }
 
   /**
    *Get building info for a day planning and building
