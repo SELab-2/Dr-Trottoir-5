@@ -32,7 +32,7 @@ def get_tokens_for_user(user):
 
 
 @api_view(['GET', 'PATCH'])
-@permission_classes([SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission])
+@permission_classes([SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission | ReadOnly])
 def user_view(request):
     response = Response()
     if request.method == 'GET':
