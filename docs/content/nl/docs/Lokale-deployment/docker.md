@@ -24,7 +24,7 @@ description: >
 
 ## Inleiding
 
-Dit document bevat instructies voor het opstarten van een project dat uit 3 delen bestaat met behulp van Docker Compose. Het project is opgebouwd uit de volgende delen:
+Dit document bevat instructies voor het opstarten van het project met behulp van Docker Compose. Het project is opgebouwd uit de volgende delen:
 
 1. Frontend: Vue.js-applicatie
 2. Backend: Django-applicatie
@@ -89,7 +89,7 @@ Om alles te herstarten en opnieuw te builden.
 ```bash
 docker-compose up --build <onderdeel>
 ```
-Om maar 1 van de onderdelen opnieuw te builden en te herstarten. Waarbij <onderdeel> 1 van deze is:
+Om maar 1 van de onderdelen opnieuw te builden en te herstarten. Waarbij `onderdeel` 1 van deze is:
 - backend
 - frontend
 - docs
