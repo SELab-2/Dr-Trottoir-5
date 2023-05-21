@@ -129,6 +129,10 @@ Als een gebouw aangepast wordt kan:
 - Handleiding
 
 Aangepast worden, de locatie van een gebouw kan niet aangepast worden.
+
+Indien er problemen zijn bij een gebouw kan een email verstruurd worden gebaseerd op een [Email Template](#email-templates).
+Deze templates sturen de foto's nog niet mee, dit zal later nog toegevoegd worden.
+
 ## Studenten
 
 Op deze pagina kan men een lijst zien van alle studenten die momenteel een account hebben. De info over elke student kan bekeken worden en aangepast worden.
