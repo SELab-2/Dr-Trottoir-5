@@ -24,6 +24,6 @@ Om het project in docker te draaien zie [docker deployment]({{< relref "/docs/lo
 
 Om het project native te draaien zie de respectievelijke pagina's in deze volgorde:
 
-1. [databank]({{< relref "/docs/lokale-deployment/databank" >}})
+1. [databank]({{< relref "/docs/lokale-deployment/database" >}})
 2. [backend]({{< relref "/docs/lokale-deployment/backend" >}})
 3. [frontend]({{< relref "/docs/lokale-deployment/frontend" >}})
