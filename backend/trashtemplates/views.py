@@ -121,6 +121,7 @@ class TrashTemplateView(generics.RetrieveDestroyAPIView):
 
         handler = ExceptionHandler()
         handler.check_vervangen(template)
+        handler.check_not_inactive(template, "template")
         handler.check()
 
         current_year, current_week = get_current_time()
@@ -166,6 +167,9 @@ class TrashContainersView(generics.CreateAPIView, generics.RetrieveAPIView):
         Voegt de nieuwe TrashContainer toe aan de template adhv een TrashContainerIdWrapper.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         permanent = kwargs["permanent"]
         data = request.data
 
@@ -206,6 +210,9 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         tc_id_wrapper = template.trash_containers.get(extra_id=kwargs[
             "extra_id"])
         permanent = kwargs["permanent"]
@@ -245,6 +252,9 @@ class TrashContainerView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         tc_id_wrapper = template.trash_containers.get(extra_id=kwargs[
             "extra_id"])
         permanent = kwargs["permanent"]
@@ -279,8 +289,11 @@ class BuildingsView(generics.CreateAPIView, generics.RetrieveAPIView):
         data = request.data
         template = TrashContainerTemplate.objects.get(id=kwargs[
             "template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
+
         permanent = kwargs["permanent"]
-        # checks
         building = Building.objects.get(id=data["building"])
         new_building_list = BuildingTrashContainerList.objects.create(
             building=building
@@ -322,6 +335,9 @@ class BuildingView(generics.RetrieveUpdateDestroyAPIView):
         Neemt een copy van de template om de geschiedenis te behouden als dit nodig is.
         """
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
         building_list = template.buildings.get(building=kwargs["building_id"])
         permanent = kwargs["permanent"]
         update(
@@ -343,6 +359,10 @@ class BuildingView(generics.RetrieveUpdateDestroyAPIView):
         """
         data = request.data
         template = TrashContainerTemplate.objects.get(id=kwargs["template_id"])
+        handler = ExceptionHandler()
+        handler.check_not_inactive(template, "template")
+        handler.check()
+
         building_list = template.buildings.get(building=kwargs["building_id"])
         permanent = kwargs["permanent"]
         new_building_list = make_new_building_list(kwargs["building_id"],
