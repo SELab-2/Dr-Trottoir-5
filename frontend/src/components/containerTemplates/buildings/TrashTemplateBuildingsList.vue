@@ -1,7 +1,7 @@
 <template>
   <ListPage data-test="listPage" :add-function="addTrashContainerBuilding" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
-            :keys="keys"
+            :keys="keys" :map-keys="mapKeys"
             :search="false" title="Gebouwen voor deze vuilnis planning"/>
 </template>
 
@@ -24,7 +24,12 @@ export default {
       childComponent: TrashTemplateBuildingCard,
       elements: [],
       headComponent: TrashTemplateBuildingHeader,
-      keys: ['name', 'address', 'manual']
+      keys: ['name', 'address', 'manual'],
+      mapKeys: {
+        'name': 'naam',
+        'address': 'adres',
+        'manual': 'handleiding'
+      }
     }
   },
   methods: {

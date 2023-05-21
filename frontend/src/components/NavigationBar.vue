@@ -19,8 +19,8 @@
                    value="gebouwen"></v-list-item>
       <v-list-item data-test="student" v-if="this.isAdminOrSu" prepend-icon="mdi-account" title="Studenten" :to="{name: 'students'}"
                    value="studenten"></v-list-item>
-      <v-list-item data-test="syndicus" v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndicussen" :to="{name: 'syndici'}"
-                   value="syndicussen"></v-list-item>
+      <v-list-item data-test="syndicus" v-if="this.isAdminOrSu" prepend-icon="mdi-account-key" title="Syndici" :to="{name: 'syndici'}"
+                   value="syndici"></v-list-item>
       <v-list-item data-test="emails" v-if="this.isAdminOrSu" prepend-icon="mdi-email-outline" title="Email Templates" :to="{name: 'mailtemplates'}"
                    value="email templates"></v-list-item>
       <v-list-item data-test="account" prepend-icon="mdi-account-circle" title="Account" to="/account/" value="account"></v-list-item>
@@ -33,7 +33,7 @@
       <v-app-bar-nav-icon v-if="smallScreen" color="secondary" icon="mdi-arrow-left"
                           @click="this.goBack()"></v-app-bar-nav-icon>
       <v-app-bar-title>
-        <v-img height="75px" src="../assets/logo.png" width="150px"/>
+        <v-img height="75px" src="../assets/logo.png" width="150px" @click="this.goHome"/>
       </v-app-bar-title>
     </template>
     <template v-slot:append>
@@ -85,6 +85,11 @@ export default defineComponent({
       smallScreen,
       goBack,
       logout
+    }
+  },
+  methods : {
+    goHome() {
+      router.push('/')
     }
   }
 })

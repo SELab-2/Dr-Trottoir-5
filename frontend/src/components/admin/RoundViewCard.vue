@@ -83,8 +83,12 @@ export default {
     getStatus() {
       const date = new Date(this.data.date);
       this.percentage = 0;
+      let week = getWeek(date);
+      if(date.getUTCDay() === 0){
+        week -= 1
+      }
 
-      RequestHandler.handle(PlanningService.getStatus(date.getFullYear(), getWeek(date), this.data.round.id), {
+      RequestHandler.handle(PlanningService.getStatus(date.getFullYear(), week, this.data.round.id), {
         id: `getStatus${this.data.round.id}Error`,
         style: "NONE"
       }).then(statuses => {

@@ -1,5 +1,5 @@
 <template>
-  <RoundListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Rondes" :keys="keys" />
+  <RoundListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Rondes" :keys="keys" :map-keys="mapKeys"/>
 </template>
 
 <script>
@@ -17,7 +17,14 @@ export default {
     return {
       childComponent: ListBuildings,
       elements: [],
-      keys: ['roundName', 'name', 'adres', 'manual']
+      keys: ['roundName', 'name', 'adres', 'manual'],
+      mapKeys: {
+        'roundName': 'ronde naam',
+        'name': 'gebouw naam',
+        'adres': 'adres',
+        'manual': 'handleiding'
+
+      }
     }
   },
   methods: {

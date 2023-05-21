@@ -49,8 +49,8 @@ export default {
     goToEditPage: function () {
       router.push({name: 'mail-template-edit', params: {id: this.data.id}})
     },
-    deletePost: function () {
-      RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
+    deletePost: async function () {
+      await RequestHandler.handle(EmailTemplateService.deleteEmailTemplateById(this.data.id))
         .then( () => window.location.reload())
     }
   },

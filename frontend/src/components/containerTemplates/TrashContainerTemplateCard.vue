@@ -17,7 +17,7 @@
         {{ this.locatie }}
       </v-col>
       <v-col data-test="even" cols="1">
-        {{ this.data.even }}
+        {{ this.data.even ? 'Even' : 'Oneven' }}
       </v-col>
       <v-col class="text-right" cols="2">
         <v-btn data-test="deleteTemplate" class="button-style" icon v-on:click="deleteTemplate">

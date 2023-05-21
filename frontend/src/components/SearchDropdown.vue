@@ -36,16 +36,16 @@ De parameter kan verandert worden door op de knop een andere parameter te kiezen
             </ul>
           </transition>
         </div>
-        <NormalButton :text="capitalize(key)" :dropdown="true" id="menu-activator" class="button"/>
+        <NormalButton :text="capitalize(mapKeys[key])" :dropdown="true" id="menu-activator" class="button"/>
         <v-menu activator="#menu-activator" class="text-yellow">
           <v-list>
             <v-list-item
               v-for="property in this.keys"
               :key="property"
-              :value="property"
+              :value="mapKeys[property]"
               @click="changeKey(property)"
             >
-              <v-list-item-title>{{ capitalize(property) }}</v-list-item-title>
+              <v-list-item-title>{{ capitalize(mapKeys[property]) }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -77,10 +77,15 @@ export default {
       default: () => ['default'],
       required: true
     },
+    mapKeys: {
+      type: Map,
+      default: {},
+      required: true
+    },
     placeholder: {
       type: String,
       required: false,
-      default: 'Search ...'
+      default: 'Zoeken ...'
     }
   },
   setup () {

@@ -31,7 +31,7 @@ describe('trashContainerTemplateCard.vue', () => {
 
   it('displays the props', () => {
     expect(wrapper.find('p').text()).toBe('Template 1');
-    expect(wrapper.find('[data-test="even"]').text()).toBe("true");
+    expect(wrapper.find('[data-test="even"]').text()).toBe("Even");
   });
 
   it('displays the data', async () => {

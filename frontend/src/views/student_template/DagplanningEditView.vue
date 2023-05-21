@@ -108,7 +108,9 @@ export default {
   methods: {
     check_errors,
     getTitle(item) {
-      return `${item.first_name} ${item.last_name}`
+      if(!Number.isInteger(item)) {
+        return `${item.first_name} ${item.last_name}`
+      }
     },
     format_day(day) {
       const day_mapping = {
