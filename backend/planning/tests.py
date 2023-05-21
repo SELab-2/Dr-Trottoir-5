@@ -1,15 +1,15 @@
-import datetime
-
-from rest_framework.test import APITestCase, APIRequestFactory, \
-    force_authenticate, APIClient
-from .views import *
-from .models import *
-from users.models import User
-from ronde.models import Ronde, LocatieEnum
 from io import BytesIO
+
 from PIL import Image
 from model_bakery import baker
+from rest_framework.test import APITestCase, APIRequestFactory, \
+    force_authenticate
+
 from backend.views import MediaView
+from ronde.models import Ronde, LocatieEnum
+from users.models import User
+from .models import *
+from .views import *
 
 
 class CreateTest(APITestCase):
@@ -48,12 +48,8 @@ class CreateTest(APITestCase):
 
         self.weekPlanning = WeekPlanning.objects.create(week=1, year=2023)
 
-        pl = WeekPlanning.objects.create(week=datetime.datetime.now(
-
-        ).isocalendar().week,
-                                         year=datetime.datetime.now(
-
-                                         ).isocalendar().year)
+        pl = WeekPlanning.objects.create(week=datetime.datetime.now().isocalendar().week,
+                                         year=datetime.datetime.now().isocalendar().year)
         pl.student_templates.set([templ])
 
         self.pickupday = PickUpDay.objects.create(day="SU",
@@ -146,7 +142,7 @@ class CreateTest(APITestCase):
                                             day=date.weekday).data
         self.assertEqual(len(response), 1)
         self.assertEqual(
-            StudentDayPlan.as_view()(request, year=date.year, week=date.week, \
+            StudentDayPlan.as_view()(request, year=date.year, week=date.week,
                                      day=8).status_code,
             400)
 
@@ -273,7 +269,7 @@ class CreateTest(APITestCase):
         # geen studenttemplates die bij de ronde horen
         self.assertEqual(len(response), 1)
 
-    def testGetDagPlanning(self):
+    def testGetDagPlanningDate(self):
         factory = APIRequestFactory()
         request = factory.get("/api/dagplanning/2023/1/1/")
         force_authenticate(request, self.student)
@@ -330,7 +326,7 @@ class CreateTest(APITestCase):
 
     def testStudentTemplates(self):
         factory = APIRequestFactory()
-        request = factory.get(f"/api/studenttemplates/")
+        request = factory.get("/api/studenttemplates/")
         force_authenticate(request, self.user)
         response = StudentTemplateView.as_view()(request).data
         # template is niet actief
@@ -374,8 +370,7 @@ class CreateTest(APITestCase):
                               f"rondes/{self.ronde.pk}/"
                               f"dagplanningen/")
         force_authenticate(request, self.user)
-        response = DagPlanningenView.as_view()(request, template_id=
-        self.studentTemplate.pk, ronde_id=self.ronde.pk)
+        response = DagPlanningenView.as_view()(request, template_id=self.studentTemplate.pk, ronde_id=self.ronde.pk)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]["id"], self.dagPlanning.pk)
 

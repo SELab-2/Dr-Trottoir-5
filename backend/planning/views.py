@@ -1,19 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseNotFound, QueryDict
+from django.http import HttpResponseNotFound
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-from exceptions.exceptionHandler import ExceptionHandler
-from pickupdays.models import WeekDayEnum
+
+from ronde.models import Building, LocatieEnum, Ronde
 from ronde.serializers import RondeSerializer
+from trashtemplates.models import Status
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission, SyndicusPermission, \
     BewonerPermission
 from .util import *
-from ronde.models import Building, LocatieEnum, Ronde
-from trashtemplates.models import Status
 
 
 class StudentDayPlan(generics.RetrieveAPIView):
@@ -192,7 +191,7 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
 
 
 class DagPlanningRetrieveUpdateDestroyAPIView(
-    generics.RetrieveUpdateDestroyAPIView):
+        generics.RetrieveUpdateDestroyAPIView):
     queryset = DagPlanning.objects.all()
     serializer_class = DagPlanningSerializerFull
     permission_classes = [
