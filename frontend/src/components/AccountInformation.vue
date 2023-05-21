@@ -200,7 +200,7 @@ export default {
       })
     },
     delete_current() {
-      UserService.deleteUserById(this.id)
+      UserService.deleteUserById(this.user.id)
       this.$router.push({name: 'admin_user_register'})
     },
     onResize() {

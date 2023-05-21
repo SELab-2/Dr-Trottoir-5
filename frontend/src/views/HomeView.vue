@@ -1,3 +1,11 @@
+<template>
+  <v-card align="center">
+    <v-card-text>
+      <h3 class="text-h3">U wordt doorverwezen..</h3>
+    </v-card-text>
+  </v-card>
+</template>
+
 <script lang="ts">
 import router from '@/router';
 import { defineComponent } from 'vue';

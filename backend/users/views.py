@@ -15,6 +15,7 @@ from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, Stud
 from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
 from ronde.models import LocatieEnum
+from django.core.validators import validate_email
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -32,7 +33,7 @@ def get_tokens_for_user(user):
 
 
 @api_view(['GET', 'PATCH'])
-@permission_classes([SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission])
+@permission_classes([SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission | ReadOnly])
 def user_view(request):
     response = Response()
     if request.method == 'GET':
@@ -130,6 +131,15 @@ def registration_view(request):
         handler.check_equal(data.get("password"), data.get("password2"), "password2")
         handler.check_required(data.get("locations"), "locations")
         handler.check()
+
+        try:
+            validate_email(data.get("email"))
+        except Exception:
+            raise serializers.ValidationError({
+                "errors": [{
+                    "message": "Dit email adres is ongeldig.",
+                    "field": "email"
+                }]})
 
         if get_user_model().objects.filter(email=data["email"].lower()).exists():
             raise serializers.ValidationError({

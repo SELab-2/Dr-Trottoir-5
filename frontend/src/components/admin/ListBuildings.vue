@@ -57,7 +57,7 @@ export default {
   methods: {
     deleteRound () {
       RequestHandler.handle(RoundService.deleteRoundById(this.data.id))
-        .then(async result => router.go(0))
+        .then(async () => router.go(0))
     },
     editRound () {
       router.push({ name: 'edit_round', params: {id: this.data.id} });

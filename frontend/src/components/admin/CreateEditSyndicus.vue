@@ -89,7 +89,7 @@ export default {
     async update(building_id, syndicus) {
       /**
        * This method is the request we send to the backend. The body exists of an updated list
-       * of syndicussen for a specific building.
+       * of syndici for a specific building.
        */
       await RequestHandler.handle(BuildingService.updateBuildingById(Number(building_id), {
         'syndicus': syndicus
@@ -187,8 +187,8 @@ export default {
         customMessages: [
           {
             code: '500',
-            message: 'Kon alle syndicussen niet ophalen.',
-            description: 'Kon syndicussen niet ophalen.'
+            message: 'Kon alle syndici niet ophalen.',
+            description: 'Kon syndici niet ophalen.'
           }
         ]
       }).then(users => {
