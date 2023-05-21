@@ -33,25 +33,25 @@ class CreateTest(APITestCase):
                                                               end_hour="19:14")
 
         templ = StudentTemplate.objects.create(name="test",
-                                        even=datetime.datetime.now(
+                                               even=datetime.datetime.now(
 
-                                       ).isocalendar().week % 2 == 0,
-                                       location=self.location,
-                                       status=Status.EENMALIG,
-                                       year=datetime.datetime.now().isocalendar().year,
-                                       week=datetime.datetime.now(
+                                               ).isocalendar().week % 2 == 0,
+                                               location=self.location,
+                                               status=Status.EENMALIG,
+                                               year=datetime.datetime.now().isocalendar().year,
+                                               week=datetime.datetime.now(
 
-                                       ).isocalendar().week,
-                                       start_hour="19:13",
-                                       end_hour="19:14"
-                                       )
+                                               ).isocalendar().week,
+                                               start_hour="19:13",
+                                               end_hour="19:14"
+                                               )
 
         self.weekPlanning = WeekPlanning.objects.create(week=1, year=2023)
 
-        pl = WeekPlanning.objects.create(week = datetime.datetime.now(
+        pl = WeekPlanning.objects.create(week=datetime.datetime.now(
 
         ).isocalendar().week,
-                                         year = datetime.datetime.now(
+                                         year=datetime.datetime.now(
 
                                          ).isocalendar().year)
         pl.student_templates.set([templ])
@@ -226,7 +226,6 @@ class CreateTest(APITestCase):
         force_authenticate(request, self.user)
         response = MediaView.as_view()(request, path=path)
         self.assertEqual(response.status_code, 200)
-
 
         # Fetch the uploaded picture
         request = factory.get('/api/buildingpicture/')

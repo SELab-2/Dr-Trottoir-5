@@ -9,6 +9,7 @@ from .exceptionHandler import ExceptionHandler
 
 from django.contrib.auth import get_user_model
 
+
 class ExceptionHandlerTest(TestCase):
 
     def setUp(self) -> None:
@@ -333,7 +334,8 @@ class ExceptionHandlerTest(TestCase):
 
     def test_email_fail_bad_value(self):
         handler = ExceptionHandler()
-        self.assertFalse(handler.check_email("NOT A VALID EMAIL", get_user_model()))
+        self.assertFalse(
+            handler.check_email("NOT A VALID EMAIL", get_user_model()))
         self.assertRaises(ValidationError, handler.check)
 
     def test_check_equal_succes(self):

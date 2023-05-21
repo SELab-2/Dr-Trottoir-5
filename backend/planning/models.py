@@ -1,11 +1,8 @@
 from django.db import models
 from django.conf import settings
-from ronde.models import Ronde
-from pickupdays.models import PickUpDay
 from ronde.models import LocatieEnum, Building, Ronde
 from trashtemplates.models import TrashContainerTemplate, Status
 from pickupdays.models import PickUpDay
-from ronde.models import LocatieEnum
 
 
 class DagPlanning(models.Model):
