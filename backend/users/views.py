@@ -146,7 +146,7 @@ def registration_view(request):
             data['password']
         )
 
-        locations = [LocatieEnum.objects.get(id=pk) for pk in data.get("locations")]
+        locations = [LocatieEnum.objects.get(pk=pk) for pk in data.get("locations")]
         user.locations.set(locations)
 
         refresh = RefreshToken.for_user(user)
