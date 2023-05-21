@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework.test import APITestCase, APIRequestFactory, \
     force_authenticate, APIClient
 from .views import *
@@ -31,7 +33,30 @@ class CreateTest(APITestCase):
                                                               start_hour="19:13",
                                                               end_hour="19:14")
 
+        templ = StudentTemplate.objects.create(name="test",
+                                        even=datetime.datetime.now(
+
+                                       ).isocalendar().week % 2 == 0,
+                                       location=self.location,
+                                       status=Status.EENMALIG,
+                                       year=datetime.datetime.now().isocalendar().year,
+                                       week=datetime.datetime.now(
+
+                                       ).isocalendar().week,
+                                       start_hour="19:13",
+                                       end_hour="19:14"
+                                       )
+
         self.weekPlanning = WeekPlanning.objects.create(week=1, year=2023)
+
+        pl = WeekPlanning.objects.create(week = datetime.datetime.now(
+
+        ).isocalendar().week,
+                                         year = datetime.datetime.now(
+
+                                         ).isocalendar().year)
+        pl.student_templates.set([templ])
+
         self.pickupday = PickUpDay.objects.create(day="SU",
                                                   start_hour="19:13",
                                                   end_hour="19:14")
