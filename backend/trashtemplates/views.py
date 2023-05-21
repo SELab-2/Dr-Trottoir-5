@@ -26,7 +26,7 @@ class BuildingTrashPlan(generics.ListAPIView):
             if (active_exists and template.status == 'A') or not active_exists:
                 buildings = template.buildings.all()
                 for building in buildings:
-                    containers = TrashContainerIdWrapper.objects.filter(extra_id__in=building.trash_ids.all())
+                    containers = template.trash_containers.filter(extra_id__in=building.trash_ids.all())
                     result[building.building.id] = TrashContainerSerializer([c.trash_container for c in containers], many=True).data
                 break
         return Response(result)
