@@ -27,7 +27,6 @@ export default {
     }
   },
   async beforeMount () {
-    this.headComponent.props.student = false
     await RequestHandler.handle(UserService.getUsers(), {id: 'getUsers', style: 'SNACKBAR'})
       .then(async result => {
         for (const user of result) {

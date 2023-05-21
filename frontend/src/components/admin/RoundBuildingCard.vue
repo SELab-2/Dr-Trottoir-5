@@ -20,31 +20,18 @@
           <v-list>
             <v-list-item value="download" @click="downloadDocument">
               <v-icon color="red" icon="mdi-file-pdf-box"></v-icon>
-              PFD
-            </v-list-item>
-            <v-list-item value="upload" @click="uploadDocument">
-              <v-icon color="#FFE600" icon="mdi-file-upload-outline"></v-icon>
-              Upload
+              PDF
             </v-list-item>
           </v-list>
         </v-menu>
       </v-col>
       <v-col cols="1"/>
-      <v-col cols="2">
-        <v-menu>
-          <template>
-            <span :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
-                status
-              }}</span>
-          </template>
-        </v-menu>
+      <v-col cols="3">
+            <p :style="{ color: status === 'Update nodig' ? 'red' : status === 'Klaar' ? 'green' : '' }">{{
+                this.status
+              }}</p>
       </v-col>
-      <v-col cols="1"/>
-      <v-col cols="2" class="text-right">
-        <v-btn icon class="button-style" v-on:click="deletePost">
-          <DeleteIcon/>
-        </v-btn>
-      </v-col>
+      <v-col cols="2"/>
     </v-row>
   </v-container>
 </template>
@@ -55,6 +42,7 @@ import {RequestHandler} from "@/api/RequestHandler";
 import BuildingService from "@/api/services/BuildingService";
 import Building from "@/api/models/Building";
 import router from "@/router";
+import RoundService from "@/api/services/RoundService";
 /**
  * RoundBuildingCard component wordt gebruikt door als props een Object met de volgende keys mee te geven:
  * gebouw: String
@@ -74,28 +62,21 @@ export default {
     status: ''
   }),
   methods: {
-    deletePost: function () {
-      // TODO
-    },
-    uploadDocument: function () {
-      // TODO
-    },
     downloadDocument: function () {
-      // TODO
-    },
-    updateStatus: function (newStatus) {
-      this.status = newStatus
-      // TODO opslaan in database
+      window.open(this.data.manual.file)
     },
     goToBuildingPage: function () {
       router.push({name: 'admin_info_building', params : {id: this.data.id}})
     }
   },
   async mounted () {
-    this.status = this.data.status
+    this.status = this.data.manual.manualStatus
+    console.log(this.status)
   },
   async beforeMount () {
     await RequestHandler.handle(BuildingService.getManualById(this.data.id)).then(async result => { this.status = result.manualStatus })
+    this.status = this.data.manual.manualStatus
+    console.log(this.status)
   }
 }
 </script>
