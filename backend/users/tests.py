@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.sessions.middleware import SessionMiddleware
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
@@ -18,7 +20,7 @@ class UserTestCase(APITestCase):
 
         self.register = {"email": "test@test.com", "first_name": "First",
                          "last_name": "Last", "password": "Pass", "password2": "Pass", "phone_nr": "0",
-                         "locations": [self.loc1.id, self.loc2.id]}
+                         "locations": [self.loc1.pk, self.loc2.pk]}
 
         self.login = {"email": "test@test.com", "password": "Pass"}
         self.user = User.objects.create(username="user", email="user@mail.com")
@@ -26,7 +28,7 @@ class UserTestCase(APITestCase):
 
     def testUserRegistration(self):
         factory = APIRequestFactory()
-        request = factory.post("/api/register/", self.register)
+        request = factory.post("/api/register/", json.dumps(self.register), content_type='application/json')
         response = registration_view(request).data
 
         self.assertEqual(response["email"], "test@test.com")
@@ -45,7 +47,7 @@ class UserTestCase(APITestCase):
 
     def testUserLogin(self):
         factory = APIRequestFactory()
-        request = factory.post("/api/register/", self.register)
+        request = factory.post("/api/register/", json.dumps(self.register), content_type='application/json')
 
         registration_view(request)
 
@@ -57,7 +59,7 @@ class UserTestCase(APITestCase):
 
     def testUserForgotPassword(self):
         factory = APIRequestFactory()
-        request = factory.post("/api/register/", self.register)
+        request = factory.post("/api/register/", json.dumps(self.register), content_type='application/json')
         registration_view(request)
 
         # Test if email is sent for a valid email address
@@ -72,7 +74,7 @@ class UserTestCase(APITestCase):
 
     def testUserResetPassword(self):
         factory = APIRequestFactory()
-        request = factory.post("/api/register/", self.register)
+        request = factory.post("/api/register/", json.dumps(self.register), content_type='application/json')
         registration_view(request)
 
         # Make sure an error message is given when a non-existent email is entered
@@ -117,7 +119,7 @@ class UserTestCase(APITestCase):
 
     def testUserRoleAssignment(self):
         factory = APIRequestFactory()
-        request = factory.post("/api/register/", self.register)
+        request = factory.post("/api/register/", json.dumps(self.register), content_type='application/json')
         registration_view(request)
 
         # Test permission for role assignment
