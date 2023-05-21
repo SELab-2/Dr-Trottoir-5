@@ -13,8 +13,7 @@ class PickUpListCreateView(generics.ListCreateAPIView):
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def post(self, request, *args, **kwargs):
-        data: dict
-        data = request.data
+        data: dict = request.data
 
         handler = ExceptionHandler()
         handler.check_enum_value_required(data.get("day"), "day",
@@ -33,8 +32,7 @@ class PickUpDetailView(generics.RetrieveUpdateDestroyAPIView):
         StudentReadOnly | AdminPermission | SuperstudentPermission]
 
     def put(self, request, *args, **kwargs):
-        data: dict
-        data = request.data
+        data: dict = request.data
 
         handler = ExceptionHandler()
         handler.check_enum_value_required(data.get("day"), "day",
@@ -45,7 +43,7 @@ class PickUpDetailView(generics.RetrieveUpdateDestroyAPIView):
         return super().put(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        data = request.data
+        data: dict = request.data
         handler = ExceptionHandler()
         handler.check_enum_value(data.get("day"), "day",
                                  WeekDayEnum.values)

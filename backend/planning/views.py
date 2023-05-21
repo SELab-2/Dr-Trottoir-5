@@ -4,16 +4,15 @@ from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-from exceptions.exceptionHandler import ExceptionHandler
-from pickupdays.models import WeekDayEnum
+
+from ronde.models import Building, LocatieEnum, Ronde
 from ronde.serializers import RondeSerializer
+from trashtemplates.models import Status
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
     SuperstudentPermission, StudentPermission, SyndicusPermission, \
     BewonerPermission
 from .util import *
-from ronde.models import Building, LocatieEnum, Ronde
-from trashtemplates.models import Status
 
 
 class StudentDayPlan(generics.RetrieveAPIView):
@@ -631,12 +630,16 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
         dag_planningen = []
 
-        data["start_hour"] = str(template.start_hour)
-        data["end_hour"] = str(template.end_hour)
-        data["students"] = []
+        data_copy = dict(data)
+
+        data_copy["ronde"] = int(data["ronde"])
+
+        data_copy["start_hour"] = str(template.start_hour)
+        data_copy["end_hour"] = str(template.end_hour)
+        data_copy["students"] = []
         for day in WeekDayEnum:
-            data["day"] = day
-            dag_planning = make_dag_planning(data)
+            data_copy["day"] = day
+            dag_planning = make_dag_planning(data_copy)
             dag_planningen.append(dag_planning)
 
         response = {"message": "Success"}
@@ -757,17 +760,18 @@ class DagPlanningView(generics.RetrieveUpdateDestroyAPIView):
         template = StudentTemplate.objects.get(id=kwargs["template_id"])
         dag_planning = DagPlanning.objects.get(id=kwargs["dag_id"])
         permanent = kwargs["permanent"]
-        data["day"] = dag_planning.time.day
-        if "start_hour" not in data:
-            data["start_hour"] = dag_planning.time.start_hour
-        if "end_hour" not in data:
-            data["end_hour"] = dag_planning.time.end_hour
-        if "ronde" not in data:
-            data["ronde"] = dag_planning.ronde.id
-        if "students" not in data:
-            data["students"] = dag_planning.students.all()
+        data_copy = dict(data)
+        data_copy["day"] = dag_planning.time.day
+        if "start_hour" not in data_copy:
+            data_copy["start_hour"] = str(dag_planning.time.start_hour)
+        if "end_hour" not in data_copy:
+            data_copy["end_hour"] = str(dag_planning.time.end_hour)
+        if "ronde" not in data_copy:
+            data_copy["ronde"] = int(dag_planning.ronde.id)
+        if "students" not in data_copy:
+            data_copy["students"] = dag_planning.students.all()
 
-        new_dag_planning = make_dag_planning(data)
+        new_dag_planning = make_dag_planning(data_copy)
 
         response = update(
             template,
