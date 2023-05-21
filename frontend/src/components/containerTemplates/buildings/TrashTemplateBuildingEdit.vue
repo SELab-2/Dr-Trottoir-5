@@ -17,10 +17,10 @@
         <v-col cols='12' md='6' sm='6'>
           <v-select
             v-model="trash_ids"
-            :items="container_choices.map(c => ({container: c, t: mapping[c.trash_container.type]}))"
+            :items="container_choices"
             chips
-            item-title="t"
-            item-value="container.extra_id"
+            :item-title="getLabel"
+            item-value="extra_id"
             label="Kies containers voor dit gebouw"
             multiple
           />
@@ -80,6 +80,27 @@ export default {
     })
   },
   methods: {
+    getLabel(container) {
+      const format_day = {
+        "MO": "Maandag",
+        "TU": "Dinsdag",
+        "WE": "Woensdag",
+        "TH": "Donderdag",
+        "FR": "Vrijdag",
+        "SA": "Zaterdag",
+        "SU": "Zondag"
+      }
+      const format_type = {
+        "PM": "PMD",
+        "GL": "GLAS",
+        "GF": "GFT",
+        "RE": "REST",
+        "PK": "PK"
+      }
+      if(!Number.isInteger(container)) {
+        return `${format_type[container.trash_container.type]} ${format_day[container.trash_container.collection_day.day]}`
+      }
+    },
     async update(eenmalig) {
       if (!eenmalig) {
         RequestHandler.handle(TrashTemplateService.updateBuildingTemplate(this.$route.params.id, this.$route.params.gebouwId, {

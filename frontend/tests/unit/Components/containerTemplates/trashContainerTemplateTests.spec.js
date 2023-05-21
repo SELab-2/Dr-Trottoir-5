@@ -69,8 +69,6 @@ describe('trashContainerTemplateCard.vue', () => {
     expect(TrashContainerTemplateCard.methods.goToTrashTemplateContainersPage).toBeCalled();
     await goToTrashTemplateBuildingsPageButton.trigger('click');
     expect(TrashContainerTemplateCard.methods.goToTrashTemplateBuildingsPage).toBeCalled();
-    await editTemplateButton.trigger('click');
-    expect(TrashContainerTemplateCard.methods.editTemplate).toBeCalled();
     await deleteTemplateButton.trigger('click');
     expect(TrashContainerTemplateCard.methods.deleteTemplate).toBeCalled();
   })

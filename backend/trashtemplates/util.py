@@ -5,6 +5,8 @@ from ronde.models import Building
 from planning.util import get_current_time
 from exceptions.exceptionHandler import ExceptionHandler
 
+from pickupdays.models import WeekDayEnum
+
 
 def get_trash_template(template_id):
     handler = ExceptionHandler()
@@ -19,8 +21,14 @@ def get_trash_template(template_id):
 def make_new_tc_id_wrapper(data, extra_id):
     """
         Maakt nieuwe TrashContainerIdWrapper aan.
-        TODO checks
     """
+    handler = ExceptionHandler()
+    handler.check_time_value_required(data.get("collection_day").get("start_hour"), "start_hour")
+    handler.check_time_value_required(data.get("collection_day").get("end_hour"), "end_hour")
+    handler.check_enum_value_required(data.get("collection_day").get("day"), "day", WeekDayEnum)
+    handler.check_enum_value_required(data.get("type"), "type", TrashContainer.TrashType)
+    handler.check()
+
     # maak nieuwe pickupday met de aangepaste data
     new_pickup_day, _ = PickUpDay.objects.get_or_create(
         day=data["collection_day"]["day"],
