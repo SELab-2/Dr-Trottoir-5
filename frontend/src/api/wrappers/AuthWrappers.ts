@@ -1,16 +1,21 @@
 export class AuthRegisterWrapper {
   public email: string;
   public password: string;
+  public password2: string;
   public first_name: string;
   public last_name: string;
   public phone_nr: string;
 
-  constructor(email: string, password: string, first_name: string, last_name: string, phone_nr: string) {
+  public locations: [];
+
+  constructor(email: string, password: string, password2: string, first_name: string, last_name: string, phone_nr: string, locations: []) {
     this.email = email;
     this.password = password;
+    this.password2 = password2;
     this.first_name = first_name;
     this.last_name = last_name;
     this.phone_nr = phone_nr;
+    this.locations = locations;
   }
 }
 
@@ -28,12 +33,14 @@ export class AuthForgotWrapper {
 
 export class AuthResetWrapper {
   public email: string;
-  public new_password: string;
+  public password: string;
+  public password2: string;
   public otp: string;
 
-  constructor(email: string, new_password: string, otp: string) {
+  constructor(email: string, password: string, password2: string, otp: string) {
     this.email = email
-    this.new_password = new_password
+    this.password = password
+    this.password2 = password2
     this.otp = otp
   }
 }

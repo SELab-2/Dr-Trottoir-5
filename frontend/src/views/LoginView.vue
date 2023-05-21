@@ -9,35 +9,34 @@
         <v-text-field
           v-model="email"
           label="e-mail"
+          :error-messages="check_errors(this.errors, 'email')"
         ></v-text-field>
         <v-text-field
           v-model="password"
+          :error-messages="check_errors(this.errors, 'password')"
           :append-inner-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append-inner="() => (value = !value)"
           :type="value ? 'password' : 'text'"
           label="Wachtwoord"
         ></v-text-field>
-        <div v-if="error !== ''" class="text-red">{{ error.message }}</div>
         <router-link to="/forgot">Wachtwoord vergeten?</router-link>
-        <normal-button text="Login" v-bind:parent-function="login" block class="mt-2"></normal-button>
+        <normal-button text="Login" v-bind:parent-function="login" block class="mt-2" type="submit"></normal-button>
       </v-form>
       <v-row class="mx-auto justify-center">
         <div class="mx-2">Geen account?</div>
-        <router-link to="/register">Maak nieuw account</router-link>
+        <router-link :to="{name: 'register'}">Maak nieuw account</router-link>
       </v-row>
     </v-col>
   </v-card>
 </template>
 
 <script>
-import { ErrorHandler } from '@/api/error/ErrorHandler'
 import AuthService from '@/api/services/AuthService'
 import router from '@/router'
 import { defineComponent } from 'vue'
 import NormalButton from '@/components/NormalButton'
 import LoginTopBar from "@/components/LoginTopBar.vue";
-
-// TODO input error handling
+import {check_errors, get_errors} from "@/error_handling";
 
 export default defineComponent({
   name: 'LoginView',
@@ -45,9 +44,9 @@ export default defineComponent({
     email: '',
     value: 'password',
     password: '',
-    error: '',
     prevRoute: '/',
-    smallScreen: false
+    smallScreen: false,
+    errors: null
   }),
   components: {
     NormalButton,
@@ -71,37 +70,31 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-     login() {
-       AuthService.login({ email: this.email, password: this.password })
-        .then(
-          async () => {
+    check_errors,
+    login() {
+      AuthService.login({ email: this.email, password: this.password })
+       .then(
+         async () => {
 
-            // Send confirmation message.
-            this.$store.dispatch("snackbar/open", {
-              message: "U bent ingelogd",
-              color: "success"
-            });
+           // Send confirmation message.
+           this.$store.dispatch("snackbar/open", {
+             message: "U bent ingelogd",
+             color: "success"
+           });
 
-            // Update the current user inside the store.
-            await this.$store.dispatch("session/clear");
-            await this.$store.dispatch("session/fetch");
+           // Update the current user inside the store.
+           await this.$store.dispatch("session/clear");
+           await this.$store.dispatch("session/fetch");
 
-            await router.push({ path: '/' });
-          }
-        ).catch((error) => {
-          ErrorHandler.handle(
-            error,
-            {
-              id: "login",
-              style: "SNACKBAR"
-            },
-            this.fields
-          );
-      })
-    },
-    onResize() {
-      this.smallScreen = window.innerWidth < 600
-    }
-  }
+           await router.push({ name: 'home' });
+         }
+       ).catch(async (error) => {
+        this.errors = await get_errors(error)
+     })
+   },
+   onResize() {
+     this.smallScreen = window.innerWidth < 600
+   }
+ }
 })
 </script>

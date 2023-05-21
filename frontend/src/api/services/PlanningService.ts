@@ -18,11 +18,39 @@ class PlanningService extends EchoService {
   /**
    * Get a day planning
    */
-  @GET("/dagplanning/{year}/{week}/{day}")
+  @GET("/dagplanning/{year}/{week}/{day}/")
   get(@Path('year') year: number,
       @Path('week') week: number,
-      @Path('day') day: number): EchoPromise<DayPlanning> {
-    return {} as EchoPromise<DayPlanning>;
+      @Path('day') day: number): EchoPromise<[DayPlanning]> {
+    return {} as EchoPromise<[DayPlanning]>;
+  }
+
+  /**
+   * Get the statuses for a planning
+   */
+  @GET("/dagplanning/{year}/{week}/{id}/status/")
+  getStatus(@Path('year') year: number,
+            @Path('week') week: number,
+            @Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Get the pictures for a planning
+   */
+  @GET("/dagplanning/{year}/{week}/{id}/pictures/")
+  getStatusPictures(@Path('year') year: number,
+                    @Path('week') week: number,
+                    @Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
+  }
+
+  /**
+   * Find the student template for a planning
+   */
+  @GET("/studenttemplates/find/planning/{id}/")
+  findTemplate(@Path('id') id: number): EchoPromise<any> {
+    return {} as EchoPromise<any>;
   }
 
   /**
@@ -41,6 +69,17 @@ class PlanningService extends EchoService {
     return {} as EchoPromise<[Round]>;
   }
 
+  @GET("/studenttemplates/rondes/{year}/{week}/{day}/{location}/")
+  getRoundFromBuilding(
+            @Path('year') year: number,
+            @Path('week') week: number,
+            @Path('day') day: number,
+            @Path('location') location: number,
+            building: number): EchoPromise<Round> {
+    return {} as EchoPromise<Round>;
+  }
+
+
   /**
    * Get building info for a day planning
    */
@@ -50,10 +89,38 @@ class PlanningService extends EchoService {
   }
 
   /**
+   * Get building info by id
+   */
+  @GET("/infoperbuilding/{id}/")
+  getInfoById(@Path('id') id: number): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>
+  }
+
+  /**
+   *Get building info for a day planning and building
+   */
+  @GET("/infoperbuilding/")
+  getInfoOfBuilding(@Query('dagPlanning') dagPlanning: number,
+                    @Query('building') building: number): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>
+  }
+
+
+  /**
+   * Get building info for a building and date
+   */
+  @GET("/infoperbuilding/")
+  getInfoFromBuilding(@Query('building') building: number, @Query('date') date: string): EchoPromise<BuildingInfo> {
+    return {} as EchoPromise<BuildingInfo>;
+  }
+
+  /**
    * Get student images for building info
    */
   @GET("/buildingpicture/")
-  getPictures(@Query('infoPerBuilding') infoPerBuilding: number): EchoPromise<any> {
+  getPictures(@Query('infoPerBuilding') infoPerBuilding: number,
+              @Query('year') year: number,
+              @Query('week') week: number): EchoPromise<any> {
     return {} as EchoPromise<any>;
   }
 
@@ -116,14 +183,6 @@ class PlanningService extends EchoService {
     @FormField("time") time: string,
     @FormField("remark") remark: string
   ): EchoPromise<any> {
-    return {} as EchoPromise<any>;
-  }
-
-  /**
-   * Update planning status
-   */
-  @PATCH("/dagplanning/{id}/")
-  updatePlanningStatus(@Path('id') id: number, @Body() body: PlanningStatusWrapper) {
     return {} as EchoPromise<any>;
   }
 

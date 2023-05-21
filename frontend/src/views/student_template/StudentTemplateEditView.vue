@@ -3,7 +3,7 @@
     <div class="text-h4 text-md-h2 text-lg-h1">
       Template
     </div>
-    <v-btn :to="'/studenttemplates/'" variant="outlined" >
+    <v-btn :to="{name: 'studenttemplates'}" variant="outlined" >
         Terug
     </v-btn>
   </v-row>
@@ -11,31 +11,30 @@
     <v-form fast-fail @submit.prevent>
       <v-row class="justify-space-between mx-auto">
         <v-col cols='12' sm='6' md='6'>
-          <v-text-field v-model='name' label='Naam' :readonly="!edit" required></v-text-field>
+          <v-text-field
+            :error-messages="check_errors(this.errors, 'location')"
+            readonly
+            variant="solo"
+            label="Locatie"
+            v-model="location.name"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='status' label='Status' readonly required></v-text-field>
+          <v-text-field variant="solo" :error-messages="check_errors(this.errors, 'status')" v-model='status' label='Status' readonly ></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-checkbox label="Even" v-model="even" :readonly="!edit"></v-checkbox>
+          <v-text-field variant="solo" readonly > {{ even ? "Even" : "Oneven" }}</v-text-field>
         </v-col>
       </v-row>
       <v-row class="justify-space-between mx-auto">
-        <v-col cols='12' sm='6' md='6'>
-          <v-select
-            :readonly="!edit"
-            label="Locatie"
-            :items="locations"
-            item-title="name"
-            item-value="id"
-            v-model="location"
-          ></v-select>
+         <v-col cols='12' sm='6' md='6'>
+          <v-text-field v-model='name' :error-messages="check_errors(this.errors, 'name')" label='Naam' :readonly="!edit" required></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='start_hour' label='Standaard Startuur' :readonly="!edit" required></v-text-field>
+          <v-text-field v-model='start_hour' :error-messages="check_errors(this.errors, 'start_hour')" label='Standaard Startuur' :readonly="!edit" required></v-text-field>
         </v-col>
         <v-col cols="12" sm="3" md="3">
-          <v-text-field v-model='end_hour' label='Standaard Einduur' :readonly="!edit" required></v-text-field>
+          <v-text-field v-model='end_hour' :error-messages="check_errors(this.errors, 'end_hour')" label='Standaard Einduur' :readonly="!edit" required></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="this.status !== 'Vervangen'" class="px-5 justify-center mx-auto">
@@ -60,7 +59,8 @@
       <v-col class="d-flex" cols='12' sm='6' md='6'>
         <v-autocomplete
           label="Rondes"
-          :items="all_rondes"
+          :error-messages="check_errors(this.errors, 'ronde')"
+          :items="all_rondes.filter(r => r.location.id === this.location.id)"
           item-title="name"
           item-value="id"
           v-model="add_id"
@@ -75,17 +75,17 @@
       status: this.status,
       name: ronde.name,
       location: ronde.location.name
-    }"></TemplateRondeCard>
+    }" :key="ronde.id"></TemplateRondeCard>
 </template>
 
 <script>
 import NormalButton from '@/components/NormalButton.vue';
 import {RequestHandler} from "@/api/RequestHandler";
-import LocationService from "@/api/services/LocationService";
 import StudentTemplateService from "@/api/services/StudentTemplateService";
 import TemplateRondeCard from "@/components/admin/student_template/TemplateRondeCard.vue";
 import RoundService from "@/api/services/RoundService";
 import router from "@/router";
+import {check_errors, get_errors} from "@/error_handling";
 
 export default {
   name: "StudentTemplateEditView",
@@ -101,12 +101,12 @@ export default {
     status: '',
     even: true,
     location: 0,
-    start_hour: "",
-    end_hour: "",
-    locations: [],
+    start_hour: null,
+    end_hour: null,
     rondes: [],
     all_rondes: [],
     add_id: null,
+    errors: null,
     state_mapping: {
       "A": "Actief",
       "E": "Eenmalig",
@@ -123,12 +123,6 @@ export default {
       style: 'SNACKBAR'
     }).then(result => result).catch(() => null);
 
-    // get all possible locations
-    this.locations = await RequestHandler.handle(LocationService.getLocations(), {
-      id: 'getLocationsError',
-      style: 'SNACKBAR'
-    }).then(result => result).catch(() => []);
-
     // get all rounds
     this.all_rondes = await RequestHandler.handle(RoundService.getRounds(), {
       id: 'getRondesError',
@@ -144,42 +138,41 @@ export default {
     this.rondes = this.template.rondes
   },
   methods: {
+    check_errors,
     async copy_taken(new_id) {
       this.template_id = new_id
       return await router.replace({path: `/studenttemplates/${new_id}`})
     },
     async save_edit() {
-      this.edit = false
       const body = {
         name: this.name,
-        even: this.even,
         start_hour: this.start_hour,
-        end_hour: this.end_hour,
-        location: this.location.id
+        end_hour: this.end_hour
       }
 
-      const response = await RequestHandler.handle(StudentTemplateService.updateStudentTemplate(this.template_id, body), {
-          id: 'updateStudentTemplate',
-          style: 'SNACKBAR'
-      }).then(res => res)
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"])
-      }
+      StudentTemplateService.updateStudentTemplate(this.template_id, body)
+        .then(async response => {
+          this.edit = false
+          if (response["new_id"] !== undefined) {
+            await this.copy_taken(response["new_id"])
+          }
+        }).catch(async error => {this.errors = await get_errors(error)})
     },
     async add_round() {
       const body = {ronde: this.add_id}
-      const response = await RequestHandler.handle(StudentTemplateService.addRound(this.template_id, body), {
-          id: 'studentTemplateAddRound',
-          style: 'SNACKBAR'
-      })
-      for (let ronde of this.all_rondes) {
-        if (ronde.id === this.add_id) {
-          this.rondes.push(ronde)
-        }
-      }
-      if (response["new_id"] !== undefined) {
-        await this.copy_taken(response["new_id"])
-      }
+      StudentTemplateService.addRound(this.template_id, body)
+        .then(async response => {
+          this.errors = null
+          for (let ronde of this.all_rondes) {
+            if (ronde.id === this.add_id) {
+              this.rondes.push(ronde)
+            }
+          }
+          if (response["new_id"] !== undefined) {
+            await this.copy_taken(response["new_id"])
+          }
+          this.add_id = null
+        }).catch(async (error) => {this.errors = await get_errors(error)})
     },
     remove_ronde(ronde_id) {
       let index = -1;

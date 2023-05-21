@@ -2,17 +2,17 @@
 <v-card
     class="mx-auto w-75 my-10"
     variant="outlined"
-    :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`"
+    :to="{name: 'ronde_dagplanningen', params: {template_id: data.template_id, ronde_id: data.ronde_id}}"
   >
     <v-card-item>
       <div>
         <v-row class="px-3 my-1 justify-space-between">
-          <div class="text-overline">
+          <div data-test="location" class="text-overline">
             {{ data.location }}
           </div>
         </v-row>
         <v-row class="px-3 my-1 justify-space-between">
-          <div class="text-h6">
+          <div data-test="name" class="text-h6">
             {{ data.name }}
           </div>
         </v-row>
@@ -20,10 +20,10 @@
     </v-card-item>
 
     <v-card-actions class="px-3 my-1 justify-space-between">
-      <v-btn variant="outlined" :to="`/studenttemplates/${data.template_id}/rondes/${data.ronde_id}`">
+      <v-btn data-test="dagplanning-button" variant="outlined" :to="{name: 'ronde_dagplanningen', params: {template_id: data.template_id, ronde_id: data.ronde_id}}">
         Dagplanningen
       </v-btn>
-      <v-btn v-if="this.data.status !== 'Vervangen'" @click.prevent="on_delete" variant="outlined">
+      <v-btn data-test="delete-button" v-if="this.data.status !== 'Vervangen'" @click.prevent="on_delete" variant="outlined">
         Verwijderen
       </v-btn>
     </v-card-actions>

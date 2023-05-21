@@ -3,6 +3,7 @@ import {
   EchoPromise,
   EchoService,
   EchoServiceBuilder,
+  PATCH,
   POST,
 } from 'echofetch';
 import { ErrorHandler } from "@/api/error/ErrorHandler";
@@ -81,7 +82,7 @@ class AuthService extends EchoService {
         store.dispatch("session/clear");
         await store.dispatch("session/fetch");
 
-        await router.push(goHome ? "/" : "/login");
+        await router.push(goHome ? {name: 'home'} : {name: 'login'});
       })
       .catch((error) => {
         ErrorHandler.handle(error, {
@@ -95,7 +96,7 @@ class AuthService extends EchoService {
   /**
    * Change the role of a user
    */
-  @POST('/role/')
+  @PATCH('/role/')
   updateRoleOfUser(@Body() body : {}) : EchoPromise<string> {
     return {} as EchoPromise<string>
   }

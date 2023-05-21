@@ -18,13 +18,13 @@ additional information for the user that just registered.
         <v-spacer></v-spacer>
         <v-card-text>
           <v-row class="mx-auto justify-center">
-            <div class="mx-1">Registratie is gelukt!</div>
+            <div data-test="succes" class="mx-1">Registratie is gelukt!</div>
           </v-row>
           <v-row class="my-4 justify-center">
-            <div class="mx-1">Bedankt voor het registreren bij Dr. Trottoir.</div>
+            <div data-test="thank-you" class="mx-1">Bedankt voor het registreren bij Dr. Trottoir.</div>
           </v-row>
           <v-row class="mb-4 justify-center">
-            <div class="mx-1">Als uw aanmelding is verwerkt, zal de applicatie hier beschikbaar zijn.</div>
+            <div data-test="waiting" class="mx-1">Als uw aanmelding is verwerkt, zal de applicatie hier beschikbaar zijn.</div>
           </v-row>
         </v-card-text>
       </v-card>

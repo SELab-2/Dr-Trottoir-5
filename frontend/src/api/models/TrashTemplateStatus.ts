@@ -1,6 +1,6 @@
 export enum TrashTemplateStatus {
-  eenmalig = "Eenmalig",
-  vervangen = "Vervangen",
-  actief = "Actief",
-  inactief = "Inactief"
+  eenmalig = "E",
+  vervangen = "V",
+  actief = "A",
+  inactief = "I"
 }

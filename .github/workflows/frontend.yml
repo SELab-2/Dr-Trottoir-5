@@ -1,0 +1,65 @@
+name: frontend-tests
+run-name: frontend-tests
+on: [push]
+jobs:
+  Frontend-tests:
+    runs-on: self-hosted
+    environment: vue tests
+    strategy:
+      max-parallel: 4
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - name: Empty EchoFetch directory
+        run: |
+          rm -rf EchoFetch
+        working-directory: ./frontend/src/api
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+      - name: Setup EchoFetch
+        run: |
+          npm install
+          npm run build
+        working-directory: ./frontend/src/api/EchoFetch
+      - name: Install Dependencies
+        run: |
+          npm install --force
+        working-directory: ./frontend
+      - name: Create env file
+        run: |
+          echo "${{ vars.ENV }}" > ./.env.local
+        working-directory: ./frontend
+      - name: Run Tests
+        run: |
+          npm run test:unit
+        working-directory: ./frontend
+
+  Frontend-linter:
+    runs-on: self-hosted
+    environment: vue tests
+    strategy:
+      max-parallel: 4
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - name: Empty EchoFetch directory
+        run: |
+          rm -rf EchoFetch
+        working-directory: ./frontend/src/api
+      - name: Install Dependencies
+        run: |
+          npm install --force
+          npm i -D @vue/cli-plugin-eslint @vue/eslint-config-typescript --force
+        working-directory: ./frontend
+      - name: Run Linter
+        run: |
+          npm run lint
+        working-directory: ./frontend

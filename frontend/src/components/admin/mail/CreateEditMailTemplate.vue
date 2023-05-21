@@ -3,7 +3,7 @@
     <h1 v-if="!edit" align="center">Mail template aanmaken</h1>
     <h1 v-else align="center">Mail template aanpassen</h1>
     <p>Naam</p>
-    <v-text-field v-model="this.template.name"></v-text-field>
+    <v-text-field v-model="this.template.name" :error-messages="check_errors(this.errors, 'name')"></v-text-field>
     <p>Tekst
       <v-avatar class="button-style" size="25px" style="border: 1px solid #E3e3e3;border-radius: 25px;">
         <v-icon size="25px" dark color="gray" @click="showDialog = true">mdi-information-variant</v-icon>
@@ -21,6 +21,7 @@
         <v-window v-model="tab">
           <v-window-item value="one">
             <v-textarea v-html="formattedText" v-model="this.template.text" auto-grow
+                        :error-messages="check_errors(this.errors, 'content')"
                         ></v-textarea>
           </v-window-item>
 
@@ -32,8 +33,8 @@
     </v-card>
   </v-container>
   <v-container align="center">
-    <NormalButton v-if="!edit" text="Maak template aan" :parent-function="createTemplate"/>
-    <NormalButton v-else text="Pas template aan" :parent-function="editTemplate"/>
+    <NormalButton data-test="create-button" v-if="!edit" text="Maak template aan" :parent-function="createTemplate"/>
+    <NormalButton data-test="edit-button" v-else text="Pas template aan" :parent-function="editTemplate"/>
   </v-container>
 
   <v-dialog v-model="showDialog">
@@ -65,6 +66,7 @@
 <script>
 import {RequestHandler} from "@/api/RequestHandler";
 import MailTemplateService from "@/api/services/MailTemplateService";
+import {check_errors, get_errors} from "@/error_handling";
 
 /**
  * CreateEditMailTemplate component wordt gebruikt door als props een Object met de volgende keys mee te geven:
@@ -89,64 +91,34 @@ export default {
       text: ''
     },
     showDialog: false,
-    tab: null
+    tab: null,
+    errors: null
   }),
   methods: {
+    check_errors,
     async createTemplate () {
-      if (this.template.name === '' || this.template.text === '') {
-        this.$store.dispatch("snackbar/open", {
-          message: "Vul alle velden in",
-          color: "error"
-        })
-        return
-      }
-
-      RequestHandler.handle(
-
-        MailTemplateService.createMailTemplate(
-          {
-            name: this.template.name,
-            content: this.template.text
-          }
-        ),
-        {
-        id: 'createMailTemplateError',
-        style: "SNACKBAR",
+      MailTemplateService.createMailTemplate({
+          name: this.template.name,
+          content: this.template.text
       }).then(() => {
-          this.$store.dispatch("snackbar/open", {
-            message: "Mail template toegevoegd",
-            color: "success"
-          })
-      router.push({ path: '/mailtemplates' })
-      })
-    },
-    editTemplate: function () {
-    if (this.template.name === '' || this.template.text === '') {
         this.$store.dispatch("snackbar/open", {
-          message: "Vul alle velden in",
-          color: "error"
+          message: "Mail template toegevoegd",
+          color: "success"
         })
-        return
-      }
-
-      RequestHandler.handle(
-        MailTemplateService.updateMailTemplate(
-          this.$route.params.id,
-          {
-            name: this.template.name,
-            content: this.template.text
-          }
-        ),
-        {
-          id: 'editMailTemplateError',
-          style: "SNACKBAR",
-        }).then(() => {
+        router.push({name: 'mailtemplates'})
+      }).catch(async (error) => {this.errors = await get_errors(error)});
+    },
+    async editTemplate () {
+      await MailTemplateService.updateMailTemplate(this.$route.params.id,{
+          name: this.template.name,
+          content: this.template.text
+      }).then(() => {
         this.$store.dispatch("snackbar/open", {
           message: "Mail template aangepast",
           color: "success"
         })
-        router.push({ path: '/mailtemplates' })
-      })
+        router.push({name: 'mailtemplates'})
+      }).catch(async (error) => {this.errors = await get_errors(error)});
     },
     closeDialog: function () {
       this.showDialog = false

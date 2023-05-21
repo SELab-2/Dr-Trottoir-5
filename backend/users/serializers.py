@@ -1,13 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Registration, RoleAssignment
-
-
-class RegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Registration
-        fields = '__all__'
+from .models import RoleAssignment
 
 
 class RoleAssignmentSerializer(serializers.ModelSerializer):
@@ -33,7 +27,8 @@ class UserPublicSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'phone_nr',
-            'role'
+            'role',
+            'locations'
         ]
 
 
@@ -47,5 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
             'date_joined',
             'phone_nr',
             'id',
-            'role'
+            'role',
+            'locations'
         ]

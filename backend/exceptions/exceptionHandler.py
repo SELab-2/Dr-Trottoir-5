@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from rest_framework import serializers
-
 from django.db import models
+from rest_framework.serializers import ValidationError
+
+from trashtemplates.models import Status
 
 
 class ExceptionHandler:
@@ -20,6 +21,10 @@ class ExceptionHandler:
     blank_error = "Veld kan niet leeg zijn."
     integer_error = "Veld moet een positief getal zijn."
     boolean_error = "Veld moet een Boolse waarde zijn."
+    wrong_email_error = "Verkeerd email adres."
+    not_equal_error = "Waarde komt niet overeen."
+    inactive_error = "Object is verwijderd."
+    vervangen_error = "Kan geen aanpassingen doen aan vervangen template"
 
     def __init__(self):
         self.errors = []
@@ -28,9 +33,9 @@ class ExceptionHandler:
     def check(self):
         self.checked = True
         if len(self.errors) > 0:
-            raise serializers.ValidationError({
+            raise ValidationError({
                 "errors": self.errors
-            })
+            }, code='invalid')
 
     def __del__(self):
         if not self.checked:
@@ -79,8 +84,13 @@ class ExceptionHandler:
         self.checked = False
         if value is None:
             return True
-        return self.check_time_format(value, fieldname, "%H:%M",
-                                      ExceptionHandler.time_format_error)
+        if not self.check_time_format(value, fieldname, "%H:%M", ExceptionHandler.time_format_error):
+            if self.check_time_format(value, fieldname, "%H:%M:%S", ExceptionHandler.time_format_error):
+                self.errors.pop()
+                return True
+            else:
+                return False
+        return True
 
     def check_time_value_required(self, value, fieldname):
         if not self.check_required(value, fieldname):
@@ -209,3 +219,52 @@ class ExceptionHandler:
         if not self.check_required(value, fieldname):
             return False
         return self.check_not_blank(value, fieldname)
+
+    def check_email(self, email, cls: models.Model):
+        self.checked = False
+        if email is None:
+            return True
+        try:
+            cls.objects.get(email=email)
+            return True
+        except cls.DoesNotExist:
+            self.errors.append({
+                "message": ExceptionHandler.wrong_email_error,
+                "field": "email"
+            })
+            return False
+
+    def check_equal(self, value1, value2, fieldname):
+        self.checked = False
+
+        if value1 != value2:
+            self.errors.append({
+                "message": ExceptionHandler.not_equal_error,
+                "field": fieldname
+            })
+            return False
+        return True
+
+    def check_not_inactive(self, template, fieldname):
+        self.checked = False
+        if template is None:
+            return True
+
+        if template.status == Status.INACTIEF:
+            self.errors.append({
+                "message": ExceptionHandler.inactive_error,
+                "field": fieldname
+            })
+            return False
+
+    def check_vervangen(self, template):
+        self.checked = False
+        if template is None:
+            return True
+
+        if template.status == Status.VERVANGEN:
+            self.errors.append({
+                "message": ExceptionHandler.vervangen_error,
+                "field": "template"
+            })
+            return False

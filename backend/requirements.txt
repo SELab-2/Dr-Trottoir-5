@@ -1,4 +1,4 @@
-Django~=4.1.7
+Django~=4.2.1
 djangorestframework
 markdown
 django-filter
@@ -10,3 +10,4 @@ model_bakery
 djangorestframework-simplejwt
 requests
 django-cors-headers
+django-sortedm2m

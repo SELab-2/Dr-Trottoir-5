@@ -1,4 +1,9 @@
 <template>
+  <v-card align="center">
+    <v-card-text>
+      <h3 class="text-h3">U wordt doorverwezen..</h3>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -13,16 +18,16 @@ export default defineComponent({
     // Route user to a base based on his role
     switch (user.role) {
       case 'AA':
-        return router.push({path: '/register_done'});
+        return router.push({name: 'register_done'});
       case 'ST':
-        return router.push({path: '/student_home'});
+        return router.push({name: 'student_home'});
       case 'SY':
-        return router.push({path: '/syndicus_home'});
+        return router.push({name: 'syndicus_home'});
       case 'AD':
       case 'SU':
-        return router.push({path: '/admin_home'});
+        return router.push({name: 'admin_home'});
       case 'BE':
-        return router.push({path: '/resident_home'});
+        return router.push({name: 'resident_home'});
     }
 
   }

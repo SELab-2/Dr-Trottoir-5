@@ -24,10 +24,11 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mz0gymvj@n5wl2p0yau(vj0e3jdx_wok78+ead*=p4)$w)g5(z'  # TODO generate new one and keep secret
+SECRET_KEY = env.get_value('SECRET_KEY', str, 'django-insecure-mz0gymvj@n5wl2p0yau(vj0e3jdx_wok78+ead*=p4)$w)g5(z')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+
+DEBUG = env.get_value('DEBUG_MODE', bool, False)
 
 ALLOWED_HOSTS = [
     'sel2-5.ugent.be', '157.193.244.115',
@@ -42,6 +43,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.178.34:8080",
     "http://localhost:8081",
     "http://192.168.178.34:8081",
+    "http://localhost:8082",
+    "http://192.168.178.34:8082",
     "http://127.0.0.1:8080",
 ]
 
@@ -213,7 +216,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE': 'access_token',  # Cookie name. Enables cookies if value is set.
     'REFRESH_COOKIE': 'refresh',
     'AUTH_COOKIE_DOMAIN': None,  # A string like "example.com", or None for standard domain cookie.
-    'AUTH_COOKIE_SECURE': False,  # Whether the auth cookies should be secure (https:// only). TODO TRUE FOR PRODUCTION
+    'AUTH_COOKIE_SECURE': env.get_value('SECURE_COOKIES', bool, False),  # Whether the auth cookies should be secure (https:// only).
     'AUTH_COOKIE_HTTP_ONLY': True,  # Http only cookie flag.It's not fetch by javascript.
     'AUTH_COOKIE_PATH': '/',  # The path of the auth cookie.
     'AUTH_COOKIE_SAMESITE': 'Lax',

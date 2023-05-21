@@ -81,7 +81,7 @@ export default {
           description: 'Kon gebruiker niet verwijderen'
         }]
       })
-      location.reload()
+      // location.reload()
     },
     goToInfoPage: async function () {
       await this.$router.push({name: 'admin_info_user', params: {id: this.data.id}})

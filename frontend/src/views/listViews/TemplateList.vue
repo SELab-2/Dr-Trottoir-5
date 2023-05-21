@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" :keys="keys"/>
+  <ListPage :add-function="addMethod" :child-component="childComponent" :elements="elements" title="Email Templates" :head-component="headComponent" :keys="keys" :map-keys="mapKeys"/>
 </template>
 
 <script>
@@ -18,12 +18,13 @@ export default {
       childComponent: TemplateMailCard,
       headComponent: TemplateMailCardHeader,
       elements: [],
-      keys: ['name']
+      keys: ['name'],
+      mapKeys: {'name': 'naam'}
     }
   },
   methods: {
     addMethod: function () {
-      router.push({ path: '/mailtemplate/create' })
+      router.push({ name: 'create_mail-template' })
     }
   },
   async beforeMount() {

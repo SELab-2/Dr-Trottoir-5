@@ -1,10 +1,8 @@
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.conf import settings
-from ronde.models import Ronde
+from ronde.models import LocatieEnum, Building, Ronde
 from trashtemplates.models import TrashContainerTemplate, Status
 from pickupdays.models import PickUpDay
-from ronde.models import LocatieEnum
 
 
 class DagPlanning(models.Model):
@@ -32,21 +30,6 @@ class DagPlanning(models.Model):
     ronde = models.ForeignKey(
         Ronde,
         on_delete=models.DO_NOTHING
-    )
-
-    class StatusEnum(models.TextChoices):
-        """
-        enum for type of status
-        """
-        NOT_STARTED = "NS", "Not started"
-        STARTED = "ST", "Started"
-        FINISHED = "FI", "Finished"
-
-    status = ArrayField(
-        models.CharField(
-            max_length=2,
-            choices=StatusEnum.choices
-        ), default=list
     )
 
 
@@ -91,6 +74,8 @@ class StudentTemplate(models.Model):
     def __getitem__(self, item):
         if item == "dag_planningen":
             return self.dag_planningen
+        if item == "rondes":
+            return self.rondes
 
     name = models.TextField()
     even = models.BooleanField()
@@ -158,13 +143,16 @@ class InfoPerBuilding(models.Model):
 
     dagPlanning : models.ForeignKey
         The associated DagPlanning
+
+    building : models.Foreignkey
+        The associated Building
     """
 
     remark = models.TextField(default="")
 
-    date = models.DateField()
-
     dagPlanning = models.ForeignKey(DagPlanning, on_delete=models.CASCADE)
+
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class BuildingPicture(models.Model):

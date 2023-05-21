@@ -12,4 +12,18 @@ Dit is de documentatie over hoe je de lokale deployment doet. Voor de server dep
 {{% /pageinfo %}}
 
 Deze documentatie toont hoe dit project op een lokale machine gedraaid kan worden.
+Er zijn 2 mogelijkheden om het project lokaal te draaien.
+1. In docker
+2. natively
 
+## Docker
+
+Om het project in docker te draaien zie [docker deployment]({{< relref "/docs/lokale-deployment/docker" >}})
+
+## native
+
+Om het project native te draaien zie de respectievelijke pagina's in deze volgorde:
+
+1. [databank]({{< relref "/docs/lokale-deployment/database" >}})
+2. [backend]({{< relref "/docs/lokale-deployment/backend" >}})
+3. [frontend]({{< relref "/docs/lokale-deployment/frontend" >}})

@@ -10,7 +10,7 @@
         <div class="text-h4 mx-auto">Wachtwoord vergeten?</div>
       </v-row>
       <v-form @submit.prevent :class="`${smallScreen ? 'w-75' : 'w-50'} mx-auto my-5`">
-        <v-text-field v-model="email" label="e-mail" clearable />
+        <v-text-field v-model="email" label="e-mail" :error-messages="check_errors(this.errors, 'email')" clearable />
         <v-row class="justify-center my-2">
           <normal-button :parent-function="sendOtp" text="Wachtwoord opnieuw instellen"></normal-button>
         </v-row>
@@ -31,6 +31,7 @@
       <v-form @submit.prevent :class="`${smallScreen ? 'w-75' : 'w-75'} mx-auto my-5`">
         <v-text-field
           v-model="email"
+          :error-messages="check_errors(this.errors, 'email')"
           readonly
           :model-value="email"
           label="e-mail"
@@ -38,9 +39,10 @@
           append-icon="mdi-email"
           @click:append="sendOtp()"
         />
-        <v-text-field v-model="otp" label="Code uit email" clearable />
+        <v-text-field v-model="otp" label="Code uit email"  :error-messages="check_errors(this.errors, 'otp')" clearable />
         <v-text-field
           v-model="password"
+          :error-messages="check_errors(this.errors, 'password')"
           :append-inner-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append-inner="() => (value = !value)"
           :type="value ? 'password' : 'text'"
@@ -48,6 +50,7 @@
         />
         <v-text-field
           v-model="password2"
+          :error-messages="check_errors(this.errors, 'password2')"
           :append-inner-icon="value2 ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append-inner="() => (value2 = !value2)"
           :type="value2 ? 'password' : 'text'"
@@ -72,8 +75,8 @@ import NormalButton from '@/components/NormalButton.vue'
 import AuthService from "@/api/services/AuthService";
 import {AuthForgotWrapper, AuthResetWrapper} from "@/api/wrappers/AuthWrappers";
 import LoginTopBar from "@/components/LoginTopBar.vue";
+import {check_errors, get_errors} from "@/error_handling";
 
-// TODO input error handling
 
 export default defineComponent({
   name: 'ForgotView',
@@ -87,7 +90,8 @@ export default defineComponent({
     otp: '',
     prevRoute: '/',
     smallScreen: false,
-    sendEmail: true
+    sendEmail: true,
+    errors: null
   }),
   beforeRouteEnter (to, from, next) {
     // save the previous path so we can return after the login is done
@@ -107,27 +111,38 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
+    check_errors,
     onResize () {
       this.smallScreen = window.innerWidth < 800
     },
     goBack () {
+      this.errors = null
       if (this.sendEmail) {
         router.back()
       } else {
         this.sendEmail = true
       }
     },
-    sendOtp () {
+    async sendOtp () {
       AuthService.forgot(new AuthForgotWrapper(this.email))
-      this.sendEmail = false
+        .then(() => {
+          this.sendEmail = false
+          this.errors = null
+        })
+        .catch(async (error) => {
+          this.errors = await get_errors(error)
+        })
     },
-    resetPassword () {
+    async resetPassword () {
       AuthService.reset(new AuthResetWrapper(
         this.email,
         this.password,
+        this.password2,
         this.otp
-      ))
-      return router.push({ path: '/login' })
+      )).then(() => router.push({name : 'login' }))
+        .catch(async (error) => {
+          this.errors = await get_errors(error)
+        })
     }
   }
 })

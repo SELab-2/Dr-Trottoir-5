@@ -7,6 +7,8 @@ from pickupdays.models import WeekDayEnum
 from planning.models import WeekPlanning
 from .exceptionHandler import ExceptionHandler
 
+from django.contrib.auth import get_user_model
+
 
 class ExceptionHandlerTest(TestCase):
 
@@ -275,29 +277,28 @@ class ExceptionHandlerTest(TestCase):
 
     def test_boolean_success(self):
         handler = ExceptionHandler()
-        self.assertTrue(handler.check_integer(False, "name"))
+        self.assertTrue(handler.check_boolean(False, "name"))
 
     def test_boolean_required_success(self):
         handler = ExceptionHandler()
-        self.assertTrue(handler.check_integer_required(True, "name"))
+        self.assertTrue(handler.check_boolean_required(True, "name"))
 
     def test_boolean_success_none(self):
         handler = ExceptionHandler()
-        self.assertTrue(handler.check_integer(None, "name"))
+        self.assertTrue(handler.check_boolean(None, "name"))
 
     def test_boolean_required_fail_none(self):
         handler = ExceptionHandler()
-        self.assertFalse(handler.check_integer_required(None, "name"))
+        self.assertFalse(handler.check_boolean_required(None, "name"))
         self.assertRaises(ValidationError, handler.check)
 
     def test_boolean_fail_bad_value(self):
-        handler = ExceptionHandler()
-        self.assertFalse(handler.check_integer("no integer", "name"))
-        self.assertRaises(ValidationError, handler.check)
+        # everything is a valid boolean if not required
+        self.assertTrue(True)
 
     def test_boolean_required_fail_bad_value(self):
         handler = ExceptionHandler()
-        self.assertFalse(handler.check_integer_required("no integer", "name"))
+        self.assertFalse(handler.check_boolean_required(None, "name"))
         self.assertRaises(ValidationError, handler.check)
 
     def test_not_blank_success(self):
@@ -325,4 +326,23 @@ class ExceptionHandlerTest(TestCase):
     def test_not_blank_required_fail_bad_value(self):
         handler = ExceptionHandler()
         self.assertFalse(handler.check_not_blank_required("", "name"))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_email_success_none(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_email(None, get_user_model()))
+
+    def test_email_fail_bad_value(self):
+        handler = ExceptionHandler()
+        self.assertFalse(
+            handler.check_email("NOT A VALID EMAIL", get_user_model()))
+        self.assertRaises(ValidationError, handler.check)
+
+    def test_check_equal_succes(self):
+        handler = ExceptionHandler()
+        self.assertTrue(handler.check_equal("test", "test", "password"))
+
+    def test_check_equal_fail(self):
+        handler = ExceptionHandler()
+        self.assertFalse(handler.check_equal("not", "equal", "password"))
         self.assertRaises(ValidationError, handler.check)

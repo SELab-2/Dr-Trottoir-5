@@ -42,8 +42,8 @@
         </template>
       </v-autocomplete>
     </v-form>
-    <normal-button v-if="!edit" text="Voeg syndicus toe" :parent-function="addSyndicus"/>
-    <normal-button v-else text="Pas syndicus aan" :parent-function="editSyndicus"/>
+    <normal-button data-test="add" v-if="!edit" text="Voeg syndicus toe" :parent-function="addSyndicus"/>
+    <normal-button data-test="edit" v-else text="Pas syndicus aan" :parent-function="editSyndicus"/>
   </v-container>
 
 </template>
@@ -61,6 +61,7 @@ import UserService from "@/api/services/UserService";
 import BuildingService from "@/api/services/BuildingService";
 import LocationService from "@/api/services/LocationService";
 import AuthService from "@/api/services/AuthService";
+import router from "@/router";
 
 export default {
   name: 'CreateEditSyndicus',
@@ -88,7 +89,7 @@ export default {
     async update(building_id, syndicus) {
       /**
        * This method is the request we send to the backend. The body exists of an updated list
-       * of syndicussen for a specific building.
+       * of syndici for a specific building.
        */
       await RequestHandler.handle(BuildingService.updateBuildingById(Number(building_id), {
         'syndicus': syndicus
@@ -136,7 +137,7 @@ export default {
           }
         ]
       })
-      await this.$router.back()
+      await router.push({name: 'syndici'})
     },
     async editSyndicus() {
       /**
@@ -158,7 +159,7 @@ export default {
           await this.update(building_id, syndicus)
         }
       }
-      await this.$router.back()
+      await router.push({name: 'syndici'})
     },
     updateBuilding() {
       /**
@@ -186,8 +187,8 @@ export default {
         customMessages: [
           {
             code: '500',
-            message: 'Kon alle syndicussen niet ophalen.',
-            description: 'Kon syndicussen niet ophalen.'
+            message: 'Kon alle syndici niet ophalen.',
+            description: 'Kon syndici niet ophalen.'
           }
         ]
       }).then(users => {

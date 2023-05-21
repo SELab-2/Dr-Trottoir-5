@@ -1,7 +1,7 @@
 <template>
-  <ListPage :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
+  <ListPage data-test="listPage" :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
-            :keys="keys" title="Vuilnis plannings"/>
+            :keys="keys" :map-keys="mapKeys" title="Vuilnis plannings"/>
 </template>
 
 <script lang="ts">
@@ -14,18 +14,22 @@ import ListPage from "@/components/admin/ListPage.vue";
 
 export default {
   name: 'TrashContainerTemplateList',
-  components: {ListPage, TrashContainerTemplateCard, TrashContainerTemplateHeader},
+  components: {ListPage},
   data() {
     return {
       childComponent: TrashContainerTemplateCard,
       elements: [],
       headComponent: TrashContainerTemplateHeader,
-      keys: ['name', 'year', 'week', 'location']
+      keys: ['name', 'location'],
+      mapKeys: {
+        'name': 'naam',
+        'location': 'locaties'
+      }
     }
   },
   methods: {
     addTrashContainerTemplate: function () {
-      router.push({path: '/trashtemplates/create'});
+      router.push({name: 'createTrashtemplates'});
     }
   },
   async beforeMount() {
@@ -38,6 +42,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

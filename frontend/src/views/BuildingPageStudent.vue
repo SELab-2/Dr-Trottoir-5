@@ -27,7 +27,7 @@
               :title="trashMap[item.type]"
               :subtitle="item.special_actions"
               align="left"
-              active-color="primary"
+              color="primary"
             >
               <template v-slot:prepend>
                 <v-icon icon="mdi-trash-can" color="green"></v-icon>
@@ -38,13 +38,13 @@
       </v-card-text>
       <v-card-text>
         <normal-button text="Aankomst" v-bind:parent-function="clickArrival" block class="mb-3"
-                       v-bind:append-icon="this.pictures.includes('AR') ? 'mdi-check' : ''">
+                       v-bind:append-icon="this.statuses.AR > 0 ? 'mdi-check' : ''">
         </normal-button>
         <normal-button text="Berging" v-bind:parent-function="clickStorage" block class="mb-3"
-                       v-bind:append-icon="this.pictures.includes('ST') ? 'mdi-check' : ''">
+                       v-bind:append-icon="this.statuses.ST ? 'mdi-check' : ''">
         </normal-button>
         <normal-button text="Vertrek" v-bind:parent-function="clickDeparture" block class="mb-3"
-                       v-bind:append-icon="this.pictures.includes('DE') ? 'mdi-check' : ''">
+                       v-bind:append-icon="this.statuses.DE ? 'mdi-check' : ''">
         </normal-button>
       </v-card-text>
     </v-card>
@@ -58,6 +58,7 @@ import PlanningService from "@/api/services/PlanningService";
 import NormalButton from "@/components/NormalButton";
 import ContainerService from "@/api/services/ContainerService";
 import router from "@/router";
+import TrashTemplateService from "@/api/services/TrashTemplateService";
 
 export default defineComponent({
   name: "BuildingPageStudent",
@@ -68,6 +69,7 @@ export default defineComponent({
     if ('planning' in this.$route.query) this.planning = this.$route.query.planning;
     if ('year' in this.$route.query) this.year = this.$route.query.year;
     if ('week' in this.$route.query) this.week = this.$route.query.week;
+    if ('date' in this.$route.query) this.date = this.$route.query.date;
     if ('building' in this.$route.query) {
       const planning = await RequestHandler.handle(PlanningService.getPlanning(this.planning), {
         id: "getDayplanningError",
@@ -75,54 +77,64 @@ export default defineComponent({
       }).then(planning => planning).catch(() => null);
       if (!planning) return;
 
+      const pictureWeek = new Date(this.date).getUTCDay() === 0 ? this.week - 1 : this.week;
+      RequestHandler.handle(PlanningService.getStatus(this.year, pictureWeek, planning.id), {
+        id: `getStatus${planning.id}Error`,
+        style: "NONE"
+      }).then(statuses => {
+        this.statuses = statuses[this.$route.query.building];
+      }).catch(() => null);
+
       const building_index = planning.ronde.buildings.findIndex(b => String(b.id) === this.$route.query.building);
       this.building = planning.ronde.buildings[building_index];
-      const infos = await RequestHandler.handle(PlanningService.getInfo(planning.id), {
+      RequestHandler.handle(PlanningService.getInfo(planning.id), {
         id: "getBuildingInfoError",
         style: "NONE"
-      }).then(info => info).catch(() => null);
-      if (!infos) return;
-      this.info = infos[building_index].id;
+      }).then(infos => { this.info = infos.find(i => i.building === this.building.id).id }).catch(() => null);
 
-      RequestHandler.handle(PlanningService.getPictures(this.info), {
-        id: "getPicturesError",
-        style: "NONE"
-      }).then(picture => this.pictures = picture.map(p => p.pictureType)).catch(() => null);
-
-      const containers = await RequestHandler.handle(ContainerService.get(this.building.id, this.year, this.week), {
+      const containers = await RequestHandler.handle(TrashTemplateService.getContainers(this.year, this.week), {
         id: "getContainersError",
         style: "NONE"
-      }).then(c => c).catch(() => null);
+      }).then(containers => {
+        if (this.building.id.toString() in containers) return containers[this.building.id.toString()];
+        return [];
+      }).catch(() => null);
       if (!containers) return;
-
-      const weekDays = ['SU','MO','TU','WE','TH','FR','SA'];
-      const day = weekDays[new Date(this.date).getDay()];
-      this.containers = containers.filter(c => c.collection_day.day === day);
+      this.containers = containers.filter(c => c.collection_day.day === planning.time.day);
     }
   },
   data: () => ({
-    date: new Date().toISOString().split('T')[0],
     building: {location: {name: ''}, adres: '', id: ''},
     trashMap: {PM: 'PMD', GL: 'GLAS', RE: 'REST', GF: 'GFT', PK: 'PK'},
     containers: [],
-    pictures: [],
+    statuses: {ST: 0, DE: 0, AR: 0},
     info: '',
     planning: '',
     year: null,
-    week: null
+    week: null,
+    date: new Date().toISOString().split('T')[0]
   }),
   methods: {
     clickArrival() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {
+        info: this.info, building: this.building.id, type: 'Aankomst', planning: this.planning, year: this.year,
+        week: this.week, date: this.date
+      }});
     },
     clickStorage() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Berging', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {
+        info: this.info, building: this.building.id, type: 'Berging', planning: this.planning, year: this.year,
+        week: this.week, date: this.date
+      }});
     },
     clickDeparture() {
-      router.push({path: '/student_post_view', query: {info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning}});
+      router.push({name: 'student_post_view', query: {
+        info: this.info, building: this.building.id, type: 'Vertrek', planning: this.planning, year: this.year,
+        week: this.week, date: this.date
+      }});
     },
     buildingInfo() {
-      router.push({path: '/building_info', query: {building: this.building.id}});
+      router.push({name: 'building_info', query: {building: this.building.id}});
     }
   }
 });

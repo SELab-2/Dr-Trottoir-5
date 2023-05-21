@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="addBuilding" :child-component="childComponent" :elements="elements" title="Gebouwen" :head-component="headComponent" :keys="keys"/>
+  <ListPage :add-function="addBuilding" :child-component="childComponent" :elements="elements" title="Gebouwen" :head-component="headComponent" :keys="keys" :map-keys="mapKeys"/>
 </template>
 
 <script>
@@ -17,12 +17,17 @@ export default {
       childComponent: BuildingCard,
       elements: [],
       headComponent: BuildingHeader,
-      keys: ['name', 'adres', 'manual']
+      keys: ['name', 'adres', 'manual'],
+      mapKeys: {
+        'name': 'naam',
+        'adres': 'adres',
+        'manual': 'handleiding'
+      }
     }
   },
   methods: {
     addBuilding : function () {
-      router.push({ path: '/building/create'});
+      router.push({name: 'create_building'})
     }
   },
   async beforeMount() {

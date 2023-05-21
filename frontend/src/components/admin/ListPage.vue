@@ -16,7 +16,7 @@ Heeft als nodige argumenten nodig:
         <v-row class="pa-5">
           <h1>{{ this.title }}</h1>
           <v-row></v-row>
-          <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndicusen'">
+          <div v-if="!refresh && this.title !== 'Studenten' && this.title !== 'Syndici'">
             <NormalButton text="+" v-bind:parent-function="addFunction"/>
           </div>
           <div v-else-if="refresh">
@@ -25,7 +25,7 @@ Heeft als nodige argumenten nodig:
         </v-row>
       </v-col>
       <v-col v-if="this.search" cols="12">
-        <SearchDropdown :elements="elements" :keys="keys" placeholder="Search ..."
+        <SearchDropdown :elements="elements" :keys="keys" placeholder="Zoeken ..." :mapKeys="mapKeys"
                         v-on:keyChange="onKeyChange" v-on:selected="onSearch"/>
       </v-col>
       <v-col/>
@@ -62,16 +62,16 @@ export default {
     },
     addFunction: {
       type: Function,
-      default: null,
+      default: () => null,
       required: true
     },
     headComponent: {
-      type: Object,
+      type: String,
       default: 'div',
       required: false
     },
     childComponent: {
-      type: Object,
+      type: String,
       default: 'div',
       required: true
     },
@@ -85,14 +85,18 @@ export default {
       default: () => ['default'],
       required: true
     },
+    mapKeys: {
+      type: Map,
+      default: {},
+      required: true
+    },
     refresh: {
       type: Boolean,
       default: false
     },
     refresh_function: {
       type: Function,
-      default: () => {
-      }
+      default: () => null
     },
     search: {
       type: Boolean,
@@ -118,8 +122,8 @@ export default {
             filtered.push(el)
           }
         }
-        return filtered
       }
+      return filtered
     }
   },
   data() {
