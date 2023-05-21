@@ -9,8 +9,6 @@ from planning.models import WeekPlanning
 from .util import *
 from exceptions.exceptionHandler import ExceptionHandler
 
-from ronde.models import LocatieEnum
-
 
 class BuildingTrashPlan(generics.ListAPIView):
     permission_classes = [BewonerPermission | SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission]
