@@ -9,8 +9,7 @@ from ronde.models import Ronde, LocatieEnum
 from io import BytesIO
 from PIL import Image
 from model_bakery import baker
-
-from django.test import Client
+from backend.views import MediaView
 
 
 class CreateTest(APITestCase):
@@ -221,6 +220,13 @@ class CreateTest(APITestCase):
         self.assertEqual(response["infoPerBuilding"], self.ipb.pk)
         self.assertIsNotNone(response["id"])
         picture_id = response["id"]
+
+        request = factory.get(response["image"])
+        path = (response["image"].split("/"))[-1]
+        force_authenticate(request, self.user)
+        response = MediaView.as_view()(request, path=path)
+        self.assertEqual(response.status_code, 200)
+
 
         # Fetch the uploaded picture
         request = factory.get('/api/buildingpicture/')
