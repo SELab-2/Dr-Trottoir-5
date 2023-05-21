@@ -48,6 +48,9 @@ import TrashContainerEdit from '@/components/containerTemplates/containers/Trash
 import LocationList from "@/views/listViews/LocationList";
 import CreateEditRoundView from "@/views/admin/CreateEditRoundView.vue";
 import AdminRoundView from "@/views/admin/AdminRoundView.vue";
+import SendMailView from "@/views/admin/SendMailView.vue";
+import SyndicusHome from "@/views/syndicus/SyndicusHome.vue";
+import BuildingView from "@/views/BuildingView.vue";
 
 const routes = [
   {
@@ -63,7 +66,13 @@ const routes = [
   {
     path: '/syndicus',
     name: 'syndicus_home',
-    component: RegisterDone
+    component: SyndicusHome
+  },
+  {
+    path: '/gebouw/:id',
+    name: 'building_page',
+    component: BuildingView,
+    props: true
   },
   {
     path: '/admin',
@@ -258,6 +267,12 @@ const routes = [
     path: '/admin/mailtemplates',
     name: 'mailtemplates',
     component: TemplateList
+  },
+  {
+    path: '/admin/send_mail/:id/post/:postId',
+    name: 'send_mail',
+    props: true,
+    component: SendMailView
   },
   {
     path: '/admin/gebruiker/:id',

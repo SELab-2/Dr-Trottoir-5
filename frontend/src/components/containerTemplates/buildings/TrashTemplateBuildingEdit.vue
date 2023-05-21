@@ -35,7 +35,6 @@
 import {RequestHandler} from "@/api/RequestHandler";
 import TrashTemplateService from "@/api/services/TrashTemplateService";
 import router from "@/router";
-import BuildingContainer from "@/api/models/BuildingContainer";
 import StateButtons from "@/components/StateButtons.vue";
 
 export default {
@@ -43,10 +42,17 @@ export default {
   components: {StateButtons},
   data() {
     return {
-      building: BuildingContainer,
+      building: null,
       trash_ids: [],
       container_choices: [],
-      status: "I"
+      status: "I",
+      mapping: {
+        GL: 'GLAS',
+        GF: 'GFT',
+        PM: 'PMD',
+        PK: 'PK',
+        RE: 'REST'
+      }
     }
   },
   async beforeMount() {

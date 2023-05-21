@@ -4,17 +4,15 @@ from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
-
 from exceptions.exceptionHandler import ExceptionHandler
 from pickupdays.models import WeekDayEnum
 from ronde.serializers import RondeSerializer
 from trashtemplates.util import add_if_match, remove_if_match, no_copy, update
 from users.permissions import StudentReadOnly, AdminPermission, \
-    SuperstudentPermission, StudentPermission
-
+    SuperstudentPermission, StudentPermission, SyndicusPermission, \
+    BewonerPermission
 from .util import *
-from ronde.models import LocatieEnum
-
+from ronde.models import Building, LocatieEnum, Ronde
 from trashtemplates.models import Status
 
 
@@ -22,9 +20,9 @@ class StudentDayPlan(generics.RetrieveAPIView):
     permission_classes = [StudentPermission]
 
     def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        week = kwargs["week"]
-        day = kwargs["day"]
+        year = kwargs.get("year")
+        week = kwargs.get("week")
+        day = kwargs.get("day")
         if day < 0 or day > 6:
             raise ValidationError({
                 "errors": [
@@ -44,8 +42,13 @@ class StudentDayPlan(generics.RetrieveAPIView):
                 if plan.time.day == day_name and request.user in plan.students.all():
                     dayplans.append(plan)
 
-        if dayplan is None:
+        if len(dayplans) == 0:
             return HttpResponseNotFound()
+
+        data = []
+        for dayplan in dayplans:
+            data.append(DagPlanningSerializerFull(dayplan).data)
+        return Response(data)
 
 
 @api_view(["GET"])
@@ -54,22 +57,21 @@ class StudentDayPlan(generics.RetrieveAPIView):
 def planning_status(request, year, week, pk):
     if request.method == "GET":
         try:
-            dayplan = DagPlanning.objects.get(pk=pk)
+            DagPlanning.objects.get(pk=pk)
         except DagPlanning.DoesNotExist:
             return Response(status=404)
 
-        buildings = [building.id for building in dayplan.ronde.buildings.all()]
         infos = InfoPerBuilding.objects.filter(dagPlanning=pk)
         status = {}
         for index, info in enumerate(infos):
             pictures = BuildingPicture.objects.filter(infoPerBuilding=info.id,
                                                       time__year=year,
                                                       time__week=week)
-            if buildings[index] not in status:
-                status[buildings[index]] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
+            if info.building.id not in status:
+                status[info.building.id] = {"AR": 0, "DE": 0, "ST": 0, "EX": 0}
 
             for picture in pictures:
-                status[buildings[index]][picture.pictureType] += 1
+                status[info.building.id][picture.pictureType] += 1
 
         return Response(status)
 
@@ -182,8 +184,8 @@ class DagPlanningCreateAndListAPIView(generics.ListCreateAPIView):
         ronde = Ronde.objects.get(pk=request.data["ronde"])
         response = super().post(request=request, args=args, kwargs=kwargs)
         dagPlanning = DagPlanning.objects.get(pk=response.data["id"])
-        for _ in ronde.buildings.all():
-            InfoPerBuilding(dagPlanning=dagPlanning).save()
+        for building in ronde.buildings.all():
+            InfoPerBuilding(dagPlanning=dagPlanning, building=building).save()
             dagPlanning.status.append('NS')
         dagPlanning.save()
         return response
@@ -225,7 +227,8 @@ class BuildingPictureCreateAndListAPIView(generics.ListCreateAPIView):
     queryset = BuildingPicture.objects.all()
     serializer_class = BuildingPictureSerializer
     permission_classes = [
-        StudentPermission | AdminPermission | SuperstudentPermission]
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | BewonerPermission
+    ]
 
     # TODO: a user can only see the pictures that he added (?)
 
@@ -310,7 +313,8 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
     queryset = InfoPerBuilding.objects.all()
     serializer_class = InfoPerBuildingSerializer
     permission_classes = [
-        StudentPermission | AdminPermission | SuperstudentPermission]
+        StudentPermission | SyndicusPermission | AdminPermission | SuperstudentPermission | BewonerPermission
+    ]
 
     # TODO: a user can only see the info per building that he added (?)
 
@@ -318,11 +322,30 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
         dagPlanning = request.query_params[
             'dagPlanning'] if 'dagPlanning' in request.query_params else None
 
+        building = request.query_params[
+            'building'] if 'building' in request.query_params else None
+
         if dagPlanning is not None:
             try:
                 DagPlanning.objects.get(pk=dagPlanning)
                 self.queryset = InfoPerBuilding.objects.filter(
                     dagPlanning=dagPlanning)
+                if building is not None:
+                    try:
+                        Building.objects.get(pk=building)
+                        self.queryset = self.queryset.filter(
+                            building=building)
+                    except Exception:
+                        raise serializers.ValidationError(
+                            {
+                                "errors": [
+                                    {
+                                        "message": "referenced pk not in db",
+                                        "field": "building"
+                                    }
+                                ]
+                            }, code='invalid')
+
             except Exception:
                 raise serializers.ValidationError(
                     {
@@ -332,7 +355,8 @@ class InfoPerBuildingCLAPIView(generics.ListCreateAPIView):
                                 "field": "dagPlanning"
                             }
                         ]
-                    }, code='invalid')
+                    }
+                )
 
         return super().get(request=request, args=args, kwargs=kwargs)
 
@@ -418,7 +442,7 @@ class WeekplanningView(generics.RetrieveAPIView):
 
 
 class StudentTemplateRondeView(generics.RetrieveAPIView):
-    permission_classes = [AdminPermission | SuperstudentPermission]
+    permission_classes = [AdminPermission | SuperstudentPermission | SyndicusPermission | BewonerPermission]
 
     def get(self, request, *args, **kwargs):
         year, week, day, location = kwargs["year"], kwargs["week"], kwargs[

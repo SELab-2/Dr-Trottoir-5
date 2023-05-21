@@ -112,11 +112,13 @@ export default {
       if (!this.imageCheck()) return;
       const input = document.getElementById("input");
       const image = input.files[0];
+      let time = new Date().toISOString()
+      time = time.slice(0, time.lastIndexOf(':')).replace(/T/, ' ')
       await RequestHandler.handle(PlanningService.uploadPicture(
         image,
         this.data.info,
         this.data.type === 'Aankomst' ? 'AR' : this.data.type === 'Berging' ? 'ST' : this.data.type === 'Extra' ? 'EX' : 'DE',
-        new Date().toISOString(),
+        time,
         this.description
       ), {
         id: "uploadImageError",

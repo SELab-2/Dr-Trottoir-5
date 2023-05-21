@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from exceptions.exceptionHandler import ExceptionHandler
-from .permissions import AdminPermission, SuperstudentPermission, ReadOnly
+from .permissions import AdminPermission, SuperstudentPermission, ReadOnly, StudentPermission, \
+    SyndicusPermission
 from .serializers import RoleAssignmentSerializer, \
     UserPublicSerializer, UserSerializer
 from ronde.models import LocatieEnum
@@ -30,16 +31,27 @@ def get_tokens_for_user(user):
     }
 
 
-@api_view(['GET'])
-@permission_classes([ReadOnly])
+@api_view(['GET', 'PATCH'])
+@permission_classes([SyndicusPermission | StudentPermission | SuperstudentPermission | AdminPermission])
 def user_view(request):
     response = Response()
-    if request.user.is_authenticated:
-        response.data = UserSerializer(request.user).data
-        return response
-    else:
-        response.data = "{'error': 'no user'}"
-        return response
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            response.data = UserSerializer(request.user).data
+        else:
+            response.data = "{'error': 'no user'}"
+    elif request.method == 'PATCH':
+        if request.user.is_authenticated:
+            data = request.data
+            serializer = UserSerializer(request.user, data=data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                response.data = serializer.data
+            else:
+                response.data = serializer.errors
+        else:
+            response.data = "{'error': 'no user'}"
+    return response
 
 
 @api_view(['POST'])
@@ -48,6 +60,8 @@ def login_view(request):
     data = request.data
     response = Response()
     email = data.get('email', None)
+    if email is not None:
+        email = email.lower()
     password = data.get('password', None)
 
     handler = ExceptionHandler()
@@ -117,7 +131,7 @@ def registration_view(request):
         handler.check_required(data.get("locations"), "locations")
         handler.check()
 
-        if get_user_model().objects.filter(email=data["email"]).exists():
+        if get_user_model().objects.filter(email=data["email"].lower()).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",
@@ -125,7 +139,7 @@ def registration_view(request):
                 }]})
 
         user = get_user_model().objects.create_user(
-            data['email'],
+            data['email'].lower(),
             data['first_name'],
             data['last_name'],
             data['phone_nr'],
@@ -171,6 +185,7 @@ def forgot_password(request):
 
     handler = ExceptionHandler()
     handler.check_not_blank_required(email, "email")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
@@ -203,10 +218,11 @@ def reset_password(request):
     handler.check_not_blank_required(otp, "otp")
     handler.check_not_blank_required(password, "password")
     handler.check_not_blank_required(password2, "password2")
+    email = email.lower()
     handler.check_email(email, User)
     handler.check()
 
-    user = get_user_model().objects.get(email=data['email'])
+    user = get_user_model().objects.get(email=data['email'].lower())
 
     handler.check_equal(password, password2, "password2")
     handler.check_equal(otp, user.otp, "otp")
@@ -217,13 +233,13 @@ def reset_password(request):
     return Response({'message': 'New password is created'})
 
 
-@api_view(['POST', 'GET'])
+@api_view(['PATCH', 'GET'])
 @permission_classes([AdminPermission | SuperstudentPermission | ReadOnly])
 def role_assignment_view(request):
     if request.method == "GET":  # return role of user
         return Response({'role': request.user.role})
 
-    if request.method == "POST":  # change the role of a user
+    if request.method == "PATCH":  # change the role of a user
         serializer = RoleAssignmentSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
 
@@ -240,7 +256,7 @@ def role_assignment_view(request):
 
             try:
                 user = get_user_model().objects.get(
-                    email=request.data['email'])
+                    email=request.data['email'].lower())
             except get_user_model().DoesNotExist:
                 user = None
 
@@ -280,9 +296,10 @@ class UserByIdRUDView(generics.RetrieveUpdateDestroyAPIView):
         handler.check_integer(data.get("phone_nr"), "phone_nr")
         handler.check()
 
+        data["email"] = data.get("email").lower()
         user = get_user_model().objects.get(id=id)
 
-        if user.email != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
+        if user.email.lower() != data.get("email") and get_user_model().objects.filter(email=data["email"]).exists():
             raise serializers.ValidationError({
                 "errors": [{
                     "message": "Dit email adres is al in gebruik.",

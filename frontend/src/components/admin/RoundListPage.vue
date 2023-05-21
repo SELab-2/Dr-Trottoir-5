@@ -55,7 +55,7 @@ export default {
     },
     addFunction: {
       type: Function,
-      default: null,
+      default: () => null,
       required: true
     },
     headComponent: {
