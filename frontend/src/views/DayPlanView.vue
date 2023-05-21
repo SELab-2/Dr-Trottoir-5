@@ -45,6 +45,9 @@ export default defineComponent({
     const date = new Date(this.date);
     this.year = date.getFullYear();
     this.week = getWeek(date);
+    if(date.getUTCDay() === 0){
+      this.week -= 1
+    }
     const day = this.daymap[date.getUTCDay()];
 
     RequestHandler.handle(PlanningService.get(this.year, this.week, date.getUTCDay()), {

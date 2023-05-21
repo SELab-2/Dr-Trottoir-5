@@ -88,7 +88,7 @@ export default {
       // TODO Milestone 3 Add geschatte tijd
       const manual = await this.createManual()
 
-      BuildingService.createBuilding({
+      await BuildingService.createBuilding({
         name: this.name,
         adres: this.adres,
         ivago_klantnr: this.klant_nr,

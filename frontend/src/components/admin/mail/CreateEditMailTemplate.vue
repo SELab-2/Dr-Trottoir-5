@@ -108,8 +108,8 @@ export default {
         router.push({name: 'mailtemplates'})
       }).catch(async (error) => {this.errors = await get_errors(error)});
     },
-    editTemplate () {
-      MailTemplateService.updateMailTemplate(this.$route.params.id,{
+    async editTemplate () {
+      await MailTemplateService.updateMailTemplate(this.$route.params.id,{
           name: this.template.name,
           content: this.template.text
       }).then(() => {

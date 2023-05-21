@@ -34,8 +34,8 @@ export default {
   },
   methods: {
     check_errors,
-    addLocation() {
-      LocationService.createLocation({
+    async addLocation() {
+      await LocationService.createLocation({
           name: this.name
         }
       ).then(() => {
@@ -44,8 +44,8 @@ export default {
           message: "De locatie is toegevoegd",
           color: "success"
         })
+        router.push({name: 'locations'})
       }).catch(async (error) => {this.errors = await get_errors(error)});
-      router.push({name: 'locations'})
     }
   }
 }

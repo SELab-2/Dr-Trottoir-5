@@ -22,6 +22,7 @@
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 import {RequestHandler} from "@/api/RequestHandler";
 import LocationService from "@/api/services/LocationService";
+import router from "@/router";
 export default {
   name: "LocationCard",
   components: {DeleteIcon},
@@ -42,16 +43,20 @@ export default {
         customMessages: [
           {
             code: '500',
-            message: 'De locatie is nog verbonden aan student, gebouwn ...',
+            message: 'De locatie is nog verbonden aan student, gebouw ...',
             description: 'Key error'
           }
         ]
-      }).catch(() =>
+      })
+        .then(() => {
+          router.push({name: 'locations'})
+          router.go(0)
+        })
+        .catch(() =>
         this.$store.dispatch("snackbar/open", {
-          message: "De locatie is nog verbonden aan student, gebouwn ...'",
+          message: "De locatie is nog verbonden aan student, gebouw ...'",
           color: "error"
         }))
-      this.$emit('removed')
     }
   }
 }

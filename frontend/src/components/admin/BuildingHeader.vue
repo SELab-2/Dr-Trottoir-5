@@ -10,10 +10,9 @@
       <v-col cols="1" class="col">
         <p v-if="!round" title="Efficiëntie"> Efficiëntie </p>
       </v-col>
-      <v-col cols="1" class="col">
+      <v-col cols="2" class="col">
         <p title="Handleiding"> Handleiding </p>
       </v-col>
-      <v-col cols="1" class="col"/>
       <v-col cols="3" class="col">
         <p title="Document status"> Document status </p>
       </v-col>

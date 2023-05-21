@@ -63,7 +63,8 @@ export default {
   data: () => {
     return {
       building: 0,
-      syndici: 0
+      syndici: 0,
+      overlay: false
     }
   },
   async beforeMount() {

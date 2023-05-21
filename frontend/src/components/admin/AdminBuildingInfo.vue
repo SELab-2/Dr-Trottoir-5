@@ -10,12 +10,10 @@
     </v-row>
     <v-row justify="center" align="center">
       <v-col cols="3">
-        <v-card flat class="datecard">
           <DatePicker v-model.string="date" color="white" :is-dark="true" :is-required="true" show-iso-weeknumbers
-                      :first-day-of-week="1" :masks="masks" :attributes="attrs" v-on:dayclick="changed"
+                      :first-day-of-week="1" :masks="masks" :attributes="attrs" view="weekly" v-on:dayclick="changed"
                       v-on:did-move="(e) => {setWeek(e); getContainers()}" class="datepicker"
           />
-        </v-card>
       </v-col>
       <v-col cols="3">
         <v-row>

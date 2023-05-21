@@ -27,7 +27,7 @@
               :title="trashMap[item.type]"
               :subtitle="item.special_actions"
               align="left"
-              active-color="primary"
+              color="primary"
             >
               <template v-slot:prepend>
                 <v-icon icon="mdi-trash-can" color="green"></v-icon>
