@@ -84,8 +84,13 @@ class ExceptionHandler:
         self.checked = False
         if value is None:
             return True
-        return self.check_time_format(value, fieldname, "%H:%M",
-                                      ExceptionHandler.time_format_error)
+        if not self.check_time_format(value, fieldname, "%H:%M", ExceptionHandler.time_format_error):
+            if self.check_time_format(value, fieldname, "%H:%M:%S", ExceptionHandler.time_format_error):
+                self.errors.pop()
+                return True
+            else:
+                return False
+        return True
 
     def check_time_value_required(self, value, fieldname):
         if not self.check_required(value, fieldname):
