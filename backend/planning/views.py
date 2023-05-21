@@ -631,10 +631,13 @@ class RondesView(generics.RetrieveAPIView, generics.CreateAPIView):
 
         dag_planningen = []
 
+        data_copy = dict(data)
 
-        data["start_hour"] = str(template.start_hour)
-        data["end_hour"] = str(template.end_hour)
-        data["students"] = []
+        data_copy["ronde"] = int(data["ronde"])
+
+        data_copy["start_hour"] = str(template.start_hour)
+        data_copy["end_hour"] = str(template.end_hour)
+        data_copy["students"] = []
         for day in WeekDayEnum:
             data_copy["day"] = day
             dag_planning = make_dag_planning(data_copy)
@@ -761,11 +764,11 @@ class DagPlanningView(generics.RetrieveUpdateDestroyAPIView):
         data_copy = dict(data)
         data_copy["day"] = dag_planning.time.day
         if "start_hour" not in data_copy:
-            data_copy["start_hour"] = dag_planning.time.start_hour
+            data_copy["start_hour"] = str(dag_planning.time.start_hour)
         if "end_hour" not in data_copy:
-            data_copy["end_hour"] = dag_planning.time.end_hour
+            data_copy["end_hour"] = str(dag_planning.time.end_hour)
         if "ronde" not in data_copy:
-            data_copy["ronde"] = dag_planning.ronde.id
+            data_copy["ronde"] = int(dag_planning.ronde.id)
         if "students" not in data_copy:
             data_copy["students"] = dag_planning.students.all()
 
