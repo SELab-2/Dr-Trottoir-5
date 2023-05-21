@@ -5,22 +5,22 @@
         <p>{{ this.data.name }}</p>
       </v-col>
       <v-col cols="2">
-        <p class="text-style-url" @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
+        <p data-test="goToTrashTemplateContainersPage" class="text-style-url" @click="goToTrashTemplateContainersPage">Zie Vuilnisbakken</p>
       </v-col>
       <v-col cols="2">
-        <p class="text-style-url" @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
+        <p data-test="goToTrashTemplateBuildingsPage" class="text-style-url" @click="goToTrashTemplateBuildingsPage">Zie Gebouwen</p>
       </v-col>
       <v-col cols="1">
         {{ status_mapping[this.data.status] }}
       </v-col>
-      <v-col cols="1">
+      <v-col data-test="location" cols="1">
         {{ this.locatie }}
       </v-col>
-      <v-col cols="1">
+      <v-col data-test="even" cols="1">
         {{ this.data.even ? 'Even' : 'Oneven' }}
       </v-col>
       <v-col class="text-right" cols="2">
-        <v-btn class="button-style" icon v-on:click="deleteTemplate">
+        <v-btn data-test="deleteTemplate" class="button-style" icon v-on:click="deleteTemplate">
           <DeleteIcon/>
         </v-btn>
       </v-col>

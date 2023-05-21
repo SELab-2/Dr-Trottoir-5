@@ -1,5 +1,5 @@
 <template>
-  <ListPage :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
+  <ListPage data-test="listPage" :add-function="addTrashContainerTemplate" :child-component="childComponent" :elements="elements"
             :head-component="headComponent"
             :search="false"
             title="Containers voor deze vuilnis planning"/>

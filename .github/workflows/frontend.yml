@@ -29,6 +29,10 @@ jobs:
         run: |
           npm install --force
         working-directory: ./frontend
+      - name: Create env file
+        run: |
+          echo "${{ vars.ENV }}" > ./.env.local
+        working-directory: ./frontend
       - name: Run Tests
         run: |
           npm run test:unit
