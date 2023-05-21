@@ -10,7 +10,7 @@
       </v-col>
       <v-col cols="2">
         <v-expansion-panels style="width: 90%;">
-          <v-expansion-panel :title="this.remarks.length + ' opmerkingen'" :disabled="this.remarks.length === 0">
+          <v-expansion-panel :title="this.remarks.length + ' opmerking(en)'" :disabled="this.remarks.length === 0">
             <v-expansion-panel-text v-if="this.remarks.length > 0">
               <p style="word-wrap: break-word;" class="mt-2" v-for="remark in this.remarks" :key="remark">{{ remark }}</p>
             </v-expansion-panel-text>

@@ -33,7 +33,7 @@
           <v-col cols="2"><h5 class="text-h5">{{status}}</h5></v-col>
           <v-col cols="2"><h5 class="text-h5" v-if="pictures !== null">
             {{Object.keys(pictures).reduce((s, a) => s + pictures[a].filter(p => p.remark !== '').length, 0)}}
-            opmerkingen</h5></v-col>
+            opmerking(en)</h5></v-col>
           <v-col cols="1"><h5 class="text-h5" v-if="duration !== null">{{duration}}</h5></v-col>
         </v-row>
       </v-card>
@@ -103,7 +103,7 @@ export default {
             this.pictures = pictures;
             const times = Object.keys(pictures).map(p => pictures[p].map(t => new Date(t.time)))
                     .flat().sort((p1, p2) => p1 < p2 ? -1 : 1);
-            if (times.length > 0) {
+            if (times.length > 1) {
               const secs = (times[times.length - 1].getTime() - times[0].getTime()) / 1000;
               const minutes = Math.floor(secs / 60);
               const seconds = Math.round(secs - minutes * 60);
